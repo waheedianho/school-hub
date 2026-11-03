@@ -1,0 +1,15 @@
+<div class="main-wrapper" [class.sidebar-hidden]="isSidebarHidden">
+  <school-hub-sidebar
+    [sections]="sidebarSections"
+    [logoText]="logoText"
+    [logoIcon]="logoIcon"
+    [theme]="sidebarTheme"
+  ></school-hub-sidebar>
+
+  <school-hub-header (toggleSidebar)="onToggleSidebar()"></school-hub-header>
+
+  <div class="main-content" [class.active]="isSidebarHidden">
+    <router-outlet></router-outlet>
+    <school-hub-footer></school-hub-footer>
+  </div>
+</div>

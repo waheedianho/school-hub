@@ -1,0 +1,84 @@
+
+[7m[1m[36m NX [39m[22m[27m  [36mRunning target [1mbuild[22m for project shell and [1m6[22m tasks it depends on:[39m
+
+[2m[36m[39m[22m
+
+[2m> [22m[2mnx run[22m ui-elements:build:production  [2m[local cache][22m
+
+
+[2m> [22m[2mnx run[22m parent:build:production  [2m[local cache][22m
+
+
+[2m> [22m[2mnx run[22m school-admin:build:production
+
+[34mBuilding Angular Package[39m
+[37m[39m
+[37m------------------------------------------------------------------------------[39m
+[37mBuilding entry point '@school-hub/school-admin'[39m
+[37m------------------------------------------------------------------------------[39m
+- Compiling with Angular sources in full compilation mode.
+[31m✖[39m Compiling with Angular sources in full compilation mode.
+
+[7m[1m[31m NX [39m[22m[27m  [31mCannot destructure property 'pos' of 'file.referencedFiles[index]' as it is undefined.[39m
+
+Pass --verbose to see the stacktrace.
+
+
+[2m> [22m[2mnx run[22m student:build:production
+
+[34mBuilding Angular Package[39m
+[37m[39m
+[37m------------------------------------------------------------------------------[39m
+[37mBuilding entry point '@school-hub/student'[39m
+[37m------------------------------------------------------------------------------[39m
+- Compiling with Angular sources in full compilation mode.
+[31m✖[39m Compiling with Angular sources in full compilation mode.
+
+[7m[1m[31m NX [39m[22m[27m  [31mCannot destructure property 'pos' of 'file.referencedFiles[index]' as it is undefined.[39m
+
+Pass --verbose to see the stacktrace.
+
+
+[2m> [22m[2mnx run[22m teacher:build:production
+
+[34mBuilding Angular Package[39m
+[37m[39m
+[37m------------------------------------------------------------------------------[39m
+[37mBuilding entry point '@school-hub/teacher'[39m
+[37m------------------------------------------------------------------------------[39m
+- Compiling with Angular sources in full compilation mode.
+[31m✖[39m Compiling with Angular sources in full compilation mode.
+
+[7m[1m[31m NX [39m[22m[27m  [31mCannot destructure property 'pos' of 'file.referencedFiles[index]' as it is undefined.[39m
+
+Pass --verbose to see the stacktrace.
+
+
+[2m> [22m[2mnx run[22m super-admin:build:production
+
+[34mBuilding Angular Package[39m
+[37m[39m
+[37m------------------------------------------------------------------------------[39m
+[37mBuilding entry point '@school-hub/super-admin'[39m
+[37m------------------------------------------------------------------------------[39m
+- Compiling with Angular sources in full compilation mode.
+[31m✖[39m Compiling with Angular sources in full compilation mode.
+
+[7m[1m[31m NX [39m[22m[27m  [31mCannot destructure property 'pos' of 'file.referencedFiles[index]' as it is undefined.[39m
+
+Pass --verbose to see the stacktrace.
+
+
+[2m[31m[39m[22m
+
+[7m[1m[31m NX [39m[22m[27m  [31mRunning target [1mbuild[22m for project shell and [1m6[22m tasks it depends on failed[39m
+
+[2mFailed tasks:[22m
+
+[2m-[22m school-admin:build:production
+[2m-[22m student:build:production
+[2m-[22m teacher:build:production
+[2m-[22m super-admin:build:production
+
+[2mHint: run the command with[22m --verbose [2mfor more details.[22m
+

@@ -20,7 +20,9 @@
       "@school-hub/teacher": ["./libs/module/teacher/src/index.ts"],
       "@school-hub/school-admin": ["./libs/module/school-admin/src/index.ts"],
       "@school-hub/super-admin": ["./libs/module/super-admin/src/index.ts"],
-      "@school-hub/ui-elements": ["./libs/shared/ui-elements/src/index.ts"]
+      "@school-hub/ui-elements": ["./libs/shared/ui-elements/src/index.ts"],
+      "@school-hub/theming": ["./libs/shared/theming/src/index.ts"],
+      "@school-hub/layout": ["./libs/shared/layout/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
