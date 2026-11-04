@@ -1,2 +1,2 @@
-export * from './lib/theme.config';
-export * from './lib/theme.service';
+export * from './config/theme.config';
+export * from './services/theme.service';

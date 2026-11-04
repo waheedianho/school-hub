@@ -1,14 +1,13 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { SidebarSection, SidebarMenuItem } from './sidebar-menu.model';
+import { SidebarSection } from '../models/sidebar-menu.model';
 
 @Component({
   selector: 'school-hub-sidebar',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive, NgClass],
   templateUrl: './sidebar.html',
-  styleUrls: ['./sidebar.scss'],
 })
 export class SidebarComponent {
   /** Menu sections driven by the portal that uses this component */

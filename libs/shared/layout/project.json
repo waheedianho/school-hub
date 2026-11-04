@@ -2,7 +2,7 @@
   "name": "layout",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/layout/src",
-  "prefix": "lib",
+  "prefix": "school-hub",
   "projectType": "library",
   "tags": ["type:ui", "scope:shared"],
   "targets": {

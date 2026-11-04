@@ -1,7 +1,9 @@
-# theming
+# Shared theming
 
-This library was generated with [Nx](https://nx.dev).
+School branding and theme utilities, exported through `@school-hub/theming`.
 
-## Running unit tests
+- `src/config/` contains the theme contract and default values.
+- `src/services/` contains the service for applying CSS variables and dark mode.
 
-Run `nx test theming` to execute the unit tests.
+The service is retained for school-specific branding; it is not currently wired
+into the portal layouts.

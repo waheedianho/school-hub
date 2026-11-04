@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { SidebarComponent } from './sidebar';
-import { HeaderComponent } from './header';
-import { FooterComponent } from './footer';
-import { SidebarSection } from './sidebar-menu.model';
+import { SidebarComponent } from '../sidebar/sidebar';
+import { HeaderComponent } from '../header/header';
+import { FooterComponent } from '../footer/footer';
+import { SidebarSection } from '../models/sidebar-menu.model';
 
 @Component({
   selector: 'school-hub-shell',
@@ -17,7 +17,6 @@ import { SidebarSection } from './sidebar-menu.model';
     FooterComponent,
   ],
   templateUrl: './shell.html',
-  styleUrls: ['./shell.scss'],
 })
 export class ShellComponent {
   /** Menu sections passed down to sidebar */

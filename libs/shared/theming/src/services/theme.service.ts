@@ -1,13 +1,12 @@
-import { Injectable, Inject, DOCUMENT } from '@angular/core';
-import { ThemeConfig, DEFAULT_THEME_CONFIG } from './theme.config';
+import { Injectable, inject, DOCUMENT } from '@angular/core';
+import { ThemeConfig, DEFAULT_THEME_CONFIG } from '../config/theme.config';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
+  private readonly document = inject(DOCUMENT);
   private currentConfig: ThemeConfig = { ...DEFAULT_THEME_CONFIG };
-
-  constructor(@Inject(DOCUMENT) private document: Document) {}
 
   /**
    * Set the entire theme configuration.

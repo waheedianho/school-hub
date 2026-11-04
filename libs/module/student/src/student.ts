@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ButtonsComponent } from '@school-hub/ui-elements';
 
 @Component({
   selector: 'lib-student',
-  imports: [RouterModule, ButtonsComponent],
+  imports: [RouterModule],
   templateUrl: './student.html',
   styleUrl: './student.scss',
 })

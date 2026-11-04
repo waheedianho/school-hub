@@ -1,10 +1,10 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
-  Inject,
+  inject,
   Output,
   PLATFORM_ID,
-  Renderer2,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
@@ -14,9 +14,10 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './header.html',
-  styleUrls: ['./header.scss'],
 })
-export class HeaderComponent {
+export class HeaderComponent implements AfterViewInit {
+  private readonly platformId = inject(PLATFORM_ID);
+
   @Output() toggleSidebar = new EventEmitter<void>();
 
   // Button toggle state for dropdowns
@@ -26,11 +27,6 @@ export class HeaderComponent {
   };
 
   isFullscreen = false;
-
-  constructor(
-    @Inject(PLATFORM_ID) private platformId: object,
-    private renderer: Renderer2,
-  ) {}
 
   ngAfterViewInit(): void {
     if (isPlatformBrowser(this.platformId)) {
