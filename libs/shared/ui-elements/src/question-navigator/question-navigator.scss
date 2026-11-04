@@ -1,0 +1,73 @@
+:host {
+  display: block;
+}
+.navigator-legend {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-bottom: 20px;
+  color: #6d7e97;
+  font-size: 9px;
+}
+.navigator-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.navigator-legend i {
+  width: 9px;
+  height: 9px;
+  border: 1px solid #d2dced;
+  border-radius: 3px;
+}
+.answered-dot {
+  background: #16a66b;
+}
+.current-dot {
+  background: #7940dc;
+}
+.marked-dot {
+  background: #f5a316;
+}
+nav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 9px;
+}
+button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 48px;
+  border: 1px solid #dfe6f2;
+  border-radius: 9px;
+  background: #fff;
+  color: #5c6f8d;
+  font-size: 12px;
+}
+button.answered {
+  border-color: #bee6d2;
+  background: #eefaf3;
+  color: #03864e;
+}
+button[aria-current='step'] {
+  border: 2px solid #8652ec;
+  background: #f8f4ff;
+  color: #7940dc;
+}
+button.marked > i {
+  color: #ee9b0c;
+}
+button > i {
+  font-size: 10px;
+  line-height: 1;
+}
+button:focus-visible {
+  outline: 2px solid #7940dc;
+  outline-offset: 3px;
+}
+button:disabled {
+  opacity: 0.55;
+}

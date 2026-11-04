@@ -1,0 +1,44 @@
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.dashboard-card {
+  height: 100%;
+  padding: 15px;
+  border: 1px solid #e3e8f1;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 3px 5px #13274805,
+    0 7px 16px #13274802;
+  color: #182031;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  flex: 1;
+  margin: 0;
+  color: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.card-content {
+  min-width: 0;
+}
+
+:host-context(.dark) .dashboard-card {
+  border-color: #263349;
+  background: #101c30;
+  color: #e4edf9;
+}

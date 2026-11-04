@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+fieldset {
+  display: grid;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+legend {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 55px;
+  padding: 12px;
+  border: 1px solid #dfe6f2;
+  border-radius: 11px;
+  background: white;
+  color: #253752;
+  font-size: 12px;
+  cursor: pointer;
+}
+input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.choice-letter {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #d5ddec;
+  border-radius: 50%;
+  color: #63738c;
+  font-size: 12px;
+}
+.selected {
+  border-color: #8350e7;
+  background: #f8f4ff;
+}
+.selected .choice-letter {
+  border-color: #7940dc;
+  background: #7940dc;
+  color: #fff;
+}
+label:has(input:focus-visible) {
+  outline: 2px solid #7940dc;
+  outline-offset: 3px;
+}
+.correct {
+  border-color: #7fcfa9;
+  background: #f0fbf5;
+}
+.incorrect {
+  border-color: #ed9aab;
+  background: #fff4f6;
+}
+label > i {
+  margin-left: auto;
+  color: #07864d;
+  font-size: 20px;
+}
+fieldset:disabled label {
+  cursor: default;
+}
+:host-context(.dark) label {
+  border-color: #2b3d58;
+  background: #132139;
+  color: #dce8f8;
+}

@@ -2,13 +2,14 @@
   "name": "student",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/module/student/src",
-  "prefix": "lib",
+  "prefix": "school-hub",
   "projectType": "library",
   "tags": [],
   "targets": {
     "test": {
       "executor": "@nx/angular:unit-test",
       "options": {
+        "buildTarget": "shell:build:development",
         "watch": false
       }
     },

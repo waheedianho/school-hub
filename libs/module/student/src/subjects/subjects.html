@@ -1,0 +1,334 @@
+<div class="subjects-page">
+  <header class="page-heading">
+    <h1>My Subjects</h1>
+    <p>
+      Explore your subjects, pick up where you left off, and see how far you’ve
+      come.
+    </p>
+  </header>
+  @if (missingSubject()) {
+  <div class="missing-subject" role="status">
+    <span
+      >That subject could not be found. Explore your enrolled subjects
+      below.</span
+    ><button type="button" (click)="closeSubject()">Dismiss</button>
+  </div>
+  }
+
+  <section class="subject-stats" aria-label="Learning summary">
+    <school-hub-summary-stat
+      title="Enrolled Subjects"
+      [value]="termSubjects().length"
+      [description]="termLabel()"
+      icon="ri-book-open-line"
+    />
+    <school-hub-summary-stat
+      title="Lessons Completed"
+      [value]="completedLessons() + ' / ' + termLessons().length"
+      description="Every lesson is a step forward"
+      icon="ri-checkbox-circle-line"
+      tone="green"
+    />
+    <school-hub-summary-stat
+      title="Overall Progress"
+      [value]="overallProgress() + '%'"
+      description="Includes lessons in progress"
+      icon="ri-bar-chart-grouped-line"
+      tone="purple"
+    />
+    <school-hub-summary-stat
+      title="Subjects Completed"
+      [value]="completedSubjects()"
+      [description]="termSubjects().length - completedSubjects() + ' still to complete'"
+      icon="ri-trophy-line"
+      tone="orange"
+    />
+  </section>
+
+  <div class="subjects-layout">
+    <section class="subject-catalog" aria-labelledby="catalog-heading">
+      <div class="catalog-heading">
+        <div>
+          <h2 id="catalog-heading">Your Subjects</h2>
+          <p>Find your next lesson and keep your momentum.</p>
+        </div>
+        <a
+          routerLink="/student/progress"
+          [queryParams]="{ term: term() || null }"
+          >View Progress<i class="ri-arrow-right-line" aria-hidden="true"></i
+        ></a>
+      </div>
+      <div class="subject-filters" role="group" aria-label="Subject filters">
+        <label class="search-field"
+          ><i class="ri-search-line" aria-hidden="true"></i
+          ><span class="visually-hidden">Search subjects</span
+          ><input
+            type="search"
+            placeholder="Search subjects"
+            [value]="search()"
+            (input)="filterChanged('q', $event)"
+        /></label>
+        <label
+          ><span>Term</span
+          ><select
+            aria-label="Term"
+            [value]="term()"
+            (change)="filterChanged('term', $event)"
+          >
+            <option value="">All Terms</option>
+            @for (item of terms; track item.id) {
+            <option [value]="item.id">{{ item.label }}</option>
+            }
+          </select></label
+        >
+        <label
+          ><span>Sort</span
+          ><select
+            aria-label="Sort subjects"
+            [value]="sort()"
+            (change)="filterChanged('sort', $event)"
+          >
+            @for (option of sortOptions; track option.id) {
+            <option [value]="option.id">{{ option.label }}</option>
+            }
+          </select></label
+        >
+      </div>
+      <school-hub-filter-tabs
+        [tabs]="tabs()"
+        [active]="status()"
+        panelId="subject-results"
+        label="Subject status"
+        (changed)="setStatus($event)"
+      />
+      <div class="results-caption">
+        <span aria-live="polite"
+          >Showing {{ visibleSubjects().length }} {{ visibleSubjects().length
+          === 1 ? 'subject' : 'subjects' }}
+          <span class="term-caption">· {{ termLabel() }}</span></span
+        >@if (hasFilters()) {
+        <button type="button" (click)="clearFilters()">Clear filters</button> }
+      </div>
+      <div
+        class="subject-results"
+        id="subject-results"
+        role="tabpanel"
+        [attr.aria-labelledby]="'subject-results-' + status()"
+      >
+        @for (overview of visibleSubjects(); track overview.subject.id) {
+        <school-hub-subject-card
+          [subject]="overview.card"
+          [summary]="cardSummary(overview)"
+          route="/student/subjects"
+          [queryParams]="subjectQuery(overview)"
+        />
+        } @empty {
+        <div class="empty-subjects">
+          <i class="ri-search-line" aria-hidden="true"></i>
+          <h3>No subjects found</h3>
+          <p>Try another search, term, or learning status.</p>
+          <button type="button" class="outline-button" (click)="clearFilters()">
+            Show all subjects
+          </button>
+        </div>
+        }
+      </div>
+      <p class="progress-explainer">
+        <i class="ri-information-line" aria-hidden="true"></i>Subject progress
+        includes completed lessons and the progress you’ve made in current
+        lessons.
+      </p>
+    </section>
+
+    <aside class="subjects-aside" aria-label="Subject support">
+      @if (recommendedSubject(); as recommended) {
+      <school-hub-dashboard-card
+        [title]="recommended.status === 'completed' ? 'Keep Learning' : 'Continue Learning'"
+        icon="ri-play-circle-line"
+      >
+        <div class="next-subject">
+          <school-hub-subject-icon [subject]="recommended.subject.icon" />
+          <div>
+            <span>{{ recommended.subject.name }}</span>
+            <h3>
+              {{ recommended.nextLesson?.title ?? 'You’re all caught up!' }}
+            </h3>
+          </div>
+        </div>
+        <p class="next-description">
+          {{ recommended.nextLesson?.objective ?? 'Revisit your completed
+          lessons and keep your skills fresh.' }}
+        </p>
+        <div class="next-progress">
+          <span>Subject progress</span
+          ><strong>{{ recommended.progress }}%</strong>
+        </div>
+        <school-hub-progress-bar
+          [value]="recommended.progress"
+          [label]="recommended.subject.name + ' recommended progress'"
+          [tone]="recommended.subject.tone"
+        />
+        <a
+          class="primary-button"
+          routerLink="/student/lessons"
+          [queryParams]="primaryQuery(recommended)"
+          ><i class="ri-play-circle-fill" aria-hidden="true"></i>{{
+          primaryLabel(recommended) }}</a
+        >
+      </school-hub-dashboard-card>
+      }
+      <school-hub-dashboard-card
+        title="Your Learning Plan"
+        icon="ri-route-line"
+        tone="green"
+        ><ol class="learning-plan">
+          <li>
+            <span>1</span>
+            <div>
+              <strong>Learn a little, often</strong>
+              <p>Continue a lesson and build on what you know.</p>
+            </div>
+          </li>
+          <li>
+            <span>2</span>
+            <div>
+              <strong>Put it into practice</strong>
+              <p>Use quizzes and worksheets to check your understanding.</p>
+            </div>
+          </li>
+          <li>
+            <span>3</span>
+            <div>
+              <strong>Reflect and improve</strong>
+              <p>Review your tutor’s feedback and try again.</p>
+            </div>
+          </li>
+        </ol></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Need a Hand?"
+        icon="ri-question-answer-line"
+        tone="teal"
+        ><p class="help-copy">
+          Your next breakthrough can start with a question.
+        </p>
+        <a class="help-link" routerLink="/student/ask-tutor"
+          ><i class="ri-chat-1-line" aria-hidden="true"></i>Ask a tutor<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></a
+        ><a class="help-link" routerLink="/student/resources"
+          ><i class="ri-folder-open-line" aria-hidden="true"></i>Explore
+          resources<i class="ri-arrow-right-s-line" aria-hidden="true"></i></a
+      ></school-hub-dashboard-card>
+    </aside>
+  </div>
+
+  <school-hub-dialog-panel
+    [open]="!!selectedSubject()"
+    [title]="selectedSubject()?.subject?.name ?? 'Subject overview'"
+    (dismissed)="closeSubject()"
+  >
+    @if (selectedSubject(); as selected) {
+    <div class="subject-overview">
+      <school-hub-subject-icon [subject]="selected.subject.icon" />
+      <div>
+        <school-hub-status-badge
+          [label]="statusLabels[selected.status].label"
+          [tone]="statusLabels[selected.status].tone"
+        />
+        <p>{{ selected.subject.description }}</p>
+        <span>{{ termLabel() }}</span>
+      </div>
+      <school-hub-progress-ring
+        [value]="selected.progress"
+        [label]="selected.subject.name + ' overview progress'"
+        [tone]="selected.subject.tone"
+      />
+    </div>
+    <div class="overview-stats">
+      <div>
+        <strong>{{ selected.lessons.length }}</strong><span>Lessons</span>
+      </div>
+      <div><strong>{{ selected.completed }}</strong><span>Completed</span></div>
+      <div>
+        <strong>{{ selected.duration }} min</strong
+        ><span>Learning content</span>
+      </div>
+    </div>
+    @if (selected.lessons.length) {
+    <a
+      class="primary-button subject-primary-action"
+      routerLink="/student/lessons"
+      [queryParams]="primaryQuery(selected)"
+      ><i class="ri-play-circle-line" aria-hidden="true"></i>{{
+      primaryLabel(selected) }}</a
+    >
+    <div class="curriculum-heading">
+      <h3>Your Lessons</h3>
+      <a routerLink="/student/lessons" [queryParams]="lessonQuery(selected)"
+        >View all lessons<i class="ri-arrow-right-s-line" aria-hidden="true"></i
+      ></a>
+    </div>
+    <ol class="subject-lesson-list">
+      @for (lesson of selected.lessons; track lesson.id; let index = $index) {
+      <li>
+        <a
+          routerLink="/student/lessons"
+          [queryParams]="lessonQuery(selected, lesson)"
+          [attr.aria-label]="'Open lesson ' + lesson.title"
+          ><span class="lesson-number">{{ index + 1 }}</span>
+          <div>
+            <strong>{{ lesson.title }}</strong
+            ><small>Week {{ lesson.week }} · {{ lesson.duration }} min</small>
+          </div>
+          <school-hub-status-badge
+            [label]="!lesson.available ? 'Locked · Preview' : lessonStatus[lesson.status].label"
+            [tone]="lessonStatus[lesson.status].tone" /><i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i
+        ></a>
+      </li>
+      }
+    </ol>
+    } @else {
+    <div class="no-term-lessons">
+      <p>
+        There are no {{ selected.subject.name }} lessons in {{ termLabel() }}.
+      </p>
+      <a
+        routerLink="/student/subjects"
+        [queryParams]="{ subjectId: selected.subject.id }"
+        >View all terms for this subject</a
+      >
+    </div>
+    }
+    <h3 class="subject-links-heading">Explore this subject</h3>
+    <div class="subject-links">
+      <a
+        routerLink="/student/resources"
+        [queryParams]="{ subjectId: selected.subject.id, term: term() || null }"
+        ><i class="ri-folder-open-line" aria-hidden="true"></i>Resources</a
+      ><a
+        routerLink="/student/assessments"
+        [queryParams]="{ subjectId: selected.subject.id, term: term() || null }"
+        ><i class="ri-question-line" aria-hidden="true"></i>Quizzes &
+        Assessments</a
+      ><a
+        routerLink="/student/worksheets"
+        [queryParams]="{ subjectId: selected.subject.id, term: term() || null }"
+        ><i class="ri-file-text-line" aria-hidden="true"></i>Worksheets</a
+      ><a
+        routerLink="/student/progress"
+        [queryParams]="{ subjectId: selected.subject.id, term: term() || null }"
+        ><i class="ri-bar-chart-line" aria-hidden="true"></i>Progress</a
+      ><a
+        routerLink="/student/ask-tutor"
+        [queryParams]="{ contextType: 'subject', contextId: selected.subject.id, subjectId: selected.subject.id }"
+        ><i class="ri-chat-1-line" aria-hidden="true"></i>Ask a tutor</a
+      >
+    </div>
+    }
+  </school-hub-dialog-panel>
+</div>

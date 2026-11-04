@@ -1,0 +1,18 @@
+<ul>
+  @for (task of tasks(); track task.id) {
+  <li>
+    <a [routerLink]="task.route" [queryParams]="task.queryParams">
+      <school-hub-icon-badge
+        [icon]="task.icon"
+        [tone]="task.tone"
+        [soft]="true"
+      />
+      <span class="task-title">{{ task.title }}</span>
+      <span class="due-label">{{ task.dueLabel }}</span>
+      <i class="ri-arrow-right-s-line task-arrow" aria-hidden="true"></i>
+    </a>
+  </li>
+  } @empty {
+  <li class="empty-state">You’re all caught up. No tasks are due.</li>
+  }
+</ul>

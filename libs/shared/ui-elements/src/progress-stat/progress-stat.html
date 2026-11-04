@@ -1,0 +1,18 @@
+<a [routerLink]="route()" [queryParams]="queryParams()">
+  <school-hub-icon-badge
+    [icon]="icon()"
+    [tone]="tone()"
+    [soft]="true"
+    [large]="true"
+  />
+  <div class="metric">
+    <span class="metric-title">{{ title() }}</span>
+    <strong>{{ value() }}</strong>
+    <school-hub-progress-bar
+      [value]="percentage()"
+      [label]="title()"
+      [tone]="tone()"
+    />
+    <span class="metric-detail">{{ detail() }}</span>
+  </div>
+</a>

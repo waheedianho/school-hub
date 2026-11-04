@@ -1,0 +1,257 @@
+<div class="learner-dashboard">
+  <header class="dashboard-welcome">
+    <h1>Learner Dashboard</h1>
+    <p>
+      Welcome back, {{ dashboard.learner.firstName }}
+      <span class="class-badge">{{ dashboard.learner.className }}</span>
+    </p>
+  </header>
+
+  <div class="dashboard-layout">
+    <div class="dashboard-primary">
+      <div class="primary-top">
+        <school-hub-dashboard-card
+          title="Continue Learning"
+          icon="ri-book-open-line"
+        >
+          <div class="lesson-panel">
+            <div class="lesson-illustration">
+              <school-hub-subject-icon subject="mathematics" />
+            </div>
+            <dl>
+              <dt>Subject</dt>
+              <dd>{{ dashboard.lesson.subject }}</dd>
+              <dt>Current Topic</dt>
+              <dd>{{ dashboard.lesson.topic }}</dd>
+            </dl>
+            <div class="lesson-progress">
+              <school-hub-progress-bar
+                [value]="dashboard.lesson.progress"
+                label="Current lesson completion"
+                tone="teal"
+              />
+              <strong>{{ dashboard.lesson.progress }}%</strong>
+            </div>
+            <span class="completion-caption">Lesson Completion</span>
+            <a
+              class="dashboard-button"
+              routerLink="/student/lessons"
+              [queryParams]="{ lessonId: dashboard.lesson.id }"
+              ><i class="ri-play-circle-fill" aria-hidden="true"></i>Continue
+              Lesson</a
+            >
+          </div>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Today’s Lesson"
+          icon="ri-calendar-check-line"
+          tone="green"
+        >
+          <a
+            class="today-panel"
+            routerLink="/student/lessons"
+            [queryParams]="{ lessonId: dashboard.lesson.id }"
+          >
+            <span class="week-label">Week {{ dashboard.lesson.week }}</span>
+            <h3>{{ dashboard.lesson.topic }}</h3>
+            <span class="objective-label">Objective:</span>
+            <p>{{ dashboard.lesson.objective }}</p>
+            <i class="ri-book-open-line panel-watermark" aria-hidden="true"></i>
+          </a>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Due Tasks"
+          icon="ri-clipboard-line"
+          tone="orange"
+        >
+          <school-hub-task-list [tasks]="tasks" />
+          <a
+            class="text-link tasks-link"
+            routerLink="/student/lessons"
+            [queryParams]="{ tab: 'tasks' }"
+            >View all tasks<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i
+          ></a>
+        </school-hub-dashboard-card>
+      </div>
+
+      <div class="primary-middle">
+        <school-hub-dashboard-card
+          title="Weak Areas to Revise"
+          icon="ri-focus-3-line"
+          tone="red"
+        >
+          <div class="weak-areas">
+            @for (area of dashboard.weakAreas; track area.id) {
+            <a
+              routerLink="/student/resources"
+              [queryParams]="{ topicId: area.id }"
+              >{{ area.label }}</a
+            >
+            }
+            <i class="ri-focus-3-line panel-watermark" aria-hidden="true"></i>
+          </div>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Portfolio Task Status"
+          icon="ri-briefcase-3-line"
+          tone="orange"
+        >
+          <div class="portfolio-panel">
+            <dl>
+              <dt>Status</dt>
+              <dd>
+                <span class="status-badge"
+                  >{{ dashboard.portfolio.status }}</span
+                >
+              </dd>
+              <dt>Due Date</dt>
+              <dd>{{ dashboard.portfolio.dueDate }}</dd>
+            </dl>
+            <a
+              class="dashboard-button outline-button"
+              routerLink="/student/portfolio-tasks"
+              [queryParams]="{ taskId: dashboard.portfolio.id, tab: 'submission' }"
+              >Submit Work</a
+            >
+          </div>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Upcoming Live Class"
+          icon="ri-video-on-line"
+        >
+          <div class="live-class-panel">
+            <div>
+              <i class="ri-calendar-2-line" aria-hidden="true"></i
+              ><strong>{{ dashboard.liveClass.title }}</strong>
+            </div>
+            <div>
+              <i class="ri-time-line" aria-hidden="true"></i
+              ><span
+                >{{ dashboard.liveClass.date }}<br />{{ dashboard.liveClass.time
+                }} <small>WAT</small></span
+              >
+            </div>
+            <a
+              class="dashboard-button"
+              routerLink="/student/live-classes"
+              [queryParams]="{ classId: dashboard.liveClass.id }"
+              ><i class="ri-video-on-fill" aria-hidden="true"></i>Join Class</a
+            >
+          </div>
+        </school-hub-dashboard-card>
+      </div>
+
+      <school-hub-dashboard-card
+        title="My Progress"
+        icon="ri-bar-chart-grouped-line"
+      >
+        <div class="progress-grid">
+          @for (metric of progressMetrics(); track metric.id) {
+          <school-hub-progress-stat
+            [title]="metric.title"
+            [value]="metric.value"
+            [percentage]="metric.percentage"
+            [detail]="metric.detail"
+            [icon]="metric.icon"
+            [tone]="metric.tone"
+            route="/student/progress"
+            [queryParams]="{ area: metric.id }"
+          />
+          }
+        </div>
+      </school-hub-dashboard-card>
+
+      <school-hub-dashboard-card
+        title="Recent Subjects"
+        icon="ri-book-open-fill"
+      >
+        <div class="subjects-grid">
+          @for (subject of subjects; track subject.id) {
+          <school-hub-subject-card
+            [subject]="subject"
+            route="/student/subjects"
+            [queryParams]="{ subjectId: subject.id }"
+          />
+          }
+        </div>
+      </school-hub-dashboard-card>
+    </div>
+
+    <aside class="dashboard-aside" aria-label="Learning insights">
+      <school-hub-dashboard-card
+        title="Quiz Results"
+        icon="ri-trophy-line"
+        tone="purple"
+      >
+        <a
+          class="quiz-result"
+          routerLink="/student/assessments"
+          [queryParams]="{ assessmentId: dashboard.quiz.id, tab: 'results' }"
+          aria-label="View latest quiz results"
+        >
+          <div>
+            <span>Last Score</span>
+            <p>
+              <strong>{{ quiz().score }}</strong> / {{ dashboard.quiz.total }}
+            </p>
+          </div>
+          <div>
+            <span>Mastery Level</span
+            ><strong class="mastery-label">{{ quiz().mastery }}</strong
+            ><school-hub-progress-bar
+              [value]="quiz().score / dashboard.quiz.total * 100"
+              label="Latest quiz score"
+              tone="orange"
+            />
+          </div>
+        </a>
+      </school-hub-dashboard-card>
+
+      <school-hub-dashboard-card
+        title="Feedback from Tutor"
+        icon="ri-chat-1-fill"
+        tone="teal"
+      >
+        <a
+          class="insight-panel feedback-panel"
+          routerLink="/student/feedback"
+          [queryParams]="{ feedbackId: dashboard.feedback.id }"
+        >
+          <blockquote>{{ dashboard.feedback.message }}</blockquote>
+          <span class="tutor-name">– {{ dashboard.feedback.tutor }}</span>
+        </a>
+      </school-hub-dashboard-card>
+
+      <school-hub-dashboard-card
+        title="Common Mistake Detected"
+        icon="ri-error-warning-fill"
+        tone="red"
+      >
+        <div class="insight-panel mistake-panel">
+          <p>{{ dashboard.commonMistake }}</p>
+        </div>
+      </school-hub-dashboard-card>
+
+      <school-hub-dashboard-card
+        title="Next Recommended Action"
+        icon="ri-lightbulb-line"
+        tone="green"
+      >
+        <a
+          class="insight-panel recommendation-panel"
+          routerLink="/student/resources"
+          [queryParams]="{ topicId: 'place-value' }"
+          ><i class="ri-arrow-right-circle-line" aria-hidden="true"></i>
+          <p>{{ dashboard.recommendation }}</p></a
+        >
+      </school-hub-dashboard-card>
+    </aside>
+  </div>
+</div>

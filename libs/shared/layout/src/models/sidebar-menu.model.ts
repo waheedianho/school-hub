@@ -10,6 +10,8 @@ export interface SidebarMenuItem {
   icon?: string;
   /** Router link (leaf items) */
   route?: string;
+  /** Match only this path by default; false keeps detail routes active too. */
+  exact?: boolean;
   /** Children items (accordion parent) */
   children?: SidebarMenuItem[];
   /** Optional badge (e.g. "3", "New", "Hot") */

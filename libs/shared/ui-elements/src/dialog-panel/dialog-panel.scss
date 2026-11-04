@@ -1,0 +1,62 @@
+dialog {
+  width: min(640px, calc(100vw - 32px));
+  max-height: calc(100dvh - 48px);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid #dae4f5;
+  border-radius: 18px;
+  background: white;
+  color: #182031;
+  box-shadow: 0 24px 90px #10284c35;
+}
+dialog::backdrop {
+  background: #10234166;
+  backdrop-filter: blur(3px);
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e6edf8;
+}
+h2 {
+  margin: 0;
+  color: inherit;
+  font-size: 19px;
+  font-weight: 650;
+}
+button {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dfe7f3;
+  border-radius: 8px;
+  background: #f7faff;
+  color: #435573;
+  font-size: 21px;
+}
+button:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 3px;
+}
+.dialog-body {
+  padding: 24px;
+}
+:host-context(.dark) dialog {
+  border-color: #263349;
+  background: #101c30;
+  color: #e4edf9;
+}
+@media (max-width: 540px) {
+  header {
+    padding: 16px;
+  }
+  .dialog-body {
+    padding: 16px;
+  }
+}

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarSection } from '../models/sidebar-menu.model';
@@ -10,6 +10,8 @@ import { SidebarSection } from '../models/sidebar-menu.model';
   templateUrl: './sidebar.html',
 })
 export class SidebarComponent {
+  @Output() closeSidebar = new EventEmitter<void>();
+  @Input() encouragement = false;
   /** Menu sections driven by the portal that uses this component */
   @Input() sections: SidebarSection[] = [];
 

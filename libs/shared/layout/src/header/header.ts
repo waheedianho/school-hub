@@ -3,11 +3,13 @@ import {
   Component,
   EventEmitter,
   inject,
+  Input,
   Output,
   PLATFORM_ID,
 } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { DEFAULT_HEADER_USER, HeaderUser } from '../models/header-user.model';
 
 @Component({
   selector: 'school-hub-header',
@@ -17,6 +19,9 @@ import { RouterLink } from '@angular/router';
 })
 export class HeaderComponent implements AfterViewInit {
   private readonly platformId = inject(PLATFORM_ID);
+
+  @Input() user: HeaderUser = DEFAULT_HEADER_USER;
+  @Input() compact = false;
 
   @Output() toggleSidebar = new EventEmitter<void>();
 

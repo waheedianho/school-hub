@@ -1,0 +1,29 @@
+@if (points().length) {
+<svg viewBox="0 0 408 181" role="img" [attr.aria-label]="label()">
+  <title>{{ label() }}</title>
+  @for (tick of ticks; track tick) {
+  <line
+    x1="42"
+    x2="388"
+    [attr.y1]="142 - tick * 1.16"
+    [attr.y2]="142 - tick * 1.16"
+  />
+  <text x="32" [attr.y]="146 - tick * 1.16" text-anchor="end">{{ tick }}%</text>
+  }
+  <polyline [attr.points]="line()" />
+  @for (point of plotted(); track $index) {
+  <circle [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
+  <text
+    class="point-value"
+    [attr.x]="point.x"
+    [attr.y]="point.y - 12"
+    text-anchor="middle"
+  >
+    {{ point.value }}%
+  </text>
+  <text [attr.x]="point.x" y="166" text-anchor="middle">{{ point.label }}</text>
+  }
+</svg>
+} @else {
+<p class="empty-chart">Complete an assessment to see your performance.</p>
+}

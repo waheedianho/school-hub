@@ -26,6 +26,8 @@
       </span>
     </a>
     <button
+      aria-label="Close navigation"
+      (click)="closeSidebar.emit()"
       type="button"
       class="burger-menu inline-block absolute z-[3] top-[24px] ltr:right-[25px] rtl:left-[25px] transition-all hover:text-primary-500"
     >
@@ -35,7 +37,7 @@
 
   <!-- Menu -->
   <div class="pt-[89px] px-[25px] pb-[20px] overflow-y-auto h-full">
-    <div class="accordion">
+    <nav class="accordion" aria-label="Portal navigation">
       @for (section of sections; track section.heading) {
       <span
         class="block relative font-medium uppercase mb-[10px] text-xs [&:not(:first-child)]:mt-[22px]"
@@ -59,8 +61,15 @@
         @if (!item.children || item.children.length === 0) {
         <a
           [routerLink]="item.route"
+          (click)="closeSidebar.emit()"
           routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
+          [routerLinkActiveOptions]="{
+            paths: item.exact === false ? 'subset' : 'exact',
+            queryParams: 'ignored',
+            matrixParams: 'ignored',
+            fragment: 'ignored'
+          }"
+          ariaCurrentWhenActive="page"
           class="accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative text-left"
           [ngClass]="{
                   'hover:bg-gray-50 dark:hover:bg-[#15203c]': theme === 'light',
@@ -68,6 +77,7 @@
                 }"
         >
           <i
+            aria-hidden="true"
             class="material-symbols-outlined transition-all ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px"
             [ngClass]="{
                     'text-gray-500 dark:text-gray-400': theme === 'light',
@@ -101,6 +111,7 @@
           (click)="toggleSection(i)"
         >
           <i
+            aria-hidden="true"
             class="material-symbols-outlined transition-all ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px"
             [ngClass]="{
                     'text-gray-500 dark:text-gray-400': theme === 'light',
@@ -129,8 +140,15 @@
               <li class="sidemenu-item mb-[4px] last:mb-0">
                 <a
                   [routerLink]="child.route"
+                  (click)="closeSidebar.emit()"
                   routerLinkActive="active"
-                  [routerLinkActiveOptions]="{ exact: true }"
+                  [routerLinkActiveOptions]="{
+                    paths: child.exact === false ? 'subset' : 'exact',
+                    queryParams: 'ignored',
+                    matrixParams: 'ignored',
+                    fragment: 'ignored'
+                  }"
+                  ariaCurrentWhenActive="page"
                   class="sidemenu-link rounded-md flex items-center relative transition-all font-medium py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 w-full text-left"
                   [ngClass]="{
                             'text-gray-500 dark:text-gray-400 hover:bg-primary-50 dark:hover:bg-[#15203c]': theme === 'light',
@@ -154,6 +172,15 @@
         }
       </div>
       } }
+    </nav>
+    @if (encouragement) {
+    <div class="sidebar-encouragement">
+      <i class="ri-shield-star-line" aria-hidden="true"></i>
+      <div>
+        <strong>Keep learning!</strong>
+        <p>You’re doing great. <span aria-hidden="true">🎉</span></p>
+      </div>
     </div>
+    }
   </div>
 </div>

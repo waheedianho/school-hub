@@ -1,0 +1,24 @@
+<div class="navigator-legend">
+  <span><i class="answered-dot"></i>Answered</span
+  ><span><i class="current-dot"></i>Current</span
+  ><span><i class="unanswered-dot"></i>Not answered</span
+  ><span><i class="marked-dot"></i>Marked for review</span>
+</div>
+<nav aria-label="Question navigation">
+  @for (index of questions(); track index) {
+  <button
+    type="button"
+    [attr.aria-label]="questionLabel(index)"
+    [attr.aria-current]="current() === index ? 'step' : null"
+    [class.answered]="answered().includes(index)"
+    [class.marked]="marked().includes(index)"
+    [disabled]="disabled()"
+    (click)="selected.emit(index)"
+  >
+    <span>{{ index + 1 }}</span>@if (marked().includes(index)) {
+    <i class="ri-bookmark-fill" aria-hidden="true"></i> } @else if
+    (answered().includes(index)) {
+    <i class="ri-checkbox-circle-fill" aria-hidden="true"></i> }
+  </button>
+  }
+</nav>

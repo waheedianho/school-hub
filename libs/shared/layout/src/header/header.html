@@ -9,6 +9,7 @@
         class="relative leading-none top-px ltr:mr-[13px] ltr:md:mr-[18px] ltr:lg:mr-[23px] rtl:ml-[13px] rtl:md:ml-[18px] rtl:lg:ml-[23px]"
       >
         <button
+          aria-label="Toggle navigation"
           type="button"
           class="hide-sidebar-toggle transition-all inline-block hover:text-primary-500"
           (click)="onToggleSidebar()"
@@ -18,6 +19,7 @@
       </div>
 
       <!-- Search -->
+      @if (!compact) {
       <form class="relative w-[250px] lg:w-[260px]">
         <input
           type="text"
@@ -31,6 +33,7 @@
           <i class="material-symbols-outlined !text-[20px]">search</i>
         </button>
       </form>
+      }
     </div>
 
     <!-- Right side actions -->
@@ -38,6 +41,7 @@
       class="flex items-center justify-center md:justify-normal mt-[13px] md:mt-0"
     >
       <!-- Fullscreen -->
+      @if (!compact) {
       <li
         class="relative mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
       >
@@ -51,12 +55,15 @@
           </i>
         </button>
       </li>
+      }
 
       <!-- Notifications -->
       <li
         class="relative notifications-menu mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
       >
         <button
+          aria-label="Notifications"
+          [attr.aria-expanded]="buttonStates['notificationsMenuBtn']"
           type="button"
           class="leading-none inline-block transition-all relative top-[2px] hover:text-primary-500"
           (click)="toggleClass('notificationsMenuBtn')"
@@ -96,17 +103,21 @@
         class="relative profile-menu mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
       >
         <button
+          aria-label="Open profile menu"
+          [attr.aria-expanded]="buttonStates['profileMenuBtn']"
           type="button"
           class="flex items-center -mx-[5px] relative ltr:pr-[14px] rtl:pl-[14px] text-black dark:text-white"
           (click)="toggleClass('profileMenuBtn')"
           [class.active]="buttonStates['profileMenuBtn']"
         >
           <img
-            src="images/admin.png"
+            [src]="user.avatarUrl"
             class="w-[35px] h-[35px] md:w-[42px] md:h-[42px] rounded-full ltr:md:mr-[2px] ltr:lg:mr-[8px] rtl:md:ml-[2px] rtl:lg:ml-[8px] border-[2px] border-primary-200 inline-block"
-            alt="admin-image"
+            alt=""
           />
-          <span class="block font-semibold text-[0] lg:text-base">User</span>
+          <span class="block font-semibold text-[0] lg:text-base"
+            >{{ user.name }}</span
+          >
           <i
             class="ri-arrow-down-s-line text-[15px] absolute ltr:-right-[3px] rtl:-left-[3px] top-1/2 -translate-y-1/2 mt-px"
           ></i>
@@ -118,21 +129,22 @@
             class="flex items-center border-b border-gray-100 dark:border-[#172036] pb-[12px] mx-[20px] mb-[10px]"
           >
             <img
-              src="images/admin.png"
+              [src]="user.avatarUrl"
               class="rounded-full w-[31px] h-[31px] ltr:mr-[9px] rtl:ml-[9px] border-2 border-primary-200 inline-block"
-              alt="admin-image"
+              alt=""
             />
             <div>
               <span class="block text-black dark:text-white font-medium"
-                >User Name</span
+                >{{ user.name }}</span
               >
-              <span class="block text-xs">Role</span>
+              <span class="block text-xs">{{ user.role }}</span>
             </div>
           </div>
           <ul>
             <li>
               <a
-                routerLink="/profile"
+                [routerLink]="user.profileRoute"
+                (click)="buttonStates['profileMenuBtn'] = false"
                 class="block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500"
               >
                 <i
@@ -144,7 +156,8 @@
             </li>
             <li>
               <a
-                routerLink="/settings"
+                [routerLink]="user.settingsRoute"
+                (click)="buttonStates['profileMenuBtn'] = false"
                 class="block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500"
               >
                 <i

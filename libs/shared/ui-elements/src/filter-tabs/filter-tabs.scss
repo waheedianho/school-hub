@@ -1,0 +1,66 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+.filter-tabs {
+  display: flex;
+  max-width: 100%;
+  width: fit-content;
+  overflow-x: auto;
+  border: 1px solid #e2e8f3;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+}
+button {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 18px;
+  border: 0;
+  border-right: 1px solid #edf0f6;
+  background: transparent;
+  color: #4f5f7a;
+  font: inherit;
+  font-size: 11px;
+  white-space: nowrap;
+}
+button:last-child {
+  border: 0;
+}
+button[aria-selected='true'] {
+  background: #f0f6ff;
+  box-shadow: inset 0 0 0 1px #b5ceff;
+  color: #0866ff;
+  font-weight: 600;
+}
+button:hover {
+  color: #0866ff;
+}
+button:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: -3px;
+}
+i {
+  font-size: 17px;
+}
+.tab-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  border-radius: 5px;
+  background: #eaf0fa;
+  color: #5c6f90;
+  font-size: 9px;
+}
+button[aria-selected='true'] .tab-count {
+  background: #dceaff;
+  color: #0866ff;
+}
+:host-context(.dark) .filter-tabs {
+  background: #101c30;
+  border-color: #263349;
+}

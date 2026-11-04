@@ -1,0 +1,60 @@
+:host {
+  display: block;
+}
+ol {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+  list-style: none;
+  margin: 0;
+  padding: 12px 0;
+}
+li {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+li + li:before {
+  content: '→';
+  position: absolute;
+  top: 7px;
+  left: -6px;
+  color: #8595b0;
+  font-size: 14px;
+}
+button {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #344561;
+  font-size: 8px;
+  line-height: 1.6;
+}
+button > span {
+  display: grid;
+  place-items: center;
+  width: 33px;
+  height: 33px;
+  border: 1px solid #cbdfff;
+  border-radius: 50%;
+  background: #f0f6ff;
+  color: #0866ff;
+  font-size: 18px;
+}
+button:hover > span {
+  background: #dfeaff;
+}
+button:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+:host-context(.dark) button {
+  color: #dce7f7;
+}

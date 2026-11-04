@@ -1,0 +1,250 @@
+import { QuizQuestion } from './assessment.model';
+
+function question(
+  id: string,
+  prompt: string,
+  options: string[],
+  correctIndex: number,
+  explanation: string,
+): QuizQuestion {
+  return { id, prompt, options, correctIndex, explanation };
+}
+
+export const WHOLE_NUMBER_QUESTIONS: readonly QuizQuestion[] = [
+  question(
+    'place-value',
+    'What is the place value of the digit 6 in the number 682,743?',
+    ['Six hundred thousand', 'Sixty thousand', 'Six thousand', 'Six hundred'],
+    0,
+    'The digit 6 is in the hundred-thousands column, so its value is 600,000.',
+  ),
+  question(
+    'expanded-form',
+    'Which is the expanded form of 45,032?',
+    [
+      '40,000 + 500 + 30 + 2',
+      '40,000 + 5,000 + 30 + 2',
+      '4,000 + 5,000 + 32',
+      '45,000 + 300 + 2',
+    ],
+    1,
+    '45,032 has 4 ten-thousands, 5 thousands, 0 hundreds, 3 tens, and 2 ones.',
+  ),
+  question(
+    'largest-number',
+    'Which number is the largest?',
+    ['4,521', '4,512', '4,251', '4,215'],
+    0,
+    'Compare place values from the left. 4,521 is larger than the other choices.',
+  ),
+  question(
+    'ordering',
+    'Which list is arranged from smallest to largest?',
+    [
+      '1,320, 1,302, 1,230',
+      '1,302, 1,230, 1,320',
+      '1,230, 1,302, 1,320',
+      '1,230, 1,320, 1,302',
+    ],
+    2,
+    '1,230 < 1,302 < 1,320.',
+  ),
+  question(
+    'rounding',
+    'Round 4,685 to the nearest hundred.',
+    ['4,600', '4,700', '4,680', '5,000'],
+    1,
+    'The tens digit is 8, so round the hundreds digit up: 4,700.',
+  ),
+  question(
+    'digit-value',
+    'What is the value of 8 in 58,041?',
+    ['80', '800', '80,000', '8,000'],
+    3,
+    'The digit 8 occupies the thousands column.',
+  ),
+  question(
+    'addition',
+    'What is 345 + 278?',
+    ['613', '633', '623', '523'],
+    2,
+    '345 + 278 = 623. Regroup the ones and tens where needed.',
+  ),
+  question(
+    'subtraction',
+    'What is 5,000 − 1,287?',
+    ['3,713', '3,813', '4,713', '3,723'],
+    0,
+    'Regroup across the zeros: 5,000 − 1,287 = 3,713.',
+  ),
+  question(
+    'sequence',
+    'What comes next: 120, 130, 140, …?',
+    ['145', '160', '150', '141'],
+    2,
+    'The pattern increases by 10 each time.',
+  ),
+  question(
+    'comparison',
+    'Which symbol makes this statement correct: 9,065 __ 9,056?',
+    ['<', '>', '=', '+'],
+    1,
+    'The tens digit in 9,065 is larger, so 9,065 > 9,056.',
+  ),
+];
+
+export const PARTS_OF_SPEECH_QUESTIONS: readonly QuizQuestion[] = [
+  question(
+    'noun',
+    'Which word is a noun?',
+    ['Quickly', 'School', 'Beautiful', 'Run'],
+    1,
+    'A noun names a person, place, thing, or idea. School is a place.',
+  ),
+  question(
+    'verb',
+    'Which word is the verb in “Sarah reads a book”?',
+    ['Sarah', 'A', 'Reads', 'Book'],
+    2,
+    'Reads describes the action.',
+  ),
+  question(
+    'adjective',
+    'Which word describes the noun in “the blue bag”?',
+    ['The', 'Blue', 'Bag', 'None'],
+    1,
+    'Blue is an adjective describing the bag.',
+  ),
+  question(
+    'pronoun',
+    'Which word can replace “Adeola” in a sentence?',
+    ['She', 'School', 'Quick', 'Read'],
+    0,
+    'She is a pronoun that can replace a person’s name.',
+  ),
+  question(
+    'adverb',
+    'Which word is an adverb?',
+    ['Happy', 'Happiness', 'Happily', 'Friend'],
+    2,
+    'Happily describes how an action is done.',
+  ),
+  question(
+    'preposition',
+    'Which word shows position in “the book is under the desk”?',
+    ['Book', 'Is', 'Desk', 'Under'],
+    3,
+    'Under is a preposition showing position.',
+  ),
+  question(
+    'conjunction',
+    'Which word joins ideas?',
+    ['And', 'Chair', 'Blue', 'Slowly'],
+    0,
+    'And is a conjunction.',
+  ),
+  question(
+    'interjection',
+    'Which is an interjection?',
+    ['Under', 'Wow!', 'Because', 'They'],
+    1,
+    'Wow expresses a sudden feeling.',
+  ),
+  question(
+    'plural-noun',
+    'Which word is a plural noun?',
+    ['Child', 'Runs', 'Children', 'Quickly'],
+    2,
+    'Children is the plural of child.',
+  ),
+  question(
+    'article',
+    'Which word is an article in “a bright star”?',
+    ['Bright', 'Star', 'A', 'None'],
+    2,
+    'A is an indefinite article.',
+  ),
+];
+
+export const LIVING_THINGS_QUESTIONS: readonly QuizQuestion[] = [
+  question(
+    'living',
+    'Which of these is a living thing?',
+    ['Stone', 'Chair', 'Goat', 'Bottle'],
+    2,
+    'A goat grows, feeds, respires, and reproduces.',
+  ),
+  question(
+    'growth',
+    'What happens when a living thing grows?',
+    [
+      'It increases in size',
+      'It becomes a stone',
+      'It stops needing food',
+      'It becomes non-living',
+    ],
+    0,
+    'Growth is an increase in size and development.',
+  ),
+  question(
+    'plant-food',
+    'What do green plants use to make food?',
+    ['Plastic', 'Sunlight', 'Glass', 'Sand only'],
+    1,
+    'Green plants use sunlight during photosynthesis.',
+  ),
+  question(
+    'respiration',
+    'Which process releases energy from food?',
+    ['Painting', 'Rusting', 'Respiration', 'Melting'],
+    2,
+    'Respiration releases energy needed by cells.',
+  ),
+  question(
+    'reproduction',
+    'Why do living things reproduce?',
+    [
+      'To produce young',
+      'To become smaller',
+      'To stop growing',
+      'To change into rocks',
+    ],
+    0,
+    'Reproduction produces new organisms.',
+  ),
+  question(
+    'response',
+    'A plant bending towards light shows…',
+    ['Rusting', 'Response to a stimulus', 'Freezing', 'Evaporation'],
+    1,
+    'Living things respond to changes in their surroundings.',
+  ),
+  question(
+    'water',
+    'Which do living things need to survive?',
+    ['Plastic', 'Paint', 'Water', 'Glass'],
+    2,
+    'Water is needed for life processes.',
+  ),
+  question(
+    'excretion',
+    'What is the removal of waste from the body called?',
+    ['Digestion', 'Growth', 'Reproduction', 'Excretion'],
+    3,
+    'Excretion removes waste produced by the body.',
+  ),
+  question(
+    'non-living',
+    'Which of these is non-living?',
+    ['Tree', 'Fish', 'Rock', 'Grass'],
+    2,
+    'A rock does not carry out life processes.',
+  ),
+  question(
+    'habitat',
+    'What is the natural home of a living thing called?',
+    ['Habitat', 'Notebook', 'Factory', 'Instrument'],
+    0,
+    'A habitat provides an organism with the conditions it needs.',
+  ),
+];

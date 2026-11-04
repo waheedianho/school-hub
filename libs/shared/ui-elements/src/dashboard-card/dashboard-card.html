@@ -1,0 +1,8 @@
+<section class="dashboard-card">
+  <header class="card-heading">
+    <school-hub-icon-badge [icon]="icon()" [tone]="tone()" />
+    <h2>{{ title() }}</h2>
+    <ng-content select="[card-action]" />
+  </header>
+  <div class="card-content"><ng-content /></div>
+</section>

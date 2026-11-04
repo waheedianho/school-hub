@@ -1,0 +1,105 @@
+<p class="scroll-hint">Swipe the lesson list to see activities and actions.</p>
+<div class="table-scroll" role="region" aria-label="Lesson list" tabindex="0">
+  <table aria-label="Your lessons">
+    <thead>
+      <tr>
+        <th scope="col">Lesson Title</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Week</th>
+        <th scope="col">Duration</th>
+        <th scope="col">Status</th>
+        <th scope="col">Quiz</th>
+        <th scope="col">Worksheet</th>
+        <th scope="col">Portfolio</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (lesson of lessons(); track lesson.id) {
+      <tr [class.selected-row]="selectedId() === lesson.id">
+        <th scope="row">
+          <button
+            class="lesson-title"
+            type="button"
+            (click)="opened.emit({ lesson, actions: false })"
+          >
+            <span
+              class="subject-symbol"
+              [class]="'subject-symbol ' + lesson.tone"
+              >@if (lesson.symbol) { {{ lesson.symbol }} } @else {
+              <i class="ri-flask-line" aria-hidden="true"></i> }</span
+            ><span>{{ lesson.title }}</span>
+          </button>
+        </th>
+        <td>{{ lesson.subject }}</td>
+        <td>Week {{ lesson.week }}</td>
+        <td>
+          <span class="duration"
+            ><i class="ri-time-line" aria-hidden="true"></i>{{ lesson.duration
+            }} min</span
+          >
+        </td>
+        <td>
+          <school-hub-status-badge
+            [label]="statusLabels[lesson.status].label"
+            [tone]="statusLabels[lesson.status].tone"
+          />
+        </td>
+        @for (kind of kinds; track kind) {
+        <td>
+          @switch (lesson.activities[kind]) { @case ('locked') {
+          <span class="locked"
+            ><i class="ri-lock-line" aria-hidden="true"></i>Locked</span
+          >
+          } @case ('not-applicable') {
+          <school-hub-status-badge label="N/A" tone="neutral" /> } @default {
+          <a
+            [routerLink]="routes[kind]"
+            [queryParams]="activityQuery(lesson, kind)"
+            [attr.aria-label]="'Open ' + kind + ' for ' + lesson.title"
+            ><school-hub-status-badge
+              [label]="lesson.activities[kind] === 'done' ? 'Done' : 'Pending'"
+              [tone]="lesson.activities[kind] === 'done' ? 'green' : 'orange'"
+              [icon]="lesson.activities[kind] === 'done' ? 'ri-checkbox-circle-line' : ''"
+          /></a>
+          } }
+        </td>
+        }
+        <td>
+          <div class="row-actions">
+            <button
+              type="button"
+              class="lesson-action"
+              [class.completed]="lesson.status === 'completed'"
+              [class.continue]="lesson.status === 'in-progress'"
+              [attr.aria-label]="actionLabel(lesson) + ' ' + lesson.title"
+              (click)="opened.emit({ lesson, actions: false })"
+            >
+              <i
+                [class]="lesson.status === 'completed' ? 'ri-book-open-line' : lesson.available ? 'ri-play-circle-fill' : 'ri-eye-line'"
+                aria-hidden="true"
+              ></i
+              >{{ actionLabel(lesson) }}</button
+            ><button
+              class="more-actions"
+              type="button"
+              [attr.aria-label]="'More actions for ' + lesson.title"
+              (click)="opened.emit({ lesson, actions: true })"
+            >
+              <i class="ri-more-2-fill" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="9" class="empty-state">
+          <i class="ri-search-line" aria-hidden="true"></i
+          ><strong>No lessons found</strong
+          ><span>Try a different search or clear your filters.</span>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

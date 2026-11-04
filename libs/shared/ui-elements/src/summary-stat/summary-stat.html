@@ -1,0 +1,13 @@
+<div class="summary-stat">
+  <school-hub-icon-badge
+    [icon]="icon()"
+    [tone]="tone()"
+    [soft]="true"
+    [large]="true"
+  />
+  <div>
+    <span class="stat-title">{{ title() }}</span
+    ><strong>{{ value() }}</strong>@if (description()) {
+    <span class="stat-description">{{ description() }}</span> }
+  </div>
+</div>

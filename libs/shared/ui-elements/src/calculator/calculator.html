@@ -1,0 +1,25 @@
+<form (submit)="calculate($event)">
+  <label for="practice-calculation">Calculation</label
+  ><input
+    id="practice-calculation"
+    type="text"
+    inputmode="text"
+    maxlength="100"
+    autocomplete="off"
+    [value]="expression()"
+    (input)="inputChanged($event)"
+    placeholder="e.g. 345 + 278"
+  /><output aria-live="polite">{{ result() ?? '—' }}</output>@if (error()) {
+  <p role="alert">{{ error() }}</p>
+  }
+  <div class="calculator-keys">
+    @for (key of keys; track key) {
+    <button type="button" (click)="append(key)">
+      {{ key === '*' ? '×' : key === '/' ? '÷' : key }}
+    </button>
+    }<button type="button" (click)="backspace()" aria-label="Backspace">
+      ⌫</button
+    ><button type="button" (click)="clear()">Clear</button
+    ><button class="equals" type="submit" aria-label="Calculate">=</button>
+  </div>
+</form>

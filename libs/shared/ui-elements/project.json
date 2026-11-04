@@ -2,7 +2,7 @@
   "name": "ui-elements",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/ui-elements/src",
-  "prefix": "lib",
+  "prefix": "school-hub",
   "projectType": "library",
   "tags": [],
   "targets": {

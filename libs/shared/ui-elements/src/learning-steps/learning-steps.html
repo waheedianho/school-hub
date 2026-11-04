@@ -1,0 +1,10 @@
+<ol aria-label="Learning journey">
+  @for (step of steps(); track step.id) {
+  <li>
+    <button type="button" (click)="selected.emit(step.id)">
+      <span><i [class]="step.icon" aria-hidden="true"></i></span>{{ step.label
+      }}
+    </button>
+  </li>
+  }
+</ol>

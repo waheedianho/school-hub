@@ -1,0 +1,13 @@
+<div
+  class="progress-ring-track"
+  [style.background]="background()"
+  role="progressbar"
+  [attr.aria-label]="label()"
+  aria-valuemin="0"
+  aria-valuemax="100"
+  [attr.aria-valuenow]="percentage()"
+>
+  <div class="progress-ring-value">
+    <strong>{{ percentage() }}%</strong><span>{{ caption() }}</span>
+  </div>
+</div>

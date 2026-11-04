@@ -1,0 +1,73 @@
+:host {
+  display: inline-flex;
+  width: 55px;
+  height: 60px;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.math-symbols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  width: 49px;
+  transform: rotate(-3deg);
+}
+.math-symbols span {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  border-radius: 4px;
+  color: white;
+  font: 600 26px/1 sans-serif;
+  box-shadow:
+    0 3px 0 #183e6a15,
+    inset 0 2px 3px #ffffff66;
+}
+.math-symbols span:nth-child(1) {
+  background: linear-gradient(135deg, #19c9b1, #00a895);
+}
+.math-symbols span:nth-child(2) {
+  background: linear-gradient(135deg, #b17cff, #8b4dec);
+}
+.math-symbols span:nth-child(3) {
+  background: linear-gradient(135deg, #539fff, #176cff);
+}
+.math-symbols span:nth-child(4) {
+  background: linear-gradient(135deg, #ffd644, #ffad00);
+}
+.english-book {
+  position: relative;
+  width: 44px;
+  height: 53px;
+  display: grid;
+  place-items: center;
+  border: 3px solid #17a363;
+  border-radius: 5px 7px 7px 5px;
+  background: linear-gradient(120deg, #7ceca7, #1cbb6c);
+  box-shadow:
+    3px 3px 0 #d0f0dc,
+    inset 4px 0 #ffffff55;
+  transform: rotate(-4deg);
+}
+.english-book span {
+  color: #fff;
+  font:
+    500 29px/1 Georgia,
+    serif;
+}
+.english-book i {
+  position: absolute;
+  bottom: 2px;
+  left: 5px;
+  right: 0;
+  height: 3px;
+  border-radius: 4px;
+  background: #f1fff7;
+}
+.science-icon {
+  color: #087fbe;
+  font-size: 52px;
+  line-height: 1;
+  filter: drop-shadow(2px 3px 0 #9fddf36b);
+}
