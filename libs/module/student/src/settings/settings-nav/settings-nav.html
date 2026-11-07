@@ -1,0 +1,23 @@
+<aside class="settings-menu-card" aria-label="Settings Menu">
+  <h2 class="menu-heading">Settings Menu</h2>
+  <nav class="settings-menu-nav" aria-label="Settings categories">
+    @for (sec of sections(); track sec.id) {
+    <button
+      type="button"
+      class="menu-item"
+      [class.active]="activeSection() === sec.id"
+      (click)="sectionSelected.emit(sec.id)"
+      [attr.aria-current]="activeSection() === sec.id ? 'page' : null"
+    >
+      <div class="menu-item-icon" aria-hidden="true">
+        <i [class]="sec.icon"></i>
+      </div>
+      <div class="menu-item-text">
+        <span class="menu-item-label">{{ sec.label }}</span>
+        <span class="menu-item-desc">{{ sec.description }}</span>
+      </div>
+      <i class="ri-arrow-right-s-line menu-item-chevron" aria-hidden="true"></i>
+    </button>
+    }
+  </nav>
+</aside>

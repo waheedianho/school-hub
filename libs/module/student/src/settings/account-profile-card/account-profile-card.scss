@@ -1,0 +1,160 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  outline: none;
+  scroll-margin-top: 100px;
+}
+
+:host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+  border-color: #8042d0;
+  box-shadow:
+    0 0 0 2px rgba(128, 66, 208, 0.2),
+    0 4px 12px rgba(128, 66, 208, 0.08);
+}
+
+.profile-info-body {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-bottom: 20px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.avatar-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #f3ecfb;
+}
+
+.avatar-camera-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #8042d0;
+  color: #ffffff;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.08);
+  }
+}
+
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px 16px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-label {
+  font-size: typography.$caption;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  font-size: typography.$body;
+  color: #1f2937;
+  font-weight: 600;
+
+  &.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 14px;
+  border-top: 1px solid #f1f3f7;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: transparent;
+  color: #374151;
+  font-size: typography.$body;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #8042d0;
+    color: #8042d0;
+    background: #fdfcff;
+  }
+}
+
+:host-context(.dark) {
+  :host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+    border-color: #a855f7;
+    box-shadow:
+      0 0 0 2px rgba(168, 85, 247, 0.25),
+      0 4px 12px rgba(168, 85, 247, 0.15);
+  }
+
+  .profile-avatar {
+    border-color: #281845;
+  }
+
+  .detail-label {
+    color: #94a3b8;
+  }
+
+  .detail-value {
+    color: #f1f5f9;
+  }
+
+  .card-footer {
+    border-top-color: #263349;
+  }
+
+  .btn-outline {
+    border-color: #374151;
+    color: #e5e7eb;
+
+    &:hover {
+      border-color: #a855f7;
+      color: #c084fc;
+      background: #1e1b4b;
+    }
+  }
+}

@@ -1,0 +1,181 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  outline: none;
+  scroll-margin-top: 100px;
+}
+
+:host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+  border-color: #8042d0;
+  box-shadow:
+    0 0 0 2px rgba(128, 66, 208, 0.2),
+    0 4px 12px rgba(128, 66, 208, 0.08);
+}
+
+.setting-rows-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.setting-row-action,
+.setting-row-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 8px 0;
+  background: transparent;
+  border: none;
+  text-align: left;
+  text-decoration: none;
+  color: inherit;
+}
+
+.setting-row-action {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    .row-label {
+      color: #8042d0;
+    }
+    .row-chevron {
+      color: #8042d0;
+      transform: translateX(2px);
+    }
+  }
+}
+
+.row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #f1f3f7;
+  color: #647590;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.row-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.row-label {
+  font-size: typography.$body;
+  font-weight: 500;
+  color: #1f2937;
+  transition: color 0.15s ease;
+}
+
+.row-sub {
+  font-size: typography.$caption;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-chevron {
+  font-size: 18px;
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+/* Switch control */
+.switch-control {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+  flex-shrink: 0;
+  cursor: pointer;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+
+    &:checked + .switch-slider {
+      background-color: #8042d0;
+
+      &:before {
+        transform: translateX(18px);
+      }
+    }
+
+    &:focus-visible + .switch-slider {
+      box-shadow: 0 0 0 3px rgba(128, 66, 208, 0.25);
+    }
+  }
+
+  .switch-slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #d1d5db;
+    border-radius: 24px;
+    transition: 0.2s;
+
+    &:before {
+      position: absolute;
+      content: '';
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      transition: 0.2s;
+    }
+  }
+}
+
+:host-context(.dark) {
+  :host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+    border-color: #a855f7;
+    box-shadow:
+      0 0 0 2px rgba(168, 85, 247, 0.25),
+      0 4px 12px rgba(168, 85, 247, 0.15);
+  }
+
+  .row-icon {
+    background: #1e293b;
+    color: #94a3b8;
+  }
+
+  .row-label {
+    color: #f1f5f9;
+  }
+
+  .row-sub {
+    color: #94a3b8;
+  }
+
+  .setting-row-action:hover {
+    .row-label,
+    .row-chevron {
+      color: #c084fc;
+    }
+  }
+
+  .switch-control input:checked + .switch-slider {
+    background-color: #a855f7;
+  }
+
+  .switch-control .switch-slider {
+    background-color: #4b5563;
+  }
+}

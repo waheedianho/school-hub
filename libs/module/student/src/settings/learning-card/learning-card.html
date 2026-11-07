@@ -1,0 +1,13 @@
+<school-hub-dashboard-card
+  title="Learning Preferences"
+  subtitle="Manage your learning experience"
+  icon="ri-sound-module-line"
+  tone="purple"
+  [compact]="true"
+>
+  <school-hub-preference-list
+    [items]="items()"
+    label="Learning preferences list"
+    (toggled)="onToggle($event)"
+  />
+</school-hub-dashboard-card>

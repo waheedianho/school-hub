@@ -1,0 +1,34 @@
+<school-hub-dashboard-card
+  title="About Learno"
+  subtitle="Version 1.0.0 · SchoolHub Student Platform"
+  icon="ri-information-line"
+  tone="purple"
+  [compact]="true"
+>
+  <button
+    card-action
+    type="button"
+    class="btn-outline"
+    (click)="detailsRequested.emit()"
+  >
+    View Details
+  </button>
+
+  <div class="about-card-body">
+    <div class="about-icon-wrap">
+      <school-hub-icon-badge
+        icon="ri-graduation-cap-fill"
+        tone="purple"
+        [soft]="true"
+        [large]="true"
+      />
+    </div>
+    <div class="about-card-info">
+      <p class="about-copy">
+        Learno is the integrated learning platform for SchoolHub, combining
+        interactive lessons, quizzes, worksheets, live classrooms, and tutor
+        support.
+      </p>
+    </div>
+  </div>
+</school-hub-dashboard-card>

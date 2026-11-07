@@ -1,0 +1,34 @@
+<school-hub-dashboard-card
+  title="Download & Storage"
+  subtitle="Manage downloads and storage usage"
+  icon="ri-download-2-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="storage-metric-wrapper">
+    <div class="storage-labels">
+      <span class="storage-title">Storage Used</span>
+      <span class="storage-value"
+        >{{ storageFormatted() }} of {{ totalStorageFormatted() }}</span
+      >
+    </div>
+
+    <school-hub-progress-bar
+      [value]="storagePct()"
+      label="Offline storage space used"
+      tone="purple"
+    />
+
+    <div class="storage-percentage">{{ storagePct() }}%</div>
+  </div>
+
+  <div class="card-footer mt-auto">
+    <button
+      type="button"
+      class="btn-outline w-full"
+      (click)="manageRequested.emit()"
+    >
+      Manage Storage
+    </button>
+  </div>
+</school-hub-dashboard-card>

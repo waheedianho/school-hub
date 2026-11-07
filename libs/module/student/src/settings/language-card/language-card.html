@@ -1,0 +1,42 @@
+<school-hub-dashboard-card
+  title="Language"
+  subtitle="Choose your preferred language"
+  icon="ri-global-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="form-field">
+    <label for="app-language">App Language</label>
+    <div class="select-wrapper">
+      <select
+        id="app-language"
+        [value]="appLanguage()"
+        (change)="onChange('appLanguage', $event)"
+      >
+        <option value="en">English (English)</option>
+        <option value="yo">Yorùbá</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+        <option value="fr">French</option>
+      </select>
+      <i class="ri-arrow-down-s-line select-chevron" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div class="form-field mt-3">
+    <label for="content-language">Content Language</label>
+    <div class="select-wrapper">
+      <select
+        id="content-language"
+        [value]="contentLanguage()"
+        (change)="onChange('contentLanguage', $event)"
+      >
+        <option value="en">English (English)</option>
+        <option value="yo">Yorùbá</option>
+        <option value="ha">Hausa</option>
+        <option value="ig">Igbo</option>
+      </select>
+      <i class="ri-arrow-down-s-line select-chevron" aria-hidden="true"></i>
+    </div>
+  </div>
+</school-hub-dashboard-card>

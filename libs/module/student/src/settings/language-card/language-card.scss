@@ -1,0 +1,90 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  outline: none;
+  scroll-margin-top: 100px;
+}
+
+:host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+  border-color: #8042d0;
+  box-shadow:
+    0 0 0 2px rgba(128, 66, 208, 0.2),
+    0 4px 12px rgba(128, 66, 208, 0.08);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &.mt-3 {
+    margin-top: 12px;
+  }
+
+  label {
+    font-size: typography.$caption;
+    font-weight: 500;
+    color: #4b5563;
+  }
+}
+
+.select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  select {
+    width: 100%;
+    padding: 8px 32px 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: typography.$body;
+    background: #ffffff;
+    color: #111827;
+    appearance: none;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+      border-color: #8042d0;
+      box-shadow: 0 0 0 3px rgba(128, 66, 208, 0.15);
+    }
+  }
+}
+
+.select-chevron {
+  position: absolute;
+  right: 10px;
+  color: #6b7280;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+:host-context(.dark) {
+  :host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+    border-color: #a855f7;
+    box-shadow:
+      0 0 0 2px rgba(168, 85, 247, 0.25),
+      0 4px 12px rgba(168, 85, 247, 0.15);
+  }
+
+  .form-field label {
+    color: #9ca3af;
+  }
+
+  .select-wrapper select {
+    background: #1e293b;
+    border-color: #374151;
+    color: #f3f4f6;
+
+    &:focus {
+      border-color: #a855f7;
+      box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.25);
+    }
+  }
+
+  .select-chevron {
+    color: #94a3b8;
+  }
+}

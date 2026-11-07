@@ -147,6 +147,12 @@ export const studentRoutes: Routes = [
         loadComponent: () =>
           import('./profile/profile').then((m) => m.StudentProfileComponent),
       },
+      {
+        path: 'settings',
+        title: 'Settings | SchoolHub',
+        loadComponent: () =>
+          import('./settings/settings').then((m) => m.StudentSettingsComponent),
+      },
       ...STUDENT_PAGES.filter(
         (page) =>
           ![
@@ -162,6 +168,7 @@ export const studentRoutes: Routes = [
             'resources',
             'profile',
             'ask-tutor',
+            'settings',
           ].includes(page.path),
       ).map((page) => ({
         path: page.path,

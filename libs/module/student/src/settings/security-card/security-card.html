@@ -1,0 +1,71 @@
+<school-hub-dashboard-card
+  title="Privacy & Security"
+  subtitle="Manage your privacy and account security"
+  icon="ri-lock-2-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="setting-rows-list">
+    <!-- Profile Visibility -->
+    <button
+      type="button"
+      class="setting-row-action"
+      (click)="modalRequested.emit('about')"
+    >
+      <div class="row-icon"><i class="ri-eye-line"></i></div>
+      <div class="row-text">
+        <span class="row-label">Profile Visibility</span>
+        <span class="row-sub">Only tutors can see my profile</span>
+      </div>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </button>
+
+    <!-- Data Usage -->
+    <div class="setting-row-toggle">
+      <div class="row-icon"><i class="ri-wifi-line"></i></div>
+      <div class="row-text">
+        <span class="row-label">Data Usage</span>
+        <span class="row-sub">Wi-Fi only for video streaming</span>
+      </div>
+      <label class="switch-control">
+        <input
+          type="checkbox"
+          role="switch"
+          [checked]="wifiOnly()"
+          (change)="wifiToggled.emit(!wifiOnly())"
+          aria-label="Toggle Wi-Fi only downloads"
+        />
+        <span class="switch-slider"></span>
+      </label>
+    </div>
+
+    <!-- Active Sessions -->
+    <button
+      type="button"
+      class="setting-row-action"
+      (click)="modalRequested.emit('sessions')"
+    >
+      <div class="row-icon"><i class="ri-macbook-line"></i></div>
+      <div class="row-text">
+        <span class="row-label">Active Sessions</span>
+        <span class="row-sub">Manage your active logins</span>
+      </div>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </button>
+
+    <!-- Two-Factor Authentication -->
+    <button
+      type="button"
+      class="setting-row-action"
+      (click)="modalRequested.emit('twoFactor')"
+    >
+      <div class="row-icon"><i class="ri-shield-keyhole-line"></i></div>
+      <div class="row-text">
+        <span class="row-label">Two-Factor Authentication</span>
+        <span class="row-sub">Add extra security to your account</span>
+      </div>
+      <school-hub-status-badge label="Off" tone="neutral" />
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </button>
+  </div>
+</school-hub-dashboard-card>

@@ -1,0 +1,335 @@
+<div class="settings-container">
+  <!-- Header -->
+  <header class="settings-header">
+    <h1 class="settings-title">Settings</h1>
+    <p class="settings-subtitle">
+      Manage your account, learning preferences and app settings.
+    </p>
+  </header>
+
+  <div class="settings-layout">
+    <!-- Left: Settings Navigation Menu Subcomponent -->
+    <school-hub-settings-nav
+      class="settings-sidebar"
+      [sections]="sections"
+      [activeSection]="activeSection()"
+      (sectionSelected)="selectSection($event)"
+    />
+
+    <!-- Right: Content Cards Grid -->
+    <main class="settings-content" id="settings-main">
+      <!-- Section 1: Account Settings Banner & Row 1 -->
+      <section
+        class="section-group"
+        id="section-account"
+        aria-labelledby="heading-account"
+      >
+        <div class="section-banner">
+          <h2 id="heading-account" class="section-title">Account Settings</h2>
+          <p class="section-subtitle">
+            Update your personal information and account details.
+          </p>
+        </div>
+
+        <div class="grid-2-col">
+          <!-- Profile Information Card Subcomponent -->
+          <school-hub-settings-account-profile-card
+            id="card-account-profile"
+            [avatarUrl]="profile.learner().avatarUrl"
+            [fullName]="profile.identity().fullName"
+            [className]="profile.learner().className"
+            [email]="profile.identity().email"
+            [phone]="profile.identity().phone"
+            [location]="profile.identity().location"
+            [active]="activeSection() === 'account'"
+            (interacted)="onCardInteract('account')"
+          />
+
+          <!-- Change Password Card Subcomponent -->
+          <school-hub-settings-account-password-card
+            id="card-account-password"
+            [active]="activeSection() === 'account'"
+            [statusMessage]="passwordStatusMessage()"
+            (interacted)="onCardInteract('account')"
+            (passwordSubmitted)="onPasswordSubmit()"
+          />
+        </div>
+      </section>
+
+      <!-- Row 2 Grid: Learning Preferences, Notifications, Privacy & Security -->
+      <div class="grid-3-col">
+        <!-- Learning Preferences Card Subcomponent -->
+        <school-hub-settings-learning-card
+          id="card-learning"
+          [dailyStudyReminder]="settings().dailyStudyReminder"
+          [dailyStudyReminderTime]="settings().dailyStudyReminderTime"
+          [weeklyProgressSummary]="settings().weeklyProgressSummary"
+          [active]="activeSection() === 'learning'"
+          (interacted)="onCardInteract('learning')"
+          (settingToggled)="onLearningToggle($event)"
+        />
+
+        <!-- Notifications Card Subcomponent -->
+        <school-hub-settings-notifications-card
+          id="card-notifications"
+          [pushNotifications]="settings().pushNotifications"
+          [emailNotifications]="settings().emailNotifications"
+          [smsNotifications]="settings().smsNotifications"
+          [liveClassReminders]="settings().liveClassReminders"
+          [active]="activeSection() === 'notifications'"
+          (interacted)="onCardInteract('notifications')"
+          (settingToggled)="onNotificationToggle($event)"
+        />
+
+        <!-- Privacy & Security Card Subcomponent -->
+        <school-hub-settings-security-card
+          id="card-security"
+          [wifiOnly]="profile.preferences().wifiOnly"
+          [active]="activeSection() === 'security'"
+          (interacted)="onCardInteract('security')"
+          (wifiToggled)="onWifiToggle($event)"
+          (modalRequested)="openModal($event)"
+        />
+      </div>
+
+      <!-- Row 3 Grid: Appearance, Download & Storage, Language, Help & Support -->
+      <div class="grid-4-col">
+        <!-- Appearance Card Subcomponent -->
+        <school-hub-settings-appearance-card
+          id="card-appearance"
+          [theme]="settings().theme"
+          [textSize]="settings().textSize"
+          [active]="activeSection() === 'appearance'"
+          (interacted)="onCardInteract('appearance')"
+          (themeSelected)="setTheme($event)"
+          (textSizeSelected)="setTextSize($event)"
+        />
+
+        <!-- Download & Storage Card Subcomponent -->
+        <school-hub-settings-storage-card
+          id="card-storage"
+          [storageUsedBytes]="settings().storageUsedBytes"
+          [storageTotalBytes]="settings().storageTotalBytes"
+          [active]="activeSection() === 'storage'"
+          (interacted)="onCardInteract('storage')"
+          (manageRequested)="openModal('manageStorage')"
+        />
+
+        <!-- Language Card Subcomponent -->
+        <school-hub-settings-language-card
+          id="card-language"
+          [appLanguage]="settings().appLanguage"
+          [contentLanguage]="settings().contentLanguage"
+          [active]="activeSection() === 'language'"
+          (interacted)="onCardInteract('language')"
+          (languageChanged)="onLanguageChange($event)"
+        />
+
+        <!-- Help & Support Card Subcomponent -->
+        <school-hub-settings-support-card
+          id="card-support"
+          [active]="activeSection() === 'support'"
+          (interacted)="onCardInteract('support')"
+          (modalRequested)="openModal($event)"
+        />
+      </div>
+
+      <!-- About Learno Card Subcomponent -->
+      <school-hub-settings-about-card
+        id="card-about"
+        [active]="activeSection() === 'about'"
+        (interacted)="onCardInteract('about')"
+        (detailsRequested)="openModal('about')"
+      />
+
+      <!-- Bottom Security & Privacy Assurance Notice -->
+      <footer class="settings-assurance-banner">
+        <i class="ri-lock-line assurance-icon" aria-hidden="true"></i>
+        <span>
+          Your information is private and secure. We will never share your data.
+        </span>
+      </footer>
+    </main>
+  </div>
+</div>
+
+<!-- Modal Dialogs using shared DialogPanelComponent -->
+<school-hub-dialog-panel
+  [open]="activeModal() !== null"
+  [title]="dialogTitle()"
+  (dismissed)="closeModal()"
+>
+  @switch (activeModal()) { @case ('sessions') {
+  <div class="modal-body-content">
+    <p class="modal-description">
+      These devices are currently signed in to your Learno student account.
+    </p>
+    <div class="session-list">
+      <div class="session-item active">
+        <div class="session-icon"><i class="ri-computer-line"></i></div>
+        <div class="session-info">
+          <strong>Chrome on Linux (This Device)</strong>
+          <span>Active now · Lagos, Nigeria</span>
+        </div>
+        <school-hub-status-badge label="Current Session" tone="purple" />
+      </div>
+    </div>
+    <p class="modal-disclaimer">
+      Note: In this preview environment, remote sessions are simulated. Server
+      authentication is required to revoke active remote tokens.
+    </p>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeModal()">
+        Done
+      </button>
+    </div>
+  </div>
+  } @case ('twoFactor') {
+  <div class="modal-body-content">
+    <p class="modal-description">
+      Two-Factor Authentication (2FA) adds an extra layer of protection to your
+      learner account.
+    </p>
+    <div class="twofactor-status">
+      <i class="ri-shield-keyhole-line twofactor-icon"></i>
+      <div>
+        <strong>Status: Managed by School</strong>
+        <p>
+          Your school administrator configures 2FA verification requirements for
+          all student portals.
+        </p>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeModal()">
+        Close
+      </button>
+    </div>
+  </div>
+  } @case ('manageStorage') {
+  <div class="modal-body-content">
+    <p class="modal-description">
+      Review the cached data saved on this browser.
+    </p>
+    <div class="storage-breakdown">
+      <div class="storage-breakdown-row">
+        <span>Cached video clips & lessons</span>
+        <strong>650 MB</strong>
+      </div>
+      <div class="storage-breakdown-row">
+        <span>Offline resources & documents</span>
+        <strong>420 MB</strong>
+      </div>
+      <div class="storage-breakdown-row">
+        <span>Worksheet drafts & notes</span>
+        <strong>180 MB</strong>
+      </div>
+      <div class="storage-breakdown-row">
+        <span>App assets & local database</span>
+        <strong>150 MB</strong>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn-outline text-red-600"
+        (click)="clearCache()"
+      >
+        Clear Temporary Cache
+      </button>
+      <button type="button" class="btn-primary" (click)="closeModal()">
+        Done
+      </button>
+    </div>
+  </div>
+  } @case ('help') {
+  <div class="modal-body-content">
+    <h3 class="faq-heading">Frequently Asked Questions</h3>
+    <div class="faq-list">
+      <details class="faq-item">
+        <summary>How do I submit worksheets and quizzes?</summary>
+        <p>
+          Open the Worksheets or Quizzes tab from your sidebar, click on your
+          assigned task, and click "Submit" when finished.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>How do I connect with my human tutor?</summary>
+        <p>
+          Navigate to the Ask Tutor section from the sidebar or click "Chat with
+          Support" to open an inquiry thread with your subject teacher.
+        </p>
+      </details>
+      <details class="faq-item">
+        <summary>Can I download study materials offline?</summary>
+        <p>
+          Yes, resources marked for download can be saved locally on your
+          device. Ensure your Wi-Fi settings allow downloads.
+        </p>
+      </details>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeModal()">
+        Close
+      </button>
+    </div>
+  </div>
+  } @case ('report') {
+  <div class="modal-body-content">
+    <p class="modal-description">
+      Found an issue or bug? Let our technical support team know.
+    </p>
+    <form class="report-form" (submit)="$event.preventDefault(); closeModal()">
+      <div class="form-field">
+        <label for="issue-type">Issue Type</label>
+        <select id="issue-type">
+          <option>Audio / Video playback issue</option>
+          <option>Question or worksheet content error</option>
+          <option>Live classroom connection problem</option>
+          <option>Display or layout bug</option>
+          <option>Other issue</option>
+        </select>
+      </div>
+      <div class="form-field mt-3">
+        <label for="issue-desc">Description</label>
+        <textarea
+          id="issue-desc"
+          rows="3"
+          placeholder="Describe what happened..."
+        ></textarea>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" (click)="closeModal()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary">Submit Report</button>
+      </div>
+    </form>
+  </div>
+  } @case ('about') {
+  <div class="modal-body-content">
+    <div class="about-hero">
+      <div class="about-logo">
+        <i class="ri-graduation-cap-fill"></i>
+      </div>
+      <h3>Learno — SchoolHub Student Portal</h3>
+      <span class="about-version">Version 1.0.0</span>
+    </div>
+    <p class="about-text">
+      Learno is the integrated learning platform for SchoolHub, combining
+      interactive lessons, quizzes, worksheets, live classrooms, and human tutor
+      guidance.
+    </p>
+    <div class="about-meta">
+      <span>
+        &copy; 2026 SchoolHub Educational Technologies. All rights reserved.
+      </span>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="closeModal()">
+        Close
+      </button>
+    </div>
+  </div>
+  } }
+</school-hub-dialog-panel>

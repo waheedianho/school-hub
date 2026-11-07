@@ -1,0 +1,74 @@
+<school-hub-dashboard-card
+  title="Profile Information"
+  subtitle="Update your personal details"
+  icon="ri-user-3-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div card-action class="card-action-badge">
+    <school-hub-status-badge
+      label="Active Student"
+      tone="green"
+      icon="ri-checkbox-circle-line"
+    />
+  </div>
+
+  <div class="profile-info-body">
+    <div class="avatar-wrapper">
+      <img
+        [src]="avatarUrl()"
+        [alt]="fullName() || 'Learner avatar'"
+        class="profile-avatar"
+      />
+      <a
+        routerLink="/student/profile"
+        [queryParams]="{ view: 'edit' }"
+        class="avatar-camera-badge"
+        aria-label="Change profile photo"
+      >
+        <i class="ri-camera-line" aria-hidden="true"></i>
+      </a>
+    </div>
+
+    <div class="profile-details-grid">
+      <div class="detail-item">
+        <span class="detail-label">Full Name</span>
+        <strong class="detail-value"
+          >{{ fullName() || 'Adeola Johnson' }}</strong
+        >
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Class</span>
+        <strong class="detail-value"
+          >{{ className() || 'JSS 1 (Basic 7)' }}</strong
+        >
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Email Address</span>
+        <strong class="detail-value truncate"
+          >{{ email() || 'adeola.johnson@learno.ng' }}</strong
+        >
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Phone Number</span>
+        <strong class="detail-value">{{ phone() || '0803 123 4567' }}</strong>
+      </div>
+      <div class="detail-item">
+        <span class="detail-label">Location</span>
+        <strong class="detail-value"
+          >{{ location() || 'Lagos, Nigeria' }}</strong
+        >
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a
+      routerLink="/student/profile"
+      [queryParams]="{ view: 'edit' }"
+      class="btn-outline"
+    >
+      Edit Profile
+    </a>
+  </div>
+</school-hub-dashboard-card>

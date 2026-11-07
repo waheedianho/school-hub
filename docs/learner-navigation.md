@@ -6,8 +6,7 @@ The blue Dashboard and My Lessons screens use an earlier-looking visual style;
 the folder does not establish which style is final.
 
 The 13 main-page URLs below are registered. Dashboard, My Lessons, My Subjects,
-Quizzes & Assessments, Worksheets, Portfolio Tasks, Feedback, Progress, Live Classes, Resources, Ask Tutor, and Profile are implemented with sample data; Settings
-currently shows a placeholder. Assessment attempt, result, worksheet workspace, portfolio task, classroom, and resource detail routes are also
+Quizzes & Assessments, Worksheets, Portfolio Tasks, Feedback, Progress, Live Classes, Resources, Ask Tutor, Profile, and Settings are implemented with sample data. Assessment attempt, result, worksheet workspace, portfolio task, classroom, and resource detail routes are also
 registered; other detail and activity URLs remain proposed targets. Keep the existing `/student`
 portal prefix and use learner-facing labels in the interface. `:lessonId` and
 similar segments represent actual record IDs. Query parameters describe page
@@ -48,7 +47,7 @@ Every route in this table is relative to `/student`.
 | Resources             | `/resources`       | [Resource library](../.design/LEARNERS_/Resources_LD.png)           | Library, videos, text readers, notes, and downloads implemented; sample data                      |
 | Ask Tutor             | `/ask-tutor`       | [Tutor conversation](<../.design/LEARNERS_/Ask Tutor_LD.png>)       | Implemented with sample replies, local questions, attachments, and activity context               |
 | Profile               | `/profile`         | [Profile](../.design/LEARNERS_/Profile_LD.png)                      | Identity, subjects, snapshot, achievements, goals, preferences, and activity calendar implemented |
-| Settings              | `/settings`        | [Settings](../.design/LEARNERS_/Settings_LD.png)                    | Placeholder registered                                                                            |
+| Settings              | `/settings`        | [Settings](../.design/LEARNERS_/Settings_LD.png)                    | Account details, preferences, reminders, security, and appearance implemented                     |
 
 That gives 13 sidebar destinations: 12 designed main screens and My Subjects,
 which appears in navigation but has no dedicated design.
