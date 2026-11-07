@@ -1,0 +1,236 @@
+.worksheet-viewer-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.viewer-header {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.viewer-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.viewer-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #475569;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  .tool-icon {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+}
+
+.icon-tool-btn {
+  background: none;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #64748b;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+
+  .material-symbols-outlined {
+    font-size: 16px;
+  }
+
+  &:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+  }
+}
+
+.document-sheet-wrapper {
+  padding: 24px;
+  background-color: #f1f5f9;
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.document-sheet {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  padding: 32px 36px;
+  max-width: 680px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sheet-header {
+  text-align: center;
+  border-bottom: 2px solid #0f172a;
+  padding-bottom: 8px;
+}
+
+.sheet-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.sheet-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 6px 0;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.meta-field {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 12.5px;
+}
+
+.meta-label {
+  font-weight: 600;
+  color: #475569;
+}
+
+.meta-value-handwritten {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Caveat', cursive, sans-serif;
+  color: #1e3a8a;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #94a3b8;
+  padding: 0 10px;
+}
+
+.meta-value {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.sheet-instructions {
+  background-color: #f8fafc;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: #334155;
+  line-height: 1.4;
+
+  p {
+    margin: 0;
+  }
+}
+
+.questions-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.question-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 12.5px;
+  color: #1e293b;
+}
+
+.question-text {
+  flex: 1;
+}
+
+.underlined-word {
+  text-decoration: underline;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.answer-line-box {
+  width: 140px;
+  border-bottom: 1px solid #94a3b8;
+  text-align: center;
+  padding-bottom: 2px;
+}
+
+.student-answer-handwritten {
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Caveat', cursive, sans-serif;
+  color: #2563eb;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.viewer-footer {
+  padding: 10px 18px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.page-nav-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+
+  &:disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}
+
+.page-indicator {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+}

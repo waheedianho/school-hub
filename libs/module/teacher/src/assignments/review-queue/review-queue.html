@@ -1,0 +1,24 @@
+<div class="review-queue-card">
+  <div class="card-header">
+    <div class="header-title-group">
+      <span class="material-symbols-outlined queue-header-icon">people</span>
+      <h3 class="card-title">Review Queue</h3>
+    </div>
+  </div>
+
+  <div class="queue-list">
+    @for (item of queueItems(); track item.id) {
+    <div class="queue-item">
+      <div class="item-left">
+        <span class="material-symbols-outlined item-icon">{{ item.icon }}</span>
+        <span class="item-label">{{ item.label }}</span>
+      </div>
+      <span class="item-count">{{ item.count }}</span>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="view-link">View All Queue &rarr;</a>
+  </div>
+</div>

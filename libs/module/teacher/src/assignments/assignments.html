@@ -1,0 +1,53 @@
+<div class="assignments-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Assignments & Submissions</h1>
+      <p class="page-subtitle">
+        Review learner work, apply human judgement, score submissions, and
+        approve results before they enter the Gradebook.
+      </p>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Assignments metrics">
+    <school-hub-assignments-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (72%) -->
+    <div class="left-column">
+      <!-- Filter Toolbar -->
+      <school-hub-assignments-filters
+        (filtersChanged)="onFiltersChanged($event)"
+      />
+
+      <!-- Pending Submissions Table -->
+      <school-hub-pending-submissions-table
+        [submissions]="filteredSubmissions()"
+        (reviewSubmission)="onReviewSubmission()"
+      />
+
+      <!-- Bottom Subgrid: Breakdown + Recent Feedback + Common Issues -->
+      <div class="bottom-subgrid">
+        <school-hub-submission-breakdown [breakdownData]="breakdownData()" />
+        <school-hub-recent-feedback-activity [feedbackList]="feedbackList()" />
+        <school-hub-common-issues-observed [issues]="commonIssues()" />
+      </div>
+    </div>
+
+    <!-- Right Column (28%) -->
+    <div class="right-column">
+      <!-- Review Queue -->
+      <school-hub-review-queue [queueItems]="reviewQueue()" />
+
+      <!-- Quick Actions -->
+      <school-hub-assignments-quick-actions [actions]="quickActions()" />
+
+      <!-- Scoring Workflow Steps -->
+      <school-hub-scoring-workflow />
+    </div>
+  </div>
+</div>

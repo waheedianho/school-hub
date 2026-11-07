@@ -1,0 +1,83 @@
+<div class="worksheet-viewer-card">
+  <!-- Viewer Header Bar -->
+  <div class="viewer-header">
+    <h3 class="viewer-title">Submitted Work</h3>
+    <div class="viewer-actions">
+      <button type="button" class="tool-btn" aria-label="Fit Width">
+        <span class="material-symbols-outlined tool-icon">fit_screen</span>
+        <span>Fit Width</span>
+      </button>
+      <button type="button" class="tool-btn" aria-label="Download Document">
+        <span class="material-symbols-outlined tool-icon">download</span>
+        <span>Download</span>
+      </button>
+      <button type="button" class="icon-tool-btn" aria-label="Fullscreen">
+        <span class="material-symbols-outlined">fullscreen</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Document Sheet -->
+  <div class="document-sheet-wrapper">
+    <div class="document-sheet">
+      <div class="sheet-header">
+        <h2 class="sheet-title">PARTS OF SPEECH WORKSHEET</h2>
+      </div>
+
+      <div class="sheet-meta-row">
+        <div class="meta-field">
+          <span class="meta-label">Name:</span>
+          <span class="meta-value-handwritten">{{ learnerName() }}</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Date:</span>
+          <span class="meta-value">{{ submissionDate() }}</span>
+        </div>
+      </div>
+
+      <div class="sheet-instructions">
+        <p>
+          <strong>Instructions:</strong> Identify the part of speech of the
+          underlined words in each sentence. Write your answer on the line
+          provided.
+        </p>
+      </div>
+
+      <ol class="questions-list">
+        @for (q of questions(); track q.number) {
+        <li class="question-row">
+          <div class="question-text">
+            <span>{{ q.number }}. </span>
+            <!-- Highlight underlined part -->
+            @let parts = q.text.split(q.underlinedPart);
+            <span>{{ parts[0] }}</span>
+            <span class="underlined-word">{{ q.underlinedPart }}</span>
+            <span>{{ parts[1] }}</span>
+          </div>
+          <div class="answer-line-box">
+            <span class="student-answer-handwritten"
+              >{{ q.studentAnswer }}</span
+            >
+          </div>
+        </li>
+        }
+      </ol>
+    </div>
+  </div>
+
+  <!-- Sheet Pagination -->
+  <div class="viewer-footer">
+    <button
+      type="button"
+      class="page-nav-btn"
+      disabled
+      aria-label="Previous page"
+    >
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <span class="page-indicator">Page 1 of 1</span>
+    <button type="button" class="page-nav-btn" disabled aria-label="Next page">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</div>

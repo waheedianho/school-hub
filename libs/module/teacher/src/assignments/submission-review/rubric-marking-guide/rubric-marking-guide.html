@@ -1,0 +1,128 @@
+<div class="marking-guide-container">
+  <!-- 2-Card Subgrid: Rubrics Table + Teacher Comments -->
+  <div class="cards-subgrid">
+    <!-- Left: Rubric / Marking Guide Table -->
+    <div class="rubric-table-card">
+      <div class="card-header">
+        <h4 class="card-title">Rubric / Marking Guide</h4>
+      </div>
+
+      <div class="table-responsive">
+        <table class="rubric-table">
+          <thead>
+            <tr>
+              <th>Criteria</th>
+              <th>Description</th>
+              <th>Max Marks</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of rubricsList(); track item.id) {
+            <tr>
+              <td>
+                <span class="criteria-badge">{{ item.criteria }}</span>
+              </td>
+              <td>
+                <span class="criteria-desc">{{ item.description }}</span>
+              </td>
+              <td>
+                <span class="max-marks-val">{{ item.maxMarks }}</span>
+              </td>
+              <td>
+                <div class="score-input-wrapper">
+                  <input
+                    type="number"
+                    class="score-input"
+                    [min]="0"
+                    [max]="item.maxMarks"
+                    [ngModel]="item.score"
+                    (ngModelChange)="onScoreChange(item, $event)"
+                    [attr.aria-label]="'Score for ' + item.criteria"
+                  />
+                </div>
+              </td>
+            </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="total-row">
+              <td colspan="2">
+                <span class="total-label">Total</span>
+              </td>
+              <td>
+                <span class="total-max">{{ totalMaxMarks() }}</span>
+              </td>
+              <td>
+                <span class="total-score-badge"
+                  >{{ totalAwardedScore() }} / {{ totalMaxMarks() }}</span
+                >
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right: Teacher Comments -->
+    <div class="teacher-comments-card">
+      <div class="card-header">
+        <div class="header-title-group">
+          <span class="material-symbols-outlined comment-icon"
+            >chat_bubble_outline</span
+          >
+          <h4 class="card-title">Teacher Comments</h4>
+        </div>
+      </div>
+
+      <div class="comments-body">
+        <textarea
+          class="comments-textarea"
+          rows="5"
+          placeholder="Add comments for the learner..."
+          [ngModel]="commentsText()"
+          (ngModelChange)="onCommentsChange($event)"
+          aria-label="Teacher comments"
+        ></textarea>
+
+        <div class="visibility-toggle-row">
+          <span class="visibility-label">Visible to learner</span>
+          <button
+            type="button"
+            class="switch-btn"
+            [class.switch-on]="visibleToLearner()"
+            (click)="toggleVisible()"
+            role="switch"
+            [attr.aria-checked]="visibleToLearner()"
+            aria-label="Toggle visible to learner"
+          >
+            <span class="switch-handle"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Quick Actions Bar -->
+  <div class="quick-actions-bar">
+    <span class="bar-label">Quick Actions</span>
+    <div class="actions-buttons-group">
+      <button type="button" class="bar-action-btn">
+        <span class="material-symbols-outlined action-icon">replay</span>
+        <span>Request Resubmission</span>
+      </button>
+      <button type="button" class="bar-action-btn">
+        <span class="material-symbols-outlined action-icon">print</span>
+        <span>Print Submission</span>
+      </button>
+      <button type="button" class="bar-action-btn">
+        <span class="material-symbols-outlined action-icon">download</span>
+        <span>Download PDF</span>
+      </button>
+      <button type="button" class="bar-action-btn">
+        <span class="material-symbols-outlined action-icon">send</span>
+        <span>Notify Learner</span>
+      </button>
+    </div>
+  </div>
+</div>

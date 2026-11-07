@@ -1,0 +1,106 @@
+<div class="pending-submissions-card">
+  <div class="card-header">
+    <h2 class="card-title">Pending Submissions Requiring Review</h2>
+  </div>
+
+  <div class="table-responsive">
+    <table class="submissions-table">
+      <thead>
+        <tr>
+          <th>Learner</th>
+          <th>Class</th>
+          <th>Submission Type</th>
+          <th>Topic</th>
+          <th>Submitted At</th>
+          <th>Scoring Method</th>
+          <th>Status</th>
+          <th class="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of submissions(); track item.id) {
+        <tr class="table-row">
+          <td>
+            <div class="learner-cell">
+              <div
+                class="avatar-circle"
+                [style.background-color]="item.avatarColor"
+              >
+                {{ item.avatarText }}
+              </div>
+              <span class="learner-name">{{ item.learnerName }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="class-badge">{{ item.className }}</span>
+          </td>
+          <td>
+            <span class="type-text">{{ item.submissionType }}</span>
+          </td>
+          <td>
+            <span class="topic-text">{{ item.topic }}</span>
+          </td>
+          <td>
+            <span class="time-text">{{ item.submittedAt }}</span>
+          </td>
+          <td>
+            <div class="scoring-method-cell">
+              @switch (item.scoringMethod) { @case ('Teacher Review') {
+              <span class="material-symbols-outlined method-icon tone-orange"
+                >person</span
+              >
+              } @case ('Rubric Review') {
+              <span class="material-symbols-outlined method-icon tone-purple"
+                >grid_view</span
+              >
+              } @case ('Auto-Scored') {
+              <span class="material-symbols-outlined method-icon tone-green"
+                >check_circle</span
+              >
+              } }
+              <span class="method-text">{{ item.scoringMethod }}</span>
+            </div>
+          </td>
+          <td>
+            <span
+              class="status-pill"
+              [class.status-pending]="item.status === 'Pending Review'"
+              [class.status-needs-scoring]="item.status === 'Needs Scoring'"
+              [class.status-approved]="item.status === 'Approved'"
+            >
+              {{ item.status }}
+            </span>
+          </td>
+          <td class="text-right">
+            <button
+              type="button"
+              class="action-btn"
+              [class.btn-outline]="item.actionStyle === 'outline'"
+              [class.btn-solid]="item.actionStyle === 'solid-purple'"
+              [class.btn-outline-blue]="item.actionStyle === 'outline-blue'"
+              (click)="onAction(item)"
+            >
+              {{ item.actionLabel }}
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="empty-state">
+            No submissions match your selected filter criteria.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Info Notice Banner -->
+  <div class="info-notice-banner">
+    <span class="material-symbols-outlined info-icon">info</span>
+    <span class="info-text">
+      Auto-scored quizzes enter Gradebook automatically. Worksheets, essays,
+      uploads, and portfolio tasks require teacher review and approval.
+    </span>
+  </div>
+</div>

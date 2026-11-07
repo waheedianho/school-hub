@@ -1,0 +1,124 @@
+<div class="review-page-container">
+  <!-- Top Navigation -->
+  <div class="top-nav-bar">
+    <button type="button" class="back-link-btn" (click)="onBack()">
+      <span class="material-symbols-outlined back-arrow">arrow_back</span>
+      <span>Back to Submissions</span>
+    </button>
+  </div>
+
+  <!-- Header -->
+  <header class="review-header">
+    <div class="header-text-group">
+      <h1 class="page-title">
+        {{ detail().learnerName }} &ndash; Submission Review
+      </h1>
+      <p class="page-subtitle">
+        Review and score {{ detail().learnerName }}'s work. Once approved, the
+        score will be sent to the Gradebook.
+      </p>
+    </div>
+  </header>
+
+  <!-- Learner Summary Strip -->
+  <div class="learner-meta-card">
+    <div class="learner-profile-col">
+      <div class="learner-avatar-box">
+        <span class="avatar-initials">MI</span>
+      </div>
+      <div class="learner-name-col">
+        <h3 class="learner-name">{{ detail().learnerName }}</h3>
+        <span class="learner-id">Learner ID: {{ detail().learnerId }}</span>
+      </div>
+    </div>
+
+    <div class="meta-data-group">
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">groups</span>
+          <span class="meta-label">Class</span>
+        </div>
+        <span class="meta-val">{{ detail().className }}</span>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">menu_book</span>
+          <span class="meta-label">Subject</span>
+        </div>
+        <span class="meta-val">{{ detail().subject }}</span>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">topic</span>
+          <span class="meta-label">Topic</span>
+        </div>
+        <span class="meta-val">{{ detail().topic }}</span>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">description</span>
+          <span class="meta-label">Submission Type</span>
+        </div>
+        <span class="meta-val">{{ detail().submissionType }}</span>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon"
+            >calendar_today</span
+          >
+          <span class="meta-label">Submitted On</span>
+        </div>
+        <span class="meta-val">{{ detail().submittedOn }}</span>
+      </div>
+
+      <div class="meta-item">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">edit_document</span>
+          <span class="meta-label">Scoring Method</span>
+        </div>
+        <span class="meta-val">{{ detail().scoringMethod }}</span>
+      </div>
+
+      <div class="meta-item status-col">
+        <div class="meta-label-row">
+          <span class="material-symbols-outlined meta-icon">info</span>
+          <span class="meta-label">Status</span>
+        </div>
+        <span class="status-badge-orange">{{ detail().status }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main 2-Column Review Grid -->
+  <div class="review-grid">
+    <!-- Left Column (Viewer + Rubric/Comments) -->
+    <div class="review-left-column">
+      <school-hub-submission-worksheet-viewer
+        [learnerName]="detail().learnerName"
+        [questions]="detail().worksheetQuestions"
+      />
+
+      <school-hub-rubric-marking-guide
+        [initialRubrics]="detail().rubrics"
+        [teacherComments]="detail().teacherComments"
+      />
+    </div>
+
+    <!-- Right Column (Scoring & Feedback + Workflow) -->
+    <div class="review-right-column">
+      <school-hub-scoring-feedback-panel
+        [totalMarks]="detail().totalMarks"
+        [initialScore]="detail().scoreAwarded"
+        [initialGrade]="detail().grade"
+        [initialFeedback]="detail().feedbackText"
+        [rubrics]="detail().rubrics"
+        [initialTags]="detail().misconceptionTags"
+        (scoreSubmitted)="onScoreSubmitted()"
+      />
+    </div>
+  </div>
+</div>

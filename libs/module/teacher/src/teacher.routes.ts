@@ -65,13 +65,38 @@ export const teacherRoutes: Routes = [
             (m) => m.LiveClassSessionComponent,
           ),
       },
+      {
+        path: 'assignments',
+        title: 'Assignments & Submissions | SchoolHub',
+        loadComponent: () =>
+          import('./assignments/assignments').then(
+            (m) => m.TeacherAssignmentsComponent,
+          ),
+      },
+      {
+        path: 'assignments/review',
+        title: 'Submission Review | SchoolHub',
+        loadComponent: () =>
+          import('./assignments/submission-review/submission-review').then(
+            (m) => m.SubmissionReviewComponent,
+          ),
+      },
+      {
+        path: 'assignments/:id',
+        title: 'Submission Review | SchoolHub',
+        loadComponent: () =>
+          import('./assignments/submission-review/submission-review').then(
+            (m) => m.SubmissionReviewComponent,
+          ),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
           page.path !== 'classes' &&
           page.path !== 'curriculum' &&
           page.path !== 'lessons' &&
-          page.path !== 'live-classes',
+          page.path !== 'live-classes' &&
+          page.path !== 'assignments',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

@@ -1,0 +1,25 @@
+<div class="workflow-card">
+  <div class="card-header">
+    <div class="header-title-group">
+      <span class="material-symbols-outlined workflow-icon">check_circle</span>
+      <h3 class="card-title">Scoring Workflow</h3>
+    </div>
+  </div>
+
+  <div class="workflow-steps-list">
+    @for (s of steps; track s.step; let last = $last) {
+    <div class="step-item" [class.last-step]="last">
+      <div class="step-indicator-col">
+        <div class="step-circle">{{ s.step }}</div>
+        @if (!last) {
+        <div class="connecting-line"></div>
+        }
+      </div>
+      <div class="step-content">
+        <h4 class="step-title">{{ s.title }}</h4>
+        <p class="step-desc">{{ s.desc }}</p>
+      </div>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="common-issues-card">
+  <div class="card-header">
+    <div class="title-with-icon">
+      <span class="material-symbols-outlined header-alert-icon">warning</span>
+      <h3 class="card-title">Common Issues Observed</h3>
+    </div>
+  </div>
+
+  <div class="issues-list">
+    @for (issue of issues(); track issue.id) {
+    <div class="issue-item">
+      <div class="issue-badge tone-{{ issue.badgeTone }}">
+        @if (issue.iconText === 'description') {
+        <span class="material-symbols-outlined">description</span>
+        } @else {
+        <span class="badge-text">{{ issue.iconText }}</span>
+        }
+      </div>
+      <div class="issue-content">
+        <h4 class="issue-title">{{ issue.title }}</h4>
+        <p class="issue-desc">{{ issue.description }}</p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="view-link"
+      >View all common issues &rarr;</a
+    >
+  </div>
+</div>

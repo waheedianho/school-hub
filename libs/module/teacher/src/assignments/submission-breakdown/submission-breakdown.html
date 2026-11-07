@@ -1,0 +1,109 @@
+<div class="breakdown-card">
+  <div class="card-header">
+    <h3 class="card-title">Submission Breakdown</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="donut-wrapper">
+      <svg
+        class="donut-svg"
+        viewBox="0 0 120 120"
+        role="img"
+        aria-label="Submission breakdown by type"
+      >
+        <!-- Background ring -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="13"
+        />
+        <!-- Worksheets (30%) -> len 86.7, offset 0 -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#8b5cf6"
+          stroke-width="13"
+          stroke-dasharray="86.7 202.3"
+          stroke-dashoffset="0"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Portfolio Tasks (20%) -> len 57.8, offset -86.7 -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#3b82f6"
+          stroke-width="13"
+          stroke-dasharray="57.8 231.2"
+          stroke-dashoffset="-86.7"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Essays / Theory (15%) -> len 43.3, offset -144.5 -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f97316"
+          stroke-width="13"
+          stroke-dasharray="43.3 245.7"
+          stroke-dashoffset="-144.5"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Homework Uploads (10%) -> len 28.9, offset -187.8 -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="13"
+          stroke-dasharray="28.9 260.1"
+          stroke-dashoffset="-187.8"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Objective / Auto-Scored (25%) -> len 72.3, offset -216.7 -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#06b6d4"
+          stroke-width="13"
+          stroke-dasharray="72.3 216.7"
+          stroke-dashoffset="-216.7"
+          transform="rotate(-90 60 60)"
+        />
+      </svg>
+      <div class="donut-center-info">
+        <span class="donut-sublabel">Total Submissions</span>
+        <span class="donut-total">{{ totalSubmissions() }}</span>
+      </div>
+    </div>
+
+    <!-- Legend List -->
+    <div class="legend-list">
+      @for (item of breakdownData(); track item.type) {
+      <div class="legend-row">
+        <span class="legend-dot" [style.background-color]="item.color"></span>
+        <span class="legend-label">{{ item.type }}</span>
+        <span class="legend-count"
+          >{{ item.count }} ({{ item.percentage }}%)</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="view-link"
+      >View full breakdown &rarr;</a
+    >
+  </div>
+</div>
