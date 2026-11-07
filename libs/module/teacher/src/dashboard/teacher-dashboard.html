@@ -1,0 +1,54 @@
+<p class="sr-only">Teacher works!</p>
+
+<div class="teacher-dashboard-container">
+  <header class="dashboard-header">
+    <h1 class="dashboard-title">Dashboard</h1>
+    <p class="dashboard-subtitle">
+      Monitor today's teaching, learner performance, pending reviews, and
+      academic priorities.
+    </p>
+  </header>
+
+  <!-- <section class="dashboard-section" aria-label="Key Teaching Metrics">
+    <school-hub-dashboard-metrics [metrics]="metrics()" />
+  </section> -->
+
+  <div class="dashboard-main-grid">
+    <div class="main-left-column">
+      <div class="dashboard-section" aria-label="Key Teaching Metrics">
+        <school-hub-dashboard-metrics [metrics]="metrics()" />
+      </div>
+
+      <div class="middle-cards-row">
+        <div class="schedule-card-wrap">
+          <school-hub-today-schedule [items]="schedule()" />
+        </div>
+        <div class="reviews-card-wrap">
+          <school-hub-pending-reviews [submissions]="pendingSubmissions()" />
+        </div>
+      </div>
+
+      <div class="lower-cards-row">
+        <div class="topics-card-wrap">
+          <school-hub-current-topics [topics]="classTopics()" />
+        </div>
+        <div class="performance-card-wrap">
+          <school-hub-class-performance [performance]="classPerformance()" />
+        </div>
+      </div>
+    </div>
+
+    <aside class="main-right-column" aria-label="Quick Actions and Alerts">
+      <school-hub-quick-actions [actions]="quickActions()" />
+      <school-hub-unread-messages [messages]="unreadMessages()" />
+      <school-hub-upcoming-deadlines [deadlines]="upcomingDeadlines()" />
+    </aside>
+  </div>
+
+  <section
+    class="dashboard-section workflow-section"
+    aria-label="Score Flow Workflow"
+  >
+    <school-hub-workflow-reminder [steps]="workflowSteps()" />
+  </section>
+</div>

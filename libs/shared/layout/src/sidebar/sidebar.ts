@@ -19,7 +19,7 @@ export class SidebarComponent {
   @Input() logoText = 'SchoolHub';
 
   /** Logo icon path */
-  @Input() logoIcon = 'images/logo-icon.svg';
+  @Input() logoIcon = 'images/learner-logo.svg';
 
   /** Sidebar theme variant: 'light' (student) or 'dark' (admin/teacher) */
   @Input() theme: 'light' | 'dark' = 'light';

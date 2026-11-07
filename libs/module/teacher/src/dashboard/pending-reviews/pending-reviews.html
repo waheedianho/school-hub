@@ -1,0 +1,77 @@
+<school-hub-dashboard-card
+  title="Pending Submissions Requiring Review"
+  icon="ri-survey-line"
+  tone="purple"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/assignments" class="card-header-link">
+    View All (18)
+  </a>
+
+  <div class="table-container">
+    <table class="submissions-table">
+      <thead>
+        <tr>
+          <th class="col-learner">Learner</th>
+          <th class="col-class">Class</th>
+          <th class="col-type">Submission Type</th>
+          <th class="col-topic">Topic</th>
+          <th class="col-time">Submitted At</th>
+          <th class="col-status">Status</th>
+          <th class="col-action text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of submissions(); track item.id) {
+        <tr>
+          <td class="col-learner">
+            <div class="learner-cell">
+              <span
+                class="learner-avatar"
+                [style.background-color]="item.avatarBg"
+              >
+                {{ item.learnerInitials }}
+              </span>
+              <span class="learner-name">{{ item.learnerName }}</span>
+            </div>
+          </td>
+          <td class="col-class">
+            <span class="cell-text">{{ item.className }}</span>
+          </td>
+          <td class="col-type">
+            <span class="cell-text">{{ item.submissionType }}</span>
+          </td>
+          <td class="col-topic">
+            <span class="cell-text font-medium">{{ item.topic }}</span>
+          </td>
+          <td class="col-time">
+            <span class="cell-muted">{{ item.submittedAt }}</span>
+          </td>
+          <td class="col-status">
+            <school-hub-status-badge [label]="item.status" tone="orange" />
+          </td>
+          <td class="col-action text-right">
+            @if (item.actionType === 'solid') {
+            <a [routerLink]="item.route" class="btn-action-solid">
+              {{ item.actionText }}
+            </a>
+            } @else {
+            <a [routerLink]="item.route" class="btn-action-outline">
+              {{ item.actionText }}
+            </a>
+            }
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="review-notice">
+    <i class="ri-information-line" aria-hidden="true"></i>
+    <span>
+      Teacher reviews worksheets, essays, uploaded work, and portfolio tasks
+      here before scores enter Gradebook.
+    </span>
+  </div>
+</school-hub-dashboard-card>

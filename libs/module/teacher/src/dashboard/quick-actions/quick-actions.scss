@@ -1,0 +1,127 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: all 0.15s ease;
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.action-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  i {
+    font-size: 18px;
+  }
+}
+
+.action-chevron {
+  font-size: 18px;
+  color: #94a3b8;
+  transition: transform 0.15s ease;
+}
+
+.action-item:hover .action-chevron {
+  transform: translateX(2px);
+}
+
+/* Tone variants matching design */
+.tone-blue {
+  background: #f0f7ff;
+  border-color: #dbeafe;
+  color: #1d4ed8;
+
+  i {
+    color: #2563eb;
+  }
+}
+
+.tone-green {
+  background: #f0fdf4;
+  border-color: #dcfce7;
+  color: #15803d;
+
+  i {
+    color: #16a34a;
+  }
+}
+
+.tone-orange {
+  background: #fff7ed;
+  border-color: #ffedd5;
+  color: #c2410c;
+
+  i {
+    color: #ea580c;
+  }
+}
+
+.tone-purple {
+  background: #faf5ff;
+  border-color: #f3e8ff;
+  color: #6d28d9;
+
+  i {
+    color: #7c3aed;
+  }
+}
+
+.tone-teal {
+  background: #f0fdfa;
+  border-color: #ccfbf1;
+  color: #0f766e;
+
+  i {
+    color: #0d9488;
+  }
+}
+
+:host-context(.dark) {
+  .tone-blue {
+    background: rgba(37, 99, 235, 0.12);
+    border-color: rgba(37, 99, 235, 0.25);
+    color: #93c5fd;
+  }
+
+  .tone-green {
+    background: rgba(22, 163, 74, 0.12);
+    border-color: rgba(22, 163, 74, 0.25);
+    color: #86efac;
+  }
+
+  .tone-orange {
+    background: rgba(234, 88, 12, 0.12);
+    border-color: rgba(234, 88, 12, 0.25);
+    color: #fdba74;
+  }
+
+  .tone-purple {
+    background: rgba(124, 58, 237, 0.12);
+    border-color: rgba(124, 58, 237, 0.25);
+    color: #c4b5fd;
+  }
+
+  .tone-teal {
+    background: rgba(13, 148, 136, 0.12);
+    border-color: rgba(13, 148, 136, 0.25);
+    color: #5eead4;
+  }
+}

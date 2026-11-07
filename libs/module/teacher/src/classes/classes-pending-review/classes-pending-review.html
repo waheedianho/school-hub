@@ -1,0 +1,24 @@
+<school-hub-dashboard-card
+  title="Pending Review"
+  icon="ri-file-list-3-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/assignments" class="card-header-link">
+    View all
+  </a>
+
+  <div class="pending-list">
+    @for (item of items(); track item.id) {
+    <div class="pending-item">
+      <div class="count-box" [class]="'count-' + item.tone">
+        {{ item.count }}
+      </div>
+      <div class="item-body">
+        <strong class="item-title">{{ item.title }}</strong>
+        <span class="item-subtitle">{{ item.subtitle }}</span>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

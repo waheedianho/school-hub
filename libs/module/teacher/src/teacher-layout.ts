@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ShellComponent } from '@school-hub/layout';
+import { ShellComponent, HeaderUser } from '@school-hub/layout';
 import { TEACHER_SIDEBAR_SECTIONS } from './teacher-sidebar.config';
 
 @Component({
@@ -9,11 +9,22 @@ import { TEACHER_SIDEBAR_SECTIONS } from './teacher-sidebar.config';
   template: `
     <school-hub-shell
       [sidebarSections]="sidebarSections"
-      [sidebarTheme]="'dark'"
+      [sidebarTheme]="'light'"
       [logoText]="'SchoolHub'"
+      logoIcon="images/learner-logo.svg"
+      variant="learner"
+      [user]="teacherUser"
     ></school-hub-shell>
   `,
 })
 export class TeacherLayoutComponent {
   sidebarSections = TEACHER_SIDEBAR_SECTIONS;
+
+  teacherUser: HeaderUser = {
+    name: 'Mr. Tunde A.',
+    role: 'English Language Tutor',
+    avatarUrl: 'images/admin.png',
+    profileRoute: '/teacher/settings',
+    settingsRoute: '/teacher/settings',
+  };
 }

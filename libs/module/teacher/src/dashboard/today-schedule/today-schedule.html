@@ -1,0 +1,50 @@
+<school-hub-dashboard-card
+  title="Today's Schedule"
+  icon="ri-calendar-event-line"
+  tone="blue"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/calendar" class="card-header-link">
+    View Calendar
+  </a>
+
+  <div class="schedule-timeline">
+    @for (item of items(); track item.id; let first = $first; let last = $last)
+    {
+    <div class="timeline-row" [class.is-first]="first" [class.is-last]="last">
+      <div class="time-col">
+        <span>{{ item.time }}</span>
+      </div>
+
+      <div class="timeline-track">
+        <span class="timeline-line" aria-hidden="true"></span>
+        <span
+          class="timeline-dot"
+          [class.dot-green]="item.status === 'in-progress'"
+          [class.dot-blue]="item.status === 'upcoming'"
+          aria-hidden="true"
+        ></span>
+      </div>
+
+      <div class="detail-col">
+        <div class="session-meta">
+          <strong class="session-title">{{ item.title }}</strong>
+          <span class="session-topic">{{ item.topic }}</span>
+          @if (item.typeBadge) {
+          <span class="type-badge">{{ item.typeBadge }}</span>
+          }
+        </div>
+        <div class="status-col">
+          <span
+            class="status-pill"
+            [class.pill-green]="item.status === 'in-progress'"
+            [class.pill-blue]="item.status === 'upcoming'"
+          >
+            {{ item.status === 'in-progress' ? 'In Progress' : 'Upcoming' }}
+          </span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

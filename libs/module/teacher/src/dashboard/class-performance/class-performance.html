@@ -1,0 +1,50 @@
+<school-hub-dashboard-card
+  title="Class Performance Snapshot"
+  icon="ri-bar-chart-box-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="performance-body">
+    <div class="chart-container">
+      <svg
+        viewBox="0 0 160 160"
+        class="donut-svg"
+        role="img"
+        aria-label="Class performance donut chart"
+      >
+        @for (seg of donutSegments(); track seg.className) {
+        <circle
+          cx="80"
+          cy="80"
+          [attr.r]="radius"
+          fill="transparent"
+          [attr.stroke]="seg.color"
+          stroke-width="28"
+          [attr.stroke-dasharray]="seg.strokeDasharray"
+          [attr.stroke-dashoffset]="seg.strokeDashoffset"
+          transform="rotate(-90 80 80)"
+        />
+        }
+      </svg>
+    </div>
+
+    <div class="legend-list">
+      @for (item of performance(); track item.className) {
+      <div class="legend-item">
+        <div class="legend-left">
+          <span class="legend-dot" [style.background-color]="item.color"></span>
+          <div class="legend-labels">
+            <strong class="class-label">{{ item.className }}</strong>
+            <span class="sub-label">Average Score</span>
+          </div>
+        </div>
+        <span class="score-value">{{ item.averageScore }}%</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <p class="chart-footer-note">
+    Based on assessments & submissions reviewed to date.
+  </p>
+</school-hub-dashboard-card>

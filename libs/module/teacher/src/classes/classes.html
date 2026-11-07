@@ -1,0 +1,60 @@
+<div class="teacher-classes-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">My Classes</h1>
+      <p class="page-subtitle">
+        Manage your classes, track performance, and access class-level teaching
+        activities.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/teacher/live-classes" class="btn btn-outline">
+        <i class="ri-calendar-line" aria-hidden="true"></i>
+        <span>View Class Calendar</span>
+      </a>
+      <button type="button" class="btn btn-primary">
+        <i class="ri-add-line" aria-hidden="true"></i>
+        <span>Create New Class</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Bar -->
+  <section class="metrics-section" aria-label="Class performance metrics">
+    <school-hub-classes-metrics [metrics]="metrics" />
+  </section>
+
+  <!-- Main 2-Column Content Grid -->
+  <div class="classes-layout-grid">
+    <!-- Left Column (~70% width) -->
+    <div class="left-content-column">
+      <!-- Filters Toolbar -->
+      <school-hub-classes-filters (filterChange)="onFilterChange($event)" />
+
+      <!-- Classes Table -->
+      <school-hub-classes-table
+        [classes]="filteredClasses()"
+        (viewClass)="onViewClass($event)"
+      />
+
+      <!-- 3-Card Bottom Subgrid -->
+      <div class="bottom-cards-subgrid">
+        <school-hub-classes-pending-review [items]="pendingReviews" />
+        <school-hub-learners-attention [items]="learnersAttention" />
+        <school-hub-recent-announcements [items]="announcements" />
+      </div>
+    </div>
+
+    <!-- Right Column (~30% width) -->
+    <div class="right-content-column">
+      <school-hub-classes-today-schedule [items]="todaySchedule" />
+      <school-hub-classes-performance-overview
+        [tiers]="performanceTiers"
+        [overallAverage]="72"
+      />
+      <school-hub-classes-quick-actions [actions]="quickActions" />
+    </div>
+  </div>
+</div>

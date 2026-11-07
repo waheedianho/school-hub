@@ -1,0 +1,250 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.card-header-link {
+  font-size: 13px;
+  font-weight: 500;
+  color: #2563eb;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.submissions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+
+  th {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #64748b;
+    padding: 8px 6px;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  td {
+    padding: 9px 6px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  .text-right {
+    text-align: right;
+  }
+}
+
+.col-learner {
+  width: 20%;
+}
+
+.col-class {
+  width: 9%;
+}
+
+.col-type {
+  width: 16%;
+}
+
+.col-topic {
+  width: 18%;
+}
+
+.col-time {
+  width: 11%;
+}
+
+.col-status {
+  width: 14%;
+}
+
+.col-action {
+  width: 12%;
+}
+
+.learner-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.learner-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.learner-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.cell-text {
+  font-size: 12px;
+  color: #334155;
+  white-space: nowrap;
+
+  &.font-medium {
+    font-weight: 500;
+    white-space: normal;
+    line-height: 1.3;
+  }
+}
+
+.cell-muted {
+  color: #64748b;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+school-hub-status-badge {
+  font-size: 11px !important;
+  padding: 2px 7px !important;
+  border-radius: 4px;
+  letter-spacing: -0.01em;
+  line-height: 1.2 !important;
+}
+
+.btn-action-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #4f46e5;
+  background: transparent;
+  border: 1px solid #c7d2fe;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #eef2ff;
+    border-color: #a5b4fc;
+  }
+}
+
+.btn-action-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 9px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+  background: #4f46e5;
+  border: 1px solid #4f46e5;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #4338ca;
+  }
+}
+
+.review-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 11.5px;
+  color: #475569;
+  line-height: 1.4;
+
+  i {
+    font-size: 15px;
+    color: #3b82f6;
+    flex-shrink: 0;
+  }
+}
+
+:host-context(.dark) {
+  .submissions-table {
+    th {
+      color: #94a3b8;
+      border-bottom-color: #1e293b;
+    }
+
+    td {
+      border-bottom-color: #1e293b;
+    }
+  }
+
+  .learner-name {
+    color: #f8fafc;
+  }
+
+  .cell-text {
+    color: #cbd5e1;
+  }
+
+  .cell-muted {
+    color: #94a3b8;
+  }
+
+  .btn-action-outline {
+    color: #818cf8;
+    border-color: #4338ca;
+
+    &:hover {
+      background: rgba(99, 102, 241, 0.15);
+    }
+  }
+
+  .review-notice {
+    background: #0f172a;
+    border-color: #1e293b;
+    color: #94a3b8;
+  }
+}

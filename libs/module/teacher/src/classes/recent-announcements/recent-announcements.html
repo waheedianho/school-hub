@@ -1,0 +1,28 @@
+<school-hub-dashboard-card
+  title="Recent Announcements"
+  icon="ri-megaphone-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/messages" class="card-header-link">
+    View all
+  </a>
+
+  <div class="announcements-list">
+    @for (item of items(); track item.id) {
+    <div class="announcement-item">
+      <div class="icon-box" [class]="'tone-' + item.tone" aria-hidden="true">
+        <i [class]="item.icon"></i>
+      </div>
+
+      <div class="announcement-content">
+        <div class="announcement-top">
+          <strong class="announcement-title">{{ item.title }}</strong>
+          <span class="announcement-time">{{ item.time }}</span>
+        </div>
+        <p class="announcement-snippet">{{ item.snippet }}</p>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

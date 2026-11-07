@@ -1,0 +1,25 @@
+<school-hub-dashboard-card
+  title="Workflow Reminder: How Scores Flow"
+  icon="ri-refresh-line"
+  tone="blue"
+  [compact]="true"
+>
+  <div class="workflow-chain">
+    @for (step of steps(); track step.stepNumber; let isLast = $last) {
+    <div class="step-card" [class]="'tone-' + step.tone">
+      <div class="step-icon-wrap">
+        <i [class]="step.icon" aria-hidden="true"></i>
+      </div>
+      <div class="step-content">
+        <strong class="step-title">{{ step.title }}</strong>
+        <p class="step-description">{{ step.description }}</p>
+      </div>
+    </div>
+
+    @if (!isLast) {
+    <div class="step-connector" aria-hidden="true">
+      <i class="ri-arrow-right-line"></i>
+    </div>
+    } }
+  </div>
+</school-hub-dashboard-card>

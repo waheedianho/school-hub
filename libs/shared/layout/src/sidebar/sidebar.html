@@ -36,7 +36,9 @@
   </div>
 
   <!-- Menu -->
-  <div class="pt-[89px] px-[25px] pb-[20px] overflow-y-auto h-full">
+  <div
+    class="pt-[89px] px-[25px] pb-[20px] overflow-y-auto overflow-x-hidden h-full"
+  >
     <nav class="accordion" aria-label="Portal navigation">
       @for (section of sections; track section.heading) {
       <span
@@ -51,7 +53,7 @@
 
       @for (item of section.items; track item.label; let i = $index) {
       <div
-        class="accordion-item rounded-md mb-[5px] whitespace-nowrap"
+        class="accordion-item rounded-md mb-[5px]"
         [ngClass]="{
               'text-black dark:text-white': theme === 'light',
               'text-gray-200': theme === 'dark'
@@ -70,7 +72,7 @@
             fragment: 'ignored'
           }"
           ariaCurrentWhenActive="page"
-          class="accordion-button flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative text-left"
+          class="accordion-button flex items-center transition-all py-[9px] ltr:pl-[12px] ltr:pr-[10px] rtl:pr-[12px] rtl:pl-[10px] rounded-md font-medium w-full relative text-left"
           [ngClass]="{
                   'hover:bg-gray-50 dark:hover:bg-[#15203c]': theme === 'light',
                   'hover:bg-gray-800 dark:hover:bg-[#15203c]': theme === 'dark'
@@ -78,7 +80,7 @@
         >
           <i
             aria-hidden="true"
-            class="material-symbols-outlined transition-all ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px"
+            class="material-symbols-outlined transition-all ltr:mr-[8px] rtl:ml-[8px] !text-[20px] leading-none shrink-0 relative -top-px"
             [ngClass]="{
                     'text-gray-500 dark:text-gray-400': theme === 'light',
                     'text-gray-400': theme === 'dark'
@@ -86,7 +88,7 @@
           >
             {{ item.icon }}
           </i>
-          <span class="title leading-none">{{ item.label }}</span>
+          <span class="title leading-snug">{{ item.label }}</span>
           @if (item.badge) {
           <span
             class="text-[10px] font-medium py-[1px] px-[8px] ltr:ml-[8px] rtl:mr-[8px] inline-block rounded-sm"
@@ -101,7 +103,7 @@
         <!-- Parent item (has children) -->
         @if (item.children && item.children.length > 0) {
         <button
-          class="accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[14px] ltr:pr-[30px] rtl:pr-[14px] rtl:pl-[30px] rounded-md font-medium w-full relative text-left"
+          class="accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[12px] ltr:pr-[26px] rtl:pr-[12px] rtl:pl-[26px] rounded-md font-medium w-full relative text-left"
           [ngClass]="{
                   'open': isSectionOpen(i),
                   'hover:bg-gray-50 dark:hover:bg-[#15203c]': theme === 'light',
@@ -112,7 +114,7 @@
         >
           <i
             aria-hidden="true"
-            class="material-symbols-outlined transition-all ltr:mr-[7px] rtl:ml-[7px] !text-[22px] leading-none relative -top-px"
+            class="material-symbols-outlined transition-all ltr:mr-[8px] rtl:ml-[8px] !text-[20px] leading-none shrink-0 relative -top-px"
             [ngClass]="{
                     'text-gray-500 dark:text-gray-400': theme === 'light',
                     'text-gray-400': theme === 'dark'
@@ -120,7 +122,7 @@
           >
             {{ item.icon }}
           </i>
-          <span class="title leading-none">{{ item.label }}</span>
+          <span class="title leading-snug">{{ item.label }}</span>
           @if (item.badge) {
           <span
             class="rounded-full font-medium inline-block text-center w-[20px] h-[20px] text-[11px] leading-[20px] ltr:ml-auto rtl:mr-auto rtl:ml-0"
@@ -149,7 +151,7 @@
                     fragment: 'ignored'
                   }"
                   ariaCurrentWhenActive="page"
-                  class="sidemenu-link rounded-md flex items-center relative transition-all font-medium py-[9px] ltr:pl-[38px] ltr:pr-[30px] rtl:pr-[38px] rtl:pl-[30px] hover:text-primary-500 w-full text-left"
+                  class="sidemenu-link rounded-md flex items-center relative transition-all font-medium py-[9px] ltr:pl-[38px] ltr:pr-[12px] rtl:pr-[38px] rtl:pl-[12px] hover:text-primary-500 w-full text-left"
                   [ngClass]="{
                             'text-gray-500 dark:text-gray-400 hover:bg-primary-50 dark:hover:bg-[#15203c]': theme === 'light',
                             'text-gray-400 hover:bg-gray-800 dark:hover:bg-[#15203c]': theme === 'dark'

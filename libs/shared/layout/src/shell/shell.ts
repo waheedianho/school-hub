@@ -22,7 +22,7 @@ import { DEFAULT_HEADER_USER, HeaderUser } from '../models/header-user.model';
   encapsulation: ViewEncapsulation.None,
 })
 export class ShellComponent {
-  @Input() variant: 'default' | 'learner' = 'default';
+  @Input() variant: 'default' | 'learner' = 'learner';
   @Input() user: HeaderUser = DEFAULT_HEADER_USER;
   /** Menu sections passed down to sidebar */
   @Input() sidebarSections: SidebarSection[] = [];
@@ -31,10 +31,13 @@ export class ShellComponent {
   @Input() logoText = 'SchoolHub';
 
   /** Logo icon path */
-  @Input() logoIcon = 'images/logo-icon.svg';
+  @Input() logoIcon = 'images/learner-logo.svg';
 
   /** Sidebar theme variant */
   @Input() sidebarTheme: 'light' | 'dark' = 'light';
+
+  /** Show encouragement widget in sidebar */
+  @Input() encouragement = false;
 
   isSidebarHidden = false;
 

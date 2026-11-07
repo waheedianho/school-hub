@@ -9,8 +9,10 @@ import { SCHOOL_ADMIN_SIDEBAR_SECTIONS } from './school-admin-sidebar.config';
   template: `
     <school-hub-shell
       [sidebarSections]="sidebarSections"
-      [sidebarTheme]="'dark'"
+      [sidebarTheme]="'light'"
       [logoText]="'SchoolHub'"
+      logoIcon="images/learner-logo.svg"
+      variant="learner"
     ></school-hub-shell>
   `,
 })

@@ -1,0 +1,35 @@
+<school-hub-dashboard-card
+  title="Upcoming Deadlines"
+  icon="ri-calendar-line"
+  tone="orange"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/calendar" class="card-header-link">
+    View Calendar
+  </a>
+
+  <div class="deadlines-list">
+    @for (item of deadlines(); track item.id) {
+    <div class="deadline-item">
+      <div class="icon-wrap" [class]="'tone-' + item.tone">
+        <i class="ri-calendar-2-line" aria-hidden="true"></i>
+      </div>
+
+      <div class="deadline-content">
+        <strong class="deadline-title">{{ item.title }}</strong>
+        <span class="deadline-date">{{ item.dueText }}</span>
+      </div>
+
+      <div class="badge-col">
+        <span
+          class="status-pill"
+          [class.pill-pink]="item.status === 'Due Soon'"
+          [class.pill-orange]="item.status === 'Upcoming'"
+        >
+          {{ item.status }}
+        </span>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

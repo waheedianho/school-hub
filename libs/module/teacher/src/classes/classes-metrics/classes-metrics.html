@@ -1,0 +1,24 @@
+<div class="metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="metric-card" [class]="'tone-' + metric.tone">
+    <div class="metric-left">
+      <div class="metric-icon-wrap">
+        <i [class]="metric.icon" aria-hidden="true"></i>
+      </div>
+    </div>
+    <div class="metric-right">
+      <span class="metric-label">{{ metric.label }}</span>
+      <strong class="metric-value">{{ metric.value }}</strong>
+      <div
+        class="metric-subtext"
+        [class]="'subtext-' + (metric.subtextType || 'neutral')"
+      >
+        @if (metric.subtextType === 'active') {
+        <span class="active-dot" aria-hidden="true">●</span>
+        }
+        <span>{{ metric.subtext }}</span>
+      </div>
+    </div>
+  </div>
+  }
+</div>

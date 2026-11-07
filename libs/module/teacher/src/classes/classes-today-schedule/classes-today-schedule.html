@@ -1,0 +1,43 @@
+<school-hub-dashboard-card
+  title="Today's Schedule"
+  icon="ri-calendar-event-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/live-classes" class="card-header-link">
+    View all
+  </a>
+
+  <div class="schedule-list">
+    @for (item of items(); track item.id) {
+    <div class="schedule-item-card">
+      <div class="schedule-top">
+        <span class="status-pill" [class]="'pill-' + item.badgeTone">
+          <span class="pill-dot"></span>
+          {{ item.badgeText }}
+        </span>
+        <span class="schedule-time">{{ item.time }}</span>
+      </div>
+
+      <div class="schedule-middle">
+        <div class="schedule-details">
+          <h4 class="schedule-class-name">
+            {{ item.className }}
+            <span class="subject-dot">•</span>
+            <span class="subject-name">{{ item.subject }}</span>
+          </h4>
+          <p class="schedule-topic">{{ item.topic }}</p>
+        </div>
+
+        <a
+          [routerLink]="item.route"
+          class="action-arrow"
+          [attr.aria-label]="'Go to ' + item.className + ' session'"
+        >
+          <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

@@ -14,6 +14,7 @@ import { STUDENT_SIDEBAR_SECTIONS } from './student-sidebar.config';
       [logoText]="'SchoolHub'"
       logoIcon="images/learner-logo.svg"
       variant="learner"
+      [encouragement]="true"
       [user]="profile.header()"
     ></school-hub-shell>
   `,

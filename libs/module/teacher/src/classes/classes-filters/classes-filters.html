@@ -1,0 +1,65 @@
+<div class="filters-card">
+  <div class="filter-group">
+    <label for="term-select" class="filter-label">Term</label>
+    <div class="select-wrap">
+      <select
+        id="term-select"
+        class="filter-select"
+        [(ngModel)]="selectedTerm"
+        (ngModelChange)="onFilterUpdated()"
+      >
+        <option value="Term 1 2025/2026">Term 1 2025/2026</option>
+        <option value="Term 2 2025/2026">Term 2 2025/2026</option>
+        <option value="Term 3 2025/2026">Term 3 2025/2026</option>
+      </select>
+      <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label for="subject-select" class="filter-label">Subject</label>
+    <div class="select-wrap">
+      <select
+        id="subject-select"
+        class="filter-select"
+        [(ngModel)]="selectedSubject"
+        (ngModelChange)="onFilterUpdated()"
+      >
+        <option value="English Language">English Language</option>
+        <option value="Mathematics">Mathematics</option>
+        <option value="Basic Science">Basic Science</option>
+      </select>
+      <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div class="filter-group">
+    <label for="status-select" class="filter-label">Status</label>
+    <div class="select-wrap">
+      <select
+        id="status-select"
+        class="filter-select"
+        [(ngModel)]="selectedStatus"
+        (ngModelChange)="onFilterUpdated()"
+      >
+        <option value="All Status">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+      <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+    </div>
+  </div>
+
+  <div class="search-group">
+    <div class="search-wrap">
+      <i class="ri-search-line search-icon" aria-hidden="true"></i>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Search classes..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onFilterUpdated()"
+      />
+    </div>
+  </div>
+</div>

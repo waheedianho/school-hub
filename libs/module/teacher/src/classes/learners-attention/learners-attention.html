@@ -1,0 +1,46 @@
+<school-hub-dashboard-card
+  title="Learners Needing Attention"
+  icon="ri-alert-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/classes" class="card-header-link">
+    View all
+  </a>
+
+  <div class="attention-list">
+    @for (item of items(); track item.id) {
+    <div class="attention-item">
+      <div
+        class="learner-avatar"
+        [style.background-color]="item.avatarBg"
+        aria-hidden="true"
+      >
+        {{ item.avatarInitials }}
+      </div>
+
+      <div class="learner-info">
+        <strong class="learner-name">{{ item.name }}</strong>
+        <span class="learner-issue">{{ item.issue }}</span>
+      </div>
+
+      <div class="learner-status">
+        <school-hub-status-badge
+          [tone]="item.badgeTone === 'red' ? 'red' : 'orange'"
+          [label]="item.badgeLabel"
+          size="sm"
+        />
+      </div>
+
+      <a
+        [routerLink]="['/teacher/classes']"
+        [queryParams]="{ learner: item.learnerId }"
+        class="action-arrow"
+        [attr.aria-label]="'View details for ' + item.name"
+      >
+        <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+      </a>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>
