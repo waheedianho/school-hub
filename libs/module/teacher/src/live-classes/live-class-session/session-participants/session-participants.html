@@ -1,0 +1,46 @@
+<div class="participants-card">
+  <!-- Header -->
+  <div class="participants-header">
+    <h3 class="participants-title">
+      Participants ({{ totalParticipantsCount() }})
+    </h3>
+    <a href="javascript:void(0)" class="view-all-link">View all</a>
+  </div>
+
+  <!-- Participants List -->
+  <div class="participants-list">
+    @for (person of participants(); track person.id) {
+    <div class="participant-row">
+      <div class="user-info">
+        <div class="user-avatar" [style.background-color]="person.avatarColor">
+          {{ person.avatarText }}
+        </div>
+        <div class="user-name-role">
+          <span class="user-name">{{ person.name }}</span>
+          @if (person.role === 'tutor') {
+          <span class="tutor-label">Tutor</span>
+          }
+        </div>
+      </div>
+
+      <div class="user-actions">
+        <span
+          class="material-symbols-outlined mic-icon"
+          [class.mic-on]="person.micOn"
+          [class.mic-off]="!person.micOn"
+        >
+          {{ person.micOn ? 'mic' : 'mic_off' }}
+        </span>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Footer Note -->
+  <div class="participants-footer">
+    <span class="remaining-text"
+      >... and {{ totalParticipantsCount() - participants().length }} more
+      learners</span
+    >
+  </div>
+</div>

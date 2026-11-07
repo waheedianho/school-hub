@@ -1,0 +1,43 @@
+<div class="teacher-curriculum-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">My Subjects & Curriculum</h1>
+      <p class="page-subtitle">
+        Track subject coverage, term plans, weekly topics, curriculum
+        objectives, and teaching progress.
+      </p>
+    </div>
+  </header>
+
+  <!-- Top Metrics Bar -->
+  <section class="metrics-section" aria-label="Curriculum performance metrics">
+    <school-hub-curriculum-metrics [metrics]="metrics" />
+  </section>
+
+  <!-- Middle 2-Column Content Grid -->
+  <div class="middle-layout-grid">
+    <!-- Left Column: Filters + Assigned Subjects Table -->
+    <div class="middle-left-column">
+      <school-hub-curriculum-filters (filterChange)="onFilterChange($event)" />
+
+      <school-hub-assigned-subjects-table
+        [subjects]="filteredSubjects()"
+        (selectSubject)="onSelectSubject($event)"
+      />
+    </div>
+
+    <!-- Right Column: This Week's Curriculum Focus -->
+    <div class="middle-right-column">
+      <school-hub-weekly-curriculum-focus [items]="weeklyFocusItems" />
+    </div>
+  </div>
+
+  <!-- Bottom 4-Card Grid -->
+  <div class="bottom-cards-grid">
+    <school-hub-curriculum-progress [weeks]="weeksCoverage" />
+    <school-hub-current-topic-objectives [objective]="topicObjective" />
+    <school-hub-upcoming-topics [topics]="upcomingTopics" />
+    <school-hub-curriculum-quick-actions [actions]="quickActions" />
+  </div>
+</div>

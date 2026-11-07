@@ -1,0 +1,91 @@
+<div class="controls-bar">
+  <div class="controls-left">
+    <!-- Mic Toggle -->
+    <button
+      type="button"
+      class="control-btn"
+      [class.btn-muted]="!micOn()"
+      (click)="toggleMic()"
+      [attr.aria-label]="micOn() ? 'Mute microphone' : 'Unmute microphone'"
+    >
+      <span class="material-symbols-outlined"
+        >{{ micOn() ? 'mic' : 'mic_off' }}</span
+      >
+      <span>Mic</span>
+    </button>
+
+    <!-- Camera Toggle -->
+    <button
+      type="button"
+      class="control-btn"
+      [class.btn-muted]="!cameraOn()"
+      (click)="toggleCamera()"
+      [attr.aria-label]="cameraOn() ? 'Turn off camera' : 'Turn on camera'"
+    >
+      <span class="material-symbols-outlined"
+        >{{ cameraOn() ? 'videocam' : 'videocam_off' }}</span
+      >
+      <span>Camera</span>
+    </button>
+
+    <!-- Share Screen -->
+    <button
+      type="button"
+      class="control-btn"
+      [class.btn-active]="screenSharing()"
+      (click)="toggleScreenShare()"
+    >
+      <span class="material-symbols-outlined">screen_share</span>
+      <span>Share Screen</span>
+    </button>
+
+    <!-- Whiteboard Toggle (Active Green) -->
+    <button
+      type="button"
+      class="control-btn"
+      [class.btn-whiteboard-active]="whiteboardActive()"
+      (click)="toggleWhiteboard()"
+    >
+      <span class="material-symbols-outlined">draw</span>
+      <span>Whiteboard</span>
+    </button>
+
+    <!-- Polls -->
+    <button type="button" class="control-btn">
+      <span class="material-symbols-outlined">bar_chart</span>
+      <span>Polls</span>
+    </button>
+
+    <!-- Raise Hand -->
+    <button
+      type="button"
+      class="control-btn"
+      [class.btn-active]="handRaised()"
+      (click)="toggleHand()"
+    >
+      <span class="material-symbols-outlined">front_hand</span>
+      <span>Raise Hand</span>
+    </button>
+
+    <!-- More -->
+    <button
+      type="button"
+      class="control-btn control-btn-more"
+      aria-label="More session options"
+    >
+      <span class="material-symbols-outlined">more_horiz</span>
+      <span>More</span>
+    </button>
+  </div>
+
+  <div class="controls-right">
+    <button
+      type="button"
+      class="stop-sharing-btn"
+      (click)="stopSharing()"
+      aria-label="Stop sharing screen or whiteboard"
+    >
+      <span>Stop Sharing</span>
+    </button>
+  </div>
+</div>

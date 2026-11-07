@@ -1,0 +1,80 @@
+.quick-actions-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.actions-list {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 12px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: #f8fafc;
+
+    .action-label {
+      color: var(--primary-color, #4f46e5);
+    }
+
+    .chevron-icon {
+      color: var(--primary-color, #4f46e5);
+      transform: translateX(2px);
+    }
+  }
+}
+
+.action-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-icon {
+  font-size: 18px;
+  color: #64748b;
+}
+
+.action-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #334155;
+  transition: color 0.15s ease;
+}
+
+.chevron-icon {
+  font-size: 18px;
+  color: #94a3b8;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}

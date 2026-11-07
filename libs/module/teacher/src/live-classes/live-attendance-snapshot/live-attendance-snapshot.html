@@ -1,0 +1,113 @@
+<div class="attendance-snapshot-card">
+  <div class="card-header">
+    <h3 class="card-title">Attendance Snapshot</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="chart-section">
+      <!-- SVG Donut Chart -->
+      <div class="donut-container">
+        <svg
+          class="donut-svg"
+          viewBox="0 0 120 120"
+          role="img"
+          aria-label="Attendance breakdown"
+        >
+          <!-- Background track -->
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#f1f5f9"
+            stroke-width="12"
+          />
+          <!-- Late segment (2%) -> dasharray = 5.8 283.2, offset = 0 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#ef4444"
+            stroke-width="12"
+            stroke-dasharray="5.8 283.2"
+            stroke-dashoffset="0"
+            transform="rotate(-90 60 60)"
+          />
+          <!-- Absent segment (11%) -> dasharray = 31.8 257.2, offset = -5.8 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#f97316"
+            stroke-width="12"
+            stroke-dasharray="31.8 257.2"
+            stroke-dashoffset="-5.8"
+            transform="rotate(-90 60 60)"
+          />
+          <!-- Present segment (87%) -> dasharray = 251.4 37.6, offset = -37.6 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="46"
+            fill="none"
+            stroke="#10b981"
+            stroke-width="12"
+            stroke-dasharray="251.4 37.6"
+            stroke-dashoffset="-37.6"
+            transform="rotate(-90 60 60)"
+          />
+        </svg>
+        <div class="donut-center-text">
+          <span class="donut-percentage"
+            >{{ attendanceData().averageRate }}%</span
+          >
+          <span class="donut-sublabel">Average</span>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend-list">
+        <div class="legend-item">
+          <span class="legend-dot dot-present"></span>
+          <span class="legend-label">Present</span>
+          <span class="legend-value"
+            >{{ attendanceData().presentCount }} ({{
+            attendanceData().presentRate }}%)</span
+          >
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot dot-absent"></span>
+          <span class="legend-label">Absent</span>
+          <span class="legend-value"
+            >{{ attendanceData().absentCount }} ({{ attendanceData().absentRate
+            }}%)</span
+          >
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot dot-late"></span>
+          <span class="legend-label">Late</span>
+          <span class="legend-value"
+            >{{ attendanceData().lateCount }} ({{ attendanceData().lateRate
+            }}%)</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider & Total Sessions -->
+    <div class="sessions-divider"></div>
+    <div class="sessions-box">
+      <span class="sessions-label">Total Sessions</span>
+      <span class="sessions-count">{{ attendanceData().totalSessions }}</span>
+      <span class="sessions-period">{{ attendanceData().periodLabel }}</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="report-link">
+      View detailed attendance report &rsaquo;
+    </a>
+  </div>
+</div>

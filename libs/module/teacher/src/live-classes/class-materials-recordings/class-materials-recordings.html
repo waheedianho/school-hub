@@ -1,0 +1,38 @@
+<div class="materials-recordings-card">
+  <div class="card-header">
+    <h3 class="card-title">Class Materials & Recordings</h3>
+    <a href="javascript:void(0)" class="view-all-header-link"
+      >View all materials</a
+    >
+  </div>
+
+  <div class="materials-list">
+    @for (mat of materials(); track mat.id) {
+    <div class="material-item">
+      <div class="material-icon-box tone-{{ mat.type }}">
+        <span class="material-symbols-outlined">
+          @switch (mat.type) { @case ('slide') { slideshow } @case ('notes') {
+          description } @case ('recording') { videocam } @case ('worksheet') {
+          menu_book } @default { draft } }
+        </span>
+      </div>
+
+      <div class="material-details">
+        <div class="material-title-row">
+          <span class="material-title">{{ mat.title }}</span>
+          <span class="class-badge">{{ mat.className }}</span>
+        </div>
+        <span class="material-time">{{ mat.uploadTime }}</span>
+      </div>
+
+      <button
+        type="button"
+        class="material-more-btn"
+        aria-label="Material actions"
+      >
+        <span class="material-symbols-outlined">more_horiz</span>
+      </button>
+    </div>
+    }
+  </div>
+</div>

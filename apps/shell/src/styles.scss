@@ -112,6 +112,64 @@
   --shadow-3xl: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+/** Custom Scrollbar with White-labelling Primary Color */
+:root {
+  --scrollbar-thumb: var(--primary-color, #605dff);
+  --scrollbar-thumb-hover: var(--primary-color, #605dff);
+  --scrollbar-track: rgba(0, 0, 0, 0.04);
+}
+
+@supports (color: color-mix(in srgb, red, blue)) {
+  :root {
+    --scrollbar-thumb: color-mix(
+      in srgb,
+      var(--primary-color, #605dff) 70%,
+      transparent
+    );
+    --scrollbar-thumb-hover: var(--primary-color, #605dff);
+    --scrollbar-track: rgba(0, 0, 0, 0.04);
+  }
+}
+
+.dark {
+  --scrollbar-track: rgba(255, 255, 255, 0.05);
+}
+
+/* W3C standard: Firefox, Chrome 121+, Safari 17.4+, Edge 121+ */
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* WebKit / Blink fallback (Chrome, Safari, Edge, Opera) */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.15s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /** Body */
 body {
   @apply font-body text-sm md:text-base text-gray-500 bg-gray-50 leading-normal dark:bg-[#0a0e19] dark:text-gray-400;
@@ -553,7 +611,12 @@ button {
           @apply bg-white rounded-[50px] dark:bg-[#0C1427];
         }
         &::-webkit-scrollbar-thumb {
-          @apply bg-[#B5C3D7] rounded-[50px] dark:bg-[#ffffff1a];
+          background-color: var(--scrollbar-thumb);
+          border-radius: 50px;
+
+          &:hover {
+            background-color: var(--scrollbar-thumb-hover);
+          }
         }
       }
     }
@@ -567,7 +630,12 @@ button {
         @apply bg-white rounded-[50px] dark:bg-[#0C1427];
       }
       &::-webkit-scrollbar-thumb {
-        @apply bg-[#B5C3D7] rounded-[50px] dark:bg-[#ffffff1a];
+        background-color: var(--scrollbar-thumb);
+        border-radius: 50px;
+
+        &:hover {
+          background-color: var(--scrollbar-thumb-hover);
+        }
       }
       ul {
         li {
@@ -599,7 +667,12 @@ button {
         @apply bg-white rounded-[50px] dark:bg-[#0C1427];
       }
       &::-webkit-scrollbar-thumb {
-        @apply bg-[#B5C3D7] rounded-[50px] dark:bg-[#ffffff1a];
+        background-color: var(--scrollbar-thumb);
+        border-radius: 50px;
+
+        &:hover {
+          background-color: var(--scrollbar-thumb-hover);
+        }
       }
     }
     abbr {
@@ -1299,10 +1372,17 @@ html[dir='rtl'] {
     @apply w-[6px] h-[6px];
   }
   &::-webkit-scrollbar-thumb {
-    @apply bg-black rounded-md cursor-pointer;
+    background-color: var(--scrollbar-thumb);
+    border-radius: 6px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--scrollbar-thumb-hover);
+    }
   }
   &::-webkit-scrollbar-track {
-    @apply bg-gray-50 dark:bg-[#15203c] rounded-md;
+    background-color: var(--scrollbar-track);
+    border-radius: 6px;
   }
 }
 

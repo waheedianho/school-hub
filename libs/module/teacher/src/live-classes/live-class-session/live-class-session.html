@@ -1,0 +1,74 @@
+<div class="session-room-container">
+  <!-- Top Navigation Bar -->
+  <div class="top-nav-bar">
+    <button type="button" class="back-link-btn" (click)="onBack()">
+      <span class="material-symbols-outlined back-arrow">arrow_back</span>
+      <span>Back to Live Classes</span>
+    </button>
+  </div>
+
+  <!-- Session Room Header -->
+  <header class="session-header">
+    <div class="header-main-row">
+      <div class="title-status-group">
+        <span class="live-status-pill">
+          <span class="live-dot"></span>
+          LIVE
+        </span>
+        <h1 class="session-title">
+          {{ sessionDetails().className }} - {{ sessionDetails().subject }}
+        </h1>
+        <span class="ongoing-badge">{{ sessionDetails().statusBadge }}</span>
+      </div>
+
+      <button type="button" class="end-class-btn" (click)="onEndClass()">
+        <span class="material-symbols-outlined stop-icon">call_end</span>
+        <span>End Class</span>
+      </button>
+    </div>
+
+    <div class="header-topic-row">
+      <span class="topic-label">{{ sessionDetails().topic }}</span>
+    </div>
+
+    <p class="lesson-objective">{{ sessionDetails().lessonObjective }}</p>
+
+    <div class="meta-tags-row">
+      <div class="meta-item">
+        <span class="material-symbols-outlined meta-icon">schedule</span>
+        <span>Time: {{ sessionDetails().scheduledTime }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="material-symbols-outlined meta-icon">timer</span>
+        <span>Duration: {{ sessionDetails().durationText }}</span>
+      </div>
+      <div class="meta-item online-learners-item">
+        <span class="online-dot"></span>
+        <span>{{ sessionDetails().onlineLearnersCount }} Learners Online</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Content Grid -->
+  <div class="session-grid">
+    <!-- Left Column (Whiteboard, Controls, Tabs) -->
+    <div class="session-main-column">
+      <school-hub-session-whiteboard />
+
+      <school-hub-session-controls-bar />
+
+      <school-hub-session-tabs [sessionDetails]="sessionDetails()" />
+    </div>
+
+    <!-- Right Column (Chat, Participants, Quick Actions) -->
+    <div class="session-side-column">
+      <school-hub-session-chat />
+
+      <school-hub-session-participants
+        [totalParticipantsCount]="sessionDetails().onlineLearnersCount"
+      />
+
+      <school-hub-session-quick-actions />
+    </div>
+  </div>
+</div>

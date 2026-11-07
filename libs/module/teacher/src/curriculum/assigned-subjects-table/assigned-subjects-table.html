@@ -1,0 +1,131 @@
+<school-hub-dashboard-card
+  title="Assigned Subjects"
+  icon="ri-book-open-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="table-container">
+    <table class="curriculum-table">
+      <thead>
+        <tr>
+          <th class="col-subject">Subject</th>
+          <th class="col-classes">Classes Assigned</th>
+          <th class="col-term">Term</th>
+          <th class="col-week">Current Week</th>
+          <th class="col-topic">Current Topic</th>
+          <th class="col-coverage">Coverage Status</th>
+          <th class="col-pack">Delivery Pack Status</th>
+          <th class="col-performance">Average Performance</th>
+          <th class="col-action text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of subjects(); track item.id) {
+        <tr>
+          <td class="col-subject">
+            <div class="subject-cell">
+              <div
+                class="subject-icon-box"
+                [class]="'tone-' + item.subjectTone"
+                aria-hidden="true"
+              >
+                <i [class]="item.subjectIcon"></i>
+              </div>
+              <span class="subject-name">{{ item.subject }}</span>
+            </div>
+          </td>
+
+          <td class="col-classes">
+            <div class="classes-cell">
+              <span class="classes-count">{{ item.classesCount }}</span>
+              <span class="classes-list">{{ item.classesList }}</span>
+            </div>
+          </td>
+
+          <td class="col-term">
+            <span class="cell-text">{{ item.term }}</span>
+          </td>
+
+          <td class="col-week">
+            <div class="week-cell">
+              <span class="week-name">{{ item.currentWeek }}</span>
+              <span class="week-dates">{{ item.dateRange }}</span>
+            </div>
+          </td>
+
+          <td class="col-topic">
+            <span class="topic-name">{{ item.currentTopic }}</span>
+          </td>
+
+          <td class="col-coverage">
+            <div class="coverage-cell">
+              <school-hub-status-badge
+                [tone]="item.coverageStatus === 'On Track' ? 'green' : 'orange'"
+                [label]="item.coverageStatus"
+                size="sm"
+              />
+              <span class="coverage-pct">{{ item.coveragePercentage }}%</span>
+            </div>
+          </td>
+
+          <td class="col-pack">
+            <div class="pack-cell">
+              <school-hub-status-badge
+                [tone]="item.deliveryPackStatus === 'Ready' ? 'green' : 'orange'"
+                [label]="item.deliveryPackStatus"
+                size="sm"
+              />
+              <span class="pack-count">{{ item.deliveryPackCount }}</span>
+            </div>
+          </td>
+
+          <td class="col-performance">
+            <span
+              class="performance-value"
+              [class.perf-high]="item.averagePerformance >= 70"
+              [class.perf-mid]="item.averagePerformance < 70"
+            >
+              {{ item.averagePerformance }}%
+            </span>
+          </td>
+
+          <td class="col-action text-right">
+            <button
+              type="button"
+              class="btn-icon"
+              (click)="onSelectSubject(item)"
+              aria-label="More options for subject"
+              title="Options"
+            >
+              <i class="ri-more-line" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination">
+    <span class="pagination-info">
+      Showing 1 to {{ subjects().length }} of {{ subjects().length }} subjects
+    </span>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-btn"
+        disabled
+        aria-label="Previous page"
+      >
+        <i class="ri-arrow-left-s-line" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="page-btn active" aria-current="page">
+        1
+      </button>
+      <button type="button" class="page-btn" disabled aria-label="Next page">
+        <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+      </button>
+    </div>
+  </div>
+</school-hub-dashboard-card>

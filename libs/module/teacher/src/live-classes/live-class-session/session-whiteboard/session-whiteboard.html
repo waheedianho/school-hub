@@ -1,0 +1,238 @@
+<div class="whiteboard-card">
+  <div class="whiteboard-header">
+    <h3 class="whiteboard-title">Presentation / Whiteboard</h3>
+  </div>
+
+  <div class="whiteboard-body">
+    <!-- Main Board Area -->
+    <div class="board-canvas-wrapper">
+      <div
+        class="board-canvas"
+        [style.transform]="'scale(' + zoomLevel() / 100 + ')'"
+      >
+        <!-- Left Side: Formal Sentence Types Presentation -->
+        <div class="presentation-side">
+          <h2 class="slide-title">SENTENCE TYPES</h2>
+          <p class="slide-intro">There are four main types of sentences:</p>
+
+          <div class="types-list">
+            <div class="type-item">
+              <h4 class="type-heading">
+                1. Simple Sentence &ndash;
+                <span class="type-desc">has one independent clause.</span>
+              </h4>
+              <p class="type-example">
+                <span class="example-label">Example:</span> The boy runs.
+              </p>
+            </div>
+
+            <div class="type-item">
+              <h4 class="type-heading">
+                2. Compound Sentence &ndash;
+                <span class="type-desc"
+                  >has two independent clauses joined by a conjunction.</span
+                >
+              </h4>
+              <p class="type-example">
+                <span class="example-label">Example:</span> The boy runs, and
+                the girl walks.
+              </p>
+            </div>
+
+            <div class="type-item">
+              <h4 class="type-heading">
+                3. Complex Sentence &ndash;
+                <span class="type-desc"
+                  >has one independent clause and at least one dependent
+                  clause.</span
+                >
+              </h4>
+              <p class="type-example">
+                <span class="example-label">Example:</span> Because it rained,
+                we stayed indoors.
+              </p>
+            </div>
+
+            <div class="type-item">
+              <h4 class="type-heading">
+                4. Compound-Complex Sentence &ndash;
+                <span class="type-desc"
+                  >has two or more independent clauses and at least one
+                  dependent clause.</span
+                >
+              </h4>
+              <p class="type-example">
+                <span class="example-label">Example:</span> The boy runs, and
+                the girl walks because it is a sunny day.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vertical Divider -->
+        <div class="board-divider"></div>
+
+        <!-- Right Side: Handwritten / Live Examples -->
+        <div class="handwriting-side">
+          <h3 class="notes-heading">Examples:</h3>
+          <div class="handwriting-notes">
+            <p class="handwriting-line">
+              1) Simple: <span class="handwritten-text">I like reading.</span>
+            </p>
+            <p class="handwriting-line">
+              2) Compound:
+              <span class="handwritten-text"
+                >I like reading, but my brother likes football.</span
+              >
+            </p>
+            <p class="handwriting-line">
+              3) Complex:
+              <span class="handwritten-text"
+                >When I study hard, I do well in exams.</span
+              >
+            </p>
+            <p class="handwriting-line">
+              4) Compound-Complex:
+              <span class="handwritten-text"
+                >I will go to the library, and I will read my book because I
+                want to improve.</span
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right-Edge Whiteboard Tool Palette -->
+    <div class="tools-palette" aria-label="Whiteboard drawing tools">
+      <button
+        type="button"
+        class="palette-tool-btn"
+        [class.active]="activeTool() === 'select'"
+        (click)="selectTool('select')"
+        aria-label="Select cursor"
+      >
+        <span class="material-symbols-outlined">near_me</span>
+      </button>
+
+      <button
+        type="button"
+        class="palette-tool-btn"
+        [class.active]="activeTool() === 'pen'"
+        (click)="selectTool('pen')"
+        aria-label="Pen tool"
+      >
+        <span class="material-symbols-outlined">edit</span>
+      </button>
+
+      <button
+        type="button"
+        class="palette-tool-btn"
+        [class.active]="activeTool() === 'eraser'"
+        (click)="selectTool('eraser')"
+        aria-label="Eraser tool"
+      >
+        <span class="material-symbols-outlined">auto_fix_normal</span>
+      </button>
+
+      <button
+        type="button"
+        class="palette-tool-btn"
+        [class.active]="activeTool() === 'text'"
+        (click)="selectTool('text')"
+        aria-label="Text tool"
+      >
+        <span class="material-symbols-outlined">title</span>
+      </button>
+
+      <button
+        type="button"
+        class="palette-tool-btn"
+        [class.active]="activeTool() === 'shape'"
+        (click)="selectTool('shape')"
+        aria-label="Shape tool"
+      >
+        <span class="material-symbols-outlined">crop_square</span>
+      </button>
+
+      <button type="button" class="palette-tool-btn" aria-label="Undo action">
+        <span class="material-symbols-outlined">undo</span>
+      </button>
+
+      <button
+        type="button"
+        class="palette-tool-btn"
+        aria-label="Clear whiteboard"
+      >
+        <span class="material-symbols-outlined">delete</span>
+      </button>
+
+      <div class="palette-colors">
+        @for (color of colorOptions; track color) {
+        <button
+          type="button"
+          class="color-dot-btn"
+          [style.background-color]="color"
+          [class.active]="activeColor() === color"
+          (click)="selectColor(color)"
+          [attr.aria-label]="'Select color ' + color"
+        ></button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Whiteboard Bottom Toolbar -->
+  <div class="whiteboard-bottom-bar">
+    <div class="zoom-controls">
+      <button
+        type="button"
+        class="bar-btn"
+        (click)="zoomOut()"
+        aria-label="Zoom out"
+      >
+        <span class="material-symbols-outlined">zoom_out</span>
+      </button>
+      <span class="zoom-text">{{ zoomLevel() }}%</span>
+      <button
+        type="button"
+        class="bar-btn"
+        (click)="zoomIn()"
+        aria-label="Zoom in"
+      >
+        <span class="material-symbols-outlined">zoom_in</span>
+      </button>
+    </div>
+
+    <div class="center-tools">
+      <button type="button" class="bar-btn" aria-label="Fullscreen">
+        <span class="material-symbols-outlined">fullscreen</span>
+      </button>
+      <button type="button" class="bar-btn" aria-label="Toggle grid">
+        <span class="material-symbols-outlined">grid_view</span>
+      </button>
+    </div>
+
+    <div class="page-navigation">
+      <button
+        type="button"
+        class="bar-btn"
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1"
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <span class="page-text">{{ currentPage() }} / {{ totalPages() }}</span>
+      <button
+        type="button"
+        class="bar-btn"
+        (click)="nextPage()"
+        [disabled]="currentPage() === totalPages()"
+        aria-label="Next page"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

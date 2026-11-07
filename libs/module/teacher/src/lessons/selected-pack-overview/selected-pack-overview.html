@@ -1,0 +1,55 @@
+<school-hub-dashboard-card
+  title="Selected Pack Overview"
+  icon="ri-survey-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="overview-content">
+    <div class="pack-header-block">
+      <div class="pack-title-group">
+        <h3 class="pack-title">{{ pack().title }}</h3>
+        <p class="pack-subtitle">
+          {{ pack().subject }} • {{ pack().className }} • {{ pack().week }}
+        </p>
+      </div>
+
+      <div class="readiness-block">
+        <span class="readiness-label">Readiness Status</span>
+        <school-hub-status-badge
+          [tone]="pack().readinessStatus === 'Ready to Teach' ? 'green' : 'orange'"
+          [label]="pack().readinessStatus"
+          size="sm"
+        />
+      </div>
+    </div>
+
+    <!-- Checklist Grid -->
+    <div class="checklist-grid">
+      @for (item of pack().checklist; track item.label) {
+      <div class="checklist-item">
+        <span
+          class="check-icon"
+          [class.completed]="item.completed"
+          aria-hidden="true"
+        >
+          <i class="ri-checkbox-circle-fill"></i>
+        </span>
+        <span class="check-label">{{ item.label }}</span>
+      </div>
+      }
+    </div>
+
+    <!-- Bottom Buttons -->
+    <div class="overview-actions">
+      <button type="button" class="btn btn-outline" (click)="onOpen()">
+        <i class="ri-folder-open-line" aria-hidden="true"></i>
+        <span>Open Pack</span>
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="onEdit()">
+        <i class="ri-edit-line" aria-hidden="true"></i>
+        <span>Edit Pack</span>
+      </button>
+    </div>
+  </div>
+</school-hub-dashboard-card>

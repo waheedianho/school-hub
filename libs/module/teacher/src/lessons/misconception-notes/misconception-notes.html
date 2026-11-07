@@ -1,0 +1,31 @@
+<school-hub-dashboard-card
+  title="Common Misconception Notes to Watch"
+  icon="ri-alert-line"
+  [showIcon]="true"
+  tone="orange"
+  [compact]="true"
+>
+  <div class="notes-list">
+    @for (note of notes(); track note.id) {
+    <div class="note-card">
+      <div class="note-header">
+        <div class="title-with-dot">
+          <span class="orange-dot" aria-hidden="true"></span>
+          <strong class="note-title">{{ note.title }}</strong>
+        </div>
+        <button type="button" class="btn-view" (click)="onView(note)">
+          View Note
+        </button>
+      </div>
+      <p class="note-snippet">{{ note.snippet }}</p>
+    </div>
+    }
+  </div>
+
+  <div class="notes-footer">
+    <a routerLink="/teacher/lessons" class="footer-link">
+      <span>View all misconception notes</span>
+      <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+    </a>
+  </div>
+</school-hub-dashboard-card>

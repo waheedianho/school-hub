@@ -1,0 +1,188 @@
+.attendance-snapshot-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.card-body {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex: 1;
+}
+
+.chart-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.donut-container {
+  position: relative;
+  width: 90px;
+  height: 90px;
+  flex-shrink: 0;
+}
+
+.donut-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.donut-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+
+.donut-percentage {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.1;
+}
+
+.donut-sublabel {
+  font-size: 9.5px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+
+  &.dot-present {
+    background-color: #10b981;
+  }
+
+  &.dot-absent {
+    background-color: #f97316;
+  }
+
+  &.dot-late {
+    background-color: #ef4444;
+  }
+}
+
+.legend-label {
+  color: #475569;
+  font-weight: 500;
+  min-width: 48px;
+}
+
+.legend-value {
+  color: #0f172a;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.sessions-divider {
+  width: 1px;
+  height: 60px;
+  background-color: #e2e8f0;
+}
+
+.sessions-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-width: 72px;
+}
+
+.sessions-label {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.sessions-count {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.sessions-period {
+  font-size: 10px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.card-footer {
+  padding: 10px 18px;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+.report-link {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--primary-color, #4f46e5);
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #3730a3;
+    text-decoration: underline;
+  }
+}
+
+@media (max-width: 640px) {
+  .card-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .sessions-divider {
+    width: 100%;
+    height: 1px;
+  }
+
+  .sessions-box {
+    align-items: flex-start;
+  }
+}

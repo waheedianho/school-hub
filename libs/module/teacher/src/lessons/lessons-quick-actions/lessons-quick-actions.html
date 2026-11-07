@@ -1,0 +1,20 @@
+<school-hub-dashboard-card
+  title="Quick Actions"
+  icon="ri-flashlight-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="actions-list">
+    @for (action of actions(); track action.id) {
+    <a [routerLink]="action.route" class="action-item">
+      <div class="action-left">
+        <div class="action-icon-box" aria-hidden="true">
+          <i [class]="action.icon"></i>
+        </div>
+        <span class="action-label">{{ action.label }}</span>
+      </div>
+      <i class="ri-arrow-right-s-line action-chevron" aria-hidden="true"></i>
+    </a>
+    }
+  </div>
+</school-hub-dashboard-card>

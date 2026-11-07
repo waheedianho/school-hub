@@ -1,0 +1,145 @@
+.materials-recordings-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1px solid #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.view-all-header-link {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--primary-color, #4f46e5);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.materials-list {
+  padding: 8px 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.material-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f8fafc;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.material-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+
+  &.tone-slide {
+    background-color: #ffedd5;
+    color: #ea580c;
+  }
+
+  &.tone-notes {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  &.tone-recording {
+    background-color: #ccfbf1;
+    color: #0d9488;
+  }
+
+  &.tone-worksheet {
+    background-color: #f3e8ff;
+    color: #9333ea;
+  }
+}
+
+.material-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
+.material-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.material-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.class-badge {
+  display: inline-block;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: #4f46e5;
+  background-color: #eef2ff;
+  border-radius: 4px;
+}
+
+.material-time {
+  font-size: 11px;
+  color: #64748b;
+  margin-top: 2px;
+}
+
+.material-more-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: #334155;
+    background-color: #f1f5f9;
+  }
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+}

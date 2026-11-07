@@ -1,0 +1,34 @@
+<school-hub-dashboard-card
+  title="Upcoming Topics (Next 4)"
+  icon="ri-calendar-todo-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="topics-list">
+    @for (topic of topics(); track topic.weekNumber) {
+    <div class="topic-item">
+      <div class="week-number-badge">{{ topic.weekNumber }}</div>
+
+      <div class="topic-details">
+        <strong class="topic-title">{{ topic.title }}</strong>
+        <span class="topic-dates">{{ topic.dateRange }}</span>
+      </div>
+
+      <div class="topic-status">
+        <school-hub-status-badge
+          tone="purple"
+          [label]="topic.status"
+          size="sm"
+        />
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="topics-footer">
+    <a routerLink="/teacher/curriculum" class="footer-link">
+      <span>View full scheme of work</span>
+      <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+    </a>
+  </div>
+</school-hub-dashboard-card>
