@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -23,7 +25,7 @@ button {
   background: transparent;
   color: #4f5f7a;
   font: inherit;
-  font-size: 11px;
+  font-size: typography.$body;
   white-space: nowrap;
 }
 button:last-child {
@@ -54,7 +56,7 @@ i {
   border-radius: 5px;
   background: #eaf0fa;
   color: #5c6f90;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 button[aria-selected='true'] .tab-count {
   background: #dceaff;
@@ -63,4 +65,53 @@ button[aria-selected='true'] .tab-count {
 :host-context(.dark) .filter-tabs {
   background: #101c30;
   border-color: #263349;
+}
+:host(.underlined-tabs) .filter-tabs {
+  width: 100%;
+  gap: 16px;
+  border: 0;
+  border-bottom: 1px solid #e8e5f2;
+  border-radius: 0;
+  background: transparent;
+}
+:host(.underlined-tabs) button,
+:host(.underlined-tabs) button:last-child {
+  min-height: 46px;
+  padding: 12px 18px;
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: 0;
+}
+:host(.underlined-tabs) button[aria-selected='true'] {
+  border-bottom-color: #8950e7;
+  box-shadow: none;
+  background: transparent;
+  color: #7b35da;
+}
+:host(.underlined-tabs) button[aria-selected='true'] .tab-count {
+  background: #f0e6ff;
+  color: #7b35da;
+}
+:host(.pill-tabs) .filter-tabs {
+  flex-wrap: wrap;
+  gap: 10px;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+:host(.pill-tabs) button,
+:host(.pill-tabs) button:last-child {
+  max-width: 100%;
+  padding: 9px 12px;
+  border: 1px solid #e5def0;
+  border-radius: 6px;
+  white-space: normal;
+  text-align: left;
+}
+:host(.pill-tabs) button[aria-selected='true'] {
+  border-color: #b78be9;
+  box-shadow: none;
+  background: #f4edff;
+  color: #7b35da;
 }

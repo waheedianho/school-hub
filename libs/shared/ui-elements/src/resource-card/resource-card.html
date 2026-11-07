@@ -1,0 +1,33 @@
+@let resource = item();
+<article>
+  <a [routerLink]="resource.route" [queryParams]="resource.queryParams"
+    ><school-hub-resource-artwork
+      [title]="resource.title"
+      [symbol]="resource.symbol"
+      [tone]="resource.artTone ?? resource.tone"
+      [icon]="resource.icon"
+    />
+    <div class="copy">
+      <school-hub-status-badge
+        [label]="resource.available ? resource.typeLabel : 'Locked'"
+        [tone]="resource.available ? resource.tone : 'neutral'"
+      />
+      <h3>{{ resource.title }}</h3>
+      <p>{{ resource.description }}</p>
+      <footer>
+        <span>{{ resource.meta }}</span><span>{{ resource.subject }}</span>
+      </footer>
+    </div></a
+  ><button
+    type="button"
+    [disabled]="disabled()"
+    [attr.aria-label]="(saved() ? 'Unsave ' : 'Save ') + resource.title"
+    [attr.aria-pressed]="saved()"
+    (click)="saveToggled.emit(resource.id)"
+  >
+    <i
+      [class]="saved() ? 'ri-bookmark-fill' : 'ri-bookmark-line'"
+      aria-hidden="true"
+    ></i>
+  </button>
+</article>

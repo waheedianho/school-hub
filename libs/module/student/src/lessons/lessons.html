@@ -1,4 +1,6 @@
 <div class="lessons-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
   <header class="page-heading">
     <h1>My Lessons</h1>
     <p>Track your current, completed, and upcoming lessons.</p>
@@ -131,9 +133,11 @@
             [value]="subject()"
             (change)="filterChanged('subject', $event)"
           >
-            <option value="">All Subjects</option>
+            <option value="" [selected]="!subject()">All Subjects</option>
             @for (item of subjects; track item.id) {
-            <option [value]="item.id">{{ item.label }}</option>
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.label }}
+            </option>
             }
           </select></label
         >
@@ -144,9 +148,11 @@
             [value]="term()"
             (change)="filterChanged('term', $event)"
           >
-            <option value="">All Terms</option>
+            <option value="" [selected]="!term()">All Terms</option>
             @for (item of terms; track item.id) {
-            <option [value]="item.id">{{ item.label }}</option>
+            <option [value]="item.id" [selected]="term() === item.id">
+              {{ item.label }}
+            </option>
             }
           </select></label
         >
@@ -157,10 +163,18 @@
             [value]="status()"
             (change)="filterChanged('status', $event)"
           >
-            <option value="all">All Statuses</option>
-            <option value="in-progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="upcoming">Upcoming</option>
+            <option value="all" [selected]="status() === 'all'">
+              All Statuses
+            </option>
+            <option value="in-progress" [selected]="status() === 'in-progress'">
+              In Progress
+            </option>
+            <option value="completed" [selected]="status() === 'completed'">
+              Completed
+            </option>
+            <option value="upcoming" [selected]="status() === 'upcoming'">
+              Upcoming
+            </option>
           </select></label
         >
       </div>
@@ -249,7 +263,7 @@
         title="Pending Lesson Tasks"
         icon="ri-clipboard-line"
         tone="orange"
-        ><school-hub-task-list [tasks]="tasks" /><button
+        ><school-hub-task-list [tasks]="tasks()" /><button
           class="text-link all-tasks"
           type="button"
           (click)="openTasks()"
@@ -291,7 +305,7 @@
     <p class="dialog-description">
       Your next learning activities and their due dates.
     </p>
-    <school-hub-task-list [tasks]="tasks" />
+    <school-hub-task-list [tasks]="tasks()" />
     } @else if (selectedLesson(); as lesson) { @if (actionsOpen()) {
     <div class="lesson-menu">
       <button type="button" (click)="openLesson(lesson)">

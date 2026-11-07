@@ -1,0 +1,371 @@
+<div class="portfolio-page">
+  <header class="page-heading">
+    <div>
+      <h1>Portfolio Tasks</h1>
+      <p>
+        Show what you can do! Complete real-world tasks and build your
+        portfolio.
+      </p>
+    </div>
+    <label class="term-select"
+      ><i class="ri-calendar-line" aria-hidden="true"></i
+      ><select
+        aria-label="Term"
+        [value]="term()"
+        (change)="change('term', $event)"
+      >
+        @for (item of terms; track item.id) {
+        <option [value]="item.id" [selected]="term() === item.id">
+          {{ item.label }}
+        </option>
+        }
+        <option value="all" [selected]="term() === 'all'">All Terms</option>
+      </select></label
+    >
+  </header>
+  @if (missing()) {
+  <p class="notice" role="status">
+    That portfolio task could not be found.<button
+      type="button"
+      (click)="closeView()"
+    >
+      Dismiss
+    </button>
+  </p>
+  }
+  <div class="portfolio-layout">
+    <div class="portfolio-primary">
+      <div class="portfolio-filters">
+        <label
+          ><i class="ri-search-line" aria-hidden="true"></i
+          ><input
+            type="search"
+            aria-label="Search portfolio tasks"
+            placeholder="Search tasks, topics, or subjects"
+            [value]="search()"
+            (input)="change('q', $event)" /></label
+        ><label
+          ><select
+            aria-label="Subject"
+            [value]="subject()"
+            (change)="change('subjectId', $event)"
+          >
+            <option value="" [selected]="!subject()">All Subjects</option>
+            @for (item of subjects; track item.id) {
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.name }}
+            </option>
+            }
+          </select></label
+        >
+      </div>
+      <school-hub-filter-tabs
+        [tabs]="tabs()"
+        [active]="status()"
+        panelId="portfolio-results"
+        label="Portfolio task status"
+        (changed)="setStatus($event)"
+      />
+      <section class="portfolio-summary" aria-label="Portfolio summary">
+        <school-hub-summary-stat
+          title="Total Tasks"
+          [value]="scoped().length"
+          description="In your selected term"
+          icon="ri-briefcase-line"
+          tone="purple"
+        />
+        <school-hub-summary-stat
+          title="In Progress"
+          [value]="count('in-progress')"
+          description="Keep going!"
+          icon="ri-play-circle-line"
+          tone="orange"
+        />
+        <school-hub-summary-stat
+          title="Submitted"
+          [value]="count('submitted')"
+          description="Awaiting feedback"
+          icon="ri-upload-2-line"
+        />
+        <school-hub-summary-stat
+          title="Completed"
+          [value]="completed().length"
+          description="Great work!"
+          icon="ri-checkbox-circle-line"
+          tone="green"
+        />
+        <school-hub-summary-stat
+          title="Average Rating"
+          [value]="average() === undefined ? '—' : average() + '%'"
+          description="On assessed tasks"
+          icon="ri-star-line"
+          tone="purple"
+        />
+      </section>
+      <section
+        class="task-list-panel"
+        id="portfolio-results"
+        role="tabpanel"
+        [attr.aria-labelledby]="'portfolio-results-' + status()"
+      >
+        <header class="list-heading">
+          <h2>Your Portfolio Tasks</h2>
+          <label
+            >Sort by:<select
+              aria-label="Sort portfolio tasks"
+              [value]="sort()"
+              (change)="change('sort', $event)"
+            >
+              @for (item of sortOptions; track item.id) {
+              <option [value]="item.id" [selected]="sort() === item.id">
+                {{ item.label }}
+              </option>
+              }
+            </select></label
+          >
+        </header>
+        <div class="portfolio-task-list">
+          @for (task of visible(); track task.id) {
+          <article class="portfolio-task">
+            <div class="task-art" [class]="'task-art ' + task.tone">
+              <i [class]="task.icon" aria-hidden="true"></i
+              ><span aria-hidden="true">✦</span>
+            </div>
+            <div class="task-info">
+              <div class="task-title">
+                <h3>
+                  <a
+                    [routerLink]="['/student/portfolio-tasks', task.id]"
+                    [queryParams]="filterQuery()"
+                    >{{ task.title }}</a
+                  >
+                </h3>
+                <school-hub-status-badge
+                  [label]="statuses[task.status].label"
+                  [tone]="statuses[task.status].tone"
+                />
+              </div>
+              <p>{{ task.description }}</p>
+              <div class="task-meta">
+                <span
+                  ><i class="ri-book-open-line" aria-hidden="true"></i>{{
+                  task.subject }}</span
+                ><span
+                  ><i class="ri-calendar-line" aria-hidden="true"></i>Week {{
+                  task.week }}</span
+                ><span
+                  ><i class="ri-user-line" aria-hidden="true"></i
+                  >Individual</span
+                >
+              </div>
+            </div>
+            <div class="task-action">
+              @if (task.status === 'completed') {
+              <small>Completed {{ date(task.feedback!.date) }}</small
+              ><school-hub-rating-stars [value]="task.score ?? 0" /> } @else if
+              (task.status === 'submitted') {
+              <small>Submitted {{ date(task.submission!.submittedAt) }}</small
+              ><school-hub-status-badge
+                label="Awaiting Feedback"
+                tone="orange"
+              />
+              } @else { <small>Due: {{ date(task.dueAt) }}</small>
+              <div class="task-progress">
+                <school-hub-progress-bar
+                  [value]="task.progress"
+                  [label]="task.title + ' progress'"
+                  tone="purple"
+                /><strong>{{ task.progress }}%</strong>
+              </div>
+              }<a
+                class="outline-button"
+                [routerLink]="['/student/portfolio-tasks', task.id]"
+                [queryParams]="taskQuery(task)"
+                >{{ action(task) }}<i
+                  class="ri-arrow-right-s-line"
+                  aria-hidden="true"
+                ></i
+              ></a>
+            </div>
+          </article>
+          } @empty {
+          <div class="empty-state">
+            <i class="ri-search-line" aria-hidden="true"></i>
+            <h3>No portfolio tasks found</h3>
+            <p>Try another search, subject, or status.</p>
+            <button class="outline-button" type="button" (click)="clear()">
+              Clear filters
+            </button>
+          </div>
+          }
+        </div>
+        <school-hub-pagination
+          [total]="filtered().length"
+          [page]="page()"
+          itemLabel="tasks"
+          label="Portfolio task pages"
+          (pageChanged)="changePage($event)"
+        />
+      </section>
+      <p class="portfolio-tip">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i
+        ><span
+          ><strong>Tip:</strong> Do your best, use your own examples, and show
+          what you have learned. Your portfolio tells the story of your
+          growth.</span
+        >
+      </p>
+    </div>
+    <aside class="portfolio-aside" aria-label="Portfolio insights">
+      <school-hub-dashboard-card
+        title="Overall Progress"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="overall-progress">
+          <school-hub-progress-ring
+            [value]="progress()"
+            label="Portfolio tasks handed in"
+            caption="Handed In"
+            tone="purple"
+          />
+          <dl>
+            @for (item of counts(); track item.id) {
+            <div>
+              <dt>{{ item.label }}</dt>
+              <dd>{{ item.count }}</dd>
+            </div>
+            }
+          </dl>
+        </div>
+        <p class="aside-copy">
+          {{ handedIn() }} of {{ scoped().length }} tasks submitted or
+          completed.
+        </p></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Skills You Are Building"
+        icon="ri-lightbulb-line"
+        tone="purple"
+        ><p class="aside-copy">From your assessed tasks.</p>
+        <div class="skill-list">
+          @for (skill of skills(); track skill.id) {
+          <div>
+            <i [class]="skill.icon" aria-hidden="true"></i
+            ><span>{{ skill.label }}</span
+            ><school-hub-progress-bar
+              [value]="skill.score"
+              [label]="skill.label + ' evidence'"
+              [tone]="skill.tone"
+            /><strong>{{ skill.score }}%</strong>
+          </div>
+          }
+        </div></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="What You Gain"
+        icon="ri-medal-line"
+        tone="green"
+        ><ul class="benefits">
+          <li>Build practical skills.</li>
+          <li>Showcase your learning.</li>
+          <li>Learn from tutor feedback.</li>
+          <li>Create evidence for your future.</li>
+        </ul></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Quick Actions"
+        icon="ri-flashlight-line"
+        tone="orange"
+        ><div class="quick-actions">
+          <button type="button" (click)="openView('guide')">
+            <i class="ri-book-open-line" aria-hidden="true"></i
+            ><span
+              ><strong>View Task Guide</strong
+              ><small>Learn how to complete a portfolio task.</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i></button
+          ><button type="button" (click)="openView('upload')">
+            <i class="ri-upload-2-line" aria-hidden="true"></i
+            ><span
+              ><strong>Upload New Work</strong
+              ><small>Choose the task for your evidence.</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i></button
+          ><button type="button" (click)="openView('rubric')">
+            <i class="ri-file-list-3-line" aria-hidden="true"></i
+            ><span
+              ><strong>Portfolio Rubric</strong
+              ><small>See how your tasks are assessed.</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+          </button></div
+      ></school-hub-dashboard-card>
+      <div class="help-panel">
+        <i class="ri-customer-service-2-line" aria-hidden="true"></i>
+        <div>
+          <h3>Need Help?</h3>
+          <p>Talk to your tutor when you need help with a portfolio task.</p>
+          <a
+            routerLink="/student/ask-tutor"
+            [queryParams]="{ contextType: 'portfolio', subjectId: subject() || null }"
+            >Ask Tutor<i class="ri-arrow-right-line" aria-hidden="true"></i
+          ></a>
+        </div>
+      </div>
+    </aside>
+  </div>
+  <school-hub-dialog-panel
+    [open]="!!view()"
+    [title]="dialogTitle()"
+    (dismissed)="closeView()"
+  >
+    @if (view() === 'rubric') {
+    <p class="dialog-copy">
+      This sample rubric applies to the portfolio tasks in this portal. Read
+      your task brief for the evidence you need.
+    </p>
+    <school-hub-rubric-table [criteria]="rubric" label="Portfolio rubric" /> }
+    @else if (view() === 'upload') {
+    <p class="dialog-copy">Choose the task you are working on.</p>
+    <div class="upload-task-list">
+      @for (task of editableTasks(); track task.id) {
+      <a
+        [routerLink]="['/student/portfolio-tasks', task.id]"
+        [queryParams]="{ term: term() === 'first' ? null : term(), subjectId: subject() || null, tab: 'submission' }"
+        ><school-hub-icon-badge
+          [icon]="task.icon"
+          [tone]="task.tone"
+          [soft]="true" /><span
+          ><strong>{{ task.title }}</strong
+          ><small
+            >{{ task.subject }} · {{ statuses[task.status].label }}</small
+          ></span
+        ><i class="ri-arrow-right-line" aria-hidden="true"></i
+      ></a>
+      } @empty {
+      <p>No tasks are waiting for work in this term and subject.</p>
+      }
+    </div>
+    } @else {
+    <ol class="task-guide">
+      <li>
+        <strong>Read and plan.</strong> Understand the brief, review the rubric,
+        and gather your examples.
+      </li>
+      <li>
+        <strong>Create your work.</strong> Write in My Work or attach a
+        document, spreadsheet, or image.
+      </li>
+      <li>
+        <strong>Reflect and check.</strong> Explain what you learned and review
+        your evidence.
+      </li>
+      <li>
+        <strong>Submit and learn.</strong> Save your submission and use tutor
+        feedback to improve.
+      </li>
+    </ol>
+    <p class="dialog-copy">
+      Practice drafts and files stay on this device. Tutor delivery is not
+      connected.
+    </p>
+    }
+  </school-hub-dialog-panel>
+</div>

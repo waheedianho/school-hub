@@ -1,0 +1,80 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+article {
+  position: relative;
+  height: 100%;
+  border: 1px solid #e5e6f2;
+  border-radius: 10px;
+  background: white;
+  overflow: hidden;
+}
+a {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  text-decoration: none;
+  color: #26334e;
+}
+.copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: start;
+  gap: 10px;
+  padding: 13px;
+}
+h3 {
+  margin: 0;
+  font-size: typography.$body;
+  line-height: 1.6;
+  font-weight: 650;
+}
+p {
+  margin: 0 0 8px;
+  color: #64718d;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 12px;
+  width: 100%;
+  margin-top: auto;
+  color: #65748c;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+button {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid #e8dff5;
+  border-radius: 7px;
+  color: #864bc2;
+  background: #ffffffe6;
+  cursor: pointer;
+}
+button[aria-pressed='true'] {
+  background: #f0e5ff;
+}
+a:hover h3 {
+  color: #7c35d2;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: -3px;
+}
+button:disabled {
+  opacity: 0.5;
+}

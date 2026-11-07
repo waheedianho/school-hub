@@ -1,0 +1,196 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+article {
+  overflow: hidden;
+  border: 1px solid #e2e7f3;
+  border-radius: 12px;
+  background: white;
+}
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 20px 18px;
+  border-bottom: 1px solid #edf0f7;
+}
+.detail-header > div:not(.score) {
+  flex: 1;
+  min-width: 0;
+}
+.eyebrow {
+  color: #7f589f;
+  font-size: typography.$caption;
+}
+h2 {
+  margin: 5px 0 7px;
+  color: #273a57;
+  font-size: 20px;
+  line-height: 1.45;
+}
+.detail-header p {
+  margin: 0;
+  color: #647590;
+  font-size: typography.$caption;
+}
+.score {
+  display: grid;
+  gap: 3px;
+  text-align: center;
+}
+.score strong {
+  color: #6e40b5;
+  font-size: 25px;
+}
+.score span,
+.author-row span:not(.avatar) {
+  color: #647590;
+  font-size: typography.$caption;
+}
+.author-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 8px;
+}
+.avatar {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: #7f54b3;
+  background: #f2eaff;
+  font-size: 22px;
+}
+.author-row > div {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+}
+.author-row strong {
+  color: #334863;
+  font-size: typography.$body;
+}
+.source-note {
+  margin: 4px 20px 18px;
+  color: #73819a;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.version-note {
+  margin: 0 20px 18px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff6e8;
+  color: #785828;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.feedback-notes {
+  display: grid;
+  gap: 14px;
+  padding: 0 20px;
+}
+.review-action {
+  display: grid;
+  gap: 12px;
+  padding: 18px 20px;
+}
+.review-action p {
+  margin: 0;
+  color: #63738c;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+button,
+a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid #d8c9eb;
+  border-radius: 7px;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+button {
+  justify-self: start;
+  background: #f5effe;
+  color: #7145ad;
+}
+button:hover,
+.outline-link:hover {
+  background: #eae0fa;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 18px 20px;
+  border-top: 1px solid #edf0f7;
+  background: #fcfbff;
+}
+.primary-link {
+  flex: 1;
+  border-color: #8150bb;
+  background: #8150bb;
+  color: white;
+}
+.primary-link:hover {
+  background: #6d3ca7;
+}
+.outline-link {
+  flex: 1;
+  color: #7145ad;
+  background: white;
+}
+footer p {
+  width: 100%;
+  margin: 2px 0 0;
+  color: #73819a;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+@media (max-width: 600px) {
+  .detail-header {
+    padding: 18px 14px;
+    gap: 9px;
+  }
+  .detail-header school-hub-icon-badge {
+    display: none;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  .author-row {
+    padding: 15px 14px 8px;
+    flex-wrap: wrap;
+  }
+  .feedback-notes {
+    padding: 0 12px;
+  }
+  .source-note {
+    margin-inline: 14px;
+  }
+  .review-action,
+  footer {
+    padding: 16px 14px;
+  }
+  footer a {
+    flex-basis: 100%;
+  }
+}

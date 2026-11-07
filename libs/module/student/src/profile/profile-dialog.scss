@@ -1,0 +1,156 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.outline-button,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 15px;
+  border: 1px solid #decdf2;
+  border-radius: 6px;
+  background: white;
+  color: #7b3fc1;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.primary-button {
+  border-color: #8042d0;
+  background: #8042d0;
+  color: white;
+}
+.profile-form {
+  display: grid;
+  gap: 18px;
+}
+.profile-form > p,
+.dialog-copy,
+.badge-detail > p {
+  margin: 0;
+  color: #748097;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.dialog-copy p {
+  margin: 0 0 16px;
+}
+.form-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+label,
+legend {
+  color: #5d5875;
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.6;
+}
+input,
+select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid #e0dbea;
+  border-radius: 6px;
+  background: white;
+  color: #5b6b83;
+  font: inherit;
+  font-size: typography.$reading;
+  line-height: 1.5;
+}
+input[aria-invalid='true'] {
+  border-color: #d77b8d;
+}
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #a57dd9;
+  outline-offset: 2px;
+}
+.field-error {
+  margin: 0;
+  color: #b44961;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+fieldset {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 16px;
+  border: 1px solid #e7dff1;
+  border-radius: 8px;
+}
+legend {
+  padding: 0 7px;
+  color: #8d62b8;
+}
+.goal-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px;
+  gap: 15px;
+}
+.badge-detail {
+  display: grid;
+  justify-items: center;
+  gap: 20px;
+}
+.badge-detail school-hub-achievement-card {
+  max-width: 260px;
+  width: 100%;
+}
+.calendar-evidence {
+  margin-top: 24px;
+}
+.calendar-evidence h3 {
+  color: #53627c;
+  font-size: typography.$section;
+}
+.calendar-evidence ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.calendar-evidence li {
+  padding: 12px 0;
+  border-bottom: 1px solid #ece6f3;
+  color: #8590a4;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.calendar-evidence a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #75518d;
+  text-decoration: none;
+}
+.calendar-evidence a:hover {
+  color: #8b42dc;
+}
+button:disabled,
+input:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (max-width: 500px) {
+  .goal-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  fieldset {
+    padding: 13px;
+  }
+}

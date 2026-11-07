@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
 }
@@ -7,7 +9,7 @@
   gap: 9px;
   margin-bottom: 20px;
   color: #6d7e97;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .navigator-legend > span {
   display: flex;
@@ -45,7 +47,7 @@ button {
   border-radius: 9px;
   background: #fff;
   color: #5c6f8d;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 button.answered {
   border-color: #bee6d2;
@@ -61,7 +63,7 @@ button.marked > i {
   color: #ee9b0c;
 }
 button > i {
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1;
 }
 button:focus-visible {

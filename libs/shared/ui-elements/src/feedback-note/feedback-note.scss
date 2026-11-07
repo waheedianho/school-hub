@@ -1,0 +1,38 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+}
+section {
+  padding: 16px;
+  border: 1px solid color-mix(in srgb, var(--note-color) 20%, white);
+  border-left: 3px solid var(--note-color);
+  border-radius: 9px;
+  background: var(--note-soft);
+}
+h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 9px;
+  color: #263b55;
+  font-size: typography.$section;
+  font-weight: 650;
+}
+i {
+  color: var(--note-color);
+  font-size: 20px;
+}
+p,
+ul {
+  margin: 0;
+  color: #40536c;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+ul {
+  padding-left: 20px;
+}
+li + li,
+p + ul {
+  margin-top: 5px;
+}

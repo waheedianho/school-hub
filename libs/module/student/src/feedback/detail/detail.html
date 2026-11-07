@@ -1,0 +1,102 @@
+@let record = entry();
+<article aria-labelledby="selected-feedback-title">
+  <header class="detail-header">
+    <school-hub-icon-badge
+      [icon]="kinds[record.kind].icon"
+      [tone]="kinds[record.kind].tone"
+    />
+    <div>
+      <span class="eyebrow">{{ kinds[record.kind].label }}</span>
+      <h2 id="selected-feedback-title">{{ record.title }}</h2>
+      <p>{{ record.subject }} · {{ date(record.date) }}</p>
+    </div>
+    <div class="score">
+      <strong
+        >{{ record.score === undefined ? '—' : record.score + '%' }}</strong
+      ><span>Score</span>
+    </div>
+  </header>
+  <div class="author-row">
+    <span class="avatar" aria-hidden="true"><i class="ri-user-line"></i></span>
+    <div>
+      <strong>{{ record.author }}</strong><span>{{ record.authorRole }}</span>
+    </div>
+    <school-hub-status-badge
+      [label]="record.reviewed ? 'Reviewed' : 'Needs Action'"
+      [tone]="record.reviewed ? 'green' : 'orange'"
+    />
+  </div>
+  <p class="source-note">
+    {{ record.source === 'practice' ? 'Automatic feedback from your submitted
+    practice answers.' : 'Sample tutor feedback for the demonstration learner.'
+    }}
+  </p>
+  @if (record.earlierVersion) {
+  <p class="version-note" role="status">
+    This feedback applies to submission {{ record.earlierVersion }}. Your
+    revised submission is awaiting new feedback.
+  </p>
+  }
+  <div class="feedback-notes">
+    <school-hub-feedback-note
+      title="What You Did Well"
+      icon="ri-checkbox-circle-line"
+      tone="green"
+      [items]="record.strengths"
+    />
+    <school-hub-feedback-note
+      title="What to Improve"
+      icon="ri-lightbulb-line"
+      tone="orange"
+      [items]="record.improvements"
+    />
+    @if (record.commonError) {
+    <school-hub-feedback-note
+      [title]="record.errorTitle ?? 'Common Error'"
+      icon="ri-error-warning-line"
+      tone="red"
+      [body]="record.commonError"
+    />
+    }
+    <school-hub-feedback-note
+      [title]="record.source === 'practice' ? 'Practice Review' : 'Tutor Comment'"
+      icon="ri-chat-quote-line"
+      tone="purple"
+      [body]="record.comment"
+    />
+    <school-hub-feedback-note
+      title="Next Step"
+      icon="ri-arrow-right-circle-line"
+      [items]="record.nextSteps"
+    />
+  </div>
+  <div class="review-action">
+    <p>
+      {{ record.reviewed ? 'You have reviewed this feedback. Keep practising the
+      next steps.' : 'Read the comments and choose your next step, then mark
+      this feedback as reviewed.' }}
+    </p>
+    <button type="button" (click)="reviewedChanged.emit(!record.reviewed)">
+      <i
+        [class]="record.reviewed ? 'ri-restart-line' : 'ri-check-double-line'"
+        aria-hidden="true"
+      ></i
+      >{{ record.reviewed ? 'Mark as Needs Action' : 'Mark as Reviewed' }}
+    </button>
+  </div>
+  <footer>
+    <a
+      class="primary-link"
+      [routerLink]="record.work.route"
+      [queryParams]="workQuery()"
+      ><i class="ri-file-search-line" aria-hidden="true"></i>{{
+      record.work.label }}</a
+    ><a
+      class="outline-link"
+      routerLink="/student/ask-tutor"
+      [queryParams]="tutorQuery()"
+      ><i class="ri-chat-1-line" aria-hidden="true"></i>Ask Tutor About This</a
+    >
+    <p>{{ record.work.description }}</p>
+  </footer>
+</article>

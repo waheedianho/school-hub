@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -22,7 +24,7 @@ a:focus-visible {
 .metric-title {
   display: block;
   margin-bottom: 4px;
-  font-size: 10px;
+  font-size: typography.$caption;
   font-weight: 500;
 }
 strong {
@@ -35,7 +37,10 @@ strong {
   display: block;
   margin-top: 8px;
   color: #66738a;
-  font-size: 10px;
+  font-size: typography.$caption;
+}
+:host(.prominent) strong {
+  font-size: 24px;
 }
 :host-context(.dark) a {
   color: #e4edf9;

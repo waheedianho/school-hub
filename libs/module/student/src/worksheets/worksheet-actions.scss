@@ -1,0 +1,70 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.worksheet-button,
+.outline-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid #7840dc;
+  border-radius: 7px;
+  background: #7840dc;
+  color: white;
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+}
+.outline-button {
+  border-color: #ded4f4;
+  background: white;
+  color: #7043b6;
+}
+.worksheet-button:hover {
+  background: #6730c8;
+}
+.outline-button:hover {
+  background: #f6f2ff;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #7840dc;
+  font-size: typography.$body;
+}
+.notice,
+.availability-note {
+  padding: 14px;
+  border: 1px solid #f1ddb4;
+  border-radius: 9px;
+  background: #fffaee;
+  color: #866735;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.notice button {
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-decoration: underline;
+}
+button:focus-visible,
+a:focus-visible,
+select:focus-visible {
+  outline: 2px solid #a37ce8;
+  outline-offset: 3px;
+}

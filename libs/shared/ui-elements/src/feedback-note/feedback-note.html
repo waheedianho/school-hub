@@ -1,0 +1,15 @@
+<section
+  [style.--note-color]="colors().color"
+  [style.--note-soft]="colors().soft"
+>
+  <h3><i [class]="icon()" aria-hidden="true"></i>{{ title() }}</h3>
+  @if (body()) {
+  <p>{{ body() }}</p>
+  } @if (items().length) {
+  <ul>
+    @for (item of items(); track $index) {
+    <li>{{ item }}</li>
+    }
+  </ul>
+  }
+</section>

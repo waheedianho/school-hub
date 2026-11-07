@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   color: #182031;
@@ -19,7 +21,7 @@
 .page-heading p {
   margin: 0;
   color: #4e607e;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .lessons-layout {
   display: grid;
@@ -54,11 +56,11 @@ dl {
 .recommended-summary dt,
 .term-row > span {
   color: #63728a;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .current-summary dd {
   margin: 1px 0 10px;
-  font-size: 12px;
+  font-size: typography.$body;
   font-weight: 650;
 }
 .term-row {
@@ -66,7 +68,7 @@ dl {
   flex-direction: column;
   gap: 3px;
   margin: 5px 0 14px;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .term-row strong {
   font-weight: 500;
@@ -79,7 +81,7 @@ dl {
   align-items: center;
   gap: 12px;
   margin-bottom: 15px;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .completion-row > span {
   white-space: nowrap;
@@ -98,7 +100,7 @@ dl {
   border-radius: 6px;
   background: linear-gradient(110deg, #0b6cff, #0858ee);
   color: white;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .primary-button:hover {
@@ -127,12 +129,12 @@ dl {
 }
 .recommended-summary dd {
   margin: 0;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .recommended-summary dd:nth-of-type(-n + 2) {
   margin: -5px 0 1px;
   font-weight: 650;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .recommended-summary dd:last-child {
   display: flex;
@@ -154,7 +156,7 @@ dl {
   display: flex;
   align-items: center;
   gap: 9px;
-  font-size: 10px;
+  font-size: typography.$caption;
   color: #4f607d;
 }
 .lesson-stats dd {
@@ -175,7 +177,7 @@ dl {
   align-items: center;
   gap: 8px;
   color: #0866ff;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .lesson-filters {
   display: grid;
@@ -188,7 +190,7 @@ dl {
   align-items: center;
   min-width: 0;
   gap: 8px;
-  min-height: 36px;
+  min-height: 42px;
   padding: 0 11px;
   border: 1px solid #dce4f0;
   border-radius: 6px;
@@ -196,7 +198,7 @@ dl {
   box-shadow: 0 2px 3px #213b6b03;
 }
 .lesson-filters label > span:not(.visually-hidden) {
-  font-size: 10px;
+  font-size: typography.$caption;
   color: #4e5f7a;
 }
 .lesson-filters input,
@@ -208,7 +210,7 @@ dl {
   background: transparent;
   color: #40516e;
   font: inherit;
-  font-size: 10px;
+  font-size: typography.$reading;
   outline: none;
 }
 .lesson-filters label:focus-within {
@@ -245,7 +247,7 @@ dl {
   border: 0;
   background: transparent;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
   text-decoration: underline;
 }
 .lesson-results {
@@ -289,23 +291,23 @@ dl {
   display: block;
   margin-bottom: 4px;
   color: #182031;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .recent-lessons small {
   display: block;
   margin-bottom: 6px;
   color: #60708b;
-  font-size: 8px;
+  font-size: typography.$caption;
 }
 .recent-lessons school-hub-status-badge {
-  font-size: 8px;
+  font-size: typography.$caption;
 }
 .learning-tip {
   position: relative;
   z-index: 1;
   margin: 0;
   color: #4c5f7e;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.9;
 }
 .tip-illustration {
@@ -333,7 +335,7 @@ dl {
   z-index: 1;
   margin: 0;
   color: #52617c;
-  font-size: 12px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 .mistake-note > i {
@@ -348,7 +350,7 @@ dl {
   display: block;
   padding: 8px 0 0;
   color: #4d607d;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 .tutor-note p {
@@ -358,7 +360,7 @@ dl {
   display: block;
   text-align: right;
   color: #0095a8;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 button:focus-visible,
 a:focus-visible {
@@ -375,7 +377,7 @@ a:focus-visible {
   border: 1px solid #ffde9d;
   border-radius: 9px;
   background: #fff9eb;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .missing-lesson button {
   border: 0;
@@ -410,9 +412,7 @@ a:focus-visible {
     gap: 12px;
   }
   .current-summary school-hub-progress-ring {
-    transform: scale(0.8);
-    transform-origin: right;
-    margin-left: -10px;
+    flex-shrink: 0;
   }
   .lessons-bottom {
     grid-template-columns: minmax(0, 1fr);
@@ -459,10 +459,6 @@ a:focus-visible {
   .summary-grid > *:last-child {
     grid-column: auto;
   }
-  .current-summary school-hub-progress-ring {
-    transform: none;
-    margin-left: 0;
-  }
   .recent-lessons {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -470,10 +466,10 @@ a:focus-visible {
     padding: 12px;
   }
   .recent-lessons strong {
-    font-size: 12px;
+    font-size: typography.$body;
   }
   .recent-lessons small {
-    font-size: 10px;
+    font-size: typography.$caption;
   }
   .tabs-row {
     flex-wrap: wrap;

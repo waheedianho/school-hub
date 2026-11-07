@@ -1,0 +1,20 @@
+<ul [attr.aria-label]="label()">
+  @for (item of items(); track item.id) {
+  <li>
+    <a [routerLink]="item.route" [queryParams]="item.queryParams"
+      ><school-hub-icon-badge
+        [icon]="item.icon"
+        [tone]="item.tone"
+        [soft]="true"
+      /><span class="activity-copy"
+        ><strong>{{ item.title }}</strong
+        ><span>{{ item.description }}</span></span
+      >@if (item.actionLabel) {
+      <span class="action">{{ item.actionLabel }}</span> } @else if (item.meta)
+      { <span class="meta">{{ item.meta }}</span> }</a
+    >
+  </li>
+  } @empty {
+  <li class="empty-state">{{ emptyMessage() }}</li>
+  }
+</ul>

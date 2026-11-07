@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
 }
@@ -30,14 +32,14 @@ school-hub-icon-badge {
   grid-row: span 2;
 }
 .task-title {
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
   line-height: 1.5;
 }
 .due-label {
   grid-column: 2;
   color: #de334a;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .task-arrow {
   display: none;
@@ -45,7 +47,7 @@ school-hub-icon-badge {
 .empty-state {
   padding: 18px 0;
   color: #65738a;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 :host-context(.dark) {
   a {

@@ -1,39 +1,138 @@
+@use '../styles/typography' as typography;
 :host {
   display: block;
+  min-width: 0;
+}
+.chart-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.chart-scroll:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: -2px;
+  border-radius: 5px;
+}
+figure {
+  margin: 0;
+  color: #60718b;
+  font-size: typography.$caption;
+  line-height: 1.5;
+}
+.plot {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  height: var(--chart-height);
+}
+.y-axis {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: white;
+  height: var(--chart-height);
+}
+.y-axis span {
+  position: absolute;
+  right: 6px;
+  transform: translateY(-50%);
+}
+.graph {
+  position: relative;
+  min-width: 0;
+  height: var(--chart-height);
 }
 svg {
-  display: block;
+  position: absolute;
+  inset: 0;
   width: 100%;
-  overflow: visible;
+  height: 100%;
 }
 line {
-  stroke: #e6ebf5;
+  stroke: #edf0f7;
   stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 polyline {
-  stroke: #7940dc;
-  stroke-width: 2.5;
+  stroke: #7138e7;
+  stroke-width: 2;
   fill: none;
   stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
 }
-circle {
-  fill: #7940dc;
-  stroke: white;
-  stroke-width: 1.5;
+.area-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, #8b5cf624, #8b5cf604);
 }
-text {
-  fill: #71809a;
-  font-size: 9px;
-  font-family: inherit;
+.point {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border: 1.5px solid white;
+  border-radius: 50%;
+  background: #7138e7;
+  transform: translate(-50%, -50%);
+}
+.area-chart .point.latest {
+  width: 11px;
+  height: 11px;
+  border-width: 2px;
 }
 .point-value {
-  fill: #324564;
-  font-size: 10px;
+  position: absolute;
+  color: #394567;
+  font-size: typography.$caption;
   font-weight: 600;
+  white-space: nowrap;
+  transform: translate(-50%, -100%);
+}
+figcaption {
+  position: relative;
+  min-height: 55px;
+  margin: 6px 0 0 44px;
+  text-align: center;
+}
+.area-chart figcaption {
+  min-height: 40px;
+  margin-top: 0;
+}
+.week-label {
+  position: absolute;
+  top: 0;
+  max-width: 130px;
+  min-width: 0;
+  padding: 0 3px;
+  transform: translateX(-50%);
+}
+.week-label.first {
+  transform: none;
+  text-align: left;
+}
+.week-label.last {
+  transform: translateX(-100%);
+  text-align: right;
+}
+.week-label.missing {
+  color: #8290a7;
+}
+figcaption strong {
+  display: block;
+  color: #324564;
+  font-size: typography.$body;
 }
 .empty-chart {
-  padding: 25px 10px;
+  margin: 0;
+  padding: 50px 10px;
+  color: #60718b;
+  font-size: typography.$body;
   text-align: center;
-  color: #7a8ba7;
-  font-size: 11px;
+}
+
+.no-result {
+  position: absolute;
+  color: #a3adbe;
+  font-size: typography.$caption;
+  line-height: 1;
+  transform: translate(-50%, -50%);
 }

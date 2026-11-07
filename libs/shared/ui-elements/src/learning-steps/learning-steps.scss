@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
 }
@@ -33,7 +35,7 @@ button {
   border: 0;
   background: transparent;
   color: #344561;
-  font-size: 8px;
+  font-size: typography.$caption;
   line-height: 1.6;
 }
 button > span {

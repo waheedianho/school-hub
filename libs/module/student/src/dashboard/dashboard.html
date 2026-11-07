@@ -2,8 +2,8 @@
   <header class="dashboard-welcome">
     <h1>Learner Dashboard</h1>
     <p>
-      Welcome back, {{ dashboard.learner.firstName }}
-      <span class="class-badge">{{ dashboard.learner.className }}</span>
+      Welcome back, {{ profile.firstName() }}
+      <span class="class-badge">{{ profile.learner().className }}</span>
     </p>
   </header>
 
@@ -66,7 +66,7 @@
           icon="ri-clipboard-line"
           tone="orange"
         >
-          <school-hub-task-list [tasks]="tasks" />
+          <school-hub-task-list [tasks]="tasks()" />
           <a
             class="text-link tasks-link"
             routerLink="/student/lessons"
@@ -106,18 +106,16 @@
             <dl>
               <dt>Status</dt>
               <dd>
-                <span class="status-badge"
-                  >{{ dashboard.portfolio.status }}</span
-                >
+                <span class="status-badge">{{ portfolio().status }}</span>
               </dd>
               <dt>Due Date</dt>
               <dd>{{ dashboard.portfolio.dueDate }}</dd>
             </dl>
             <a
               class="dashboard-button outline-button"
-              routerLink="/student/portfolio-tasks"
-              [queryParams]="{ taskId: dashboard.portfolio.id, tab: 'submission' }"
-              >Submit Work</a
+              [routerLink]="['/student/portfolio-tasks', portfolio().id]"
+              [queryParams]="{ tab: portfolio().tab }"
+              >{{ portfolio().action }}</a
             >
           </div>
         </school-hub-dashboard-card>
@@ -226,6 +224,10 @@
         >
           <blockquote>{{ dashboard.feedback.message }}</blockquote>
           <span class="tutor-name">– {{ dashboard.feedback.tutor }}</span>
+          <school-hub-status-badge
+            [label]="feedbackReviews.reviewed(dashboard.feedback.id) ? 'Reviewed' : 'Needs Action'"
+            [tone]="feedbackReviews.reviewed(dashboard.feedback.id) ? 'green' : 'orange'"
+          />
         </a>
       </school-hub-dashboard-card>
 

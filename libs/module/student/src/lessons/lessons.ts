@@ -1,3 +1,4 @@
+import { progressReturn } from '../data/progress-context';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,6 +19,7 @@ import {
   StatusBadgeComponent,
   SubjectIconComponent,
   TaskListComponent,
+  ReturnLinkComponent,
 } from '@school-hub/ui-elements';
 import {
   COMMON_LEARNING_MISTAKE,
@@ -38,12 +40,15 @@ import {
   lessonActivityQuery,
 } from './lessons.data';
 import { LessonTableComponent } from './lesson-table/lesson-table';
+import { WorksheetStore } from '../worksheets/worksheet-store';
+import { PortfolioStore } from '../portfolio/portfolio-store';
 
 type FilterKey = 'q' | 'subject' | 'term' | 'status';
 
 @Component({
   selector: 'school-hub-student-lessons',
   imports: [
+    ReturnLinkComponent,
     RouterLink,
     DashboardCardComponent,
     DialogPanelComponent,
@@ -63,18 +68,60 @@ type FilterKey = 'q' | 'subject' | 'term' | 'status';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class StudentLessonsComponent {
+  private readonly worksheets = inject(WorksheetStore);
+  private readonly portfolios = inject(PortfolioStore);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly query = toSignal(this.route.queryParamMap, {
     requireSync: true,
   });
-  protected readonly lessons = LEARNER_LESSONS;
+  protected readonly progressReturn = computed(() =>
+    progressReturn(this.query()),
+  );
+  protected readonly lessons = computed(() =>
+    LEARNER_LESSONS.map((lesson): LearnerLesson => {
+      const worksheetDone =
+        this.worksheets.record(`${lesson.id}-worksheet`)?.status ===
+        'completed';
+      const portfolio = this.portfolios.record(
+        lesson.id === 'whole-numbers'
+          ? 'market-price-comparison'
+          : `${lesson.id}-portfolio`,
+      );
+      return {
+        ...lesson,
+        activities: {
+          ...lesson.activities,
+          ...(worksheetDone ? { worksheet: 'done' as const } : {}),
+          ...(portfolio
+            ? {
+                portfolio: !portfolio.available
+                  ? 'locked'
+                  : ['submitted', 'completed'].includes(portfolio.status)
+                    ? 'done'
+                    : 'pending',
+              }
+            : {}),
+        },
+      };
+    }),
+  );
   protected readonly subjects = LESSON_SUBJECTS;
   protected readonly terms = LESSON_TERMS;
   protected readonly tabs = LESSON_TABS;
   protected readonly statusLabels = LESSON_STATUS;
   protected readonly steps = LESSON_FLOW;
-  protected readonly tasks = PENDING_LESSON_TASKS;
+  protected readonly tasks = computed(() =>
+    PENDING_LESSON_TASKS.filter(
+      (task) =>
+        (task.id !== 'whole-numbers-worksheet' ||
+          this.worksheets.record(task.id)?.status !== 'completed') &&
+        (task.id !== 'market-price-comparison' ||
+          !['submitted', 'completed'].includes(
+            this.portfolios.record(task.id)?.status ?? '',
+          )),
+    ),
+  );
   protected readonly tutorNote = LEARNER_TUTOR_NOTE;
   protected readonly commonMistake = COMMON_LEARNING_MISTAKE;
   protected readonly activityKinds: LessonActivityKind[] = [
@@ -145,7 +192,7 @@ export class StudentLessonsComponent {
   );
   protected readonly filtered = computed(() => {
     const search = this.search().trim().toLowerCase();
-    return this.lessons.filter(
+    return this.lessons().filter(
       (lesson) =>
         (!search ||
           `${lesson.title} ${lesson.subject}`.toLowerCase().includes(search)) &&
@@ -180,7 +227,7 @@ export class StudentLessonsComponent {
       ),
   );
   protected readonly selectedLesson = computed(() =>
-    this.lessons.find((lesson) => lesson.id === this.query().get('lessonId')),
+    this.lessons().find((lesson) => lesson.id === this.query().get('lessonId')),
   );
   protected readonly missingLesson = computed(
     () => this.query().has('lessonId') && !this.selectedLesson(),

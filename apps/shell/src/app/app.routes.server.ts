@@ -1,6 +1,13 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 export const serverRoutes: ServerRoute[] = [
+  { path: 'student/resources/:resourceId', renderMode: RenderMode.Server },
+  { path: 'student/live-classes/:classId', renderMode: RenderMode.Server },
+  { path: 'student/portfolio-tasks/:taskId', renderMode: RenderMode.Server },
+  {
+    path: 'student/worksheets/:worksheetId',
+    renderMode: RenderMode.Server,
+  },
   {
     path: 'student/assessments/:assessmentId/attempt',
     renderMode: RenderMode.Server,

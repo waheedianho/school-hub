@@ -1,3 +1,5 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -11,7 +13,7 @@
     margin: 0;
     padding: 12px 16px 0;
     color: #64748b;
-    font-size: 10px;
+    font-size: typography.$caption;
   }
 }
 .table-scroll {
@@ -24,7 +26,7 @@ table {
   min-width: 890px;
   border-collapse: collapse;
   color: #40516e;
-  font-size: 10px;
+  font-size: typography.$body;
   text-align: left;
 }
 thead {
@@ -32,7 +34,7 @@ thead {
 }
 thead th {
   padding: 13px 9px;
-  font-size: 9px;
+  font-size: typography.$caption;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -62,7 +64,7 @@ tbody tr:hover,
   background: transparent;
   color: #182031;
   text-align: left;
-  font-size: 10px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .subject-symbol {
@@ -74,7 +76,7 @@ tbody tr:hover,
   border-radius: 5px;
   background: #0866ff;
   color: white;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .subject-symbol.green {
@@ -95,11 +97,11 @@ tbody tr:hover,
 .duration i,
 .locked i {
   color: #8493ab;
-  font-size: 13px;
+  font-size: typography.$body;
 }
 .locked {
   color: #7a8aa3;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .row-actions {
   display: flex;
@@ -117,7 +119,7 @@ tbody tr:hover,
   border-radius: 5px;
   background: #fff;
   color: #0866ff;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .lesson-action.continue {
   border-color: #0866ff;

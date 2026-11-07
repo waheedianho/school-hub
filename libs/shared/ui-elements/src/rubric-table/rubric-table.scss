@@ -1,0 +1,46 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.rubric-scroll {
+  overflow-x: auto;
+  border: 1px solid #e2e7f2;
+  border-radius: 9px;
+}
+table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+  color: #61738e;
+  font-size: typography.$body;
+  text-align: left;
+  line-height: 1.8;
+}
+th,
+td {
+  padding: 14px;
+  border-bottom: 1px solid #e7ecf5;
+  vertical-align: top;
+}
+thead,
+tfoot {
+  background: #f8f5ff;
+  color: #6e4d9e;
+}
+tbody th {
+  width: 26%;
+  color: #3f5574;
+  font-weight: 600;
+}
+td:last-child {
+  white-space: nowrap;
+}
+tfoot th,
+tfoot td {
+  border: 0;
+}
+.rubric-scroll:focus-visible {
+  outline: 2px solid #aa88df;
+  outline-offset: 3px;
+}

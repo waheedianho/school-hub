@@ -1,0 +1,84 @@
+<div
+  class="table-scroll"
+  tabindex="0"
+  role="region"
+  aria-label="Subject progress table"
+>
+  <table>
+    <caption class="visually-hidden">
+      Subject progress, quiz averages, worksheet completion, and mastery bands
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">Subject</th>
+        <th scope="col">Current Topic</th>
+        <th scope="col">Lesson Progress</th>
+        <th scope="col">Quiz Score</th>
+        <th scope="col">Worksheets</th>
+        <th scope="col">Mastery</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.subject.id) {
+      <tr>
+        <th scope="row">
+          <a
+            routerLink="/student/subjects"
+            [queryParams]="{ progressReturn: returnUrl(), subjectId: row.subject.id, term: term() === 'all' ? null : term() }"
+            ><school-hub-subject-icon [subject]="row.subject.icon" />{{
+            row.subject.name }}</a
+          >
+        </th>
+        <td>
+          @if (row.topic; as topic) {
+          <a
+            routerLink="/student/lessons"
+            [queryParams]="{ progressReturn: returnUrl(), lessonId: topic.id, subject: row.subject.id, term: topic.term }"
+            >{{ topic.title }}</a
+          >
+          } @else { — }
+        </td>
+        <td>
+          <div class="lesson-score">
+            <strong>{{ row.lessonProgress }}%</strong
+            ><school-hub-progress-bar
+              [value]="row.lessonProgress"
+              [label]="row.subject.name + ' lesson progress'"
+              tone="purple"
+            />
+          </div>
+          <small
+            >{{ row.lessonsCompleted }} / {{ row.lessonCount }} completed</small
+          >
+        </td>
+        <td>
+          <a
+            routerLink="/student/assessments"
+            [queryParams]="{ progressReturn: returnUrl(), subjectId: row.subject.id, term: term(), tab: 'results', type: 'quiz' }"
+            >{{ row.quizScore === undefined ? '—' : row.quizScore + '%' }}</a
+          >
+        </td>
+        <td>
+          <a
+            routerLink="/student/worksheets"
+            [queryParams]="{ progressReturn: returnUrl(), subjectId: row.subject.id, term: term(), status: 'completed' }"
+            >{{ row.worksheetsCompleted }} / {{ row.worksheetCount }}</a
+          >
+        </td>
+        <td>
+          <school-hub-status-badge
+            [label]="row.mastery.label"
+            [tone]="row.mastery.tone"
+          />
+        </td>
+      </tr>
+      } @empty {
+      <tr>
+        <td colspan="6" class="empty-state">
+          No subjects with learning records in this selection.
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

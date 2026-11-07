@@ -1,15 +1,18 @@
 import { SubjectCardData, UiTone } from '@school-hub/ui-elements';
 import { LEARNER_SUBJECT_OVERVIEWS } from '../data/subject-progress.data';
+import { LEARNER_WORKSHEETS } from '../worksheets/worksheets.data';
+import { LEARNER_PORTFOLIO_TASKS } from '../portfolio/portfolio.data';
 import {
   COMMON_LEARNING_MISTAKE,
   CURRENT_LESSON,
   LEARNER_TUTOR_NOTE,
+  LEARNER_PROFILE,
   PENDING_LESSON_TASKS,
 } from '../data/learning-context.data';
 
 /** Design fixtures. Replace with the learner API when it is available. */
 export const LEARNER_DASHBOARD = {
-  learner: { firstName: 'Sarah', className: 'JSS 1 / Basic 7' },
+  learner: LEARNER_PROFILE,
   lesson: CURRENT_LESSON,
   weakAreas: [
     { id: 'place-value', label: 'Place Value' },
@@ -52,6 +55,19 @@ interface ProgressMetric {
   tone: UiTone;
 }
 
+const completedWorksheets = LEARNER_WORKSHEETS.filter(
+  (worksheet) => worksheet.status === 'completed',
+).length;
+const worksheetCompletion = Math.round(
+  (completedWorksheets / LEARNER_WORKSHEETS.length) * 100,
+);
+const handedInPortfolio = LEARNER_PORTFOLIO_TASKS.filter((task) =>
+  ['submitted', 'completed'].includes(task.status),
+).length;
+const portfolioCompletion = Math.round(
+  (handedInPortfolio / LEARNER_PORTFOLIO_TASKS.length) * 100,
+);
+
 export const DASHBOARD_PROGRESS: ProgressMetric[] = [
   {
     id: 'lessons',
@@ -74,18 +90,18 @@ export const DASHBOARD_PROGRESS: ProgressMetric[] = [
   {
     id: 'worksheets',
     title: 'Worksheet Completion',
-    value: '75%',
-    percentage: 75,
-    detail: '15 / 20 completed',
+    value: `${worksheetCompletion}%`,
+    percentage: worksheetCompletion,
+    detail: `${completedWorksheets} / ${LEARNER_WORKSHEETS.length} completed`,
     icon: 'ri-file-text-line',
     tone: 'green',
   },
   {
     id: 'portfolio',
     title: 'Portfolio Completion',
-    value: '50%',
-    percentage: 50,
-    detail: '1 / 2 completed',
+    value: `${portfolioCompletion}%`,
+    percentage: portfolioCompletion,
+    detail: `${handedInPortfolio} / ${LEARNER_PORTFOLIO_TASKS.length} handed in`,
     icon: 'ri-folder-open-line',
     tone: 'orange',
   },

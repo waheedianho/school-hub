@@ -8,9 +8,13 @@ import { UiTone } from '../models/ui-tone.model';
   templateUrl: './dashboard-card.html',
   styleUrl: './dashboard-card.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.compact]': 'compact()' },
 })
 export class DashboardCardComponent {
   readonly title = input.required<string>();
   readonly icon = input.required<string>();
   readonly tone = input<UiTone>('blue');
+  readonly subtitle = input('');
+  readonly showIcon = input(true);
+  readonly compact = input(false);
 }

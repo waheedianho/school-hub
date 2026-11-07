@@ -1,0 +1,38 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+}
+.countdown {
+  text-align: center;
+}
+.label {
+  display: block;
+  margin-bottom: 8px;
+  color: #71618a;
+  font-size: typography.$caption;
+}
+.digits {
+  display: flex;
+  align-items: start;
+  justify-content: center;
+  gap: 7px;
+  color: #7435e7;
+}
+.digits > span {
+  display: grid;
+  min-width: 30px;
+  gap: 4px;
+}
+strong {
+  font-size: 23px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+b {
+  font-size: 20px;
+  line-height: 1.2;
+}
+small {
+  color: #7d7591;
+  font-size: typography.$caption;
+}

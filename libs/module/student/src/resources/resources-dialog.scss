@@ -1,0 +1,44 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.dialog-copy {
+  color: #69758f;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.dialog-copy > p {
+  margin: 0 0 20px;
+}
+.dialog-copy h3 {
+  margin: 0 0 12px;
+  color: #344661;
+  font-size: 18px;
+}
+.dialog-copy dl {
+  margin: 0 0 20px;
+}
+.dialog-copy dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee9f6;
+}
+.dialog-copy dd {
+  margin: 0;
+}
+.dialog-copy > button {
+  margin: 0 10px 12px 0;
+}
+.dialog-copy .error {
+  margin: 15px 0;
+  color: #b14a61;
+  background: #fff4f6;
+  padding: 12px;
+  border-radius: 6px;
+}
+.dialog-actions,
+.menu-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}

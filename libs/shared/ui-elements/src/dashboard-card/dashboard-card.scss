@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -25,16 +27,48 @@
 }
 
 h2 {
-  flex: 1;
   margin: 0;
   color: inherit;
-  font-size: 14px;
+  font-size: typography.$section;
   font-weight: 600;
   line-height: 1.4;
+}
+.heading-copy {
+  flex: 1;
+  min-width: 0;
+}
+.heading-copy p {
+  margin: 4px 0 0;
+  color: #647590;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+:host(.compact) .dashboard-card {
+  padding: 14px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+:host(.compact) .card-heading {
+  align-items: start;
+  min-height: 24px;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+:host(.compact) school-hub-icon-badge {
+  transform: scale(0.72);
+  margin: -5px -4px -5px -5px;
 }
 
 .card-content {
   min-width: 0;
+}
+@media (max-width: 600px) {
+  :host(.compact) .card-heading.has-subtitle {
+    flex-wrap: wrap;
+  }
+  :host(.compact) .has-subtitle .heading-copy {
+    flex-basis: 100%;
+  }
 }
 
 :host-context(.dark) .dashboard-card {

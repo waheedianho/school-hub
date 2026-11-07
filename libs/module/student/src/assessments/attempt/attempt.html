@@ -1,4 +1,8 @@
 <div class="attempt-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
   <a
     class="back-link"
     routerLink="/student/assessments"

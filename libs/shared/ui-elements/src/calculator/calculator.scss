@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   max-width: 350px;
@@ -7,7 +9,7 @@ label {
   display: block;
   margin-bottom: 8px;
   color: #60738e;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 input {
   width: 100%;
@@ -51,5 +53,5 @@ input:focus-visible {
 }
 p {
   color: #c32c45;
-  font-size: 11px;
+  font-size: typography.$body;
 }

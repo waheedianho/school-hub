@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 .subject-overview {
   display: flex;
   align-items: center;
@@ -10,12 +12,12 @@
 .subject-overview p {
   margin: 10px 0 7px;
   color: #60728d;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 .subject-overview > div > span {
   color: #8191a9;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .overview-stats {
   display: grid;
@@ -40,7 +42,7 @@
   display: block;
   margin-top: 3px;
   color: #71839e;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .subject-primary-action {
   margin-bottom: 24px;
@@ -63,7 +65,7 @@
   align-items: center;
   gap: 6px;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-lesson-list {
   list-style: none;
@@ -95,7 +97,7 @@
   border-radius: 7px;
   background: #edf4ff;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-lesson-list a > div {
   flex: 1;
@@ -103,14 +105,14 @@
 }
 .subject-lesson-list strong {
   display: block;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .subject-lesson-list small {
   display: block;
   margin-top: 4px;
   color: #8492aa;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .subject-lesson-list a > i {
   color: #6c87b1;
@@ -132,7 +134,7 @@
   border-radius: 9px;
   background: #f9fbff;
   color: #3e5b83;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-links i {
   color: #0866ff;
@@ -143,7 +145,7 @@
   border-radius: 10px;
   background: #f5f9ff;
   color: #5b7293;
-  font-size: 12px;
+  font-size: typography.$body;
   text-align: center;
 }
 .no-term-lessons a {
@@ -174,11 +176,6 @@
   }
   .subject-overview > school-hub-subject-icon {
     display: none;
-  }
-  .subject-overview school-hub-progress-ring {
-    transform: scale(0.85);
-    transform-origin: right center;
-    margin-left: -10px;
   }
   .overview-stats {
     gap: 8px;

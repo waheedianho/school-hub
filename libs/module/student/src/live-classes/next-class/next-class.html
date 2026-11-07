@@ -1,0 +1,41 @@
+@let next = session();
+<article class="next-class">
+  <school-hub-icon-badge
+    [icon]="next.icon"
+    [tone]="next.tone"
+    [soft]="true"
+    [large]="true"
+  />
+  <div class="next-copy">
+    <school-hub-status-badge
+      [label]="status(next, now()) === 'live' ? 'LIVE NOW' : 'NEXT CLASS'"
+      tone="purple"
+    />
+    <h2>{{ next.title }}</h2>
+    <p>{{ next.description }}</p>
+    <div class="class-meta">
+      <span
+        ><i class="ri-calendar-line" aria-hidden="true"></i>{{
+        date(next.startsAt) }}</span
+      ><span
+        ><i class="ri-time-line" aria-hidden="true"></i>{{ time(next) }}</span
+      ><span
+        ><i class="ri-user-line" aria-hidden="true"></i>{{ next.tutor }}</span
+      >
+    </div>
+  </div>
+  <div class="join-countdown">
+    <school-hub-countdown
+      [until]="timestamp(status(next, now()) === 'live' ? next.endsAt : next.startsAt)"
+      [now]="now()"
+      [label]="status(next, now()) === 'live' ? 'Class ends in' : 'Starts in'"
+    /><button
+      type="button"
+      class="primary-button"
+      [disabled]="disabled()"
+      (click)="selected.emit(next.id)"
+    >
+      <i class="ri-video-on-line" aria-hidden="true"></i>Join Class
+    </button>
+  </div>
+</article>

@@ -1,0 +1,467 @@
+<school-hub-resource-download-connection />
+<div class="resource-detail">
+  <div class="detail-toolbar">
+    <a
+      class="back-link"
+      routerLink="/student/resources"
+      [queryParams]="backQuery()"
+      ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to Resources</a
+    >@if(resource();as resource){
+    <div>
+      <button
+        type="button"
+        class="outline-button"
+        [disabled]="!store.ready()||!resource.available"
+        [attr.aria-pressed]="record().completed"
+        (click)="toggle('completed')"
+      >
+        <i
+          [class]="record().completed?'ri-checkbox-circle-fill':'ri-checkbox-circle-line'"
+          aria-hidden="true"
+        ></i
+        >{{record().completed?'Completed':'Mark as Completed'}}</button
+      ><button
+        type="button"
+        class="outline-button more"
+        aria-label="Resource options"
+        (click)="dialog.set('options')"
+      >
+        <i class="ri-more-fill" aria-hidden="true"></i>
+      </button>
+    </div>
+    }
+  </div>
+  @if(resource();as resource){@if(notice()||store.error()||!store.persistent()){
+  <p class="notice" [attr.role]="store.error()?'alert':'status'">
+    {{store.error()||notice()||'This browser could not save your resource
+    activity. Keep this tab open to retain your notes.'}}<button
+      type="button"
+      (click)="notice.set('');store.error.set('')"
+    >
+      Dismiss
+    </button>
+  </p>
+  }
+  <div class="detail-layout">
+    <div class="detail-primary">
+      <section class="resource-hero" id="resource-player">
+        @if(!resource.available){
+        <div class="locked">
+          <i class="ri-lock-line" aria-hidden="true"></i>
+          <h2>{{resource.title}}</h2>
+          <p>
+            This resource will unlock with the upcoming lesson. You can save it
+            for later.
+          </p>
+        </div>
+        }@else if(resource.video;as
+        video){@if(store.ready()){<school-hub-media-player
+          [src]="video.src"
+          [poster]="video.poster"
+          [captions]="video.captions"
+          [title]="resource.title"
+          [initialPosition]="record().position"
+          [seek]="seekRequest()"
+          (progressed)="progress($event)"
+        />}@else{<img
+          class="video-poster"
+          [src]="video.poster"
+          [alt]="resource.title"
+        />}}@else{
+        <div class="document-art">
+          <school-hub-resource-artwork
+            [title]="resource.title"
+            [symbol]="resource.symbol"
+            [icon]="kind[resource.kind].icon"
+            [tone]="resource.tone"
+          />
+        </div>
+        }
+        <div class="hero-copy">
+          <div class="title-row">
+            <h1>{{resource.title}}</h1>
+            <div class="resource-actions">
+              <button
+                type="button"
+                class="outline-button"
+                [disabled]="!store.ready()"
+                [attr.aria-pressed]="record().liked"
+                (click)="toggle('liked')"
+              >
+                <i
+                  [class]="record().liked?'ri-thumb-up-fill':'ri-thumb-up-line'"
+                  aria-hidden="true"
+                ></i
+                >Like</button
+              ><button
+                type="button"
+                class="outline-button"
+                [disabled]="!store.ready()"
+                [attr.aria-pressed]="record().saved"
+                (click)="toggle('saved')"
+              >
+                <i
+                  [class]="record().saved?'ri-bookmark-fill':'ri-bookmark-line'"
+                  aria-hidden="true"
+                ></i
+                >{{record().saved?'Saved':'Save'}}
+              </button>
+            </div>
+          </div>
+          <p>{{resource.description}}</p>
+          <div class="resource-meta">
+            <school-hub-status-badge
+              [label]="kind[resource.kind].label"
+              [tone]="resource.tone"
+            />@if(resource.video){<span
+              ><i class="ri-time-line" aria-hidden="true"></i
+              >{{time(resource.video.duration)}} min</span
+            >}@else if(resource.kind!=='link'){<span
+              >{{resource.sections.length}} sections · TXT ·
+              {{bytes(fileSize(resource))}}</span
+            >}<span
+              ><i class="ri-book-open-line" aria-hidden="true"></i
+              >{{subject(resource)}}</span
+            ><span>JSS 1 (Basic 7)</span
+            ><span>Added: {{date(resource.addedAt)}}</span>
+          </div>
+          @if(resource.video&&record().bookmark!==undefined){<button
+            type="button"
+            class="text-button bookmark-jump"
+            (click)="seek(record().bookmark??0)"
+          >
+            Go to Bookmark · {{time(record().bookmark??0)}}</button
+          >}
+        </div>
+      </section>
+      @if(resource.available){
+      <section class="detail-tabs">
+        <school-hub-filter-tabs
+          [tabs]="tabs()"
+          [active]="tab()"
+          panelId="resource-detail-panel"
+          appearance="underline"
+          label="Resource details"
+          (changed)="setTab($event)"
+        />
+        <div
+          id="resource-detail-panel"
+          role="tabpanel"
+          [attr.aria-labelledby]="'resource-detail-panel-'+tab()"
+        >
+          @switch(tab()){@case('notes'){
+          <section class="personal-notes" id="resource-notes">
+            <header>
+              <h2>My Notes</h2>
+              <button
+                type="button"
+                class="outline-button"
+                [disabled]="!record().notes.length"
+                (click)="exportNotes()"
+              >
+                Download My Notes
+              </button>
+            </header>
+            <p>
+              Notes save on this device. They are personal and are not sent to
+              your tutor.
+            </p>
+            <form (submit)="saveNote($event)">
+              <school-hub-written-answer
+                [label]="editing()?'Edit personal note':'Add a personal note'"
+                kind="long"
+                [rows]="4"
+                [maxLength]="5000"
+                [fullWidth]="true"
+                [readonly]="!store.ready()"
+                [value]="noteDraft()"
+                (changed)="noteDraft.set($event)"
+              />@if(resource.video&&!editing()){<label class="link-note"
+                ><input
+                  type="checkbox"
+                  [checked]="linkNote()"
+                  (change)="linkNote.set($any($event.target).checked)"
+                />Link this note to {{time(position())}} in the video</label
+              >}
+              <div class="note-actions">
+                <button
+                  type="submit"
+                  class="primary-button"
+                  [disabled]="!store.ready()||!noteDraft().trim()"
+                >
+                  {{editing()?'Update Note':'Save Note'}}</button
+                >@if(editing()){<button
+                  type="button"
+                  class="outline-button"
+                  (click)="editing.set('');noteDraft.set('')"
+                >
+                  Cancel Editing</button
+                >}
+              </div>
+            </form>
+            <ol class="notes-list">
+              @for(note of record().notes;track note.id;let index=$index){
+              <li>
+                <header>
+                  <span>{{date(note.at)}}</span
+                  >@if(note.position!==undefined&&resource.video){<button
+                    type="button"
+                    class="text-button"
+                    (click)="seek(note.position)"
+                  >
+                    {{time(note.position)}}<i
+                      class="ri-play-circle-line"
+                      aria-hidden="true"
+                    ></i></button
+                  >}
+                </header>
+                <p>{{note.text}}</p>
+                <div>
+                  <button
+                    type="button"
+                    class="text-button"
+                    [attr.aria-label]="'Edit note '+(index+1)"
+                    (click)="editNote(note.id)"
+                  >
+                    Edit</button
+                  ><button
+                    type="button"
+                    class="text-button"
+                    [attr.aria-label]="'Delete note '+(index+1)"
+                    (click)="deleteId.set(note.id);dialog.set('delete-note')"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </li>
+              }@empty{
+              <li class="empty-note">You haven’t added a note yet.</li>
+              }
+            </ol>
+          </section>
+          } @case('transcript'){
+          <section class="transcript">
+            <header>
+              <h2>Video Transcript</h2>
+              <button
+                type="button"
+                class="outline-button"
+                [disabled]="!!store.downloading()"
+                (click)="download('transcript')"
+              >
+                Download Transcript
+              </button>
+            </header>
+            <p>
+              This silent revision video displays the text below. Select a
+              timestamp to jump to its slide.
+            </p>
+            @for(chapter of resource.video?.chapters??[];track chapter.start){
+            <article>
+              <button
+                type="button"
+                class="text-button"
+                (click)="seek(chapter.start)"
+              >
+                {{time(chapter.start)}}
+              </button>
+              <div>
+                <h3>{{chapter.title}}</h3>
+                <p>{{chapter.text}}</p>
+                <p class="example">{{chapter.example}}</p>
+              </div>
+            </article>
+            }
+          </section>
+          } @case('related'){
+          <section class="related">
+            <h2>Related Resources</h2>
+            <div class="related-grid">
+              @for(item of related();track item.id){<school-hub-resource-card
+                [item]="card(item,backQuery())"
+                [saved]="store.record(item.id).saved"
+                [disabled]="!store.ready()"
+                (saveToggled)="store.toggle($event,'saved')"
+              />}
+            </div>
+          </section>
+          } @default{
+          <section class="overview">
+            <h2>{{resource.video?'About this video':'About this resource'}}</h2>
+            <p>{{resource.description}}</p>
+            @if(resource.video){
+            <p>
+              A short, silent revision video with clear definitions and
+              examples. Pause to read at your own pace, or use captions and the
+              transcript.
+            </p>
+            }@if(resource.kind==='past-question'){
+            <p class="sample-paper">
+              Original SchoolHub exam-style practice. This is sample revision
+              material, not an official past examination paper.
+            </p>
+            }
+            <h3>What you’ll learn</h3>
+            <ul class="objectives">
+              @for(objective of resource.objectives;track objective){
+              <li>
+                <i class="ri-checkbox-circle-fill" aria-hidden="true"></i
+                >{{objective}}
+              </li>
+              }
+            </ul>
+            @if(!resource.video){@for(section of resource.sections;track
+            section.title){
+            <section class="reading-section">
+              <h3>{{section.title}}</h3>
+              @for(paragraph of section.paragraphs;track $index){
+              <p>{{paragraph}}</p>
+              }
+            </section>
+            }}@if(resource.externalUrl){<a
+              class="primary-button external-link"
+              [href]="resource.externalUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              >Visit Learning Website<i
+                class="ri-external-link-line"
+                aria-hidden="true"
+              ></i
+              ><span class="sr-only"> (opens in a new tab)</span></a
+            >
+            <p class="small-copy">
+              The external website opens in another tab and manages its own
+              content.
+            </p>
+            }@if(lesson();as lesson){<a
+              class="outline-button lesson-link"
+              routerLink="/student/lessons"
+              [queryParams]="{lessonId:lesson.id}"
+              target="_blank"
+              rel="noopener"
+              >Review Related Lesson<i
+                class="ri-arrow-right-up-line"
+                aria-hidden="true"
+              ></i
+            ></a>
+            <p class="small-copy">Opens the related lesson in a new tab.</p>
+            }
+            <p class="small-copy">
+              Resource completion, notes, likes, and saved items stay on this
+              device. Resource activity does not change your lesson or
+              assessment scores.
+            </p>
+          </section>
+          }}
+        </div>
+      </section>
+      }
+    </div>
+    <aside aria-label="Resource learning tools">
+      @if(resource.available&&resource.video){<school-hub-dashboard-card
+        title="Lesson Outline"
+        icon="ri-list-check"
+        [showIcon]="false"
+        [compact]="true"
+        ><div card-action>
+          <button
+            type="button"
+            class="text-button"
+            (click)="outlineHidden.set(!outlineHidden())"
+          >
+            {{outlineHidden()?'Show':'Hide'}}
+          </button>
+        </div>
+        @if(!outlineHidden()){<school-hub-chapter-list
+          [items]="chapters()"
+          [active]="activeChapter()"
+          (selected)="seek($event)"
+        />
+        <p class="outline-duration">
+          Total duration: {{time(resource.video.duration)}} min
+        </p>
+        }</school-hub-dashboard-card
+      >} @if(downloads().length){<school-hub-dashboard-card
+        title="Downloads & Resources"
+        icon="ri-download-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><school-hub-resource-list
+          [items]="downloads()"
+          label="Resource downloads"
+          (downloaded)="download($event)" /><a
+          class="card-link"
+          routerLink="/student/resources"
+          [queryParams]="{subjectId:resource.subjectId,collection:'downloads'}"
+          >My Downloads<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></a></school-hub-dashboard-card
+      >} @if(resource.available){
+      <section class="notes-prompt">
+        <h2>My Notes</h2>
+        <p>Add your personal notes about this resource.</p>
+        <button type="button" class="outline-button" (click)="setTab('notes')">
+          <i class="ri-add-circle-line" aria-hidden="true"></i>Add Note</button
+        ><span
+          >{{record().notes.length}} saved
+          {{record().notes.length===1?'note':'notes'}}</span
+        >
+      </section>
+      }
+      <p class="local-copy">Your library activity is saved on this device.</p>
+    </aside>
+  </div>
+  }@else{
+  <section class="empty">
+    <i class="ri-file-unknow-line" aria-hidden="true"></i>
+    <h1>Resource not found</h1>
+    <p>
+      This resource could not be found. Return to the library and choose another
+      item.
+    </p>
+  </section>
+  }
+</div>
+<school-hub-dialog-panel
+  [open]="!!dialog()"
+  [title]="dialog()==='delete-note'?'Delete this note?':'Resource Options'"
+  (dismissed)="dialog.set('')"
+  >@if(store.error()){
+  <p class="download-error" role="alert">{{store.error()}}</p>
+  }@if(dialog()==='delete-note'){
+  <div class="dialog-copy">
+    <p>This removes the selected personal note from this device.</p>
+    <div class="dialog-actions">
+      <button type="button" class="outline-button" (click)="dialog.set('')">
+        Keep Note</button
+      ><button type="button" class="danger-button" (click)="deleteNote()">
+        Delete Note
+      </button>
+    </div>
+  </div>
+  }@else if(resource();as resource){
+  <div class="dialog-copy">
+    <h3>{{resource.title}}</h3>
+    <div class="dialog-actions">
+      <button
+        type="button"
+        class="outline-button"
+        [disabled]="!store.ready()"
+        (click)="bookmark()"
+      >
+        {{record().bookmark===undefined?(resource.video?'Bookmark Current
+        Time':'Bookmark Resource'):'Remove Bookmark'}}</button
+      >@if(resource.available&&resource.kind!=='link'){<button
+        type="button"
+        class="outline-button"
+        [disabled]="!!store.downloading()"
+        (click)="download(resource.id)"
+      >
+        {{store.downloading()===resource.id?'Preparing
+        Download…':resource.video?'Download Video':'Download Text Resource'}}</button
+      >}
+    </div>
+  </div>
+  }</school-hub-dialog-panel
+>

@@ -1,0 +1,26 @@
+@let session = item();
+<button
+  type="button"
+  class="past-class"
+  (click)="selected.emit(session.id)"
+  [disabled]="disabled()"
+>
+  <span [class]="'recap-art ' + session.subjectId" aria-hidden="true"
+    >@if (session.subjectId === 'mathematics') { <b>2x + 5 = 19</b> }<i
+      [class]="session.icon"
+    ></i
+    ><span class="recap-overlay"><i class="ri-file-list-3-line"></i></span
+    ><small>Class Recap</small></span
+  ><span class="past-copy"
+    ><strong>{{ session.subject }}</strong
+    ><span>{{ session.title.slice(session.title.indexOf(':') + 1) }}</span
+    ><small
+      ><i class="ri-calendar-line" aria-hidden="true"></i>{{
+      date(session.startsAt) }}</small
+    ><small
+      ><i class="ri-user-line" aria-hidden="true"></i>{{ session.tutor }}</small
+    ><school-hub-status-badge
+      [label]="session.attended ? 'Attended · Sample' : 'Not Attended · Sample'"
+      [tone]="session.attended ? 'green' : 'neutral'"
+  /></span>
+</button>

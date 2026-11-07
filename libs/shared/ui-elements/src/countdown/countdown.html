@@ -1,0 +1,8 @@
+<div class="countdown" role="timer" [attr.aria-label]="description()">
+  <span class="label">{{ label() }}</span>
+  <div class="digits" aria-hidden="true">
+    @for (part of parts(); track part.label; let last = $last) {
+    <span><strong>{{ part.text }}</strong><small>{{ part.label }}</small></span
+    >@if (!last) { <b>:</b> } }
+  </div>
+</div>

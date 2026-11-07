@@ -1,3 +1,4 @@
+import { progressReturn } from '../data/progress-context';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,6 +20,7 @@ import {
   SubjectIconComponent,
   SummaryStatComponent,
   UiTone,
+  ReturnLinkComponent,
 } from '@school-hub/ui-elements';
 import { LEARNER_SUBJECTS } from '../data/subject-catalog.data';
 import {
@@ -51,6 +53,7 @@ const SORT_OPTIONS = [
 @Component({
   selector: 'school-hub-student-subjects',
   imports: [
+    ReturnLinkComponent,
     RouterLink,
     DashboardCardComponent,
     DialogPanelComponent,
@@ -72,6 +75,9 @@ export class StudentSubjectsComponent {
   private readonly query = toSignal(this.route.queryParamMap, {
     requireSync: true,
   });
+  protected readonly progressReturn = computed(() =>
+    progressReturn(this.query()),
+  );
   protected readonly terms = LESSON_TERMS;
   protected readonly sortOptions = SORT_OPTIONS;
   protected readonly statusLabels = SUBJECT_STATUS;

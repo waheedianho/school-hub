@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
 }
@@ -13,10 +15,11 @@
 }
 p {
   margin: 0;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 nav {
   display: flex;
+  flex-wrap: wrap;
   gap: 5px;
 }
 button {
@@ -29,7 +32,7 @@ button {
   border-radius: 6px;
   background: #fff;
   color: #5a6a84;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 button[aria-current='page'] {
   border-color: #0866ff;

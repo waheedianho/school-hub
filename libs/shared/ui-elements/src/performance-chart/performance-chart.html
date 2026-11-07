@@ -1,29 +1,84 @@
 @if (points().length) {
-<svg viewBox="0 0 408 181" role="img" [attr.aria-label]="label()">
-  <title>{{ label() }}</title>
-  @for (tick of ticks; track tick) {
-  <line
-    x1="42"
-    x2="388"
-    [attr.y1]="142 - tick * 1.16"
-    [attr.y2]="142 - tick * 1.16"
-  />
-  <text x="32" [attr.y]="146 - tick * 1.16" text-anchor="end">{{ tick }}%</text>
-  }
-  <polyline [attr.points]="line()" />
-  @for (point of plotted(); track $index) {
-  <circle [attr.cx]="point.x" [attr.cy]="point.y" r="4" />
-  <text
-    class="point-value"
-    [attr.x]="point.x"
-    [attr.y]="point.y - 12"
-    text-anchor="middle"
+<div
+  #chartScroll
+  class="chart-scroll"
+  role="region"
+  aria-label="Performance chart"
+  tabindex="0"
+>
+  <figure
+    role="img"
+    [attr.aria-label]="description()"
+    [class.area-chart]="appearance() === 'area'"
+    [style.min-width.px]="canvasWidth()"
+    [style.--chart-height.px]="height()"
   >
-    {{ point.value }}%
-  </text>
-  <text [attr.x]="point.x" y="166" text-anchor="middle">{{ point.label }}</text>
-  }
-</svg>
+    <div class="plot" aria-hidden="true">
+      <div class="y-axis">
+        @for (tick of [100, 75, 50, 25, 0]; track tick) {
+        <span [style.top.px]="tickY(tick)">{{ tick }}%</span> }
+      </div>
+      <div class="graph">
+        @if (appearance() === 'area') { @for (segment of segments(); track
+        $index) {
+        <div class="area-shade" [style.clip-path]="segment.polygon"></div>
+        } }
+        <svg [attr.viewBox]="'0 0 408 ' + height()" preserveAspectRatio="none">
+          @for (tick of ticks; track tick) {
+          <line
+            x1="16"
+            x2="392"
+            [attr.y1]="tickY(tick)"
+            [attr.y2]="tickY(tick)"
+          />
+          } @for (segment of segments(); track $index) {
+          <polyline [attr.points]="segment.line" />
+          }
+        </svg>
+        @for (point of plotted(); track $index) { @if (point.y !== undefined) {
+        <span
+          class="point"
+          [class.latest]="$last"
+          [style.left.%]="point.x / 408 * 100"
+          [style.top.px]="point.y"
+        ></span>
+        @if (showPointValues()) {
+        <strong
+          class="point-value"
+          [style.left.%]="point.x / 408 * 100"
+          [style.top.px]="point.y - 12"
+          >{{ point.value }}%</strong
+        >
+        } } @else if (appearance() === 'area') {
+        <span
+          class="no-result"
+          [style.left.%]="point.x / 408 * 100"
+          [style.top.px]="baseline()"
+          >—</span
+        >
+        } }
+      </div>
+    </div>
+    <figcaption aria-hidden="true">
+      @for (point of plotted(); track $index) {
+      <span
+        class="week-label"
+        [class.missing]="point.value === undefined"
+        [style.left.%]="point.x / 408 * 100"
+        [style.width.%]="100 / points().length"
+        [class.first]="$first && points().length > 1 && appearance() === 'line'"
+        [class.last]="$last && points().length > 1 && appearance() === 'line'"
+      >
+        @if (!showPointValues()) {
+        <strong
+          >{{ point.value === undefined ? '—' : point.value + '%' }}</strong
+        >
+        }{{ point.label }}
+      </span>
+      }
+    </figcaption>
+  </figure>
+</div>
 } @else {
-<p class="empty-chart">Complete an assessment to see your performance.</p>
+<p class="empty-chart">{{ emptyMessage() }}</p>
 }

@@ -1,3 +1,5 @@
+@use '../../../ui-elements/src/styles/typography' as typography;
+
 .navigation-backdrop {
   display: none;
 }
@@ -15,6 +17,8 @@
 
 .learner-shell {
   min-height: 100vh;
+  font-size: typography.$body;
+  line-height: 1.5;
   background: #fcfdff;
   .sidebar-area {
     width: 246px;
@@ -51,7 +55,7 @@
     padding-left: 14px;
     padding-right: 12px;
     border-radius: 9px;
-    font-size: 12px;
+    font-size: typography.$body;
     color: #36445e;
   }
   .sidebar-area .accordion-item .accordion-button.active {
@@ -83,11 +87,11 @@
     color: #0966ff;
   }
   .sidebar-encouragement strong {
-    font-size: 11px;
+    font-size: typography.$body;
   }
   .sidebar-encouragement p {
     margin: 4px 0 0;
-    font-size: 10px;
+    font-size: typography.$caption;
   }
   .header-area {
     top: 8px;
@@ -110,7 +114,7 @@
   }
   .header-area .profile-menu > button > span {
     color: #1a2336;
-    font-size: 12px;
+    font-size: typography.$body;
   }
   .header-area .notifications-menu > button > i {
     color: #19233a;
@@ -166,5 +170,19 @@
     background: #101c30;
     color: #e4edf9;
     border-color: #263349;
+  }
+}
+@media print {
+  .learner-shell:has(school-hub-worksheet-workspace) {
+    background: white;
+    .sidebar-area,
+    .header-area,
+    school-hub-footer,
+    .navigation-backdrop {
+      display: none !important;
+    }
+    .main-content {
+      padding: 0 !important;
+    }
   }
 }

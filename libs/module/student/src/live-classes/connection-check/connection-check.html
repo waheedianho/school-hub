@@ -1,0 +1,67 @@
+<p class="intro">
+  Check this browser before joining. Device previews stay on this device and
+  start only when you choose a test.
+</p>
+<dl>
+  <div>
+    <dt>Browser connection</dt>
+    <dd>
+      <school-hub-status-badge
+        [label]="media.online() === undefined ? 'Checking' : media.online() ? 'Online' : 'Offline'"
+        [tone]="media.online() ? 'green' : 'orange'"
+      />
+    </dd>
+  </div>
+  <div>
+    <dt>Video-call support</dt>
+    <dd>{{ media.callSupported() ? 'Supported' : 'Unavailable' }}</dd>
+  </div>
+  <div>
+    <dt>Camera & microphone access</dt>
+    <dd>
+      {{ media.supported() && media.secure() ? 'Can be requested' :
+      'Unavailable' }}
+    </dd>
+  </div>
+  <div>
+    <dt>Call quality</dt>
+    <dd>Not measured</dd>
+  </div>
+</dl>
+<p class="note">
+  Being online does not measure call quality. A live-call connection is not
+  active in this practice preview.
+</p>
+<div class="preview">
+  @if (media.video()) { <school-hub-local-video [stream]="media.video()" /> }
+  @else {
+  <div>
+    <i class="ri-camera-off-line" aria-hidden="true"></i
+    ><span>Camera preview is off</span>
+  </div>
+  }
+</div>
+<div class="actions">
+  <button
+    type="button"
+    [disabled]="!media.supported() || media.videoBusy()"
+    (click)="media.toggle('video')"
+  >
+    {{ media.videoBusy() ? 'Requesting camera…' : media.video() ? 'Stop camera
+    test' : 'Test camera' }}</button
+  ><button
+    type="button"
+    [disabled]="!media.supported() || media.audioBusy()"
+    (click)="media.toggle('audio')"
+  >
+    {{ media.audioBusy() ? 'Requesting microphone…' : media.audio() ? 'Stop
+    microphone test' : 'Test microphone' }}</button
+  ><button type="button" (click)="media.check()">Check again</button>
+</div>
+@if (media.audio()) {
+<p class="note" role="status">
+  Microphone access is active locally. Audio is not being sent or recorded.
+</p>
+}@if (media.error()) {
+<p class="error" role="alert">{{ media.error() }}</p>
+}

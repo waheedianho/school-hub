@@ -1,0 +1,47 @@
+@let item = session();
+<article>
+  <school-hub-icon-badge [icon]="item.icon" [tone]="item.tone" [large]="true" />
+  <div class="session-copy">
+    <h3>
+      <button
+        type="button"
+        (click)="more.emit(item.id)"
+        [disabled]="disabled()"
+      >
+        {{ item.title }}
+      </button>
+    </h3>
+    <p>{{ item.description }}</p>
+    <div class="session-meta">
+      <span
+        ><i class="ri-calendar-line" aria-hidden="true"></i>{{ item.date
+        }}</span
+      ><span
+        ><i class="ri-time-line" aria-hidden="true"></i>{{ item.time }}</span
+      ><span
+        ><i class="ri-user-line" aria-hidden="true"></i>{{ item.host }}</span
+      ><school-hub-status-badge
+        [label]="item.availability"
+        [tone]="item.tone"
+      />
+    </div>
+  </div>
+  <div class="session-actions">
+    <button
+      class="join"
+      type="button"
+      (click)="selected.emit(item.id)"
+      [disabled]="disabled()"
+    >
+      {{ item.action }}</button
+    ><button
+      class="more"
+      type="button"
+      [attr.aria-label]="'More options for ' + item.title"
+      (click)="more.emit(item.id)"
+      [disabled]="disabled()"
+    >
+      <i class="ri-more-fill" aria-hidden="true"></i>
+    </button>
+  </div>
+</article>

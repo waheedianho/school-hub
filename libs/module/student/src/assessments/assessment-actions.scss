@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 .assessment-button,
 .outline-button {
   display: inline-flex;
@@ -10,7 +12,7 @@
   border-radius: 7px;
   background: #7940dc;
   color: #fff;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .assessment-button:hover {
@@ -36,7 +38,7 @@
   gap: 8px;
   margin-bottom: 20px;
   color: #7940dc;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .subtle-button {
   display: block;
@@ -45,16 +47,16 @@
   background: transparent;
   color: #7940dc;
   text-align: center;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .eyebrow {
   display: block;
   color: #7a659c;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .dialog-copy {
   color: #5d708e;
-  font-size: 12px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 button:focus-visible,

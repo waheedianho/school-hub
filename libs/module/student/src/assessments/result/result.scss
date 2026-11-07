@@ -1,3 +1,5 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   color: #314968;
@@ -22,7 +24,7 @@ h1 {
 .result-heading p {
   margin: 5px 0 0;
   color: #71849f;
-  font-size: 13px;
+  font-size: typography.$body;
 }
 .score-summary {
   display: flex;
@@ -44,11 +46,11 @@ h1 {
 .score-summary p {
   margin: 0 0 7px;
   color: #7386a2;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .score-summary small {
   color: #8a99af;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .result-actions {
   display: grid;
@@ -57,7 +59,7 @@ h1 {
 .attempt-limit {
   padding: 10px;
   color: #8895aa;
-  font-size: 11px;
+  font-size: typography.$body;
   text-align: center;
 }
 .result-stats {
@@ -76,7 +78,7 @@ h1 {
 .result-next > p {
   margin: 0 0 20px;
   color: #7b8ca6;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .review-question {
   padding: 24px;
@@ -91,12 +93,12 @@ h1 {
   justify-content: space-between;
   gap: 12px;
   color: #8a99ae;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .review-question h3 {
   margin: 18px 0;
   color: #354f74;
-  font-size: 14px;
+  font-size: typography.$reading;
   line-height: 1.8;
 }
 .explanation {
@@ -108,7 +110,7 @@ h1 {
   border-radius: 9px;
   background: #f4f9ff;
   color: #657d9e;
-  font-size: 12px;
+  font-size: typography.$reading;
   line-height: 1.8;
 }
 .explanation i {
@@ -132,7 +134,7 @@ h1 {
   align-items: center;
   gap: 7px;
   color: #7940dc;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .expiry-note {
   padding: 16px;
@@ -140,7 +142,7 @@ h1 {
   border-radius: 10px;
   background: #fff8e9;
   color: #926b27;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .result-loading {
   padding: 40px;
@@ -149,7 +151,7 @@ h1 {
   background: white;
   color: #7c8da6;
   text-align: center;
-  font-size: 13px;
+  font-size: typography.$body;
 }
 @media (max-width: 900px) {
   .score-summary {

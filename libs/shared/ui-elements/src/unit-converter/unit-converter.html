@@ -1,0 +1,43 @@
+<div class="converter">
+  <label
+    >Measurement<select [value]="category()" (change)="setCategory($event)">
+      @for (group of groups; track group.id) {
+      <option [value]="group.id" [selected]="group.id === category()">
+        {{ group.label }}
+      </option>
+      }
+    </select></label
+  >
+  <label
+    >Value<input
+      type="number"
+      min="0"
+      step="any"
+      [value]="value()"
+      (input)="change('value', $event)"
+  /></label>
+  <div class="unit-pair">
+    <label
+      >From<select [value]="from()" (change)="change('from', $event)">
+        @for (unit of units(); track unit.id) {
+        <option [value]="unit.id" [selected]="unit.id === from()">
+          {{ unit.label }}
+        </option>
+        }
+      </select></label
+    >
+    <label
+      >To<select [value]="to()" (change)="change('to', $event)">
+        @for (unit of units(); track unit.id) {
+        <option [value]="unit.id" [selected]="unit.id === to()">
+          {{ unit.label }}
+        </option>
+        }
+      </select></label
+    >
+  </div>
+  <output aria-live="polite"
+    >@if (result() !== undefined) { {{ value() }} {{ from() }} = {{ result() }}
+    {{ to() }} } @else { Enter a valid, non-negative number. }</output
+  >
+</div>

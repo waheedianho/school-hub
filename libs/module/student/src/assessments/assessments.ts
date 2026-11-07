@@ -1,3 +1,5 @@
+import { progressReturn } from '../data/progress-context';
+import { feedbackReturn } from '../data/feedback-context';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,6 +19,7 @@ import {
   ProgressRingComponent,
   StatusBadgeComponent,
   SummaryStatComponent,
+  ReturnLinkComponent,
 } from '@school-hub/ui-elements';
 import { LEARNER_SUBJECTS } from '../data/subject-catalog.data';
 import { LESSON_TERMS } from '../lessons/lessons.data';
@@ -33,6 +36,7 @@ import {
 @Component({
   selector: 'school-hub-student-assessments',
   imports: [
+    ReturnLinkComponent,
     RouterLink,
     DashboardCardComponent,
     DialogPanelComponent,
@@ -56,6 +60,9 @@ export class StudentAssessmentsComponent {
   private readonly query = toSignal(this.route.queryParamMap, {
     requireSync: true,
   });
+  protected readonly progressReturn = computed(() =>
+    progressReturn(this.query()),
+  );
   protected readonly subjects = LEARNER_SUBJECTS;
   protected readonly terms = LESSON_TERMS;
   protected readonly tabs = ASSESSMENT_TABS;
@@ -204,6 +211,8 @@ export class StudentAssessmentsComponent {
           : (this.selected()?.title ?? 'Assessment'),
   );
   protected readonly filterQuery = computed<Params>(() => ({
+    feedbackReturn: feedbackReturn(this.query()) ?? null,
+    progressReturn: progressReturn(this.query()) ?? null,
     term: this.term() === 'first' ? null : this.term(),
     subjectId: this.subject() || null,
     type: this.type() === 'all' ? null : this.type(),
@@ -211,6 +220,9 @@ export class StudentAssessmentsComponent {
     tab: this.resultsOnly() ? 'results' : null,
     page: this.resultsOnly() && this.page() > 1 ? this.page() : null,
   }));
+  protected readonly feedbackReturn = computed(() =>
+    feedbackReturn(this.query()),
+  );
 
   protected selectionQuery(assessment: LearnerAssessment): Params {
     return { ...this.filterQuery(), assessmentId: assessment.id };

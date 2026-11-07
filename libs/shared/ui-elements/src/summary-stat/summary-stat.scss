@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -19,7 +21,7 @@
   display: block;
   margin-bottom: 5px;
   color: #5c6d87;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 strong {
   display: block;
@@ -32,13 +34,36 @@ strong {
   display: block;
   margin-top: 7px;
   color: #72819a;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.6;
 }
 :host-context(.dark) .summary-stat {
   border-color: #263349;
   background: #101c30;
   color: #e4edf9;
+}
+:host(.tile) .summary-stat {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 19px 10px 13px;
+  border-color: color-mix(in srgb, var(--stat-color) 15%, white);
+  background: linear-gradient(150deg, var(--stat-soft), white);
+  text-align: center;
+}
+:host(.tile) .summary-stat > div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+:host(.tile) .stat-title {
+  order: 1;
+  margin: 0;
+  font-size: typography.$caption;
+}
+:host(.tile) .stat-description {
+  order: 2;
+  margin: 0;
 }
 @media (max-width: 540px) {
   .summary-stat {
@@ -56,6 +81,6 @@ strong {
   }
   .stat-title,
   .stat-description {
-    font-size: 9px;
+    font-size: typography.$caption;
   }
 }

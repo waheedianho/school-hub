@@ -1,4 +1,6 @@
 <div class="subjects-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
   <header class="page-heading">
     <h1>My Subjects</h1>
     <p>
@@ -75,9 +77,11 @@
             [value]="term()"
             (change)="filterChanged('term', $event)"
           >
-            <option value="">All Terms</option>
+            <option value="" [selected]="!term()">All Terms</option>
             @for (item of terms; track item.id) {
-            <option [value]="item.id">{{ item.label }}</option>
+            <option [value]="item.id" [selected]="term() === item.id">
+              {{ item.label }}
+            </option>
             }
           </select></label
         >
@@ -89,7 +93,9 @@
             (change)="filterChanged('sort', $event)"
           >
             @for (option of sortOptions; track option.id) {
-            <option [value]="option.id">{{ option.label }}</option>
+            <option [value]="option.id" [selected]="sort() === option.id">
+              {{ option.label }}
+            </option>
             }
           </select></label
         >

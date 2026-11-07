@@ -1,0 +1,95 @@
+@use '../styles/typography' as typography;
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+li > div,
+li > a,
+li > label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 45px;
+  padding: 9px 0;
+  color: #5d6b83;
+  font-size: typography.$caption;
+  line-height: 1.8;
+  text-decoration: none;
+}
+li i {
+  color: #85739e;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+li > div > span,
+li > a > span,
+li > label > span:first-of-type {
+  flex: 1;
+  min-width: 0;
+}
+strong {
+  max-width: 52%;
+  font-weight: 500;
+  color: #71617f;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+a:hover {
+  color: #7837c3;
+}
+a:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.chevron {
+  margin-left: auto;
+}
+input {
+  position: absolute;
+  right: 0;
+  width: 38px;
+  height: 23px;
+  opacity: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+.switch-track {
+  position: relative;
+  flex-shrink: 0;
+  width: 37px;
+  height: 22px;
+  border-radius: 20px;
+  background: #d5d0df;
+  transition: background 120ms;
+}
+.switch-track:after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 3px #38243c25;
+  transition: transform 120ms;
+}
+input:checked + .switch-track {
+  background: #8541dd;
+}
+input:checked + .switch-track:after {
+  transform: translateX(15px);
+}
+input:focus-visible + .switch-track {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+input:disabled + .switch-track {
+  opacity: 0.5;
+}
+label {
+  cursor: pointer;
+}

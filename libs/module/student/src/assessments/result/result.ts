@@ -1,3 +1,5 @@
+import { progressReturn } from '../../data/progress-context';
+import { feedbackReturn } from '../../data/feedback-context';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -11,6 +13,7 @@ import {
   ProgressRingComponent,
   StatusBadgeComponent,
   SummaryStatComponent,
+  ReturnLinkComponent,
 } from '@school-hub/ui-elements';
 import { AssessmentStore } from '../assessment-store';
 import { assessmentBackQuery } from '../assessment-navigation';
@@ -23,6 +26,7 @@ import {
 @Component({
   selector: 'school-hub-assessment-result',
   imports: [
+    ReturnLinkComponent,
     RouterLink,
     ChoiceListComponent,
     ProgressRingComponent,
@@ -43,6 +47,9 @@ export class AssessmentResultComponent {
   private readonly query = toSignal(this.route.queryParamMap, {
     requireSync: true,
   });
+  protected readonly progressReturn = computed(() =>
+    progressReturn(this.query()),
+  );
   protected readonly assessment = computed(() =>
     this.store.assessment(this.params().get('assessmentId') ?? ''),
   );
@@ -53,6 +60,9 @@ export class AssessmentResultComponent {
   protected readonly kinds = ASSESSMENT_KINDS;
   protected readonly performance = resultPerformance;
   protected readonly formatDate = assessmentDate;
+  protected readonly feedbackReturn = computed(() =>
+    feedbackReturn(this.query()),
+  );
   protected readonly backQuery = computed(() =>
     assessmentBackQuery(this.query()),
   );

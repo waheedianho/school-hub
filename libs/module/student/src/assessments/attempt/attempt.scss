@@ -1,3 +1,5 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   color: #253a59;
@@ -34,7 +36,7 @@ h1 {
   flex-wrap: wrap;
   gap: 12px;
   color: #7e8da7;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .attempt-meta i {
   margin-right: 4px;
@@ -56,7 +58,7 @@ h1 {
   display: block;
   margin-bottom: 7px;
   color: #80699e;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .timer strong {
   color: #7940dc;
@@ -76,7 +78,7 @@ h1 {
   border-radius: 12px;
   background: white;
   color: #566e90;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .attempt-progress > span,
 .attempt-progress strong {
@@ -113,7 +115,7 @@ h1 {
   align-items: center;
   gap: 12px;
   color: #7c8eaa;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .question-meta > div {
   display: flex;
@@ -133,7 +135,7 @@ h1 {
 .question-card h2 {
   margin: 20px 0;
   color: #223654;
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 650;
   line-height: 1.7;
 }
@@ -143,7 +145,7 @@ h1 {
   border-radius: 10px;
   background: #f7f1ff;
   color: #75599b;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .question-instructions ul {
   margin: 9px 0 0;
@@ -166,7 +168,7 @@ h1 {
 }
 .learning-objectives summary {
   color: #3c5275;
-  font-size: 13px;
+  font-size: typography.$body;
   font-weight: 600;
   cursor: pointer;
 }
@@ -182,7 +184,7 @@ h1 {
   align-items: start;
   gap: 8px;
   color: #7585a0;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.8;
 }
 .learning-objectives li > i {
@@ -192,7 +194,7 @@ h1 {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   overflow: hidden;
-  max-width: 420px;
+  max-width: 580px;
   border: 1px solid #e0e5f1;
   border-radius: 7px;
 }
@@ -205,7 +207,7 @@ h1 {
   background: #7d54db;
   color: white;
   text-align: center;
-  font-size: 8px;
+  font-size: typography.$caption;
 }
 .place-values span:nth-child(2) {
   background: #497bdc;
@@ -240,7 +242,7 @@ h1 {
   padding: 10px 0;
   border-bottom: 1px solid #edf0f7;
   color: #7387a5;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .quiz-information dd {
   margin: 0;
@@ -260,7 +262,7 @@ h1 {
   background: transparent;
   color: #4d6284;
   text-align: left;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .quick-actions i {
   color: #8660c5;
@@ -293,7 +295,7 @@ h1 {
   max-width: 330px;
   margin: 0;
   color: #8090a8;
-  font-size: 12px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 .ready-card {
@@ -310,7 +312,7 @@ h1 {
 .ready-card p {
   margin: 16px 0;
   color: #7185a4;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .ready-card .assessment-button {
   display: flex;
@@ -323,7 +325,7 @@ h1 {
   gap: 8px;
   margin: 16px 0 0;
   color: #8394af;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.8;
 }
 .save-note i {
@@ -345,19 +347,19 @@ h1 {
 }
 .exam-tip strong {
   color: #805f26;
-  font-size: 13px;
+  font-size: typography.$body;
 }
 .exam-tip p {
   margin: 6px 0 0;
   color: #8e8068;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .time-warning {
   padding: 12px;
   border-radius: 8px;
   background: #fff1f4;
   color: #bd344e;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .confirm-actions {
   display: flex;
@@ -403,6 +405,9 @@ h1 {
   .attempt-heading h2 {
     font-size: 16px;
   }
+  .place-values {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
   .attempt-progress {
     flex-wrap: wrap;
     padding: 16px;
@@ -416,7 +421,7 @@ h1 {
     padding: 17px;
   }
   .question-card h2 {
-    font-size: 14px;
+    font-size: typography.$reading;
   }
   .question-aside {
     grid-template-columns: minmax(0, 1fr);

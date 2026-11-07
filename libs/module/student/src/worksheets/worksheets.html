@@ -1,0 +1,410 @@
+<div class="worksheets-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  <header class="page-heading">
+    <div>
+      <h1>Worksheets</h1>
+      <p>Practise what you’ve learned and improve your understanding.</p>
+    </div>
+    <label class="term-select"
+      ><i class="ri-calendar-line" aria-hidden="true"></i
+      ><select
+        aria-label="Term"
+        [value]="term()"
+        (change)="changeFilter('term', $event)"
+      >
+        @for (item of terms; track item.id) {
+        <option [value]="item.id" [selected]="item.id === term()">
+          {{ item.label }}
+        </option>
+        }
+        <option value="all" [selected]="term() === 'all'">All Terms</option>
+      </select></label
+    >
+  </header>
+  @if (missing()) {
+  <p class="notice" role="status">
+    That worksheet could not be found. Choose a worksheet from the list.<button
+      type="button"
+      (click)="dismiss()"
+    >
+      Dismiss
+    </button>
+  </p>
+  }
+  <div class="worksheet-filters">
+    <label
+      ><i class="ri-search-line" aria-hidden="true"></i
+      ><input
+        type="search"
+        aria-label="Search worksheets"
+        placeholder="Search worksheets or topics"
+        [value]="search()"
+        (input)="changeFilter('q', $event)" /></label
+    ><label
+      ><select
+        aria-label="Subject"
+        [value]="subject()"
+        (change)="changeFilter('subjectId', $event)"
+      >
+        <option value="" [selected]="!subject()">All Subjects</option>
+        @for (item of subjects; track item.id) {
+        <option [value]="item.id" [selected]="item.id === subject()">
+          {{ item.name }}
+        </option>
+        }
+      </select></label
+    >
+  </div>
+  @if (printable() || topic()) {
+  <p class="filter-note">
+    {{ printable() ? 'Showing worksheets with printable questions.' : 'Showing
+    worksheets for the selected topic.' }}<button
+      type="button"
+      (click)="clearFilters()"
+    >
+      Clear filters
+    </button>
+  </p>
+  }
+  <school-hub-filter-tabs
+    [tabs]="tabs()"
+    [active]="status()"
+    panelId="worksheet-results"
+    label="Worksheet status"
+    (changed)="setStatus($event)"
+  />
+  <div
+    class="worksheet-layout"
+    id="worksheet-results"
+    role="tabpanel"
+    [attr.aria-labelledby]="'worksheet-results-' + status()"
+  >
+    <div class="worksheet-primary">
+      <section class="worksheet-summary" aria-label="Worksheet summary">
+        <school-hub-summary-stat
+          title="Worksheets Completed"
+          [value]="completed().length + '/' + scoped().length"
+          [description]="completion() + '% completed'"
+          icon="ri-file-list-3-line"
+          tone="purple"
+        />
+        <school-hub-summary-stat
+          title="Average Score"
+          [value]="completed().length ? average() + '%' : '—'"
+          description="Keep practising. Keep improving."
+          icon="ri-checkbox-circle-line"
+          tone="green"
+        />
+        <school-hub-summary-stat
+          title="Time Spent"
+          [value]="time(spent())"
+          description="On your worksheets"
+          icon="ri-time-line"
+        />
+        <school-hub-summary-stat
+          title="Best Score"
+          [value]="best() ? best()!.percentage + '%' : '—'"
+          [description]="best()?.topic ?? 'Complete a worksheet to begin'"
+          icon="ri-star-line"
+          tone="orange"
+        />
+      </section>
+      <div class="list-and-details">
+        <section
+          class="worksheet-list"
+          aria-labelledby="worksheet-list-heading"
+        >
+          <div class="section-heading">
+            <h2 id="worksheet-list-heading">Worksheet List</h2>
+            <span>{{ filtered().length }} worksheets</span>
+          </div>
+          @for (worksheet of visible(); track worksheet.id) {
+          <article
+            class="worksheet-row"
+            [class.selected]="selected()?.id === worksheet.id"
+          >
+            <button
+              class="worksheet-select"
+              type="button"
+              [attr.aria-label]="'Select ' + worksheet.title"
+              [attr.aria-pressed]="selected()?.id === worksheet.id"
+              (click)="select(worksheet)"
+            >
+              <school-hub-icon-badge
+                icon="ri-file-text-line"
+                [tone]="worksheet.tone"
+                [soft]="true"
+                [large]="true"
+              /><span class="worksheet-row-info"
+                ><strong>{{ worksheet.title }}</strong
+                ><span>{{ worksheet.topic }}</span
+                ><small
+                  >{{ worksheet.questionCount }} Questions · {{
+                  worksheet.totalMarks }} Marks · {{ worksheet.durationMinutes
+                  }} min</small
+                ><school-hub-status-badge
+                  [label]="statuses[worksheet.status].label"
+                  [tone]="statuses[worksheet.status].tone"
+              /></span>
+            </button>
+            <div class="worksheet-row-action">
+              @if (worksheet.status === 'completed') {
+              <span>Score <strong>{{ worksheet.percentage }}%</strong></span
+              ><small>Submitted {{ date(worksheet.submittedAt!) }}</small> }
+              @else if (worksheet.status === 'in-progress') {
+              <span>Progress <strong>{{ worksheet.progress }}%</strong></span
+              ><school-hub-progress-bar
+                [value]="worksheet.progress"
+                [label]="worksheet.title + ' completion'"
+                tone="purple"
+              />
+              } @else { <small>Due {{ date(worksheet.dueAt) }}</small> } @if
+              (worksheet.available || worksheet.status === 'completed') {
+              <a
+                [routerLink]="['/student/worksheets', worksheet.id]"
+                [queryParams]="filterQuery()"
+                [attr.aria-label]="actionLabel(worksheet) + ': ' + worksheet.title"
+                >{{ worksheet.status === 'completed' ? 'Review' :
+                worksheet.status === 'in-progress' ? 'Continue' : 'Start' }}<i
+                  class="ri-arrow-right-s-line"
+                  aria-hidden="true"
+                ></i
+              ></a>
+              } @else {
+              <span class="locked-label"
+                ><i class="ri-lock-line" aria-hidden="true"></i>Locked</span
+              >
+              }
+            </div>
+          </article>
+          } @empty {
+          <div class="empty-state">
+            <i class="ri-search-line" aria-hidden="true"></i>
+            <h3>No worksheets found</h3>
+            <p>Try another subject, status, or search.</p>
+            <button
+              type="button"
+              class="outline-button"
+              (click)="clearFilters()"
+            >
+              Clear filters
+            </button>
+          </div>
+          }
+          <school-hub-pagination
+            [total]="filtered().length"
+            [page]="page()"
+            itemLabel="worksheets"
+            label="Worksheet pages"
+            (pageChanged)="changePage($event)"
+          />
+        </section>
+        <section
+          class="worksheet-details"
+          aria-labelledby="worksheet-details-heading"
+        >
+          <h2 id="worksheet-details-heading">Worksheet Details</h2>
+          @if (selected(); as worksheet) { @if (outsideFilters()) {
+          <p class="filter-note">
+            This worksheet is outside the current list filters.
+          </p>
+          }
+          <div class="details-title">
+            <school-hub-icon-badge
+              icon="ri-file-text-line"
+              [tone]="worksheet.tone"
+              [soft]="true"
+              [large]="true"
+            />
+            <div>
+              <h3>{{ worksheet.title }}</h3>
+              <p>{{ worksheet.subject }} · Week {{ worksheet.week }}</p>
+            </div>
+          </div>
+          <p class="details-description">{{ worksheet.description }}</p>
+          <p class="details-meta">
+            <span
+              ><i class="ri-file-list-line" aria-hidden="true"></i>{{
+              worksheet.questionCount }} Questions</span
+            ><span>{{ worksheet.totalMarks }} Marks</span
+            ><span
+              ><i class="ri-time-line" aria-hidden="true"></i>{{
+              worksheet.durationMinutes }} Minutes</span
+            >
+          </p>
+          <div class="detail-progress">
+            <h3>Your Progress</h3>
+            <p>{{ worksheet.progress }}% completed</p>
+            <school-hub-progress-bar
+              [value]="worksheet.progress"
+              label="Selected worksheet completion"
+              tone="purple"
+            />
+          </div>
+          @if (sections().length) {
+          <h3 class="sections-heading">Worksheet Sections</h3>
+          <ol class="section-list">
+            @for (section of sections(); track section.title; let index =
+            $index) {
+            <li>
+              <i
+                [class]="section.answered === section.questions.length ? 'ri-checkbox-circle-line' : section.answered ? 'ri-time-line' : 'ri-checkbox-blank-circle-line'"
+                aria-hidden="true"
+              ></i>
+              <div>
+                <strong>Section {{ index + 1 }}: {{ section.title }}</strong
+                ><small>{{ section.questions.length }} Questions</small>
+              </div>
+              <span>{{ section.answered }}/{{ section.questions.length }}</span>
+            </li>
+            }
+          </ol>
+          } @if (!worksheet.available && worksheet.status !== 'completed') {
+          <p class="availability-note">
+            <i class="ri-lock-line" aria-hidden="true"></i>This worksheet
+            unlocks when its lesson and practice questions are available.
+          </p>
+          <button class="worksheet-button" disabled type="button">
+            Worksheet Locked
+          </button>
+          } @else { @if (!worksheet.questions.length) {
+          <p class="availability-note">
+            This sample record has a score summary. Detailed answers are not
+            available.
+          </p>
+          }<a
+            class="worksheet-button"
+            [routerLink]="['/student/worksheets', worksheet.id]"
+            [queryParams]="filterQuery()"
+            >{{ actionLabel(worksheet) }}<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i
+          ></a>
+          }
+          <div class="detail-links">
+            <a
+              routerLink="/student/lessons"
+              [queryParams]="{ lessonId: worksheet.lessonId, subject: worksheet.subjectId }"
+              >Review Lesson</a
+            ><a
+              routerLink="/student/assessments"
+              [queryParams]="{ subjectId: worksheet.subjectId, term: worksheet.term }"
+              >Related Quizzes</a
+            >
+          </div>
+          } @else {
+          <p class="empty-state">Select a worksheet to see its details.</p>
+          }
+        </section>
+      </div>
+      <section class="worksheet-tips">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>
+        <div>
+          <h2>Worksheet Tips</h2>
+          <ul>
+            <li>Review the lesson before starting a worksheet.</li>
+            <li>Check your working and learn from the explanations.</li>
+            <li>Ask your tutor when you need help.</li>
+          </ul>
+        </div>
+        <div>
+          <h2>How Worksheets Help You</h2>
+          <p>
+            Reinforce what you have learned, improve your accuracy, and build
+            confidence through regular practice.
+          </p>
+        </div>
+      </section>
+    </div>
+    <aside class="worksheet-aside" aria-label="Worksheet insights">
+      <school-hub-dashboard-card
+        title="Overall Performance"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="overall-ring">
+          <school-hub-progress-ring
+            [value]="average()"
+            label="Worksheet average score"
+            caption="Average Score"
+            tone="purple"
+          />
+        </div>
+        <dl class="status-counts">
+          @for (status of ['completed', 'in-progress', 'not-started']; track
+          status) {
+          <div>
+            <dt>
+              {{ status === 'completed' ? 'Completed' : status === 'in-progress'
+              ? 'In Progress' : 'Not Started' }}
+            </dt>
+            <dd>{{ count(status) }}</dd>
+          </div>
+          }
+        </dl></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Strengths"
+        icon="ri-checkbox-circle-line"
+        tone="green"
+        ><ul class="topic-links">
+          @for (worksheet of strengths(); track worksheet.id) {
+          <li>
+            <a
+              routerLink="/student/resources"
+              [queryParams]="{ subjectId: worksheet.subjectId, topicId: worksheet.topicId }"
+              >{{ worksheet.topic }}</a
+            >
+          </li>
+          } @empty {
+          <li>Complete a worksheet to discover your strengths.</li>
+          }
+        </ul></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Areas to Improve"
+        icon="ri-focus-3-line"
+        tone="orange"
+        ><ul class="topic-links">
+          @for (worksheet of improve(); track worksheet.id) {
+          <li>
+            <a
+              routerLink="/student/resources"
+              [queryParams]="{ subjectId: worksheet.subjectId, topicId: worksheet.topicId }"
+              >{{ worksheet.topic }}</a
+            >
+          </li>
+          } @empty {
+          <li>Keep practising to strengthen your understanding.</li>
+          }
+        </ul></school-hub-dashboard-card
+      >
+      <div class="practice-note">
+        <i class="ri-file-list-3-line" aria-hidden="true"></i>
+        <div>
+          <h3>Need More Practice?</h3>
+          <p>Try a quiz on the topics you find challenging.</p>
+          <a
+            routerLink="/student/assessments"
+            [queryParams]="{ subjectId: subject() || null, term: term() === 'all' ? null : term() }"
+            >Go to Quizzes<i class="ri-arrow-right-line" aria-hidden="true"></i
+          ></a>
+        </div>
+      </div>
+      <div class="practice-note print-note">
+        <i class="ri-printer-line" aria-hidden="true"></i>
+        <div>
+          <h3>Print Worksheets</h3>
+          <p>Download a worksheet or print it to practise offline.</p>
+          <button type="button" (click)="browsePrintable()">
+            Browse Printable Worksheets<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

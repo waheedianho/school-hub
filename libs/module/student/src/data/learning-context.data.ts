@@ -1,6 +1,17 @@
 import { TaskListItem } from '@school-hub/ui-elements';
 
 /** Shared learner fixtures until the learner API is connected. */
+export const LEARNER_PROFILE = {
+  firstName: 'Sarah',
+  fullName: 'Sarah A.',
+  email: 'sarah.a@example.test',
+  phone: '',
+  location: 'Lagos, Nigeria',
+  memberSince: '2026-03-20',
+  avatarUrl: 'images/admin.png',
+  className: 'JSS 1 / Basic 7',
+};
+
 export const CURRENT_LESSON = {
   id: 'whole-numbers',
   subject: 'Mathematics',

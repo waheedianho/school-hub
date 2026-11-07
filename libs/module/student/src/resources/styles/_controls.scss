@@ -1,0 +1,131 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+.outline-button,
+.primary-button,
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 8px 14px;
+  border: 1px solid #deddef;
+  border-radius: 6px;
+  background: #fff;
+  color: #7043b0;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none;
+  cursor: pointer;
+}
+.primary-button {
+  background: #7d39d7;
+  border-color: #7d39d7;
+  color: white;
+}
+.danger-button {
+  background: #fff4f5;
+  border-color: #f2ccd3;
+  color: #cb4056;
+}
+.outline-button:hover {
+  background: #faf5ff;
+}
+.primary-button:hover {
+  background: #6f2dc8;
+}
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 5px;
+  border: 0;
+  background: none;
+  color: #793bc6;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:disabled,
+input:disabled,
+select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #9e73d5;
+  outline-offset: 3px;
+}
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 18px;
+  padding: 13px 16px;
+  border: 1px solid #dfd0f6;
+  border-radius: 7px;
+  background: #fcf9ff;
+  color: #76638f;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.notice button {
+  flex-shrink: 0;
+  border: 0;
+  background: none;
+  color: #7d3fc8;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.full-width {
+  width: 100%;
+}
+.card-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #ece9f2;
+  color: #7739c7;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-decoration: none;
+}
+.empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: #76849a;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.empty > i {
+  font-size: 32px;
+  color: #a78acb;
+}
+.empty h3 {
+  margin: 12px 0 8px;
+  color: #4c5b77;
+  font-size: 18px;
+}
+.empty p {
+  max-width: 550px;
+  margin: 0 auto 18px;
+}
+.download-error {
+  padding: 12px;
+  border: 1px solid #f1ced5;
+  border-radius: 6px;
+  color: #b4485d;
+  background: #fff5f7;
+  font-size: typography.$body;
+  line-height: 1.8;
+}

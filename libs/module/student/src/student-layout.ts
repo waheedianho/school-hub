@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
-import { HeaderUser, ShellComponent } from '@school-hub/layout';
+import { Component, inject } from '@angular/core';
+import { ShellComponent } from '@school-hub/layout';
+import { LearnerProfileStore } from './data/learner-profile-store';
 import { STUDENT_SIDEBAR_SECTIONS } from './student-sidebar.config';
 
 @Component({
@@ -13,17 +14,11 @@ import { STUDENT_SIDEBAR_SECTIONS } from './student-sidebar.config';
       [logoText]="'SchoolHub'"
       logoIcon="images/learner-logo.svg"
       variant="learner"
-      [user]="user"
+      [user]="profile.header()"
     ></school-hub-shell>
   `,
 })
 export class StudentLayoutComponent {
   sidebarSections = STUDENT_SIDEBAR_SECTIONS;
-  readonly user: HeaderUser = {
-    name: 'Sarah A.',
-    role: 'JSS 1 / Basic 7',
-    avatarUrl: 'images/admin.png',
-    profileRoute: '/student/profile',
-    settingsRoute: '/student/settings',
-  };
+  readonly profile = inject(LearnerProfileStore);
 }

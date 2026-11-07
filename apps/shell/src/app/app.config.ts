@@ -1,7 +1,10 @@
 import {
   ApplicationConfig,
+  inject,
+  provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
+import { ViewportScroller } from '@angular/common';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { appRoutes } from './app.routes';
 import {
@@ -14,9 +17,13 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideClientHydration(withEventReplay()),
     provideBrowserGlobalErrorListeners(),
+    provideAppInitializer(() => inject(ViewportScroller).setOffset([0, 96])),
     provideRouter(
       appRoutes,
-      withInMemoryScrolling({ scrollPositionRestoration: 'enabled' }),
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'enabled',
+        anchorScrolling: 'enabled',
+      }),
     ),
     provideAnimationsAsync(),
   ],

@@ -1,0 +1,76 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+.intro,
+.note {
+  margin: 0 0 18px;
+  color: #6c7a91;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+dl {
+  display: grid;
+  gap: 14px;
+  margin: 20px 0;
+}
+dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #ececf4;
+  font-size: typography.$body;
+}
+dt {
+  color: #566782;
+}
+dd {
+  margin: 0;
+  color: #67738b;
+}
+.preview {
+  height: 210px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #f5f1fc;
+}
+.preview > div {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  height: 100%;
+  color: #9b86b1;
+  font-size: typography.$body;
+}
+.preview i {
+  font-size: 42px;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 18px 0;
+}
+button {
+  padding: 10px 13px;
+  border: 1px solid #d7c4ef;
+  border-radius: 6px;
+  color: #784aad;
+  background: #fbf8ff;
+  font: inherit;
+  font-size: typography.$body;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 2px;
+}
+.error {
+  color: #b54f5b;
+  font-size: typography.$body;
+  line-height: 1.7;
+}

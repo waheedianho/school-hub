@@ -10,8 +10,10 @@ import { UiTone } from '../models/ui-tone.model';
   templateUrl: './progress-stat.html',
   styleUrl: './progress-stat.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '[class.prominent]': 'prominent()' },
 })
 export class ProgressStatComponent {
+  readonly prominent = input(false);
   readonly title = input.required<string>();
   readonly value = input.required<string>();
   readonly percentage = input.required<number>();

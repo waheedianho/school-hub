@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   color: #1e2a40;
@@ -24,7 +26,7 @@ h1 {
 .page-heading p {
   margin: 0;
   color: #63758f;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .term-select {
   display: flex;
@@ -41,12 +43,12 @@ h1 {
 select {
   min-width: 0;
   width: 100%;
-  height: 36px;
+  height: 42px;
   border: 0;
   background: transparent;
   color: #445673;
   font: inherit;
-  font-size: 11px;
+  font-size: typography.$reading;
 }
 .assessment-stats {
   display: grid;
@@ -64,12 +66,12 @@ select {
   background: white;
 }
 .average-card school-hub-progress-ring {
-  zoom: 0.72;
+  flex-shrink: 0;
 }
 .average-card span {
   display: block;
   color: #60718d;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .average-card strong {
   display: block;
@@ -80,7 +82,7 @@ select {
 .average-card small {
   display: block;
   color: #7e8da5;
-  font-size: 9px;
+  font-size: typography.$caption;
   line-height: 1.7;
 }
 .assessment-layout {
@@ -116,13 +118,13 @@ select {
 .assessment-filters input {
   width: 100%;
   min-width: 0;
-  height: 36px;
+  height: 42px;
   padding: 8px 0;
   border: 0;
   outline: none;
   background: transparent;
   color: #506586;
-  font-size: 11px;
+  font-size: typography.$reading;
 }
 .assessment-filters i {
   color: #7890b4;
@@ -151,7 +153,7 @@ select {
 h2 {
   margin: 0 0 13px;
   color: #253753;
-  font-size: 14px;
+  font-size: typography.$section;
   font-weight: 650;
 }
 .upcoming-list {
@@ -185,20 +187,20 @@ h2 {
 h3 {
   margin: 0;
   color: #293a57;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .assessment-item p {
   margin: 5px 0;
   color: #73849f;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .assessment-item small {
   display: flex;
   align-items: center;
   gap: 5px;
   color: #72829b;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .assessment-due {
   flex-shrink: 0;
@@ -207,7 +209,7 @@ h3 {
 .assessment-due > span {
   display: block;
   margin-top: 7px;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .calendar-link {
   display: flex;
@@ -220,7 +222,7 @@ h3 {
   border: 0;
   background: transparent;
   color: #7940dc;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .section-heading,
 .topic-heading {
@@ -239,7 +241,7 @@ h3 {
   border: 0;
   background: transparent;
   color: #7940dc;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .results-scroll {
   position: relative;
@@ -252,11 +254,11 @@ table {
   border-collapse: collapse;
   color: #4a5e7d;
   text-align: left;
-  font-size: 10px;
+  font-size: typography.$body;
 }
 thead th {
   padding: 9px 7px;
-  font-size: 9px;
+  font-size: typography.$caption;
   font-weight: 500;
 }
 tbody td,
@@ -275,7 +277,7 @@ small {
   display: block;
   margin-top: 4px;
   font-weight: 400;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .recent-section school-hub-pagination {
   display: block;
@@ -284,7 +286,7 @@ small {
 .chart-caption {
   margin: 0 0 10px;
   color: #8493ab;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .topic-heading {
   margin-top: 20px;
@@ -299,11 +301,11 @@ small {
   align-items: center;
   gap: 10px;
   color: #506380;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .topic-progress strong {
   text-align: right;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .study-note {
   display: flex;
@@ -321,7 +323,7 @@ small {
 .study-note p {
   margin: 6px 0 0;
   color: #667b99;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.8;
 }
 .study-note.cool {
@@ -337,7 +339,7 @@ small {
   gap: 6px;
   margin-top: 9px;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .practice-link {
   display: flex;
@@ -348,7 +350,7 @@ small {
   border-radius: 11px;
   background: #faf7ff;
   color: #7940dc;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .practice-link > i:first-child {
   font-size: 25px;
@@ -366,7 +368,7 @@ small {
   padding: 24px;
   text-align: center;
   color: #8494ac;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .empty-assessments > i {
   font-size: 25px;
@@ -385,7 +387,7 @@ small {
   border-radius: 8px;
   background: #fff9ed;
   color: #8f6c29;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .missing-record button {
   border: 0;

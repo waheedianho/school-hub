@@ -1,0 +1,84 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.answer-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #61718b;
+  font-size: typography.$caption;
+}
+input,
+textarea {
+  display: block;
+  width: 100%;
+  max-width: 480px;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cfd9eb;
+  border-radius: 8px;
+  background: white;
+  color: #263a58;
+  font: inherit;
+  font-size: typography.$reading;
+  line-height: 1.5;
+}
+input {
+  max-width: 260px;
+}
+textarea {
+  resize: vertical;
+}
+.wide input,
+.wide textarea {
+  max-width: none;
+}
+input:focus,
+textarea:focus {
+  outline: 2px solid #b69be9;
+  outline-offset: 2px;
+}
+input[readonly],
+textarea[readonly] {
+  background: #f8faff;
+}
+.correct input,
+.correct textarea {
+  border-color: #7fcfa9;
+}
+.incorrect input,
+.incorrect textarea {
+  border-color: #e4a0ae;
+}
+.answer-feedback {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 8px;
+  background: #f3f8ff;
+  color: #50627f;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.answer-feedback strong,
+.answer-feedback span {
+  display: block;
+}
+.answer-feedback strong {
+  color: #ab4158;
+}
+.correct .answer-feedback strong {
+  color: #07844c;
+}
+p {
+  margin: 6px 0 0;
+}
+@media print {
+  input,
+  textarea {
+    color: var(--worksheet-print-answer-color, #263a58);
+  }
+  .answer-feedback {
+    display: var(--worksheet-print-feedback, block);
+  }
+}

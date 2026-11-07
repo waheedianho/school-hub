@@ -1,0 +1,31 @@
+<ul [attr.aria-label]="label()" [class.compact]="compact()">
+  @for(item of items();track item.id){
+  <li>
+    <div class="name">
+      <school-hub-icon-badge
+        [icon]="item.icon"
+        [tone]="item.tone"
+        [soft]="compact()"
+      />
+      <div>
+        <strong>{{item.title}}</strong
+        >@if(item.description){<small>{{item.description}}</small>}
+      </div>
+    </div>
+    <div class="progress">
+      @if(item.value!==undefined){<school-hub-progress-bar
+        [value]="item.value"
+        [label]="item.title"
+        tone="purple"
+      />}<span>{{item.valueLabel}}</span>
+    </div>
+    @if(item.detail){
+    <p class="detail">{{item.detail}}</p>
+    }@if(item.route){<a
+      [routerLink]="item.route"
+      [queryParams]="item.queryParams"
+      >{{item.actionLabel||'View'}}</a
+    >}
+  </li>
+  }
+</ul>

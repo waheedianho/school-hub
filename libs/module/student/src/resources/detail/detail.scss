@@ -1,0 +1,247 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+@use '../styles/controls';
+:host {
+  display: block;
+  min-width: 0;
+  color: #293951;
+}
+.resource-detail {
+  max-width: 1760px;
+  margin: auto;
+}
+.detail-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin: 0 0 20px;
+  padding-top: 55px;
+}
+.detail-toolbar > div {
+  display: flex;
+  gap: 10px;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #7835cd;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-decoration: none;
+}
+.more {
+  width: 40px;
+  padding: 8px;
+}
+.detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 26px;
+  align-items: start;
+}
+.detail-primary {
+  min-width: 0;
+}
+.resource-hero {
+  overflow: hidden;
+  border: 1px solid #e1d9f2;
+  border-radius: 10px;
+  background: white;
+  scroll-margin-top: 96px;
+}
+.video-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+.hero-copy {
+  padding: 20px;
+}
+.title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 20px;
+}
+h1 {
+  margin: 0;
+  color: #25314c;
+  font-size: 20px;
+  line-height: 1.5;
+  font-weight: 700;
+}
+.resource-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.hero-copy > p {
+  margin: 10px 0 18px;
+  color: #65738c;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.resource-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  color: #67738b;
+  font-size: typography.$caption;
+  line-height: 1.8;
+}
+.resource-meta > span {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+.resource-meta i {
+  font-size: 16px;
+}
+.bookmark-jump {
+  margin-top: 13px;
+}
+.document-art school-hub-resource-artwork {
+  height: 200px;
+}
+.locked {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 45px 25px;
+  color: #78688e;
+  text-align: center;
+  background: #f9f5ff;
+}
+.locked > i {
+  font-size: 40px;
+  color: #9b7bbc;
+}
+.locked h1 {
+  font-size: 25px;
+}
+.locked p {
+  max-width: 500px;
+  margin: 0;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.detail-tabs {
+  margin-top: 20px;
+  background: white;
+}
+.detail-tabs > div {
+  padding: 23px 20px;
+  border: 1px solid #e9e7f2;
+  border-top: 0;
+  border-radius: 0 0 9px 9px;
+}
+aside {
+  display: grid;
+  min-width: 0;
+  gap: 20px;
+}
+.outline-duration {
+  margin: 17px 0 0;
+  color: #767c97;
+  font-size: typography.$caption;
+}
+.notes-prompt {
+  padding: 22px;
+  border: 1px solid #e9def8;
+  border-radius: 10px;
+  background: #f7f2fe;
+}
+.notes-prompt h2 {
+  margin: 0 0 10px;
+  color: #46516e;
+  font-size: typography.$section;
+}
+.notes-prompt p {
+  margin: 0 0 15px;
+  color: #75658a;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.notes-prompt > span {
+  display: block;
+  margin-top: 13px;
+  color: #8b7e9d;
+  font-size: typography.$caption;
+}
+.local-copy {
+  margin: 0;
+  color: #8b829b;
+  font-size: typography.$caption;
+  line-height: 1.8;
+}
+.dialog-copy {
+  color: #6c7690;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.dialog-copy h3 {
+  margin-top: 0;
+}
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+@media (max-width: 1350px) {
+  .detail-layout {
+    grid-template-columns: minmax(0, 1fr) 300px;
+    gap: 20px;
+  }
+  .title-row {
+    flex-wrap: wrap;
+  }
+}
+@media (max-width: 1050px) {
+  .detail-toolbar {
+    padding-top: 0;
+  }
+  .detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .local-copy {
+    grid-column: 1/-1;
+  }
+}
+@media (max-width: 600px) {
+  aside {
+    grid-template-columns: 1fr;
+  }
+  .detail-toolbar > div {
+    margin-left: auto;
+  }
+  .hero-copy {
+    padding: 15px;
+  }
+  .resource-meta {
+    gap: 10px;
+  }
+  .detail-tabs > div {
+    padding: 20px 14px;
+  }
+  .resource-actions {
+    flex-wrap: wrap;
+  }
+  .title-row h1 {
+    font-size: 20px;
+  }
+}

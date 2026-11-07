@@ -1,0 +1,400 @@
+<div class="profile-page">
+  <header class="page-heading">
+    <h1>My Profile</h1>
+    <p>View and manage your learning profile and preferences.</p>
+  </header>
+  @if(notice()||!profile.persistent()){
+  <p class="notice" role="status">
+    {{!profile.persistent()?'Your changes are available for this visit, but this
+    browser could not save them for later.':notice()}}@if(profile.persistent())
+    {<button type="button" (click)="notice.set('')">Dismiss</button>}
+  </p>
+  }
+  <div class="profile-columns">
+    <div class="profile-primary">
+      <school-hub-profile-card
+        [profile]="identityCard()"
+        [disabled]="!profile.ready()"
+        (edited)="open('edit')"
+      />
+      <school-hub-dashboard-card
+        title="My Subjects"
+        subtitle="Keep learning in your enrolled subjects."
+        icon="ri-book-open-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><a card-action class="card-action" routerLink="/student/subjects"
+          >Manage Subjects</a
+        ><school-hub-progress-list
+          [items]="subjectRows()"
+          label="Profile subject progress" /><a
+          class="card-link"
+          routerLink="/student/subjects"
+          >View All Subjects<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></a
+      ></school-hub-dashboard-card>
+      <div class="preference-cards">
+        <school-hub-dashboard-card
+          title="Learning Preferences"
+          subtitle="Choose how you learn and download."
+          icon="ri-settings-3-line"
+          [showIcon]="false"
+          [compact]="true"
+          ><school-hub-preference-list
+            [items]="preferences()"
+            label="Learning preferences"
+            (toggled)="wifi($event.checked)"
+          />
+          <p class="preference-note">
+            Applies to resource files. Wi-Fi and wired connections are allowed;
+            unknown connection types require confirmation.
+          </p></school-hub-dashboard-card
+        ><school-hub-dashboard-card
+          title="Account & Security"
+          subtitle="Manage your account security."
+          icon="ri-lock-line"
+          [showIcon]="false"
+          [compact]="true"
+          ><school-hub-preference-list
+            [items]="security()"
+            label="Account and security"
+          />
+          <p class="preference-note">
+            Sign-in and security services are not connected in this preview.
+          </p></school-hub-dashboard-card
+        >
+      </div>
+    </div>
+    <div class="profile-secondary">
+      <school-hub-dashboard-card
+        title="My Learning Snapshot"
+        icon="ri-bar-chart-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><a card-action class="card-action" routerLink="/student/progress"
+          >View Progress</a
+        >
+        <section class="snapshot" aria-label="Profile learning snapshot">
+          @for(stat of snapshot();track stat.title){<school-hub-summary-stat
+            [title]="stat.title"
+            [value]="stat.value"
+            [icon]="stat.icon"
+            [tone]="stat.tone"
+            appearance="tile"
+          />}
+        </section>
+        <button type="button" class="snapshot-note" (click)="open('snapshot')">
+          Based on recorded learning and practice<i
+            class="ri-information-line"
+            aria-hidden="true"
+          ></i></button
+      ></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="My Achievements"
+        icon="ri-medal-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><button
+          card-action
+          class="card-action"
+          type="button"
+          (click)="open('achievements')"
+        >
+          View All
+        </button>
+        <div class="achievement-grid">
+          @for(badge of achievements();track
+          badge.id){<school-hub-achievement-card
+            [achievement]="badge"
+            (selected)="set({badge:$event,view:null})"
+          />}
+        </div></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="My Goals"
+        icon="ri-focus-3-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><button
+          card-action
+          class="card-action"
+          type="button"
+          [disabled]="!profile.ready()"
+          (click)="open('goals')"
+        >
+          Edit Goals</button
+        ><school-hub-progress-list
+          [items]="goalRows()"
+          [compact]="true"
+          label="Personal learning goals"
+      /></school-hub-dashboard-card>
+      <section class="streak-card" aria-labelledby="streak-heading">
+        <header>
+          <i class="ri-fire-fill" aria-hidden="true"></i>
+          <div>
+            <h2 id="streak-heading">My Learning Streak</h2>
+            <p>
+              {{streak().current?'Keep your learning rhythm going!':'Complete
+              learning today to start a new streak.'}}
+            </p>
+          </div>
+          <div class="streak-count">
+            <strong>{{streak().current}}</strong
+            ><span>{{streak().current===1?'day':'days'}}</span>
+          </div>
+        </header>
+        <school-hub-activity-week
+          [days]="streak().week"
+          (selected)="calendar($event)"
+        /><button type="button" class="card-link" (click)="calendar()">
+          <i class="ri-calendar-line" aria-hidden="true"></i>View Calendar
+        </button>
+        <p class="streak-note">
+          Based on dated lesson, assessment, worksheet, and portfolio activity.
+          Visiting a page does not add a learning day.
+        </p>
+      </section>
+    </div>
+  </div>
+  <p class="privacy-note">
+    <i class="ri-lock-line" aria-hidden="true"></i>Profile edits, personal
+    goals, and preferences are saved on this device.
+  </p>
+</div>
+<school-hub-dialog-panel
+  [open]="dialogOpen()"
+  [title]="dialogTitle()"
+  (dismissed)="close()"
+  >@if(selectedBadge();as badge){
+  <div class="badge-detail">
+    <school-hub-achievement-card [achievement]="badge" />
+    <p>
+      {{badge.earned?'This milestone is supported by your recorded
+      learning.':'Keep practising to reach this milestone.'}}
+    </p>
+    <p>{{badge.description}} · {{badge.detail}}</p>
+    <a class="outline-button" routerLink="/student/progress"
+      >View Learning Progress</a
+    >
+  </div>
+  }@else{@switch(view()){@case('edit'){
+  <form class="profile-form" novalidate (submit)="saveProfile($event)">
+    <p>
+      Contact details save on this device. They do not change your sign-in
+      credentials.
+    </p>
+    <div class="form-field">
+      <label for="profile-full-name">Full name</label
+      ><input
+        id="profile-full-name"
+        type="text"
+        autocomplete="name"
+        maxlength="80"
+        [value]="draft().fullName"
+        [disabled]="!profile.ready()"
+        [attr.aria-invalid]="!!errors().fullName"
+        aria-describedby="profile-name-error"
+        (input)="editField('fullName',$event)"
+      />@if(errors().fullName){
+      <p id="profile-name-error" class="field-error">{{errors().fullName}}</p>
+      }
+    </div>
+    <div class="form-field">
+      <label for="profile-email">Contact email</label
+      ><input
+        id="profile-email"
+        type="email"
+        autocomplete="email"
+        maxlength="120"
+        [value]="draft().email"
+        [disabled]="!profile.ready()"
+        [attr.aria-invalid]="!!errors().email"
+        aria-describedby="profile-email-error"
+        (input)="editField('email',$event)"
+      />@if(errors().email){
+      <p id="profile-email-error" class="field-error">{{errors().email}}</p>
+      }
+    </div>
+    <div class="form-field">
+      <label for="profile-phone">Phone number (optional)</label
+      ><input
+        id="profile-phone"
+        type="tel"
+        autocomplete="tel"
+        maxlength="24"
+        [value]="draft().phone"
+        [disabled]="!profile.ready()"
+        [attr.aria-invalid]="!!errors().phone"
+        aria-describedby="profile-phone-error"
+        (input)="editField('phone',$event)"
+      />@if(errors().phone){
+      <p id="profile-phone-error" class="field-error">{{errors().phone}}</p>
+      }
+    </div>
+    <div class="form-field">
+      <label for="profile-location">Location (optional)</label
+      ><input
+        id="profile-location"
+        type="text"
+        autocomplete="address-level2"
+        maxlength="100"
+        [value]="draft().location"
+        [disabled]="!profile.ready()"
+        [attr.aria-invalid]="!!errors().location"
+        aria-describedby="profile-location-error"
+        (input)="editField('location',$event)"
+      />@if(errors().location){
+      <p id="profile-location-error" class="field-error">
+        {{errors().location}}
+      </p>
+      }
+    </div>
+    <div class="dialog-actions">
+      <button class="outline-button" type="button" (click)="close()">
+        Cancel</button
+      ><button
+        class="primary-button"
+        type="submit"
+        [disabled]="!profile.ready()"
+      >
+        Save Profile
+      </button>
+    </div>
+  </form>
+  } @case('goals'){
+  <form class="profile-form" novalidate (submit)="saveGoals($event)">
+    <p>
+      Choose three measurable goals. Progress uses your existing all-time
+      learning records.
+    </p>
+    @for(goal of goalDraft();track goal.id;let index=$index){
+    <fieldset>
+      <legend>Goal {{index+1}}</legend>
+      <div class="form-field">
+        <label [for]="'goal-metric-'+index">Measure</label
+        ><select
+          [id]="'goal-metric-'+index"
+          [value]="goal.metric"
+          (change)="editGoal(index,'metric',$event)"
+        >
+          @for(option of metricOptions;track option.id){
+          <option [value]="option.id" [selected]="goal.metric===option.id">
+            {{option.label}}
+          </option>
+          }
+        </select>
+      </div>
+      <div class="goal-fields">
+        <div class="form-field">
+          <label [for]="'goal-subject-'+index">Subject</label
+          ><select
+            [id]="'goal-subject-'+index"
+            [value]="goal.subjectId"
+            (change)="editGoal(index,'subjectId',$event)"
+          >
+            <option value="" [selected]="!goal.subjectId">All Subjects</option>
+            @for(item of subjects;track item.id){
+            <option [value]="item.id" [selected]="goal.subjectId===item.id">
+              {{item.name}}
+            </option>
+            }
+          </select>
+        </div>
+        <div class="form-field">
+          <label [for]="'goal-target-'+index"
+            >Target{{goal.metric==='quiz-average'?' (%)':''}}</label
+          ><input
+            [id]="'goal-target-'+index"
+            type="number"
+            min="1"
+            [max]="goal.metric==='quiz-average'?100:500"
+            step="1"
+            [value]="goal.target"
+            (input)="editGoal(index,'target',$event)"
+          />
+        </div>
+      </div>
+    </fieldset>
+    }@if(goalError()){
+    <p class="field-error" role="alert">{{goalError()}}</p>
+    }
+    <div class="dialog-actions">
+      <button class="outline-button" type="button" (click)="close()">
+        Cancel</button
+      ><button
+        class="primary-button"
+        type="submit"
+        [disabled]="!profile.ready()"
+      >
+        Save Goals
+      </button>
+    </div>
+  </form>
+  } @case('achievements'){
+  <p class="dialog-copy">
+    {{snapshot()[3].value}} of {{achievements().length}} milestones earned from
+    your recorded learning.
+  </p>
+  <div class="achievement-grid">
+    @for(badge of achievements();track badge.id){<school-hub-achievement-card
+      [achievement]="badge"
+      (selected)="set({badge:$event,view:null})"
+    />}
+  </div>
+  } @case('calendar'){<school-hub-month-calendar
+    [month]="month()"
+    [today]="today()"
+    [selected]="day()"
+    [markers]="calendarMarkers()"
+    label="Learning activity calendar"
+    eventName="learning activity"
+    eventPluralName="learning activities"
+    (daySelected)="set({date:$event})"
+    (monthChanged)="changeMonth($event)"
+  />
+  <div class="calendar-evidence">
+    <h3>{{date(day()+'T12:00:00+01:00')}}</h3>
+    <ul>
+      @for(activity of dayActivities();track activity.id){
+      <li>
+        <a [routerLink]="activity.route" [queryParams]="activity.queryParams"
+          >{{activity.title}}<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i
+        ></a>
+      </li>
+      }@empty{
+      <li>No recorded learning completion for this day.</li>
+      }
+    </ul>
+  </div>
+  } @case('snapshot'){
+  <div class="dialog-copy">
+    <p>
+      <strong>Lessons completed:</strong> completed lesson records, shared with
+      My Lessons and Progress.
+    </p>
+    <p>
+      <strong>Average quiz score:</strong> the mean of recorded quiz attempts,
+      including local practice results.
+    </p>
+    <p>
+      <strong>Practice time:</strong> recorded worksheet and portfolio time.
+      Lesson duration estimates and unrecorded quiz or viewing time are
+      excluded.
+    </p>
+    <p>
+      <strong>Badges:</strong> milestones calculated from completed lessons,
+      quiz results, and dated learning days. A streak continues through
+      yesterday when today has no completion yet.
+    </p>
+    <p>
+      Profile edits and goals use this device’s local storage. Learning activity
+      includes the existing sample records and your saved practice.
+    </p>
+  </div>
+  } }}</school-hub-dialog-panel
+>

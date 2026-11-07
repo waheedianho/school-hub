@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  overflow: hidden;
+  height: 130px;
+}
+.art {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 100%;
+  padding: 18px;
+  overflow: hidden;
+  color: var(--art-color);
+  background: linear-gradient(120deg, var(--art-soft), white);
+}
+strong {
+  position: relative;
+  z-index: 1;
+  max-width: 160px;
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 750;
+}
+.symbol {
+  position: relative;
+  z-index: 1;
+  padding: 8px;
+  border-radius: 10px;
+  background: #ffffffa8;
+  font-size: 30px;
+  font-weight: 700;
+}
+i {
+  position: absolute;
+  right: 10px;
+  bottom: -12px;
+  transform: rotate(-15deg);
+  font-size: 95px;
+  opacity: 0.13;
+}
+.orb {
+  position: absolute;
+  right: -30px;
+  top: -45px;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: var(--art-color);
+  opacity: 0.07;
+}

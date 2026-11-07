@@ -39,7 +39,7 @@ test('dashboard presents the learner overview and consistent progress', async ({
       name: 'Portfolio Completion',
       exact: true,
     }),
-  ).toHaveAttribute('aria-valuenow', '50');
+  ).toHaveAttribute('aria-valuenow', '64');
   await page.evaluate(() => document.fonts.ready);
   await page.screenshot({
     path: testInfo.outputPath('learner-dashboard-desktop.png'),
@@ -50,6 +50,7 @@ test('dashboard presents the learner overview and consistent progress', async ({
 test('dashboard actions open the related learner pages with their record context', async ({
   page,
 }) => {
+  await page.clock.setFixedTime(new Date('2026-11-05T12:00:00+01:00'));
   await page.goto('/student/dashboard');
   const actions = [
     [
@@ -59,13 +60,13 @@ test('dashboard actions open the related learner pages with their record context
     ],
     [
       'Submit Work',
-      '/student/portfolio-tasks?taskId=market-price-comparison&tab=submission',
-      'Coming soon',
+      '/student/portfolio-tasks/market-price-comparison?tab=submission',
+      'Market Price Comparison',
     ],
     [
       'Join Class',
       '/student/live-classes?classId=whole-numbers-live',
-      'Coming soon',
+      'Join Class',
     ],
     ['View all tasks', '/student/lessons?tab=tasks', 'Pending lesson tasks'],
     [
@@ -73,7 +74,7 @@ test('dashboard actions open the related learner pages with their record context
       '/student/assessments?assessmentId=whole-numbers-quiz&tab=results',
       'Quiz Results',
     ],
-    ['Place Value', '/student/resources?topicId=place-value', 'Coming soon'],
+    ['Place Value', '/student/resources?topicId=place-value', 'Resources'],
   ];
   for (const [label, url, heading] of actions) {
     await test.step(label, async () => {

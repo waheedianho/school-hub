@@ -1,0 +1,473 @@
+<div class="classroom-page">
+  <a
+    class="back-link"
+    routerLink="/student/live-classes"
+    [queryParams]="backQuery()"
+    ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to Live
+    Classes</a
+  >
+  @if (session(); as session) { @if (draft(); as draft) {
+  <header class="room-heading">
+    <div class="room-title">
+      <h1>{{ session.title }}</h1>
+      <p>{{ session.description }}</p>
+    </div>
+    <div class="room-meta">
+      <div class="tutor-meta">
+        <img [src]="session.tutorImage" alt="" /><span
+          ><small>Tutor</small><strong>{{ session.tutor }}</strong></span
+        >
+      </div>
+      <div>
+        <i class="ri-calendar-line" aria-hidden="true"></i
+        ><span
+          ><small>Date</small
+          ><strong>{{ date(session.startsAt) }}</strong></span
+        >
+      </div>
+      <div>
+        <i
+          class="ri-checkbox-circle-fill attendance-icon"
+          aria-hidden="true"
+        ></i
+        ><span
+          ><small>Practice attendance</small
+          ><strong
+            >{{ joined() ? 'Joined locally' : draft.joinedAt ? 'Visited locally'
+            : 'Not joined' }}</strong
+          ></span
+        >
+      </div>
+    </div>
+    <div class="room-timer">
+      <small>Practice Time</small>
+      <div>
+        <school-hub-status-badge
+          [label]="joined() ? 'PRACTICE' : 'PREVIEW'"
+          tone="purple"
+        /><strong>{{ timer() }}</strong>
+      </div>
+    </div>
+  </header>
+  <p class="preview-notice">
+    Practice classroom — no live tutor call is connected. Chat, reactions, and
+    answers stay in this tab. Audio and video are local previews.
+  </p>
+  @if (!store.persistent()) {
+  <p class="notice" role="status">
+    This browser could not save your practice for later. Keep this tab open to
+    retain your notes and messages.
+  </p>
+  } @if (message()) {
+  <p class="notice" role="status">
+    {{ message() }}<button type="button" (click)="message.set('')">
+      Dismiss
+    </button>
+  </p>
+  } @if (media.error()) {
+  <p class="error-note" role="alert">{{ media.error() }}</p>
+  } @if (!store.ready()) {
+  <p class="loading" role="status">Loading your saved classroom practice…</p>
+  } @else if (!joined()) {
+  <section class="prejoin-panel">
+    @if (issue()) {
+    <div>
+      <h2>Classroom preview</h2>
+      <p>{{ issue() }}</p>
+    </div>
+    } @else {
+    <div>
+      <h2>Ready to explore this classroom?</h2>
+      <p>
+        The scheduled class is {{ date(session.startsAt) }} at {{ time(session)
+        }}. Enter the local practice room to try the controls and activities.
+      </p>
+    </div>
+    <button class="primary-button" type="button" (click)="enter()">
+      Enter Practice Classroom
+    </button>
+    }
+  </section>
+  }
+  <div class="classroom-layout" [class.wide]="!sideVisible()">
+    <div class="room-primary">
+      <div class="presentation-stage">
+        <div class="tutor-view">
+          <img
+            [src]="session.tutorImage"
+            [alt]="session.tutor + ', sample tutor portrait'"
+          />
+          <div class="stage-tags">
+            <school-hub-status-badge
+              label="Practice Preview"
+              tone="purple"
+            /><span
+              ><i class="ri-group-line" aria-hidden="true"></i>{{
+              people().length }} sample learners</span
+            >
+          </div>
+          <div class="tutor-label">
+            <i class="ri-user-voice-line" aria-hidden="true"></i>{{
+            session.tutor }}<small>Sample tutor portrait</small>
+          </div>
+          @if (lastReaction()) {
+          <span class="stage-reaction" aria-label="Your local reaction"
+            >{{ lastReaction() }}</span
+          >
+          }
+        </div>
+        <school-hub-lesson-board
+          [slides]="session.slides"
+          [index]="draft.slide"
+          (changed)="slide($event)"
+          (notice)="message.set($event)"
+        />
+      </div>
+      <school-hub-participant-strip
+        [people]="people()"
+        [stream]="media.video()"
+        [micOn]="!!media.audio()"
+        [handRaised]="draft.handRaised"
+        (viewAll)="dialog.set('participants')"
+      /><school-hub-classroom-toolbar
+        [micOn]="!!media.audio()"
+        [cameraOn]="!!media.video()"
+        [handRaised]="draft.handRaised"
+        [chatVisible]="sideVisible()"
+        [count]="people().length"
+        [disabled]="!joined()"
+        [mediaBusy]="media.audioBusy() || media.videoBusy()"
+        (action)="action($event)"
+      />
+      <div class="room-learning-cards">
+        <section class="learning-card objective-card">
+          <h2>
+            <i class="ri-focus-3-line" aria-hidden="true"></i>Today’s Objective
+          </h2>
+          <p>By the end of this lesson, you will be able to:</p>
+          <ul class="objective-list">
+            @for (objective of session.objectives; track objective) {
+            <li>
+              <i class="ri-checkbox-circle-fill" aria-hidden="true"></i>{{
+              objective }}
+            </li>
+            }
+          </ul>
+        </section>
+        <section class="learning-card vocabulary-card">
+          <h2>
+            <i class="ri-book-2-line" aria-hidden="true"></i>Key Vocabulary
+          </h2>
+          <ul>
+            @for (word of session.vocabulary; track word.word) {
+            <li>{{ word.word }}</li>
+            }
+          </ul>
+          <button
+            class="outline-button"
+            type="button"
+            (click)="dialog.set('vocabulary')"
+          >
+            View Vocabulary List
+          </button>
+        </section>
+        <section class="learning-card activity-card">
+          <h2>
+            <i class="ri-file-list-3-line" aria-hidden="true"></i>In-Class
+            Activity
+          </h2>
+          <p>Check your understanding with these short questions.</p>
+          <ol class="activity-questions">
+            @for (question of session.practice; track question.id) {
+            <li>{{ question.prompt }}</li>
+            }
+          </ol>
+          @if (draft.checked) {
+          <p class="activity-result">
+            {{ score() }} / {{ session.practice.length }} correct · Checked
+            locally
+          </p>
+          }
+          <button
+            class="outline-button"
+            type="button"
+            [disabled]="!joined() && !draft.checked"
+            (click)="dialog.set('activity')"
+          >
+            <i class="ri-send-plane-line" aria-hidden="true"></i>{{
+            draft.checked ? 'Review Answers' : 'Submit Answers' }}
+          </button>
+        </section>
+        <section class="learning-card materials-card">
+          <h2>
+            <i class="ri-video-line" aria-hidden="true"></i>Recording &
+            Materials
+          </h2>
+          <p>Keep the class notes and continue learning after the session.</p>
+          <p>A video recording has not been provided for this sample class.</p>
+          <button
+            class="outline-button"
+            type="button"
+            (click)="dialog.set('recording')"
+          >
+            <i class="ri-information-line" aria-hidden="true"></i>Learn More
+          </button>
+        </section>
+      </div>
+      <p class="materials-banner">
+        <i class="ri-book-open-line" aria-hidden="true"></i>Your personal notes
+        stay in this browser tab. Class notes and the related lesson remain
+        available after class.
+      </p>
+    </div>
+    @if (sideVisible()) {
+    <aside class="room-aside" aria-label="Classroom panels">
+      <section class="class-panel">
+        <school-hub-filter-tabs
+          [tabs]="tabs"
+          [active]="panel()"
+          panelId="class-side-panel"
+          appearance="underline"
+          label="Classroom panels"
+          (changed)="setPanel($event)"
+        />
+        <div
+          id="class-side-panel"
+          role="tabpanel"
+          [attr.aria-labelledby]="'class-side-panel-' + panel()"
+        >
+          @switch (panel()) { @case ('notes') {
+          <div class="notes-panel">
+            <p>Your notes save in this tab as you type.</p>
+            <school-hub-written-answer
+              label="My lesson notes"
+              kind="long"
+              [rows]="10"
+              [maxLength]="10000"
+              [fullWidth]="true"
+              [value]="draft.notes"
+              [readonly]="!store.ready()"
+              placeholder="Write an example, a question, or something you want to remember…"
+              (changed)="editNotes($event)"
+            /><button
+              type="button"
+              class="outline-button"
+              [disabled]="!draft.notes.trim()"
+              (click)="download('personal-notes')"
+            >
+              <i class="ri-download-line" aria-hidden="true"></i>Download My
+              Notes
+            </button>
+          </div>
+          } @case ('resources') {
+          <div class="resources-panel">
+            <p>
+              Download class notes or open a related activity in another tab.
+            </p>
+            <school-hub-resource-list
+              [items]="resources()"
+              [newTab]="true"
+              label="Panel class resources"
+              (downloaded)="download($event)"
+            />
+          </div>
+          } @default {
+          <school-hub-chat-panel
+            [messages]="messages()"
+            [draft]="draft.chatDraft"
+            [enabled]="joined()"
+            hint="Sample conversation · your messages and reactions are local previews."
+            (draftChanged)="editChat($event)"
+            (sent)="send($event)"
+            (reacted)="react($event)"
+          />
+          } }
+        </div>
+      </section>
+      <school-hub-dashboard-card
+        title="Lesson Outline"
+        icon="ri-list-check"
+        [compact]="true"
+        [showIcon]="false"
+        ><ol class="lesson-outline">
+          @for (item of session.slides; track item.id; let index = $index) {
+          <li>
+            <button
+              type="button"
+              [class.active]="draft.slide === index"
+              [attr.aria-current]="draft.slide === index ? 'step' : null"
+              (click)="slide(index)"
+            >
+              <span>{{ index + 1 }}.</span>{{ item.title }}@if (draft.slide ===
+              index) { <small>VIEWING</small> }
+            </button>
+          </li>
+          }
+        </ol></school-hub-dashboard-card
+      ><school-hub-dashboard-card
+        title="Class Resources"
+        icon="ri-folder-open-line"
+        [compact]="true"
+        [showIcon]="false"
+        ><school-hub-resource-list
+          [items]="resources()"
+          [newTab]="true"
+          label="Class resources"
+          (downloaded)="download($event)" /><button
+          type="button"
+          class="resource-link"
+          (click)="setPanel('resources')"
+        >
+          View All Resources<i
+            class="ri-arrow-right-line"
+            aria-hidden="true"
+          ></i></button
+      ></school-hub-dashboard-card>
+    </aside>
+    }
+  </div>
+  } } @else {
+  <section class="missing-room">
+    <i class="ri-video-off-line" aria-hidden="true"></i>
+    <h1>Class not found</h1>
+    <p>
+      This class could not be found. Return to Live Classes and choose a
+      session.
+    </p>
+  </section>
+  }
+</div>
+<school-hub-dialog-panel
+  [title]="dialogTitles[dialog()] ?? 'Classroom'"
+  [open]="!!dialog()"
+  (dismissed)="closeDialog()"
+  >@switch (dialog()) { @case ('leave') {
+  <div class="dialog-copy">
+    <p>
+      Leave this local practice room? Your notes, chat, and answers are saved in
+      this tab. Any active camera or microphone preview will stop.
+    </p>
+    <div class="dialog-actions">
+      <button type="button" class="outline-button" (click)="closeDialog()">
+        Stay in Class</button
+      ><button type="button" class="danger-button" (click)="confirmLeave()">
+        Leave Practice Class
+      </button>
+    </div>
+  </div>
+  } @case ('participants') {
+  <p class="dialog-copy">
+    This list contains your local preview and sample classmates. No classmates
+    are connected to a call.
+  </p>
+  <ul class="participant-list">
+    @for (person of people(); track person.id) {
+    <li>
+      <span>{{ person.initials }}</span
+      ><strong>{{ person.name }}{{ person.self ? ' (You)' : '' }}</strong
+      ><small>{{ person.self ? 'Local preview' : 'Sample learner' }}</small>
+    </li>
+    }
+  </ul>
+  } @case ('reactions') {
+  <p class="dialog-copy">
+    Choose a local reaction. It will appear in your practice room.
+  </p>
+  <div class="reaction-picker">
+    @for (item of [{ icon: '👏', label: 'Applause' }, { icon: '👍', label:
+    'Thumbs up' }, { icon: '💜', label: 'Heart' }, { icon: '🎉', label:
+    'Celebration' }]; track item.label) {
+    <button
+      type="button"
+      [attr.aria-label]="item.label"
+      (click)="reaction(item.icon)"
+    >
+      {{ item.icon }}
+    </button>
+    }
+  </div>
+  } @case ('activity') { @if (session(); as session) { @if (draft(); as draft) {
+  <div class="activity-form">
+    <p class="dialog-copy">
+      Answer the questions, then check your practice locally. Your answers save
+      in this tab.
+    </p>
+    @for (question of session.practice; track question.id; let index = $index) {
+    <school-hub-written-answer
+      [label]="(index + 1) + '. ' + question.prompt"
+      [value]="draft.answers[index]"
+      [readonly]="!joined()"
+      [review]="draft.checked"
+      [correct]="correct(question.answer, draft.answers[index])"
+      [expected]="question.answer"
+      [explanation]="question.explanation"
+      [maxLength]="500"
+      [fullWidth]="true"
+      (changed)="answer(index, $event)"
+    />
+    } @if (draft.checked) {
+    <p class="activity-result" role="status">
+      {{ score() }} / {{ session.practice.length }} correct · Checked locally
+    </p>
+    }
+    <button
+      class="outline-button"
+      type="button"
+      [disabled]="!joined()"
+      (click)="check()"
+    >
+      <i class="ri-check-line" aria-hidden="true"></i>Check Practice Answers
+    </button>
+  </div>
+  } } } @case ('vocabulary') {
+  <dl class="vocabulary-list">
+    @for (word of session()?.vocabulary ?? []; track word.word) {
+    <div>
+      <dt>{{ word.word }}</dt>
+      <dd>{{ word.meaning }}</dd>
+    </div>
+    }
+  </dl>
+  } @case ('recording') {
+  <div class="dialog-copy">
+    <p>
+      A video recording has not been uploaded for this sample class. You can
+      download the class notes and practice sheet now.
+    </p>
+    <p>
+      Your own notes remain saved in this browser tab. Related lessons and
+      activities open in a new tab so your classroom stays open.
+    </p>
+    <school-hub-resource-list
+      [items]="resources()"
+      [newTab]="true"
+      label="Recording and class materials"
+      (downloaded)="download($event)"
+    />
+  </div>
+  } @case ('more') {
+  <div class="room-options">
+    <button
+      type="button"
+      class="outline-button"
+      (click)="download('lesson-notes')"
+    >
+      <i class="ri-download-line" aria-hidden="true"></i>Download Class Notes</button
+    ><button
+      type="button"
+      class="outline-button"
+      [disabled]="!draft()?.notes?.trim()"
+      (click)="download('personal-notes')"
+    >
+      Download My Notes</button
+    ><button
+      type="button"
+      class="outline-button"
+      (click)="media.stop(); message.set('Local camera and microphone previews are stopped.'); closeDialog()"
+    >
+      Stop All Device Previews
+    </button>
+    <p>Local device previews are not sent to a call, tutor, or classmates.</p>
+  </div>
+  } }</school-hub-dialog-panel
+>

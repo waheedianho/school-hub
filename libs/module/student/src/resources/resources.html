@@ -1,0 +1,406 @@
+<school-hub-resource-download-connection />
+<div class="resources-page">
+  <header class="page-heading">
+    <div>
+      <h1>Resources</h1>
+      <p>
+        Find notes, videos, practice questions, examples, and more to support
+        your learning.
+      </p>
+    </div>
+    <div class="heading-filters">
+      <select
+        aria-label="Subject"
+        [disabled]="!store.ready()"
+        [value]="subject()"
+        (change)="change('subjectId',$event)"
+      >
+        <option value="" [selected]="!subject()">All Subjects</option>
+        @for(item of subjects;track item.id){
+        <option [value]="item.id" [selected]="item.id===subject()">
+          {{item.name}}
+        </option>
+        }</select
+      ><select
+        aria-label="Term"
+        [disabled]="!store.ready()"
+        [value]="term()"
+        (change)="change('term',$event)"
+      >
+        <option value="all" [selected]="term()==='all'">All Terms</option>
+        <option value="first" [selected]="term()==='first'">First Term</option>
+        <option value="second" [selected]="term()==='second'">
+          Second Term
+        </option>
+        <option value="third" [selected]="term()==='third'">Third Term</option>
+      </select>
+    </div>
+  </header>
+  <label class="search"
+    ><i class="ri-search-line" aria-hidden="true"></i
+    ><input
+      type="search"
+      aria-label="Search resources"
+      placeholder="Search resources, topics, documents…"
+      [value]="search()"
+      [disabled]="!store.ready()"
+      (input)="change('q',$event)"
+  /></label>
+  @if(context()){
+  <div class="context">
+    <span>{{context()}}</span>@if(linkedLesson();as lesson){<a
+      routerLink="/student/lessons"
+      [queryParams]="{lessonId:lesson.id}"
+      >Back to Lesson</a
+    >}<button
+      type="button"
+      (click)="set({topicId:null,lessonId:null,page:null})"
+    >
+      Clear learning context
+    </button>
+  </div>
+  } @if(notice()||store.error()||!store.persistent()||legacyMissing()){
+  <p class="notice" [attr.role]="store.error()?'alert':'status'">
+    {{store.error()||notice()||(legacyMissing()?'That resource could not be
+    found.':'This browser cannot save your resource activity. Keep this tab open
+    to retain your notes.')}}<button
+      type="button"
+      (click)="notice.set('');store.error.set('');set({resourceId:null},true)"
+    >
+      Dismiss
+    </button>
+  </p>
+  }
+  <div class="resource-layout">
+    <div class="resource-primary">
+      <section class="summary-grid" aria-label="Resource totals">
+        @for(stat of stats();track stat.title){<school-hub-summary-stat
+          [title]="stat.title"
+          [value]="stat.value"
+          [description]="stat.description"
+          [icon]="stat.icon"
+          [tone]="stat.tone"
+        />}
+      </section>
+      <section class="library">
+        <div class="library-toolbar">
+          <school-hub-filter-tabs
+            [tabs]="tabs"
+            [active]="type()"
+            panelId="resource-results"
+            appearance="underline"
+            label="Resource categories"
+            (changed)="setType($event)"
+          /><label
+            >Sort by:<select
+              aria-label="Sort resources"
+              [value]="sort()"
+              [disabled]="!store.ready()"
+              (change)="change('sort',$event)"
+            >
+              <option value="recent" [selected]="sort()==='recent'">
+                Most Recent
+              </option>
+              <option value="oldest" [selected]="sort()==='oldest'">
+                Oldest First
+              </option>
+              <option value="title" [selected]="sort()==='title'">
+                Name A–Z
+              </option>
+            </select></label
+          >
+        </div>
+        <div
+          id="resource-results"
+          role="tabpanel"
+          [attr.aria-labelledby]="'resource-results-'+type()"
+        >
+          @if(collection()==='all'&&featuredVisible().length){
+          <section class="featured">
+            <header>
+              <h2>Featured Resources</h2>
+              @if(featured().length>4){
+              <div>
+                <button
+                  type="button"
+                  aria-label="Previous featured resources"
+                  [disabled]="featuredIndex()===0"
+                  (click)="set({featuredPage:featuredIndex()-1})"
+                >
+                  <i
+                    class="ri-arrow-left-s-line"
+                    aria-hidden="true"
+                  ></i></button
+                ><button
+                  type="button"
+                  aria-label="Next featured resources"
+                  [disabled]="(featuredIndex()+1)*4>=featured().length"
+                  (click)="set({featuredPage:featuredIndex()+1})"
+                >
+                  <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+                </button>
+              </div>
+              }
+            </header>
+            <div class="featured-grid">
+              @for(resource of featuredVisible();track
+              resource.id){<school-hub-resource-card
+                [item]="card(resource,query())"
+                [saved]="store.record(resource.id).saved"
+                [disabled]="!store.ready()"
+                (saveToggled)="save($event)"
+              />}
+            </div>
+          </section>
+          }
+          <section class="recent">
+            <header>
+              <h2>{{collectionLabels[collection()]||'Resources'}}</h2>
+              @if(collection()!=='all'){<button
+                type="button"
+                class="text-button"
+                (click)="setCollection('all')"
+              >
+                View All Resources</button
+              >}
+            </header>
+            @if(matches().length){<school-hub-resource-table
+              [rows]="rows()"
+              [disabled]="!store.ready()"
+              (more)="set({menu:$event})"
+              (visited)="store.view($event)"
+            />@if(expanded()){<school-hub-pagination
+              [total]="matches().length"
+              [page]="page()"
+              [pageSize]="5"
+              itemLabel="resources"
+              label="Resource pages"
+              (pageChanged)="set({page:$event})"
+            />}@else if(matches().length>5){
+            <footer>
+              <button
+                type="button"
+                class="text-button"
+                (click)="set({expanded:'1'})"
+              >
+                View All Resources<i
+                  class="ri-arrow-down-s-line"
+                  aria-hidden="true"
+                ></i>
+              </button>
+            </footer>
+            }}@else{
+            <div class="empty">
+              <i class="ri-folder-open-line" aria-hidden="true"></i>
+              <h3>No resources found</h3>
+              <p>
+                {{collection()==='all'?'Try another subject, category, or
+                search.':'This collection is empty for the current filters. Open
+                a resource to save it, bookmark it, or start a download.'}}
+              </p>
+              <button type="button" class="outline-button" (click)="clear()">
+                Clear filters
+              </button>
+            </div>
+            }
+          </section>
+        </div>
+      </section>
+    </div>
+    <aside aria-label="Resource information">
+      <school-hub-dashboard-card
+        title="Quick Access"
+        icon="ri-flashlight-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><nav class="quick-access" aria-label="Resource collections">
+          @for(item of quick;track item.id){<button
+            type="button"
+            [attr.aria-current]="collection()===item.id?'page':null"
+            (click)="setCollection(item.id)"
+          >
+            <i [class]="item.icon" aria-hidden="true"></i>{{item.label}}<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i></button
+          >}
+        </nav></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Storage Usage"
+        icon="ri-hard-drive-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><p class="aside-copy">
+          Your resource notes and activity use
+          <strong>{{bytes(store.ownBytes())}}</strong> on this device.
+        </p>
+        @if(store.estimate();as estimate){<school-hub-progress-bar
+          [value]="estimate.usage/estimate.quota*100"
+          label="SchoolHub site storage usage"
+          tone="purple"
+        />
+        <p class="storage-caption">
+          {{bytes(estimate.usage)}} of {{bytes(estimate.quota)}} estimated
+          browser quota · all SchoolHub data
+        </p>
+        }<button
+          type="button"
+          class="outline-button full-width"
+          (click)="open('storage')"
+        >
+          Manage Storage
+        </button></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Subjects"
+        icon="ri-book-open-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><ul class="subject-list">
+          @for(item of subjects;track item.id){
+          <li>
+            <button type="button" (click)="set({subjectId:item.id,page:null})">
+              <strong>{{item.name}}</strong
+              ><span>{{subjectCount(item.id)}} resources </span>
+            </button>
+          </li>
+          }
+        </ul>
+        <a class="card-link" routerLink="/student/subjects"
+          >View All Subjects<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></a
+      ></school-hub-dashboard-card>
+      <section class="help">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>
+        <div>
+          <h2>Can’t find what you need?</h2>
+          <p>Prepare a resource request with the topic you want to learn.</p>
+          <button
+            type="button"
+            class="outline-button"
+            (click)="open('request')"
+          >
+            Request Resource<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i>
+          </button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+<school-hub-dialog-panel
+  [open]="dialogOpen()"
+  [title]="dialogTitle()"
+  (dismissed)="close()"
+  >@if(store.error()){
+  <p class="download-error" role="alert">{{store.error()}}</p>
+  }@if(view()==='storage'){
+  <div class="dialog-copy">
+    <p>
+      Resource notes, saved items, bookmarks, and history are stored on this
+      device. Your downloaded files are managed by your browser.
+    </p>
+    <dl>
+      <div>
+        <dt>Resource library data</dt>
+        <dd>{{bytes(store.ownBytes())}}</dd>
+      </div>
+      <div>
+        <dt>Download history</dt>
+        <dd>{{store.state().downloads.length}} downloads started</dd>
+      </div>
+    </dl>
+    <button type="button" class="outline-button" (click)="clearStorage()">
+      Clear Download History</button
+    >@if(confirmClear()){
+    <p class="error">
+      This will remove all your resource notes, bookmarks, saved items, likes,
+      completion marks, and viewing history on this device.
+    </p>
+    <button type="button" class="danger-button" (click)="clearStorage(true)">
+      Confirm Clear Resource Data</button
+    ><button
+      type="button"
+      class="outline-button"
+      (click)="confirmClear.set(false)"
+    >
+      Keep My Data</button
+    >}@else{<button
+      type="button"
+      class="outline-button"
+      (click)="confirmClear.set(true)"
+    >
+      Clear All Resource Data</button
+    >}
+  </div>
+  }@else if(view()==='request'){
+  <div class="dialog-copy">
+    <p>
+      Describe the resource you need. You can download a request draft or open
+      the tutor page with its context. Request delivery is not connected yet.
+    </p>
+    <school-hub-written-answer
+      label="Resource request"
+      kind="long"
+      [rows]="5"
+      [maxLength]="3000"
+      [fullWidth]="true"
+      [value]="request()"
+      (changed)="request.set($event)"
+    />
+    <div class="dialog-actions">
+      <button
+        type="button"
+        class="outline-button"
+        [disabled]="!request().trim()"
+        (click)="exportRequest()"
+      >
+        Download Request Draft</button
+      ><a
+        class="outline-button"
+        routerLink="/student/ask-tutor"
+        [queryParams]="{contextType:'resource-request',subjectId:subject()||null,message:request().trim()||null}"
+        >Open Ask Tutor</a
+      >
+    </div>
+  </div>
+  }@else if(selected();as resource){
+  <div class="dialog-copy">
+    <h3>{{resource.title}}</h3>
+    <p>{{resource.description}}</p>
+    @if(!resource.available){
+    <p>This resource will unlock with its upcoming lesson.</p>
+    }
+    <div class="menu-actions">
+      <a
+        class="outline-button"
+        [routerLink]="['/student/resources',resource.id]"
+        [queryParams]="query()"
+        >Open Resource</a
+      ><button type="button" class="outline-button" (click)="save(resource.id)">
+        {{store.record(resource.id).saved?'Unsave Resource':'Save Resource'}}</button
+      ><button
+        type="button"
+        class="outline-button"
+        (click)="store.bookmark(resource.id)"
+      >
+        {{store.record(resource.id).bookmark!==undefined?'Remove
+        Bookmark':'Bookmark Resource'}}</button
+      >@if(resource.kind!=='link'){<button
+        type="button"
+        class="outline-button"
+        [disabled]="!resource.available||!!store.downloading()"
+        (click)="download(resource.id)"
+      >
+        {{store.downloading()===resource.id?'Preparing Download…':'Download
+        Resource'}}</button
+      >}
+    </div>
+  </div>
+  }</school-hub-dialog-panel
+>

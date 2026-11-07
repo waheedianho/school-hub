@@ -1,0 +1,55 @@
+@use '../styles/typography' as typography;
+ol {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 7px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: #9a8266;
+  font: inherit;
+  cursor: pointer;
+}
+span {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 2px solid #d4c4ac;
+  border-radius: 50%;
+  background: #fff9ed;
+  color: #1da56b;
+  font-size: 20px;
+}
+.complete span {
+  border-color: #30ae7f;
+  background: #e7f5e7;
+}
+.today span {
+  border-color: #ac6d1b;
+  background: #fff0ce;
+  color: #b37b22;
+}
+.future {
+  opacity: 0.65;
+}
+strong {
+  font-size: typography.$caption;
+  line-height: 1.5;
+  font-weight: 500;
+}
+button:focus-visible {
+  outline: 2px solid #b8863c;
+  outline-offset: 2px;
+  border-radius: 7px;
+}

@@ -1,0 +1,37 @@
+<section [attr.aria-label]="label()">
+  <header>
+    <button
+      type="button"
+      aria-label="Previous month"
+      (click)="monthChanged.emit(-1)"
+    >
+      <i class="ri-arrow-left-s-line" aria-hidden="true"></i>
+    </button>
+    <h3>{{ title() }}</h3>
+    <button
+      type="button"
+      aria-label="Next month"
+      (click)="monthChanged.emit(1)"
+    >
+      <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+    </button>
+  </header>
+  <div class="weekdays" aria-hidden="true">
+    @for (day of weekdays; track day) { <span>{{ day }}</span> }
+  </div>
+  <div class="days">
+    @for (day of days(); track $index) { @if (day) {
+    <button
+      type="button"
+      [attr.aria-label]="day.description"
+      [attr.aria-pressed]="selected() === day.date"
+      [class.today]="today() === day.date"
+      [class.selected]="selected() === day.date"
+      (click)="daySelected.emit(day.date)"
+    >
+      {{ day.day }}@if (day.count) {
+      <span class="dot" aria-hidden="true"></span> }
+    </button>
+    } @else { <span></span> } }
+  </div>
+</section>

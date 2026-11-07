@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
   min-width: 0;
@@ -34,19 +36,19 @@ a:focus-visible {
 h3 {
   margin: 0 0 4px;
   color: var(--subject-color);
-  font-size: 13px;
+  font-size: typography.$body;
   font-weight: 650;
 }
 p {
   margin: 0 0 8px;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.5;
 }
 .subject-progress {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-progress > span {
   flex-shrink: 0;
@@ -70,13 +72,13 @@ school-hub-progress-bar {
 }
 .subject-caption {
   color: #71819a;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-description {
   min-height: 54px;
   margin-bottom: 14px;
   color: #5d6e87;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.8;
 }
 .expanded-progress {
@@ -85,7 +87,7 @@ school-hub-progress-bar {
   align-items: center;
   gap: 8px;
   margin: 18px 0 8px;
-  font-size: 10px;
+  font-size: typography.$caption;
   color: #5b6d88;
 }
 .expanded-progress strong {
@@ -102,7 +104,7 @@ school-hub-progress-bar {
   min-height: 35px;
   margin: 14px 0;
   color: #50627d;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.8;
 }
 .subject-next i {
@@ -116,7 +118,7 @@ school-hub-progress-bar {
   padding-top: 14px;
   border-top: 1px solid #e7edf6;
   color: var(--subject-color);
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .subject-footer i {

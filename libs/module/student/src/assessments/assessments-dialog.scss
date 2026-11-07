@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 @use './assessment-actions';
 .instruction-meta {
   display: flex;
@@ -5,7 +7,7 @@
   align-items: center;
   gap: 12px;
   color: #7e8da7;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .instruction-stats {
   display: grid;
@@ -26,17 +28,17 @@
   display: block;
   margin-top: 4px;
   color: #7f8da5;
-  font-size: 9px;
+  font-size: typography.$caption;
 }
 .instruction-heading {
   margin: 20px 0 10px;
-  font-size: 13px;
+  font-size: typography.$body;
 }
 .instruction-list {
   margin: 0 0 20px;
   padding-left: 18px;
   color: #607491;
-  font-size: 12px;
+  font-size: typography.$body;
   line-height: 2;
   list-style: disc;
 }
@@ -45,7 +47,7 @@
   border-radius: 8px;
   background: #fff7e8;
   color: #946d2a;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.8;
 }
 .availability-note i {
@@ -72,7 +74,7 @@
 .result-preview p {
   margin: 6px 0 0;
   color: #7c8ca6;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .calendar-list {
   display: grid;
@@ -88,15 +90,15 @@
   border: 1px solid #e3eaf7;
   border-radius: 9px;
   color: #446083;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .calendar-list strong {
   color: #7940dc;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .calendar-list small {
   color: #8796ad;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .all-topics {
   display: grid;
@@ -108,7 +110,7 @@
   align-items: center;
   gap: 15px;
   color: #4e6484;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 @media (max-width: 540px) {
   .instruction-stats {

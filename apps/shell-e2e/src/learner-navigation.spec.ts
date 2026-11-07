@@ -34,7 +34,12 @@ test('learner sidebar opens the matching page for every menu item', async ({
       await expect(page).toHaveURL(`/student/${path}`);
       await expect(
         page.getByRole('heading', {
-          name: path === 'dashboard' ? 'Learner Dashboard' : label,
+          name:
+            path === 'dashboard'
+              ? 'Learner Dashboard'
+              : path === 'profile'
+                ? 'My Profile'
+                : label,
           exact: true,
         }),
       ).toBeVisible();

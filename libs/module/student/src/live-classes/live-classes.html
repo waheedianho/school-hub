@@ -1,0 +1,418 @@
+<div class="live-classes-page">
+  <header class="page-heading">
+    <h1>Live Classes</h1>
+    <p>
+      Join live classes, interact with your tutor and classmates, and learn in
+      real time.
+    </p>
+  </header>
+  <div class="class-toolbar">
+    <school-hub-filter-tabs
+      [tabs]="tabs()"
+      [active]="tab()"
+      panelId="class-results"
+      label="Live class categories"
+      appearance="underline"
+      (changed)="setTab($event)"
+    />
+    <div>
+      <button
+        type="button"
+        class="outline-button"
+        [disabled]="!store.ready()"
+        (click)="openView('code')"
+      >
+        <i class="ri-qr-code-line" aria-hidden="true"></i>Join with Class Code</button
+      ><button
+        type="button"
+        class="primary-button"
+        [disabled]="!store.ready()"
+        (click)="openView('connection')"
+      >
+        <i class="ri-wifi-line" aria-hidden="true"></i>Test My Connection
+      </button>
+    </div>
+  </div>
+  @if (missing()) {
+  <p class="notice" role="status">
+    That class could not be found.<button type="button" (click)="closeView()">
+      Dismiss
+    </button>
+  </p>
+  } @if (notice()) {
+  <p class="notice" role="status">
+    {{ notice() }}<button type="button" (click)="notice.set('')">
+      Dismiss
+    </button>
+  </p>
+  }
+  <div class="live-layout">
+    <div class="live-primary">
+      <div class="class-filters">
+        <label
+          ><i class="ri-search-line" aria-hidden="true"></i
+          ><input
+            type="search"
+            aria-label="Search live classes"
+            placeholder="Search classes, topics, or tutors"
+            [disabled]="!store.ready()"
+            [value]="search()"
+            (input)="change('q', $event)" /></label
+        ><label
+          ><select
+            aria-label="Subject"
+            [disabled]="!store.ready()"
+            [value]="subject()"
+            (change)="change('subjectId', $event)"
+          >
+            <option value="" [selected]="!subject()">All Subjects</option>
+            @for (item of subjects; track item.id) {
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.name }}
+            </option>
+            }
+          </select></label
+        >
+      </div>
+      <section
+        id="class-results"
+        role="tabpanel"
+        [attr.aria-labelledby]="'class-results-' + tab()"
+      >
+        @if (tab() === 'upcoming') { @if (next(); as next) {
+        <school-hub-next-class
+          [session]="next"
+          [now]="store.now()"
+          [disabled]="!store.ready()"
+          (selected)="openClass($event)"
+        />
+        }
+        <section class="upcoming-panel">
+          <header>
+            <h2>Upcoming Live Classes</h2>
+            <button
+              type="button"
+              class="outline-button small-button"
+              (click)="openView('calendar')"
+            >
+              <i class="ri-calendar-line" aria-hidden="true"></i>View Calendar
+            </button>
+          </header>
+          @for (session of visible(); track session.id) {
+          <school-hub-session-card
+            [session]="row(session)"
+            [disabled]="!store.ready()"
+            (selected)="openClass($event)"
+            (more)="more($event)"
+          />
+          } @empty {
+          <div class="empty-state">
+            <i class="ri-calendar-check-line" aria-hidden="true"></i>
+            <h3>
+              {{ next() ? 'You’re up to date' : 'No upcoming classes found' }}
+            </h3>
+            <p>
+              {{ next() ? 'Your next available class is shown above.' : 'Try
+              another subject or search, or review your past classes.' }}
+            </p>
+            <button type="button" class="outline-button" (click)="clear()">
+              Clear filters
+            </button>
+          </div>
+          }@if (remaining().length > 4) { @if (expanded()) {
+          <school-hub-pagination
+            [total]="remaining().length"
+            [page]="page()"
+            [pageSize]="4"
+            itemLabel="classes"
+            label="Upcoming class pages"
+            (pageChanged)="changePage($event)"
+          />
+          } @else {
+          <footer>
+            <button type="button" class="outline-button" (click)="expand()">
+              View All Upcoming Classes<i
+                class="ri-arrow-down-s-line"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </footer>
+          } }
+        </section>
+        }
+        <section class="past-panel">
+          <header>
+            <h2>Past Classes</h2>
+            @if (tab() === 'upcoming') {
+            <button
+              type="button"
+              class="outline-button small-button"
+              (click)="setTab('past')"
+            >
+              View All Past Classes
+            </button>
+            }
+          </header>
+          <div class="past-grid">
+            @for (session of pastVisible(); track session.id) {
+            <school-hub-class-recap-card
+              [item]="session"
+              [disabled]="!store.ready()"
+              (selected)="openClass($event)"
+            />
+            } @empty {
+            <p class="empty-state">No past classes in this selection yet.</p>
+            }
+          </div>
+          @if (tab() === 'past') {
+          <school-hub-pagination
+            [total]="past().length"
+            [page]="page()"
+            [pageSize]="3"
+            itemLabel="classes"
+            label="Past class pages"
+            (pageChanged)="changePage($event)"
+          />
+          }
+        </section>
+      </section>
+    </div>
+    <aside class="live-aside" aria-label="Live class information">
+      <school-hub-dashboard-card
+        title="Today’s Schedule"
+        icon="ri-calendar-line"
+        [compact]="true"
+        [showIcon]="false"
+        ><p class="schedule-date">{{ todayLabel() }}</p>
+        <ol class="today-schedule">
+          @for (session of todayClasses(); track session.id) {
+          <li [class.live]="status(session, store.now()) === 'live'">
+            <button type="button" (click)="openClass(session.id)">
+              <strong>{{ time(session) }}</strong><b>{{ session.subject }}</b
+              ><span
+                >{{ session.title.slice(session.title.indexOf(':') + 1) }}</span
+              ></button
+            ><school-hub-status-badge
+              [label]="status(session, store.now()).toUpperCase()"
+              [tone]="status(session, store.now()) === 'live' ? 'purple' : 'neutral'"
+            />
+          </li>
+          } @empty {
+          <li class="schedule-empty">
+            No classes scheduled for today in this selection.
+          </li>
+          }
+        </ol>
+        <button type="button" class="card-link" (click)="openView('calendar')">
+          View Full Calendar<i
+            class="ri-arrow-right-line"
+            aria-hidden="true"
+          ></i></button></school-hub-dashboard-card
+      ><school-hub-dashboard-card
+        title="Class Rules"
+        icon="ri-list-check-2"
+        [compact]="true"
+        [showIcon]="false"
+        ><ul class="class-rules">
+          @for (rule of rules; track rule.text) {
+          <li><i [class]="rule.icon" aria-hidden="true"></i>{{ rule.text }}</li>
+          }
+        </ul>
+        <button type="button" class="card-link" (click)="openView('rules')">
+          See All Rules<i
+            class="ri-arrow-right-line"
+            aria-hidden="true"
+          ></i></button
+      ></school-hub-dashboard-card>
+      <section class="help-card">
+        <i class="ri-customer-service-2-line" aria-hidden="true"></i>
+        <div>
+          <h2>Need Help?</h2>
+          <p>Having trouble joining or need support before class?</p>
+          <button
+            type="button"
+            class="outline-button"
+            (click)="openView('help')"
+          >
+            Chat with Support<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i>
+          </button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>
+<school-hub-dialog-panel
+  [open]="dialogOpen()"
+  [title]="dialogTitle()"
+  (dismissed)="closeView()"
+>
+  @switch (view()) { @case ('connection') {
+  <school-hub-class-connection-check /> } @case ('code') {
+  <form class="code-form" (submit)="joinCode($event)">
+    <p>
+      Enter the class code your tutor shared with you. We’ll show the class
+      details before you enter.
+    </p>
+    <label for="class-code">Class code</label
+    ><input
+      id="class-code"
+      type="text"
+      maxlength="48"
+      autocomplete="off"
+      spellcheck="false"
+      placeholder="e.g. SH-WHOLE-0511"
+      [value]="code()"
+      (input)="code.set($any($event.target).value); codeError.set('')"
+      [attr.aria-invalid]="!!codeError()"
+      aria-describedby="code-error"
+    />@if (codeError()) {
+    <p id="code-error" class="error" role="alert">{{ codeError() }}</p>
+    }<button type="submit" class="primary-button" [disabled]="!code().trim()">
+      Find Class
+    </button>
+  </form>
+  } @case ('calendar') {
+  <school-hub-month-calendar
+    [month]="month()"
+    [today]="today()"
+    [selected]="day()"
+    [markers]="calendarMarkers()"
+    (daySelected)="selectDay($event)"
+    (monthChanged)="changeMonth($event)"
+  />
+  <div class="calendar-events">
+    <h3>Classes on {{ day() }}</h3>
+    @for (session of dayClasses(); track session.id) {
+    <button type="button" (click)="openClass(session.id)">
+      <span
+        ><strong>{{ session.title }}</strong
+        ><small>{{ time(session) }} · {{ session.tutor }}</small></span
+      ><i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+    </button>
+    } @empty {
+    <p>No classes scheduled for this day.</p>
+    }
+  </div>
+  <button type="button" class="outline-button" (click)="calendarFile()">
+    <i class="ri-download-line" aria-hidden="true"></i>Download Class Calendar
+  </button>
+  } @case ('rules') {
+  <ol class="full-rules">
+    @for (rule of rules; track rule.text) {
+    <li>{{ rule.text }}</li>
+    }
+    <li>Keep your class code private and follow your tutor’s instructions.</li>
+    <li>Use your own words and ask for help when you need it.</li>
+    <li>
+      In this practice preview, chat, notes, and activity answers stay in this
+      browser tab.
+    </li>
+  </ol>
+  } @case ('help') {
+  <div class="help-copy">
+    <p>
+      <strong>Before class:</strong> check the date, time, subject, and tutor on
+      your class card.
+    </p>
+    <p>
+      <strong>To join:</strong> choose Join Class or enter a valid class code,
+      then review the class details.
+    </p>
+    <p>
+      <strong>Devices:</strong> use Test My Connection to request a local camera
+      or microphone preview. Check browser permissions if a device cannot start.
+    </p>
+    <p>
+      This demonstration opens a practice classroom. A live tutor call and
+      support messaging are not connected yet.
+    </p>
+    <a
+      class="outline-button"
+      routerLink="/student/ask-tutor"
+      [queryParams]="{ contextType: 'live-class-support' }"
+      >Ask a Tutor for Help<i class="ri-arrow-right-line" aria-hidden="true"></i
+    ></a>
+  </div>
+  } @default { @if (selected(); as session) {
+  <div class="class-dialog-heading">
+    <school-hub-icon-badge
+      [icon]="session.icon"
+      [tone]="session.tone"
+      [large]="true"
+    />
+    <div>
+      <h3>{{ session.title }}</h3>
+      <p>{{ session.description }}</p>
+    </div>
+  </div>
+  <dl class="class-details">
+    <div>
+      <dt>Tutor</dt>
+      <dd>{{ session.tutor }}</dd>
+    </div>
+    <div>
+      <dt>Date</dt>
+      <dd>{{ date(session.startsAt) }}</dd>
+    </div>
+    <div>
+      <dt>Time</dt>
+      <dd>{{ time(session) }}</dd>
+    </div>
+    <div>
+      <dt>Availability</dt>
+      <dd>
+        {{ !session.accessible ? 'Enrolment required' : seats(session) + ' seats
+        left' }}
+      </dd>
+    </div>
+  </dl>
+  @if (status(session, store.now()) === 'ended') {
+  <p class="practice-note">
+    A video recording has not been provided for this sample class. You can
+    review its lesson content and materials.
+  </p>
+  <school-hub-resource-list
+    [items]="recapResources()"
+    label="Past class materials"
+    (downloaded)="downloadRecap()"
+  />
+  } @else {
+  <h3 class="section-heading">What you’ll learn</h3>
+  <ul class="objectives">
+    @for (objective of session.objectives; track objective) {
+    <li>{{ objective }}</li>
+    }
+  </ul>
+  @if (joinIssue()) {
+  <p class="practice-note" role="status">{{ joinIssue() }}</p>
+  } @else {
+  <p class="practice-note">
+    Practice classroom preview. No live tutor call is connected. Camera and
+    microphone stay off until you choose to enable a local preview.
+  </p>
+  <button
+    type="button"
+    class="primary-button enter-button"
+    [disabled]="!store.ready()"
+    (click)="enter()"
+  >
+    <i class="ri-video-on-line" aria-hidden="true"></i>Enter Practice Classroom
+  </button>
+  }
+  <div class="dialog-actions">
+    <button
+      type="button"
+      class="outline-button"
+      (click)="calendarFile(session)"
+    >
+      <i class="ri-calendar-event-line" aria-hidden="true"></i>Add to Calendar</button
+    ><button type="button" class="outline-button" (click)="saveClass()">
+      <i class="ri-bookmark-line" aria-hidden="true"></i>{{
+      store.draft(session.id)?.saved ? 'Remove Saved Class' : 'Save Class' }}
+    </button>
+  </div>
+  } } } }
+</school-hub-dialog-panel>

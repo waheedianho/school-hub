@@ -32,12 +32,15 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm exec nx run shell:serve',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-  },
+  // An explicit BASE_URL points to a server that is already running.
+  webServer: process.env['BASE_URL']
+    ? undefined
+    : {
+        command: 'pnpm exec nx run shell:serve',
+        url: 'http://localhost:4200',
+        reuseExistingServer: true,
+        cwd: workspaceRoot,
+      },
   projects: [
     {
       name: 'chromium',

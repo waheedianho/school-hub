@@ -1,4 +1,8 @@
 <div class="assessments-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
   <header class="page-heading">
     <div>
       <h1>Quizzes &amp; Assessments</h1>
@@ -16,9 +20,11 @@
         (change)="filterChanged('term', $event)"
       >
         @for (item of terms; track item.id) {
-        <option [value]="item.id">{{ item.label }}</option>
+        <option [value]="item.id" [selected]="term() === item.id">
+          {{ item.label }}
+        </option>
         }
-        <option value="all">All Terms</option>
+        <option value="all" [selected]="term() === 'all'">All Terms</option>
       </select></label
     >
   </header>
@@ -88,9 +94,11 @@
             [value]="subject()"
             (change)="filterChanged('subjectId', $event)"
           >
-            <option value="">All Subjects</option>
+            <option value="" [selected]="!subject()">All Subjects</option>
             @for (item of subjects; track item.id) {
-            <option [value]="item.id">{{ item.name }}</option>
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.name }}
+            </option>
             }
           </select></label
         >

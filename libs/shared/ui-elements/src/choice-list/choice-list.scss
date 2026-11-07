@@ -1,3 +1,5 @@
+@use '../styles/typography' as typography;
+
 :host {
   display: block;
 }
@@ -26,7 +28,8 @@ label {
   border-radius: 11px;
   background: white;
   color: #253752;
-  font-size: 12px;
+  font-size: typography.$reading;
+  line-height: 1.5;
   cursor: pointer;
 }
 input {
@@ -44,7 +47,7 @@ input {
   border: 1px solid #d5ddec;
   border-radius: 50%;
   color: #63738c;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .selected {
   border-color: #8350e7;

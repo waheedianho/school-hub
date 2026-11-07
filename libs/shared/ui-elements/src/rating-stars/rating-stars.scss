@@ -1,0 +1,24 @@
+@use '../styles/typography' as typography;
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.stars {
+  position: relative;
+  display: inline-block;
+  color: #e4e8f0;
+  font-size: 18px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.stars > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  overflow: hidden;
+  color: #efa71c;
+}
+strong {
+  color: #425877;
+  font-size: typography.$body;
+}

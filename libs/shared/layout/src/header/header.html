@@ -115,7 +115,8 @@
             class="w-[35px] h-[35px] md:w-[42px] md:h-[42px] rounded-full ltr:md:mr-[2px] ltr:lg:mr-[8px] rtl:md:ml-[2px] rtl:lg:ml-[8px] border-[2px] border-primary-200 inline-block"
             alt=""
           />
-          <span class="block font-semibold text-[0] lg:text-base"
+          <span
+            class="block max-w-[160px] truncate font-semibold text-[0] lg:text-base"
             >{{ user.name }}</span
           >
           <i
@@ -133,8 +134,9 @@
               class="rounded-full w-[31px] h-[31px] ltr:mr-[9px] rtl:ml-[9px] border-2 border-primary-200 inline-block"
               alt=""
             />
-            <div>
-              <span class="block text-black dark:text-white font-medium"
+            <div class="min-w-0">
+              <span
+                class="block truncate text-black dark:text-white font-medium"
                 >{{ user.name }}</span
               >
               <span class="block text-xs">{{ user.role }}</span>

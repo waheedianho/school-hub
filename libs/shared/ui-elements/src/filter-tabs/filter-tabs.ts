@@ -19,12 +19,17 @@ export interface FilterTab {
   templateUrl: './filter-tabs.html',
   styleUrl: './filter-tabs.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[class.underlined-tabs]': 'appearance() === "underline"',
+    '[class.pill-tabs]': 'appearance() === "pills"',
+  },
 })
 export class FilterTabsComponent {
   readonly tabs = input.required<readonly FilterTab[]>();
   readonly active = input.required<string>();
   readonly panelId = input.required<string>();
   readonly label = input('Filter results');
+  readonly appearance = input<'boxed' | 'underline' | 'pills'>('boxed');
   readonly changed = output<string>();
   private readonly buttons =
     viewChildren<ElementRef<HTMLButtonElement>>('tabButton');

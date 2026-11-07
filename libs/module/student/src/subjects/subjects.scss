@@ -1,3 +1,5 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
 :host {
   display: block;
   color: #182031;
@@ -19,7 +21,7 @@
 .page-heading p {
   margin: 0;
   color: #5d6e88;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .subject-stats {
   display: grid;
@@ -57,7 +59,7 @@
 .catalog-heading p {
   margin: 0;
   color: #6f7f97;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .catalog-heading > a {
   display: inline-flex;
@@ -65,7 +67,7 @@
   align-items: center;
   gap: 8px;
   color: #0866ff;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .subject-filters {
   display: grid;
@@ -85,20 +87,20 @@
 }
 .subject-filters label > span:not(.visually-hidden) {
   color: #566b8b;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .subject-filters input,
 .subject-filters select {
   min-width: 0;
   width: 100%;
-  height: 38px;
+  height: 42px;
   padding: 8px 0;
   border: 0;
   outline: none;
   background: transparent;
   color: #435977;
   font: inherit;
-  font-size: 11px;
+  font-size: typography.$reading;
 }
 .subject-filters label:focus-within {
   outline: 2px solid #99beff;
@@ -125,7 +127,7 @@
   gap: 12px;
   margin: 18px 0 13px;
   color: #61738e;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .term-caption {
   margin-left: 4px;
@@ -136,7 +138,7 @@
   border: 0;
   background: transparent;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
   text-decoration: underline;
 }
 .subject-results {
@@ -166,7 +168,7 @@
 .empty-subjects p {
   margin-bottom: 18px;
   color: #6d7f9a;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .outline-button {
   padding: 8px 15px;
@@ -174,7 +176,7 @@
   border-radius: 7px;
   background: white;
   color: #0866ff;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .progress-explainer {
   display: flex;
@@ -182,7 +184,7 @@
   gap: 8px;
   margin: 18px 0 0;
   color: #74849c;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.8;
 }
 .progress-explainer > i {
@@ -199,7 +201,7 @@
 }
 .next-subject span {
   color: #697d9a;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .next-subject h3 {
   margin: 5px 0 0;
@@ -210,7 +212,7 @@
 .next-description {
   margin: 13px 0 16px;
   color: #5b6f8c;
-  font-size: 11px;
+  font-size: typography.$body;
   line-height: 1.9;
 }
 .next-progress {
@@ -219,7 +221,7 @@
   gap: 12px;
   margin-bottom: 8px;
   color: #5e728e;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .next-progress strong {
   color: #0866ff;
@@ -236,7 +238,7 @@
   border-radius: 7px;
   background: linear-gradient(110deg, #0b6cff, #0858ee);
   color: white;
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .primary-button:hover {
@@ -263,17 +265,17 @@
   border-radius: 50%;
   background: #f1f7ff;
   color: #0866ff;
-  font-size: 10px;
+  font-size: typography.$caption;
 }
 .learning-plan strong {
-  font-size: 11px;
+  font-size: typography.$body;
   font-weight: 600;
 }
 .learning-plan p,
 .help-copy {
   margin: 4px 0 0;
   color: #6f8099;
-  font-size: 10px;
+  font-size: typography.$caption;
   line-height: 1.8;
 }
 .help-copy {
@@ -285,7 +287,7 @@
   gap: 8px;
   padding: 9px 0;
   color: #35628d;
-  font-size: 11px;
+  font-size: typography.$body;
 }
 .help-link > i:last-child {
   margin-left: auto;
@@ -304,7 +306,7 @@
   border: 1px solid #ffe0a7;
   border-radius: 9px;
   background: #fff9eb;
-  font-size: 12px;
+  font-size: typography.$body;
 }
 .missing-subject button {
   border: 0;
@@ -369,7 +371,7 @@ button:focus-visible {
     font-size: 24px;
   }
   .page-heading p {
-    font-size: 11px;
+    font-size: typography.$body;
     line-height: 1.8;
   }
   .subject-stats {
@@ -396,10 +398,10 @@ button:focus-visible {
     font-size: 17px;
   }
   .catalog-heading p {
-    font-size: 10px;
+    font-size: typography.$caption;
   }
   .catalog-heading > a {
     margin-top: 4px;
-    font-size: 10px;
+    font-size: typography.$caption;
   }
 }

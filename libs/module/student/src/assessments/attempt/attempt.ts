@@ -1,3 +1,5 @@
+import { progressReturn } from '../../data/progress-context';
+import { feedbackReturn } from '../../data/feedback-context';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,6 +19,7 @@ import {
   ProgressBarComponent,
   QuestionNavigatorComponent,
   StatusBadgeComponent,
+  ReturnLinkComponent,
 } from '@school-hub/ui-elements';
 import { AssessmentStore } from '../assessment-store';
 import { ASSESSMENT_KINDS } from '../assessments.data';
@@ -25,6 +28,7 @@ import { assessmentBackQuery } from '../assessment-navigation';
 @Component({
   selector: 'school-hub-assessment-attempt',
   imports: [
+    ReturnLinkComponent,
     RouterLink,
     CalculatorComponent,
     ChoiceListComponent,
@@ -48,6 +52,9 @@ export class AssessmentAttemptComponent {
   private readonly query = toSignal(this.route.queryParamMap, {
     requireSync: true,
   });
+  protected readonly progressReturn = computed(() =>
+    progressReturn(this.query()),
+  );
   private readonly attemptId = signal<string | null>(null);
   protected readonly kinds = ASSESSMENT_KINDS;
   protected readonly assessment = computed(() =>
@@ -77,6 +84,9 @@ export class AssessmentAttemptComponent {
           2,
           '0',
         )}:${(this.seconds() % 60).toString().padStart(2, '0')}`,
+  );
+  protected readonly feedbackReturn = computed(() =>
+    feedbackReturn(this.query()),
   );
   protected readonly backQuery = computed(() =>
     assessmentBackQuery(this.query()),
