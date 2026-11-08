@@ -16,7 +16,10 @@ export const schoolAdminRoutes: Routes = [
       {
         path: 'dashboard',
         title: 'Dashboard | SchoolHub Admin',
-        component: SchoolAdmin,
+        loadComponent: () =>
+          import('./dashboard/school-admin-dashboard').then(
+            (m) => m.SchoolAdminDashboardComponent,
+          ),
       },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },

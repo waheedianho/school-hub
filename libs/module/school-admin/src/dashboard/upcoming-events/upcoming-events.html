@@ -1,0 +1,30 @@
+<div class="events-card">
+  <div class="card-header">
+    <h2 class="card-title">Upcoming Events</h2>
+  </div>
+
+  <div class="events-list">
+    @for (event of events(); track event.id) {
+    <div class="event-item">
+      <div class="date-box">
+        <span class="event-month">{{ event.month }}</span>
+        <span class="event-day">{{ event.day }}</span>
+      </div>
+
+      <div class="event-details">
+        <span class="event-title">{{ event.title }}</span>
+        <span class="event-range">{{ event.dateRange }}</span>
+      </div>
+
+      <span class="event-badge">{{ event.status }}</span>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/calendar" class="footer-link">
+      <span>View school calendar</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

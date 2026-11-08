@@ -1,0 +1,87 @@
+<div class="overview-card">
+  <div class="card-header">
+    <div class="header-title-group">
+      <h2 class="card-title">Academic Performance Overview</h2>
+      <i
+        class="material-symbols-outlined info-icon"
+        title="Aggregated continuous assessment and exam averages"
+        >info</i
+      >
+    </div>
+    <div class="term-selector">
+      <select
+        [(ngModel)]="selectedTerm"
+        class="term-dropdown"
+        aria-label="Select Term"
+      >
+        @for (opt of termOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="legend-bar">
+    <div class="legend-item">
+      <span class="legend-swatch class-avg-swatch"></span>
+      <span class="legend-label">Class Average</span>
+    </div>
+    <div class="legend-item">
+      <span class="legend-swatch school-avg-swatch"></span>
+      <span class="legend-label"
+        >School Average ({{ performance().schoolAverage }}%)</span
+      >
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <!-- Grid Lines & Y-Axis Labels -->
+    <div class="chart-grid">
+      <div class="grid-line" style="bottom: 100%">
+        <span class="y-label">100%</span>
+      </div>
+      <div class="grid-line" style="bottom: 75%">
+        <span class="y-label">75%</span>
+      </div>
+      <div class="grid-line" style="bottom: 50%">
+        <span class="y-label">50%</span>
+      </div>
+      <div class="grid-line" style="bottom: 25%">
+        <span class="y-label">25%</span>
+      </div>
+      <div class="grid-line" style="bottom: 0%">
+        <span class="y-label">0%</span>
+      </div>
+
+      <!-- School Average Reference Line (72%) -->
+      <div
+        class="reference-line"
+        [style.bottom.%]="performance().schoolAverage"
+        aria-hidden="true"
+      ></div>
+    </div>
+
+    <!-- Bars Area -->
+    <div class="bars-wrapper">
+      @for (item of performance().classAverages; track item.form) {
+      <div class="bar-column">
+        <span class="bar-value">{{ item.average }}%</span>
+        <div class="bar-track">
+          <div
+            class="bar-fill"
+            [style.height.%]="getBarHeightPercentage(item.average)"
+          ></div>
+        </div>
+        <span class="bar-label">{{ item.form }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/reports" class="footer-link">
+      <span>View full performance report</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

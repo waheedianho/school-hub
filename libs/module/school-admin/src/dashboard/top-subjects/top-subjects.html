@@ -1,0 +1,46 @@
+<div class="subjects-card">
+  <div class="card-header">
+    <h2 class="card-title">Top Performing Subjects</h2>
+    <div class="term-selector">
+      <select
+        [(ngModel)]="selectedTerm"
+        class="term-dropdown"
+        aria-label="Select Term"
+      >
+        @for (opt of termOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="subjects-list">
+    @for (subject of subjects(); track subject.id) {
+    <div class="subject-row">
+      <div class="subject-icon-wrap" [ngClass]="subject.colorClass">
+        <i class="material-symbols-outlined">{{ subject.icon }}</i>
+      </div>
+
+      <div class="subject-info">
+        <span class="subject-name">{{ subject.name }}</span>
+        <div class="progress-bar-track">
+          <div
+            class="progress-bar-fill"
+            [ngClass]="subject.colorClass"
+            [style.width.%]="subject.averageScore"
+          ></div>
+        </div>
+      </div>
+
+      <span class="subject-score">{{ subject.averageScore }}%</span>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/subjects-curriculum" class="footer-link">
+      <span>View all subjects</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

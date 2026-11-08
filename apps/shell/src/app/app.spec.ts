@@ -35,9 +35,8 @@ describe('App', () => {
   it('should render page for school admin when url is /school-admin', async () => {
     const harness = await RouterTestingHarness.create('/school-admin');
     expect(
-      harness.routeNativeElement?.querySelector('lib-school-admin p')
-        ?.textContent,
-    ).toContain('SchoolAdmin works!');
+      harness.routeNativeElement?.querySelector('h1')?.textContent,
+    ).toContain('Dashboard');
   });
 
   it('should render page for super admin when url is /super-admin', async () => {
