@@ -1,0 +1,182 @@
+/**
+ * School Admin Domain Models
+ * Aligned with the product designs in .design/SCHOOL ADMIN/
+ */
+
+export interface AcademicTerm {
+  id: string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+}
+
+export interface AcademicSession {
+  id: string;
+  name: string;
+  isActive: boolean;
+  terms: AcademicTerm[];
+}
+
+export interface SchoolAdminMetric {
+  id: string;
+  label: string;
+  value: number | string;
+  subValue?: string;
+  changeText: string;
+  trend: 'up' | 'down' | 'neutral';
+  tone: 'purple' | 'green' | 'blue' | 'yellow' | 'pink' | 'teal';
+  icon: string;
+  sparkline: number[];
+}
+
+export interface ClassPerformanceItem {
+  form: string;
+  average: number;
+  schoolAverage: number;
+}
+
+export interface AcademicPerformanceOverview {
+  term: string;
+  schoolAverage: number;
+  classAverages: ClassPerformanceItem[];
+}
+
+export interface CurriculumCoverage {
+  term: string;
+  overallPercentage: number;
+  onTrackCount: number;
+  onTrackPercentage: number;
+  behindCount: number;
+  behindPercentage: number;
+  atRiskCount: number;
+  atRiskPercentage: number;
+  totalClasses: number;
+}
+
+export interface TopPerformingSubject {
+  id: string;
+  name: string;
+  averageScore: number;
+  icon: string;
+  colorClass: string;
+}
+
+export interface SchoolAlert {
+  id: string;
+  title: string;
+  description: string;
+  count: number;
+  severity: 'critical' | 'warning' | 'info';
+  icon: string;
+  route: string;
+}
+
+export interface TeacherActivityMetric {
+  id: string;
+  label: string;
+  completed: number;
+  total: number;
+  percentage?: number;
+  isCountOnly?: boolean;
+  icon: string;
+  tone: 'teal' | 'purple' | 'amber' | 'green' | 'blue';
+}
+
+export interface UpcomingSchoolEvent {
+  id: string;
+  title: string;
+  month: string;
+  day: string;
+  dateRange: string;
+  status: 'Upcoming' | 'In Progress' | 'Completed';
+  tone: 'green' | 'blue' | 'purple';
+}
+
+export interface SafeguardingNotice {
+  message: string;
+  reportLinkText: string;
+  reportLinkUrl: string;
+}
+
+export interface SchoolClass {
+  id: string;
+  name: string;
+  level: 'Primary' | 'JSS' | 'SS';
+  arm: string;
+  classTeacher: string;
+  room: string;
+  learnersCount: number;
+  activeEnrollments: number;
+  capacity: number;
+  averageScore: number;
+  attendanceRate: number;
+  currentTopic: string;
+  topicProgress: number;
+  learnersBelowMastery: number;
+}
+
+export interface LearnerRecord {
+  id: string;
+  name: string;
+  admissionNo: string;
+  classId: string;
+  className: string;
+  gender: 'Male' | 'Female';
+  attendanceRate: number;
+  averageScore: number;
+  currentStatus: 'Active' | 'Inactive' | 'On Leave';
+  interventionFlag: boolean;
+  guardianName?: string;
+  guardianPhone?: string;
+}
+
+export interface StaffMember {
+  id: string;
+  name: string;
+  staffId: string;
+  avatarUrl?: string;
+  role: string;
+  department: string;
+  assignedSubjects: string[];
+  assignedClasses: string[];
+  attendanceRate: number;
+  attendanceRating: 'Excellent' | 'Good' | 'Average' | 'Needs Attention';
+  feedbackCompletionRate: number;
+  status: 'Active' | 'On Leave' | 'Suspended';
+  activeLessonsCount: number;
+  pendingReviewsCount: number;
+}
+
+export interface InterventionCase {
+  id: string;
+  learnerId: string;
+  learnerName: string;
+  admissionNo: string;
+  className: string;
+  concernArea: string;
+  interventionType: string;
+  assignedStaff: string;
+  assignedStaffRole: string;
+  status: 'In Progress' | 'Under Review' | 'Resolved';
+  priority: 'High' | 'Medium' | 'Low';
+  nextReviewDate: string;
+  progress: number;
+}
+
+export interface SchoolProfile {
+  name: string;
+  schoolType: string;
+  address: string;
+  phone: string;
+  email: string;
+  principalName: string;
+  logoUrl: string;
+  primaryColor: string;
+  setupCompletionPercentage: number;
+  activeSession: string;
+  activeTerm: string;
+  totalClasses: number;
+  totalTeachers: number;
+  gradingScale: string;
+}
