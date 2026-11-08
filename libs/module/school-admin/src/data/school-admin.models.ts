@@ -114,6 +114,8 @@ export interface SchoolClass {
   currentTopic: string;
   topicProgress: number;
   learnersBelowMastery: number;
+  attendanceConcerns?: number;
+  interventionsCount?: number;
 }
 
 export interface LearnerRecord {
@@ -125,10 +127,59 @@ export interface LearnerRecord {
   gender: 'Male' | 'Female';
   attendanceRate: number;
   averageScore: number;
-  currentStatus: 'Active' | 'Inactive' | 'On Leave';
+  currentStatus: 'Active' | 'At Risk' | 'Inactive' | 'On Leave';
   interventionFlag: boolean;
+  initials?: string;
+  avatarColor?: string;
   guardianName?: string;
   guardianPhone?: string;
+  guardianEmail?: string;
+}
+
+export interface ClassesOverviewMetrics {
+  totalClasses: number;
+  totalClassesChange: string;
+  totalLearners: number;
+  totalLearnersChange: string;
+  activeEnrollments: number;
+  activeEnrollmentsPercentage: number;
+  averageClassSize: number;
+  averageClassSizeChange: string;
+}
+
+export interface NewLearnerFormData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  gender: 'Male' | 'Female' | 'Other';
+  dateOfBirth: string;
+  admissionNumber: string;
+  classLevel: string;
+  arm: string;
+  admissionDate: string;
+  enrollmentStatus: 'Active' | 'Pending' | 'Inactive';
+  houseGroup?: string;
+  previousSchool?: string;
+  username: string;
+  temporaryPassword?: string;
+  loginMethod: string;
+  accountActive: boolean;
+  parentName: string;
+  parentRelationship: string;
+  parentPhone: string;
+  parentEmail?: string;
+  parentWhatsApp?: string;
+  homeAddress: string;
+  emergencyContact: string;
+  guardianAccountActive: boolean;
+  medicalNotes?: string;
+  supportNeeds?: string;
+  transportMode: string;
+  remarks?: string;
+  parentConsentConfirmed: boolean;
+  mediaConsent: boolean;
+  dataPrivacyAcknowledged: boolean;
+  communicationPreference: string;
 }
 
 export interface StaffMember {

@@ -165,4 +165,61 @@ describe('SchoolAdminStore', () => {
       'Settings published successfully',
     );
   });
+
+  it('should manage classes and learners state correctly', () => {
+    expect(store.classesMetrics().totalClasses).toBe(24);
+    expect(store.classesMetrics().totalLearners).toBe(612);
+    expect(store.selectedClassId()).toBe('class-jss-1a');
+    expect(store.selectedClass().name).toBe('JSS 1A');
+
+    // Select class
+    store.selectClass('class-jss-1b');
+    expect(store.selectedClassId()).toBe('class-jss-1b');
+    expect(store.selectedClass().name).toBe('JSS 1B');
+
+    // Filter learners
+    store.selectClass('class-jss-1a');
+    store.setLearnerSearchQuery('Maryam');
+    expect(store.filteredLearners().length).toBe(1);
+    expect(store.filteredLearners()[0].name).toBe('Maryam Ibrahim');
+
+    store.setLearnerSearchQuery('');
+    expect(store.filteredLearners().length).toBeGreaterThan(1);
+  });
+
+  it('should create new learner and update state', () => {
+    const initialLearnersCount = store.learners().length;
+    const initialJss1aCount = store.selectedClass().learnersCount;
+
+    const created = store.createLearner({
+      firstName: 'Test',
+      lastName: 'Student',
+      gender: 'Male',
+      dateOfBirth: '2012-05-10',
+      admissionNumber: 'TEST/2024/999',
+      classLevel: 'JSS 1',
+      arm: 'A',
+      admissionDate: '2024-09-10',
+      enrollmentStatus: 'Active',
+      username: 'test.student',
+      loginMethod: 'Password Only',
+      accountActive: true,
+      parentName: 'Parent Student',
+      parentRelationship: 'Father',
+      parentPhone: '+234 800 000 1111',
+      homeAddress: 'Test Address',
+      emergencyContact: 'Emergency Contact',
+      guardianAccountActive: true,
+      transportMode: 'Day Student',
+      parentConsentConfirmed: true,
+      mediaConsent: true,
+      dataPrivacyAcknowledged: true,
+      communicationPreference: 'Email & SMS',
+    });
+
+    expect(created.name).toBe('Test Student');
+    expect(store.learners().length).toBe(initialLearnersCount + 1);
+    const updatedClass = store.getClassById('class-jss-1a');
+    expect(updatedClass?.learnersCount).toBe(initialJss1aCount + 1);
+  });
 });

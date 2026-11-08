@@ -29,6 +29,22 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.SchoolSetupComponent,
           ),
       },
+      {
+        path: 'classes-learners',
+        title: 'Classes & Learners | SchoolHub Admin',
+        loadComponent: () =>
+          import('./classes-learners/classes-learners').then(
+            (m) => m.ClassesLearnersComponent,
+          ),
+      },
+      {
+        path: 'classes-learners/add',
+        title: 'Add Learner | SchoolHub Admin',
+        loadComponent: () =>
+          import('./classes-learners/add-learner/add-learner').then(
+            (m) => m.AddLearnerComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -66,7 +82,10 @@ export const schoolAdminRoutes: Routes = [
       { path: 'messages', redirectTo: 'communication', pathMatch: 'full' },
       // Register all remaining portal pages
       ...SCHOOL_ADMIN_PAGES.filter(
-        (page) => page.path !== 'dashboard' && page.path !== 'school-setup',
+        (page) =>
+          page.path !== 'dashboard' &&
+          page.path !== 'school-setup' &&
+          page.path !== 'classes-learners',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,

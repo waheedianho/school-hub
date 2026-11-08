@@ -1,0 +1,185 @@
+<div class="overview-sidebar">
+  <!-- Class Overview Header -->
+  <div class="overview-card">
+    <div class="card-header">
+      <div class="title-wrap">
+        <span class="material-symbols-outlined card-icon">groups</span>
+        <h2 class="card-title">Class Overview: {{ selectedClass().name }}</h2>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <!-- 2x2 Info Grid -->
+      <div class="details-grid">
+        <div class="detail-cell">
+          <span class="detail-label">Total Learners</span>
+          <span class="detail-val">{{ selectedClass().learnersCount }}</span>
+        </div>
+
+        <div class="detail-cell">
+          <span class="detail-label">Active Enrollments</span>
+          <span class="detail-val"
+            >{{ selectedClass().activeEnrollments }} (100%)</span
+          >
+        </div>
+
+        <div class="detail-cell">
+          <span class="detail-label">Class Teacher</span>
+          <span class="detail-val text-truncate"
+            >{{ selectedClass().classTeacher }}</span
+          >
+        </div>
+
+        <div class="detail-cell">
+          <span class="detail-label">Class Room</span>
+          <span class="detail-val">{{ selectedClass().room }}</span>
+        </div>
+      </div>
+
+      <!-- Performance Progress Bars -->
+      <div class="performance-bars">
+        <div class="bar-group">
+          <div class="bar-header">
+            <span class="bar-label">Average Score</span>
+            <span class="bar-val score"
+              >{{ selectedClass().averageScore }}%</span
+            >
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill score"
+              [style.width.%]="selectedClass().averageScore"
+            ></div>
+          </div>
+        </div>
+
+        <div class="bar-group">
+          <div class="bar-header">
+            <span class="bar-label">Attendance Rate</span>
+            <span class="bar-val att"
+              >{{ selectedClass().attendanceRate }}%</span
+            >
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill att"
+              [style.width.%]="selectedClass().attendanceRate"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Attention Cards -->
+  <div class="attention-cards-list">
+    <!-- Learners Below Mastery -->
+    <div class="attention-card mastery">
+      <div class="attention-left">
+        <div class="attention-icon-wrap mastery">
+          <span class="material-symbols-outlined">trending_down</span>
+        </div>
+        <div class="attention-text">
+          <span class="attention-label">Learners Below Mastery</span>
+          <span class="attention-count">
+            {{ selectedClass().learnersBelowMastery }} ({{
+            ((selectedClass().learnersBelowMastery /
+            selectedClass().learnersCount) * 100) | number:'1.0-0' }}%)
+          </span>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="attention-link">
+        <span>View details</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Attendance Concerns -->
+    <div class="attention-card attendance">
+      <div class="attention-left">
+        <div class="attention-icon-wrap attendance">
+          <span class="material-symbols-outlined">event_busy</span>
+        </div>
+        <div class="attention-text">
+          <span class="attention-label">Attendance Concerns</span>
+          <span class="attention-count">
+            {{ selectedClass().attendanceConcerns || 4 }} ({{
+            (((selectedClass().attendanceConcerns || 4) /
+            selectedClass().learnersCount) * 100) | number:'1.0-0' }}%)
+          </span>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="attention-link">
+        <span>View details</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+
+    <!-- Learners Needing Intervention -->
+    <div class="attention-card intervention">
+      <div class="attention-left">
+        <div class="attention-icon-wrap intervention">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="attention-text">
+          <span class="attention-label">Learners Needing Intervention</span>
+          <span class="attention-count">
+            {{ selectedClass().interventionsCount || 6 }} ({{
+            (((selectedClass().interventionsCount || 6) /
+            selectedClass().learnersCount) * 100) | number:'1.0-0' }}%)
+          </span>
+        </div>
+      </div>
+      <a href="javascript:void(0)" class="attention-link">
+        <span>View details</span>
+        <span class="material-symbols-outlined">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Actions Card -->
+  <div class="quick-actions-card">
+    <h3 class="quick-actions-title">Quick Actions</h3>
+    <div class="actions-list">
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="onQuickAction('assign-learner')"
+      >
+        <div class="item-left">
+          <span class="material-symbols-outlined action-icon">person_add</span>
+          <span>Assign Learner</span>
+        </div>
+        <span class="material-symbols-outlined chevron">chevron_right</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="onQuickAction('full-profile')"
+      >
+        <div class="item-left">
+          <span class="material-symbols-outlined action-icon"
+            >contact_page</span
+          >
+          <span>View Full Class Profile</span>
+        </div>
+        <span class="material-symbols-outlined chevron">chevron_right</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="onQuickAction('reassign-class')"
+      >
+        <div class="item-left">
+          <span class="material-symbols-outlined action-icon"
+            >published_with_changes</span
+          >
+          <span>Promote / Reassign Class</span>
+        </div>
+        <span class="material-symbols-outlined chevron">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

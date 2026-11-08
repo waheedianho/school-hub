@@ -1,0 +1,146 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.metric-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.metric-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .metric-icon {
+    font-size: 26px;
+  }
+
+  &.purple {
+    background-color: #f5f3ff;
+    color: #6366f1;
+  }
+
+  &.blue {
+    background-color: #eff6ff;
+    color: #3b82f6;
+  }
+
+  &.green {
+    background-color: #ecfdf5;
+    color: #10b981;
+  }
+
+  &.orange {
+    background-color: #fff7ed;
+    color: #f97316;
+  }
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  line-height: 1.2;
+}
+
+.metric-badge {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+  display: inline-block;
+
+  &.up {
+    color: #059669;
+  }
+
+  &.down {
+    color: #dc2626;
+  }
+}
+
+.metric-subtext {
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+  margin-top: 2px;
+}
+
+:host-context([data-theme='dark']),
+:host-context(.dark) {
+  .metric-card {
+    --card-bg: #1e293b;
+    --border-color: #334155;
+    --text-primary: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+
+  .metric-icon-wrap {
+    &.purple {
+      background-color: #1e1b4b;
+    }
+    &.blue {
+      background-color: #1e3a8a;
+    }
+    &.green {
+      background-color: #064e3b;
+    }
+    &.orange {
+      background-color: #431407;
+    }
+  }
+
+  .metric-badge.up {
+    color: #34d399;
+  }
+
+  .metric-badge.down {
+    color: #f87171;
+  }
+}

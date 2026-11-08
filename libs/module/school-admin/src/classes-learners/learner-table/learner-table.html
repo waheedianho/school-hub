@@ -1,0 +1,257 @@
+<div class="learner-table-card">
+  <!-- Table Header -->
+  <div class="table-card-header">
+    <div class="title-with-badge">
+      <h2 class="table-title">Learners in {{ selectedClass().name }}</h2>
+      <span class="learners-count-badge">{{ totalLearners() }} Learners</span>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-more-options"
+        aria-label="More class options"
+      >
+        <span class="material-symbols-outlined">more_horiz</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter & Action Toolbar -->
+  <div class="table-toolbar">
+    <div class="search-input-wrap">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Search learner name or admission no."
+        [value]="searchQuery()"
+        (input)="onSearch($event)"
+        aria-label="Search learners"
+      />
+    </div>
+
+    <div class="filter-controls">
+      <div class="select-wrapper">
+        <select
+          class="filter-select"
+          [value]="classFilter()"
+          (change)="onClassFilter($event)"
+          aria-label="Filter by class"
+        >
+          <option value="All Classes">All Classes</option>
+          @for (c of allClasses(); track c.id) {
+          <option [value]="c.name">{{ c.name }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-arrow">expand_more</span>
+      </div>
+
+      <div class="select-wrapper">
+        <select
+          class="filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusFilter($event)"
+          aria-label="Filter by status"
+        >
+          @for (opt of statusOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-arrow">expand_more</span>
+      </div>
+
+      <button
+        type="button"
+        class="btn-bulk-import"
+        (click)="bulkImportClicked.emit()"
+        aria-label="Bulk import learners"
+      >
+        <span class="material-symbols-outlined btn-icon">file_upload</span>
+        <span>Bulk Import</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-add-learner"
+        (click)="addLearnerClicked.emit()"
+        aria-label="Add new learner"
+      >
+        <span class="material-symbols-outlined btn-icon">add</span>
+        <span>Add Learner</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Body -->
+  <div class="table-responsive">
+    <table class="learners-table" aria-label="Learners list">
+      <thead>
+        <tr>
+          <th scope="col">Learner Name</th>
+          <th scope="col">Admission No.</th>
+          <th scope="col">Gender</th>
+          <th scope="col">Attendance</th>
+          <th scope="col">Average Score</th>
+          <th scope="col">Current Status</th>
+          <th scope="col">Intervention Flag</th>
+          <th scope="col" class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (learners().length === 0) {
+        <tr>
+          <td colspan="8" class="empty-cell">
+            <span class="material-symbols-outlined empty-icon">person_off</span>
+            <p>No learners found matching the filters.</p>
+          </td>
+        </tr>
+        } @else { @for (lrn of learners(); track lrn.id) {
+        <tr>
+          <td class="td-name">
+            <div class="name-cell">
+              <div
+                class="avatar-circle"
+                [style.background-color]="lrn.avatarColor || '#818cf8'"
+              >
+                <span
+                  >{{ lrn.initials || lrn.name.substring(0, 2).toUpperCase()
+                  }}</span
+                >
+              </div>
+              <span class="name-text">{{ lrn.name }}</span>
+            </div>
+          </td>
+
+          <td class="td-adm">{{ lrn.admissionNo }}</td>
+
+          <td class="td-gender">
+            <span
+              class="gender-cell"
+              [class.female]="lrn.gender === 'Female'"
+              [class.male]="lrn.gender === 'Male'"
+            >
+              <span class="gender-symbol"
+                >{{ lrn.gender === 'Female' ? '♀' : '♂' }}</span
+              >
+              <span class="gender-label">{{ lrn.gender }}</span>
+            </span>
+          </td>
+
+          <td class="td-att">
+            <div class="att-gauge-wrap">
+              <svg class="att-gauge-svg" viewBox="0 0 24 24">
+                <circle
+                  class="gauge-bg"
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke-width="2.5"
+                />
+                <circle
+                  class="gauge-val"
+                  cx="12"
+                  cy="12"
+                  r="9"
+                  stroke-width="2.5"
+                  stroke-dasharray="56.55"
+                  [attr.stroke-dashoffset]="56.55 - (lrn.attendanceRate / 100) * 56.55"
+                  transform="rotate(-90 12 12)"
+                />
+              </svg>
+              <span class="att-text">{{ lrn.attendanceRate }}%</span>
+            </div>
+          </td>
+
+          <td class="td-score">
+            <span
+              class="score-text"
+              [ngClass]="getScoreColorClass(lrn.averageScore)"
+            >
+              {{ lrn.averageScore }}%
+            </span>
+          </td>
+
+          <td class="td-status">
+            <span
+              class="status-pill"
+              [class.active]="lrn.currentStatus === 'Active'"
+              [class.at-risk]="lrn.currentStatus === 'At Risk'"
+            >
+              {{ lrn.currentStatus }}
+            </span>
+          </td>
+
+          <td class="td-flag">
+            <span
+              class="flag-pill"
+              [class.flagged]="lrn.interventionFlag"
+              [class.unflagged]="!lrn.interventionFlag"
+            >
+              {{ lrn.interventionFlag ? 'Yes' : 'No' }}
+            </span>
+          </td>
+
+          <td class="td-actions">
+            <button
+              type="button"
+              class="btn-row-action"
+              (click)="actionMenuClicked.emit({ action: 'view', learner: lrn })"
+              [attr.aria-label]="'Actions for ' + lrn.name"
+            >
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+          </td>
+        </tr>
+        } }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="table-pagination">
+    <div class="pagination-info">
+      Showing {{ (currentPage() - 1) * 8 + (learners().length > 0 ? 1 : 0) }} to
+      {{ (currentPage() - 1) * 8 + learners().length }} of {{ totalLearners() }}
+      learners
+    </div>
+
+    <div
+      class="pagination-controls"
+      role="navigation"
+      aria-label="Pagination Navigation"
+    >
+      <button
+        type="button"
+        class="page-btn prev"
+        [disabled]="currentPage() <= 1"
+        (click)="goToPage(currentPage() - 1)"
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+
+      @for (p of getPagesArray(); track p) {
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="p === currentPage()"
+        (click)="goToPage(p)"
+        [attr.aria-current]="p === currentPage() ? 'page' : null"
+      >
+        {{ p }}
+      </button>
+      }
+
+      <button
+        type="button"
+        class="page-btn next"
+        [disabled]="currentPage() >= totalPages()"
+        (click)="goToPage(currentPage() + 1)"
+        aria-label="Next page"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

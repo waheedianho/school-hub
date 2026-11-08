@@ -11,10 +11,12 @@ import {
   AcademicSession,
   AcademicStructure,
   AssessmentReportingSettings,
+  ClassesOverviewMetrics,
   CommunicationSafeguardingSettings,
   CurriculumCoverage,
   InterventionCase,
   LearnerRecord,
+  NewLearnerFormData,
   RolePermissionRow,
   SafeguardingNotice,
   SchoolAdminMetric,
@@ -40,8 +42,9 @@ import {
   UPCOMING_EVENTS_DATA,
 } from './school-admin-dashboard.data';
 import {
-  SCHOOL_CLASSES_DATA,
+  CLASSES_OVERVIEW_METRICS_DATA,
   SAMPLE_LEARNERS_DATA,
+  SCHOOL_CLASSES_DATA,
 } from './school-admin-classes.data';
 import { SCHOOL_STAFF_DATA } from './school-admin-staff.data';
 import { SCHOOL_INTERVENTIONS_DATA } from './school-admin-interventions.data';
@@ -115,6 +118,69 @@ export class SchoolAdminStore {
   readonly interventions = signal<InterventionCase[]>(
     SCHOOL_INTERVENTIONS_DATA,
   );
+
+  // Classes & Learners Signals
+  readonly classesMetrics = signal<ClassesOverviewMetrics>(
+    CLASSES_OVERVIEW_METRICS_DATA,
+  );
+  readonly selectedClassId = signal<string>('class-jss-1a');
+  readonly activeClassesTab = signal<
+    'classes' | 'learners' | 'enrollment' | 'attendance'
+  >('classes');
+  readonly learnerSearchQuery = signal<string>('');
+  readonly learnerClassFilter = signal<string>('All Classes');
+  readonly learnerStatusFilter = signal<string>('All Statuses');
+  readonly learnerPage = signal<number>(1);
+  readonly learnerPageSize = signal<number>(8);
+
+  // Computed properties for selected class and learners
+  readonly selectedClass = computed(() => {
+    return (
+      this.classes().find((c) => c.id === this.selectedClassId()) ??
+      this.classes()[0]
+    );
+  });
+
+  readonly filteredLearners = computed(() => {
+    const selectedCls = this.selectedClass();
+    const query = this.learnerSearchQuery().toLowerCase().trim();
+    const classFilter = this.learnerClassFilter();
+    const statusFilter = this.learnerStatusFilter();
+
+    return this.learners().filter((l) => {
+      const matchesClass =
+        classFilter === 'All Classes'
+          ? l.classId === selectedCls?.id
+          : l.className === classFilter;
+
+      const matchesQuery =
+        !query ||
+        l.name.toLowerCase().includes(query) ||
+        l.admissionNo.toLowerCase().includes(query);
+
+      const matchesStatus =
+        statusFilter === 'All Statuses' || l.currentStatus === statusFilter;
+
+      return matchesClass && matchesQuery && matchesStatus;
+    });
+  });
+
+  readonly totalFilteredLearners = computed(
+    () => this.filteredLearners().length,
+  );
+
+  readonly totalPages = computed(() => {
+    return (
+      Math.ceil(this.totalFilteredLearners() / this.learnerPageSize()) || 1
+    );
+  });
+
+  readonly paginatedLearners = computed(() => {
+    const page = this.learnerPage();
+    const pageSize = this.learnerPageSize();
+    const start = (page - 1) * pageSize;
+    return this.filteredLearners().slice(start, start + pageSize);
+  });
 
   // Setup Signals
   readonly profile = signal<SchoolProfile>(SCHOOL_PROFILE_DATA);
@@ -220,6 +286,105 @@ export class SchoolAdminStore {
    */
   getLearnersByClass(classId: string): LearnerRecord[] {
     return this.learners().filter((l) => l.classId === classId);
+  }
+
+  /**
+   * Classes & Learners Actions
+   */
+  selectClass(classId: string): void {
+    this.selectedClassId.set(classId);
+    this.learnerPage.set(1);
+  }
+
+  setActiveClassesTab(
+    tab: 'classes' | 'learners' | 'enrollment' | 'attendance',
+  ): void {
+    this.activeClassesTab.set(tab);
+  }
+
+  setLearnerSearchQuery(query: string): void {
+    this.learnerSearchQuery.set(query);
+    this.learnerPage.set(1);
+  }
+
+  setLearnerClassFilter(className: string): void {
+    this.learnerClassFilter.set(className);
+    this.learnerPage.set(1);
+  }
+
+  setLearnerStatusFilter(status: string): void {
+    this.learnerStatusFilter.set(status);
+    this.learnerPage.set(1);
+  }
+
+  setLearnerPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages()) {
+      this.learnerPage.set(page);
+    }
+  }
+
+  createLearner(formData: NewLearnerFormData): LearnerRecord {
+    const initials =
+      `${formData.firstName[0] || ''}${formData.lastName[0] || ''}`.toUpperCase();
+    const colors = [
+      '#818cf8',
+      '#60a5fa',
+      '#f472b6',
+      '#34d399',
+      '#fb923c',
+      '#c084fc',
+      '#2dd4bf',
+    ];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+    const classObj =
+      this.classes().find(
+        (c) =>
+          c.name === `${formData.classLevel} ${formData.arm}`.trim() ||
+          c.level === formData.classLevel,
+      ) ?? this.selectedClass();
+
+    const newRecord: LearnerRecord = {
+      id: `lrn-${Date.now()}`,
+      name: `${formData.firstName} ${formData.middleName ? formData.middleName + ' ' : ''}${formData.lastName}`.trim(),
+      admissionNo:
+        formData.admissionNumber ||
+        `ADM/${new Date().getFullYear()}/${Math.floor(100 + Math.random() * 900)}`,
+      classId: classObj?.id ?? 'class-jss-1a',
+      className: classObj?.name ?? 'JSS 1A',
+      gender: formData.gender === 'Other' ? 'Female' : formData.gender,
+      attendanceRate: 100,
+      averageScore: 70,
+      currentStatus:
+        formData.enrollmentStatus === 'Pending'
+          ? 'Active'
+          : formData.enrollmentStatus,
+      interventionFlag: false,
+      initials,
+      avatarColor: randomColor,
+      guardianName: formData.parentName,
+      guardianPhone: formData.parentPhone,
+      guardianEmail: formData.parentEmail,
+    };
+
+    this.learners.update((prev) => [newRecord, ...prev]);
+
+    // Update class learner count
+    if (classObj) {
+      this.classes.update((classes) =>
+        classes.map((c) =>
+          c.id === classObj.id
+            ? {
+                ...c,
+                learnersCount: c.learnersCount + 1,
+                activeEnrollments: c.activeEnrollments + 1,
+              }
+            : c,
+        ),
+      );
+    }
+
+    this.setupSaveStatus.set(`Learner ${newRecord.name} created successfully.`);
+    return newRecord;
   }
 
   /**

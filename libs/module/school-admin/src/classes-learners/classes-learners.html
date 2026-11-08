@@ -1,0 +1,148 @@
+<div class="classes-learners-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">Classes & Learners</h1>
+      <p class="page-subtitle">
+        Manage class structure, enrollment, learner records, and class-level
+        academic visibility.
+      </p>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  @if (store.setupSaveStatus(); as statusMsg) {
+  <div class="status-banner" role="status">
+    <div class="banner-content">
+      <span class="material-symbols-outlined banner-icon">check_circle</span>
+      <span class="banner-text">{{ statusMsg }}</span>
+    </div>
+    <button
+      type="button"
+      class="banner-close-btn"
+      (click)="dismissNotification()"
+      aria-label="Dismiss notification"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  }
+
+  <!-- 4 Summary Metrics Cards -->
+  <section
+    class="summary-metrics-section"
+    aria-label="Classes and learners overview metrics"
+  >
+    <school-hub-classes-summary-metrics [metrics]="store.classesMetrics()" />
+  </section>
+
+  <!-- Navigation Tab Bar -->
+  <div class="tabs-bar" role="tablist" aria-label="Classes and Learners Views">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeClassesTab() === 'classes'"
+      role="tab"
+      [attr.aria-selected]="store.activeClassesTab() === 'classes'"
+      (click)="setTab('classes')"
+    >
+      <span class="material-symbols-outlined tab-icon">groups</span>
+      <span>Classes</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeClassesTab() === 'learners'"
+      role="tab"
+      [attr.aria-selected]="store.activeClassesTab() === 'learners'"
+      (click)="setTab('learners')"
+    >
+      <span class="material-symbols-outlined tab-icon">school</span>
+      <span>Learners</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeClassesTab() === 'enrollment'"
+      role="tab"
+      [attr.aria-selected]="store.activeClassesTab() === 'enrollment'"
+      (click)="setTab('enrollment')"
+    >
+      <span class="material-symbols-outlined tab-icon">how_to_reg</span>
+      <span>Enrollment</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeClassesTab() === 'attendance'"
+      role="tab"
+      [attr.aria-selected]="store.activeClassesTab() === 'attendance'"
+      (click)="setTab('attendance')"
+    >
+      <span class="material-symbols-outlined tab-icon">calendar_month</span>
+      <span>Attendance Snapshot</span>
+    </button>
+  </div>
+
+  <!-- Main 3-Column Content Layout -->
+  <div class="content-split-grid">
+    <!-- Left Column: Classes List -->
+    <aside class="col-classes-list" aria-label="Classes List">
+      <school-hub-class-list
+        [classes]="store.classes()"
+        [selectedClassId]="store.selectedClassId()"
+        (classSelected)="onClassSelect($event)"
+        (addClassClicked)="onAddClass()"
+      />
+    </aside>
+
+    <!-- Center Column: Learners Table -->
+    <main class="col-learners-table" aria-label="Learners Table">
+      <school-hub-learner-table
+        [learners]="store.paginatedLearners()"
+        [selectedClass]="store.selectedClass()"
+        [totalLearners]="store.totalFilteredLearners()"
+        [currentPage]="store.learnerPage()"
+        [totalPages]="store.totalPages()"
+        [searchQuery]="store.learnerSearchQuery()"
+        [classFilter]="store.learnerClassFilter()"
+        [statusFilter]="store.learnerStatusFilter()"
+        [allClasses]="store.classes()"
+        (searchChange)="onSearchChange($event)"
+        (classFilterChange)="onClassFilterChange($event)"
+        (statusFilterChange)="onStatusFilterChange($event)"
+        (pageChange)="onPageChange($event)"
+        (addLearnerClicked)="navigateToAddLearner()"
+        (bulkImportClicked)="onBulkImport()"
+        (actionMenuClicked)="onQuickAction('full-profile')"
+      />
+    </main>
+
+    <!-- Right Column: Class Overview Sidebar -->
+    <aside class="col-class-overview" aria-label="Class Overview Sidebar">
+      <school-hub-class-overview-sidebar
+        [selectedClass]="store.selectedClass()"
+        (quickActionClicked)="onQuickAction($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- Bottom Safeguarding Banner -->
+  <footer class="safeguarding-footer-banner">
+    <div class="banner-left">
+      <span class="material-symbols-outlined banner-icon">lock</span>
+      <span class="banner-text">
+        Learner records are secure and confidential. All data is used solely for
+        academic and administrative purposes to support learner success and
+        school oversight.
+      </span>
+    </div>
+    <button type="button" class="btn-security-info">
+      <span class="material-symbols-outlined">shield</span>
+      <span>Learn more about data security</span>
+    </button>
+  </footer>
+</div>

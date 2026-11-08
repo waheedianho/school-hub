@@ -1,0 +1,105 @@
+<div class="classes-panel">
+  <div class="panel-header">
+    <h2 class="panel-title">Classes</h2>
+    <button
+      type="button"
+      class="btn-add-class"
+      (click)="onAddClass()"
+      aria-label="Add new class"
+    >
+      <span class="material-symbols-outlined">add</span>
+      <span>Add Class</span>
+    </button>
+  </div>
+
+  <div class="classes-list" role="list">
+    @for (cls of classes(); track cls.id) {
+    <div
+      class="class-item-card"
+      [class.selected]="cls.id === selectedClassId()"
+      (click)="onSelectClass(cls.id)"
+      (keydown.enter)="onSelectClass(cls.id)"
+      (keydown.space)="onSelectClass(cls.id)"
+      role="button"
+      tabindex="0"
+      [attr.aria-selected]="cls.id === selectedClassId()"
+      [attr.aria-label]="cls.name + ', ' + cls.learnersCount + ' learners'"
+    >
+      <div class="class-card-top">
+        <h3 class="class-name">{{ cls.name }}</h3>
+      </div>
+
+      <div class="class-teacher">
+        <span>Class Teacher: {{ cls.classTeacher }}</span>
+      </div>
+
+      <div class="class-stats-row">
+        <div class="stat-item">
+          <span class="material-symbols-outlined stat-icon">groups</span>
+          <span class="stat-text"
+            ><strong>{{ cls.learnersCount }}</strong> Learners</span
+          >
+        </div>
+
+        <div class="stat-item">
+          <svg class="mini-gauge" viewBox="0 0 20 20">
+            <circle class="gauge-bg" cx="10" cy="10" r="8" stroke-width="2.5" />
+            <circle
+              class="gauge-val score"
+              cx="10"
+              cy="10"
+              r="8"
+              stroke-width="2.5"
+              stroke-dasharray="50.26"
+              [attr.stroke-dashoffset]="50.26 - (cls.averageScore / 100) * 50.26"
+              transform="rotate(-90 10 10)"
+            />
+          </svg>
+          <span class="stat-text"
+            ><strong>{{ cls.averageScore }}%</strong> Avg. Score</span
+          >
+        </div>
+
+        <div class="stat-item">
+          <svg class="mini-gauge" viewBox="0 0 20 20">
+            <circle class="gauge-bg" cx="10" cy="10" r="8" stroke-width="2.5" />
+            <circle
+              class="gauge-val attendance"
+              cx="10"
+              cy="10"
+              r="8"
+              stroke-width="2.5"
+              stroke-dasharray="50.26"
+              [attr.stroke-dashoffset]="50.26 - (cls.attendanceRate / 100) * 50.26"
+              transform="rotate(-90 10 10)"
+            />
+          </svg>
+          <span class="stat-text"
+            ><strong>{{ cls.attendanceRate }}%</strong> Attendance</span
+          >
+        </div>
+      </div>
+
+      <div class="topic-progress-wrap">
+        <div class="topic-label-row">
+          <span class="topic-text">Current Topic: {{ cls.currentTopic }}</span>
+          <span class="topic-pct">{{ cls.topicProgress }}%</span>
+        </div>
+        <div class="progress-bar-track">
+          <div
+            class="progress-bar-fill"
+            [style.width.%]="cls.topicProgress"
+          ></div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="panel-footer">
+    <a href="javascript:void(0)" class="view-all-link">
+      <span>View all classes</span>
+      <span class="material-symbols-outlined link-arrow">arrow_forward</span>
+    </a>
+  </div>
+</div>
