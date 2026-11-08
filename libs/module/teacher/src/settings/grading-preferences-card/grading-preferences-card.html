@@ -1,0 +1,147 @@
+<div class="settings-card grading-card">
+  <div class="card-step-header">
+    <span class="step-badge">3</span>
+    <h2 class="step-title">Grading & Review Preferences</h2>
+  </div>
+
+  <div class="grading-form-body">
+    <!-- Default Grading Scale -->
+    <div class="form-group">
+      <label class="form-label" for="gradingScaleSelect"
+        >Default Grading Scale</label
+      >
+      <div class="select-wrapper">
+        <select
+          id="gradingScaleSelect"
+          class="form-select"
+          [ngModel]="preferences().gradingScale"
+          (ngModelChange)="onScaleChange($event)"
+        >
+          @for (option of gradingScaleOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <!-- Toggle Switches -->
+    <div class="toggles-group">
+      <!-- Auto-sync quiz scores -->
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Auto-sync quiz scores to gradebook</span>
+          <span class="toggle-desc"
+            >Automatically reflect auto-graded assessment scores in
+            gradebook</span
+          >
+        </div>
+        <label
+          class="switch-control"
+          aria-label="Auto-sync quiz scores to gradebook"
+        >
+          <input
+            type="checkbox"
+            role="switch"
+            [checked]="preferences().autoSyncScores"
+            [attr.aria-checked]="preferences().autoSyncScores"
+            (change)="onToggle('autoSyncScores', $any($event.target).checked)"
+          />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+
+      <!-- Require confirmation before score edits -->
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title"
+            >Require confirmation before score edits</span
+          >
+          <span class="toggle-desc"
+            >Prompt for confirmation before overwriting existing marks</span
+          >
+        </div>
+        <label
+          class="switch-control"
+          aria-label="Require confirmation before score edits"
+        >
+          <input
+            type="checkbox"
+            role="switch"
+            [checked]="preferences().requireConfirmation"
+            [attr.aria-checked]="preferences().requireConfirmation"
+            (change)="onToggle('requireConfirmation', $any($event.target).checked)"
+          />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+
+      <!-- Show audit trail -->
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Show audit trail for modified grades</span>
+          <span class="toggle-desc"
+            >Keep a transparent revision history for all score changes</span
+          >
+        </div>
+        <label
+          class="switch-control"
+          aria-label="Show audit trail for modified grades"
+        >
+          <input
+            type="checkbox"
+            role="switch"
+            [checked]="preferences().showAuditTrail"
+            [attr.aria-checked]="preferences().showAuditTrail"
+            (change)="onToggle('showAuditTrail', $any($event.target).checked)"
+          />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Rubric Preference -->
+    <div class="form-group">
+      <label class="form-label" for="rubricSelect">Rubric Preference</label>
+      <div class="select-wrapper">
+        <select
+          id="rubricSelect"
+          class="form-select"
+          [ngModel]="preferences().rubricPreference"
+          (ngModelChange)="onRubricChange($event)"
+        >
+          @for (option of rubricOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <!-- Late Submission Handling -->
+    <div class="form-group">
+      <label class="form-label" for="lateSubmissionSelect"
+        >Late-submission Handling</label
+      >
+      <div class="select-wrapper">
+        <select
+          id="lateSubmissionSelect"
+          class="form-select"
+          [ngModel]="preferences().lateSubmissionHandling"
+          (ngModelChange)="onLateSubmissionChange($event)"
+        >
+          @for (option of lateSubmissionOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+  </div>
+</div>

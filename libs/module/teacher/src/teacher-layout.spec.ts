@@ -21,9 +21,9 @@ describe('TeacherLayoutComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have 14 sidebar items in the teacher section', () => {
+  it('should have 13 sidebar items in the teacher section', () => {
     expect(component.sidebarSections.length).toBe(1);
-    expect(component.sidebarSections[0].items.length).toBe(14);
+    expect(component.sidebarSections[0].items.length).toBe(13);
   });
 
   it('should configure teacher user profile correctly', () => {

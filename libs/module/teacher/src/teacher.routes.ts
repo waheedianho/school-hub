@@ -182,6 +182,12 @@ export const teacherRoutes: Routes = [
             (m) => m.UploadResourceComponent,
           ),
       },
+      {
+        path: 'settings',
+        title: 'Settings | SchoolHub',
+        loadComponent: () =>
+          import('./settings/settings').then((m) => m.TeacherSettingsComponent),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -195,7 +201,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'learners' &&
           page.path !== 'reports' &&
           page.path !== 'messages' &&
-          page.path !== 'resources',
+          page.path !== 'resources' &&
+          page.path !== 'settings',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

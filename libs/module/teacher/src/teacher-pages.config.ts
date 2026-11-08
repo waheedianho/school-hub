@@ -92,13 +92,6 @@ export const TEACHER_PAGES: TeacherPage[] = [
       'Communicate with learners, parents, and school administrators.',
   },
   {
-    path: 'calendar',
-    label: 'Calendar',
-    icon: 'calendar_month',
-    description:
-      'View timetables, upcoming deadlines, exam schedules, and academic events.',
-  },
-  {
     path: 'settings',
     label: 'Settings',
     icon: 'settings',

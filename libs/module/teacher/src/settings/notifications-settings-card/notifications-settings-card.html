@@ -1,0 +1,34 @@
+<div class="settings-card notifications-card">
+  <div class="card-step-header">
+    <span class="step-badge">2</span>
+    <div class="header-title-wrap">
+      <h2 class="step-title">Notification Preferences</h2>
+    </div>
+  </div>
+
+  <div class="notifications-list">
+    @for (item of notificationItems; track item.key) {
+    <div class="notification-item">
+      <div class="item-icon-wrap">
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+      </div>
+      <div class="item-text-wrap">
+        <span class="item-title">{{ item.title }}</span>
+        <span class="item-desc">{{ item.description }}</span>
+      </div>
+      <div class="item-toggle-wrap">
+        <label class="switch-control" [attr.aria-label]="item.title">
+          <input
+            type="checkbox"
+            role="switch"
+            [checked]="preferences()[item.key]"
+            [attr.aria-checked]="preferences()[item.key]"
+            (change)="onToggle(item.key, $any($event.target).checked)"
+          />
+          <span class="switch-slider"></span>
+        </label>
+      </div>
+    </div>
+    }
+  </div>
+</div>

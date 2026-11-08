@@ -1,0 +1,69 @@
+<div class="settings-page-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification" role="status" aria-live="polite">
+    <span class="material-symbols-outlined toast-icon">check_circle</span>
+    <span class="toast-text">{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Settings</h1>
+      <p class="page-subtitle">
+        Manage your profile, notifications, grading preferences, and account
+        security.
+      </p>
+    </div>
+  </header>
+
+  <!-- 3-Column Settings Layout Grid -->
+  <div class="settings-grid-layout">
+    <!-- Column 1: Profile (1), Grading (3), Communication (5) -->
+    <div class="settings-col col-main-1">
+      <school-hub-profile-settings-card
+        [profile]="profile()"
+        (profileUpdated)="onProfileUpdated($event)"
+      />
+
+      <school-hub-grading-preferences-card
+        [preferences]="grading()"
+        (preferencesUpdated)="onGradingUpdated($event)"
+      />
+
+      <school-hub-class-communication-card
+        [preferences]="classCommunication()"
+        (preferencesUpdated)="onClassCommunicationUpdated($event)"
+      />
+    </div>
+
+    <!-- Column 2: Notifications (2), Security (4), Support (6) -->
+    <div class="settings-col col-main-2">
+      <school-hub-notifications-settings-card
+        [preferences]="notifications()"
+        (preferencesUpdated)="onNotificationsUpdated($event)"
+      />
+
+      <school-hub-account-security-card
+        [securityInfo]="security()"
+        (securityUpdated)="onSecurityUpdated($event)"
+      />
+
+      <school-hub-support-help-card
+        [items]="supportItems()"
+        (itemSelected)="onSupportItemSelected($event)"
+      />
+    </div>
+
+    <!-- Column 3: Sidebar Widgets (Tips, Recent Changes, Quick Actions) -->
+    <div class="settings-col col-sidebar">
+      <school-hub-settings-sidebar-widgets
+        [tips]="tips()"
+        [recentChanges]="recentChanges()"
+        (saveRequested)="onSaveAllSettings()"
+        (resetRequested)="onResetDefaults()"
+      />
+    </div>
+  </div>
+</div>

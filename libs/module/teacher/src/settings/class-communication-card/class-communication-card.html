@@ -1,0 +1,101 @@
+<div class="settings-card communication-card">
+  <div class="card-step-header">
+    <span class="step-badge">5</span>
+    <h2 class="step-title">Class &amp; Communication Preferences</h2>
+  </div>
+
+  <div class="communication-form-body">
+    <!-- Default Class Landing Page -->
+    <div class="form-group">
+      <label class="form-label" for="landingPageSelect"
+        >Default Class Landing Page</label
+      >
+      <div class="select-wrapper">
+        <select
+          id="landingPageSelect"
+          class="form-select"
+          [ngModel]="preferences().defaultLandingPage"
+          (ngModelChange)="onLandingPageChange($event)"
+        >
+          @for (opt of landingPageOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <!-- Announcement Visibility -->
+    <div class="form-group">
+      <label class="form-label" for="visibilitySelect"
+        >Announcement Visibility</label
+      >
+      <div class="select-wrapper">
+        <select
+          id="visibilitySelect"
+          class="form-select"
+          [ngModel]="preferences().announcementVisibility"
+          (ngModelChange)="onVisibilityChange($event)"
+        >
+          @for (opt of visibilityOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <!-- Parent-Copy Default -->
+    <div class="form-group">
+      <label class="form-label" for="parentCopySelect"
+        >Parent-Copy Default</label
+      >
+      <div class="select-wrapper">
+        <select
+          id="parentCopySelect"
+          class="form-select"
+          [ngModel]="preferences().parentCopyDefault"
+          (ngModelChange)="onParentCopyChange($event)"
+        >
+          @for (opt of parentCopyOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-chevron"
+          >expand_more</span
+        >
+      </div>
+    </div>
+
+    <!-- Message Signature -->
+    <div class="form-group">
+      <label class="form-label" for="msgSignature">Message Signature</label>
+      <textarea
+        id="msgSignature"
+        class="form-textarea"
+        rows="4"
+        [ngModel]="preferences().messageSignature"
+        (ngModelChange)="onSignatureChange($event)"
+        placeholder="Enter your email and message signature..."
+      ></textarea>
+      <span class="form-hint"
+        >Signature automatically appended to announcements and outbound
+        messages.</span
+      >
+    </div>
+
+    <!-- Compliance Note Banner -->
+    <div class="compliance-pill">
+      <span class="material-symbols-outlined compliance-icon"
+        >verified_user</span
+      >
+      <span class="compliance-text"
+        >All communications are logged for compliance and student safety.</span
+      >
+    </div>
+  </div>
+</div>

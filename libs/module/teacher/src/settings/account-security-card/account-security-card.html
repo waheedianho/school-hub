@@ -1,0 +1,227 @@
+<div class="settings-card security-card">
+  <div class="card-step-header">
+    <span class="step-badge">4</span>
+    <h2 class="step-title">Account Security</h2>
+  </div>
+
+  <div class="security-body">
+    <!-- Password Row -->
+    <div class="security-row">
+      <div class="security-info">
+        <span class="security-item-title">Password</span>
+        <span class="security-item-desc">Last changed 3 months ago</span>
+      </div>
+      <button
+        type="button"
+        class="btn-outline-action"
+        (click)="openPasswordModal()"
+      >
+        Change Password
+      </button>
+    </div>
+
+    <!-- 2FA Row -->
+    <div class="security-row">
+      <div class="security-info">
+        <span class="security-item-title">Two-Factor Authentication</span>
+        <span class="security-item-desc"
+          >Add an extra layer of security to your teacher account</span
+        >
+      </div>
+      <label class="switch-control" aria-label="Two-Factor Authentication">
+        <input
+          type="checkbox"
+          role="switch"
+          [checked]="securityInfo().twoFactorEnabled"
+          [attr.aria-checked]="securityInfo().twoFactorEnabled"
+          (change)="onToggleTwoFactor($any($event.target).checked)"
+        />
+        <span class="switch-slider"></span>
+      </label>
+    </div>
+
+    <!-- Active Sessions Box -->
+    <div class="sessions-box">
+      <div class="sessions-header">
+        <span class="sessions-title">Active Sessions &amp; Login History</span>
+      </div>
+
+      <div class="session-detail-row">
+        <span class="material-symbols-outlined session-icon">schedule</span>
+        <div class="session-text">
+          <span class="session-label">Last Login</span>
+          <span class="session-value">{{ securityInfo().lastLogin }}</span>
+        </div>
+      </div>
+
+      <div class="session-detail-row">
+        <span class="material-symbols-outlined session-icon">devices</span>
+        <div class="session-text">
+          <span class="session-label">Active Session</span>
+          <div class="session-status-wrap">
+            <span class="status-indicator-dot"></span>
+            <span class="session-value"
+              >{{ securityInfo().activeSession }}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="sessions-actions">
+        <button
+          type="button"
+          class="btn-manage-sessions"
+          (click)="openSessionsModal()"
+        >
+          Manage Devices &amp; Sessions
+        </button>
+        <button
+          type="button"
+          class="btn-activity-summary-link"
+          (click)="openSessionsModal()"
+        >
+          <span>View Login Activity summary</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  @if (showPasswordModal()) {
+  <div class="modal-backdrop">
+    <div
+      class="modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalPwdTitle"
+    >
+      <div class="modal-header">
+        <h3 id="modalPwdTitle" class="modal-title">Change Account Password</h3>
+        <button
+          type="button"
+          class="btn-close-modal"
+          (click)="closePasswordModal()"
+          aria-label="Close modal"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @if (passwordMessage()) {
+        <div class="alert-info-box">
+          <span class="material-symbols-outlined">info</span>
+          <span>{{ passwordMessage() }}</span>
+        </div>
+        }
+        <div class="form-group">
+          <label class="form-label" for="currentPwd">Current Password</label>
+          <input
+            id="currentPwd"
+            type="password"
+            class="form-control"
+            placeholder="Enter current password"
+            [ngModel]="currentPassword()"
+            (ngModelChange)="currentPassword.set($event)"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newPwd">New Password</label>
+          <input
+            id="newPwd"
+            type="password"
+            class="form-control"
+            placeholder="Enter new password (min. 8 characters)"
+            [ngModel]="newPassword()"
+            (ngModelChange)="newPassword.set($event)"
+          />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="confirmPwd"
+            >Confirm New Password</label
+          >
+          <input
+            id="confirmPwd"
+            type="password"
+            class="form-control"
+            placeholder="Confirm new password"
+            [ngModel]="confirmPassword()"
+            (ngModelChange)="confirmPassword.set($event)"
+          />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closePasswordModal()"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="submitPasswordChange()"
+        >
+          Update Password
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Sessions Modal -->
+  @if (showSessionsModal()) {
+  <div class="modal-backdrop">
+    <div
+      class="modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalSessionsTitle"
+    >
+      <div class="modal-header">
+        <h3 id="modalSessionsTitle" class="modal-title">
+          Active Devices &amp; Sessions
+        </h3>
+        <button
+          type="button"
+          class="btn-close-modal"
+          (click)="closeSessionsModal()"
+          aria-label="Close modal"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="session-modal-item active">
+          <span class="material-symbols-outlined modal-device-icon"
+            >desktop_windows</span
+          >
+          <div class="modal-device-info">
+            <span class="modal-device-name"
+              >Chrome on Windows (Current Session)</span
+            >
+            <span class="modal-device-meta"
+              >Lagos, NG • Last active just now</span
+            >
+          </div>
+          <span class="badge-active-now">Active Now</span>
+        </div>
+        <p class="sessions-security-note">
+          Remote session revocation and device management require an active
+          server-side authentication service.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeSessionsModal()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>
