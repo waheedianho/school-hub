@@ -141,6 +141,22 @@ export const teacherRoutes: Routes = [
             './reports/learner-report-analysis/learner-report-analysis'
           ).then((m) => m.LearnerReportAnalysisComponent),
       },
+      {
+        path: 'resources',
+        title: 'Resources | SchoolHub',
+        loadComponent: () =>
+          import('./resources/resources').then(
+            (m) => m.TeacherResourcesComponent,
+          ),
+      },
+      {
+        path: 'resources/upload',
+        title: 'Upload Resource | SchoolHub',
+        loadComponent: () =>
+          import('./resources/upload-resource/upload-resource').then(
+            (m) => m.UploadResourceComponent,
+          ),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -152,7 +168,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'assessments' &&
           page.path !== 'gradebook' &&
           page.path !== 'learners' &&
-          page.path !== 'reports',
+          page.path !== 'reports' &&
+          page.path !== 'resources',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

@@ -1,0 +1,33 @@
+<div class="panel-card">
+  <div class="card-header">
+    <h3 class="card-title">Recent Uploads</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="uploads-list">
+    @for (item of uploads(); track item.id) {
+    <div
+      class="upload-item"
+      role="button"
+      tabindex="0"
+      (click)="viewUpload.emit(item)"
+      (keydown.enter)="viewUpload.emit(item)"
+      (keydown.space)="viewUpload.emit(item); $event.preventDefault()"
+      [attr.aria-label]="item.title"
+    >
+      <div class="upload-icon-box" [class]="getFormatColor(item.format)">
+        <span class="material-symbols-outlined"
+          >{{ getFormatIcon(item.format) }}</span
+        >
+      </div>
+      <div class="upload-info">
+        <span class="upload-title">{{ item.title }}</span>
+        <span class="upload-date">{{ item.date }}</span>
+      </div>
+      <span class="class-badge">{{ item.className }}</span>
+    </div>
+    }
+  </div>
+</div>

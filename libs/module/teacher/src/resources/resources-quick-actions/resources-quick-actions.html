@@ -1,0 +1,26 @@
+<div class="actions-card">
+  <div class="card-header">
+    <h3 class="card-title">Quick Actions</h3>
+  </div>
+
+  <div class="actions-list">
+    @for (act of actions(); track act.id) {
+    <button
+      type="button"
+      class="action-item-btn"
+      (click)="onActionClick(act.id)"
+      [attr.aria-label]="act.label"
+    >
+      <div class="action-left">
+        <div class="action-icon-box" [class]="act.colorClass">
+          <span class="material-symbols-outlined">{{ act.icon }}</span>
+        </div>
+        <span class="action-label">{{ act.label }}</span>
+      </div>
+      <span class="material-symbols-outlined action-chevron"
+        >chevron_right</span
+      >
+    </button>
+    }
+  </div>
+</div>
