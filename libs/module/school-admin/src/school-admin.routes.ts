@@ -21,6 +21,14 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.SchoolAdminDashboardComponent,
           ),
       },
+      {
+        path: 'school-setup',
+        title: 'School Setup | SchoolHub Admin',
+        loadComponent: () =>
+          import('./school-setup/school-setup').then(
+            (m) => m.SchoolSetupComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -57,14 +65,14 @@ export const schoolAdminRoutes: Routes = [
       },
       { path: 'messages', redirectTo: 'communication', pathMatch: 'full' },
       // Register all remaining portal pages
-      ...SCHOOL_ADMIN_PAGES.filter((page) => page.path !== 'dashboard').map(
-        (page) => ({
-          path: page.path,
-          component: SchoolAdmin,
-          title: `${page.label} | SchoolHub Admin`,
-          data: { page },
-        }),
-      ),
+      ...SCHOOL_ADMIN_PAGES.filter(
+        (page) => page.path !== 'dashboard' && page.path !== 'school-setup',
+      ).map((page) => ({
+        path: page.path,
+        component: SchoolAdmin,
+        title: `${page.label} | SchoolHub Admin`,
+        data: { page },
+      })),
       {
         path: '**',
         redirectTo: 'dashboard',

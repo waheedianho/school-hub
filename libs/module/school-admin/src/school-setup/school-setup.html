@@ -1,0 +1,119 @@
+<div class="school-setup-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">School Setup</h1>
+      <p class="page-subtitle">
+        Configure your school profile, academic structure, grading rules, and
+        core operational settings.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-save"
+        (click)="onSave()"
+        aria-label="Save changes to school setup"
+      >
+        <span class="material-symbols-outlined btn-icon">save</span>
+        <span>Save Changes</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-publish"
+        (click)="onPublish()"
+        aria-label="Publish all school settings"
+      >
+        <span class="material-symbols-outlined btn-icon">send</span>
+        <span>Publish Settings</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  @if (store.setupSaveStatus(); as statusMsg) {
+  <div class="status-banner" role="status">
+    <div class="banner-content">
+      <span class="material-symbols-outlined banner-icon">check_circle</span>
+      <span class="banner-text">{{ statusMsg }}</span>
+    </div>
+    <button
+      type="button"
+      class="banner-close-btn"
+      (click)="dismissNotification()"
+      aria-label="Dismiss notification"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  }
+
+  <!-- Top Section: Profile, Academic Structure & Setup Summary -->
+  <section
+    class="setup-top-grid"
+    aria-label="Core institutional identity and structure"
+  >
+    <div class="grid-card col-profile">
+      <school-hub-profile-settings-card
+        [profile]="store.profile()"
+        (profileChange)="onProfileChange($event)"
+      />
+    </div>
+
+    <div class="grid-card col-structure">
+      <school-hub-academic-structure-card
+        [structure]="store.academicStructure()"
+        [sessions]="store.sessions()"
+        (structureChange)="onStructureChange($event)"
+      />
+    </div>
+
+    <div class="grid-card col-summary">
+      <school-hub-setup-summary-card [profile]="store.profile()" />
+    </div>
+  </section>
+
+  <!-- Bottom Section: Assessment, Permissions, Safeguarding & Checklist -->
+  <section
+    class="setup-bottom-grid"
+    aria-label="Operational policies and permissions"
+  >
+    <div class="grid-card">
+      <school-hub-assessment-settings-card
+        [settings]="store.assessmentSettings()"
+        (settingsChange)="onAssessmentChange($event)"
+      />
+    </div>
+
+    <div class="grid-card">
+      <school-hub-role-permissions-card
+        [permissions]="store.rolePermissions()"
+        (togglePermission)="onTogglePermission($event)"
+      />
+    </div>
+
+    <div class="grid-card">
+      <school-hub-communication-safeguarding-card
+        [settings]="store.communicationSafeguarding()"
+        (settingsChange)="onCommunicationChange($event)"
+      />
+    </div>
+
+    <div class="grid-card">
+      <school-hub-setup-checklist-card
+        [checklist]="store.setupChecklist()"
+        (itemToggle)="onToggleChecklistItem($event)"
+      />
+    </div>
+  </section>
+
+  <!-- Quick Actions Row -->
+  <section class="setup-quick-actions-section" aria-label="Quick setup actions">
+    <school-hub-setup-quick-actions
+      [actions]="store.setupQuickActions()"
+      (actionClick)="onQuickAction($event)"
+    />
+  </section>
+</div>

@@ -1,0 +1,106 @@
+<div class="setup-card summary-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">bar_chart</span>
+      <h2 class="card-title">School Setup Summary</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="summary-content">
+      <!-- Left: Key Data Points -->
+      <div class="metrics-list">
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon">home</span>
+          <div class="metric-info">
+            <span class="metric-label">School Name</span>
+            <span class="metric-val text-truncate">{{ profile().name }}</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon"
+            >calendar_today</span
+          >
+          <div class="metric-info">
+            <span class="metric-label">Active Session</span>
+            <span class="metric-val">2024/2025</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon">event</span>
+          <div class="metric-info">
+            <span class="metric-label">Current Term</span>
+            <span class="metric-val">{{ profile().activeTerm }}</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon">groups</span>
+          <div class="metric-info">
+            <span class="metric-label">Total Classes</span>
+            <span class="metric-val">{{ profile().totalClasses }}</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon">person</span>
+          <div class="metric-info">
+            <span class="metric-label">Total Teachers</span>
+            <span class="metric-val">{{ profile().totalTeachers }}</span>
+          </div>
+        </div>
+
+        <div class="metric-row">
+          <span class="material-symbols-outlined metric-icon">star</span>
+          <div class="metric-info">
+            <span class="metric-label">Grading Scale</span>
+            <span class="metric-val">{{ profile().gradingScale }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Circular Progress Gauge -->
+      <div class="gauge-container">
+        <div class="gauge-wrap">
+          <svg class="gauge-svg" viewBox="0 0 110 110">
+            <!-- Background circle -->
+            <circle
+              class="gauge-bg"
+              cx="55"
+              cy="55"
+              [attr.r]="radius"
+              stroke-width="8"
+            />
+            <!-- Progress circle -->
+            <circle
+              class="gauge-progress"
+              cx="55"
+              cy="55"
+              [attr.r]="radius"
+              stroke-width="8"
+              [attr.stroke-dasharray]="circumference"
+              [attr.stroke-dashoffset]="strokeDashoffset()"
+              stroke-linecap="round"
+              transform="rotate(-90 55 55)"
+            />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-number"
+              >{{ profile().setupCompletionPercentage }}%</span
+            >
+            <span class="gauge-label">Complete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="summary-link">
+      <span>View full setup summary</span>
+      <span class="material-symbols-outlined link-arrow">arrow_forward</span>
+    </a>
+  </div>
+</div>

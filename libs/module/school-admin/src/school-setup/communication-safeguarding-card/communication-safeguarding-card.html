@@ -1,0 +1,161 @@
+<div class="setup-card safeguarding-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">verified_user</span>
+      <h2 class="card-title">5. Communication & Safeguarding</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="form-fields">
+      <div class="form-row">
+        <label for="comm-pref" class="field-label"
+          >Parent Communication Preference</label
+        >
+        <div class="select-wrapper">
+          <select
+            id="comm-pref"
+            class="form-select"
+            [value]="settings().parentCommunicationPreference"
+            (change)="onFieldChange('parentCommunicationPreference', $any($event.target).value)"
+          >
+            @for (pref of communicationPreferences; track pref) {
+            <option [value]="pref">{{ pref }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <!-- Announcement Channels -->
+      <div class="channels-section">
+        <span class="field-label">Announcement Channels</span>
+        <div class="channels-list">
+          <label class="channel-checkbox">
+            <input
+              type="checkbox"
+              class="custom-check"
+              [checked]="settings().announcementEmail"
+              (change)="toggleField('announcementEmail')"
+            />
+            <span class="checkbox-label">Email</span>
+          </label>
+
+          <label class="channel-checkbox">
+            <input
+              type="checkbox"
+              class="custom-check"
+              [checked]="settings().announcementSms"
+              (change)="toggleField('announcementSms')"
+            />
+            <span class="checkbox-label">SMS</span>
+          </label>
+
+          <label class="channel-checkbox">
+            <input
+              type="checkbox"
+              class="custom-check"
+              [checked]="settings().announcementApp"
+              (change)="toggleField('announcementApp')"
+            />
+            <span class="checkbox-label">App Notification</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Learner Communication Logging Toggle -->
+      <div class="toggle-row">
+        <label for="logging-toggle" class="field-label"
+          >Learner Communication Logging</label
+        >
+        <div class="switch-container">
+          <button
+            id="logging-toggle"
+            type="button"
+            class="toggle-switch"
+            [class.active]="settings().learnerCommunicationLogging"
+            [attr.aria-checked]="settings().learnerCommunicationLogging"
+            role="switch"
+            (click)="toggleField('learnerCommunicationLogging')"
+          >
+            <span class="switch-handle"></span>
+          </button>
+          <span class="switch-status-text">
+            {{ settings().learnerCommunicationLogging ? 'Enabled' : 'Disabled'
+            }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Safeguarding Contact -->
+      <div class="form-row">
+        <label for="safeguarding-contact" class="field-label"
+          >Safeguarding Contact</label
+        >
+        <input
+          id="safeguarding-contact"
+          type="email"
+          class="form-input"
+          [value]="settings().safeguardingContact"
+          (change)="onFieldChange('safeguardingContact', $any($event.target).value)"
+          placeholder="safeguarding@school.edu.ng"
+        />
+      </div>
+
+      <!-- Parental Consent Required Toggle -->
+      <div class="toggle-row">
+        <label for="parental-consent-toggle" class="field-label"
+          >Parental Consent Required</label
+        >
+        <div class="switch-container">
+          <button
+            id="parental-consent-toggle"
+            type="button"
+            class="toggle-switch"
+            [class.active]="settings().parentalConsentRequired"
+            [attr.aria-checked]="settings().parentalConsentRequired"
+            role="switch"
+            (click)="toggleField('parentalConsentRequired')"
+          >
+            <span class="switch-handle"></span>
+          </button>
+          <span class="switch-status-text">
+            {{ settings().parentalConsentRequired ? 'Enabled' : 'Disabled' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Photo / Media Consent Required Toggle -->
+      <div class="toggle-row">
+        <label for="media-consent-toggle" class="field-label"
+          >Photo/Media Consent Required</label
+        >
+        <div class="switch-container">
+          <button
+            id="media-consent-toggle"
+            type="button"
+            class="toggle-switch"
+            [class.active]="settings().mediaConsentRequired"
+            [attr.aria-checked]="settings().mediaConsentRequired"
+            role="switch"
+            (click)="toggleField('mediaConsentRequired')"
+          >
+            <span class="switch-handle"></span>
+          </button>
+          <span class="switch-status-text">
+            {{ settings().mediaConsentRequired ? 'Enabled' : 'Disabled' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer-info">
+    <span class="material-symbols-outlined info-icon">info</span>
+    <span class="info-text"
+      >Safeguarding is our priority. All settings help keep learners safe.</span
+    >
+  </div>
+</div>

@@ -19,6 +19,14 @@ describe('SchoolAdminStore', () => {
     expect(store.classes().length).toBe(12);
     expect(store.staff().length).toBe(8);
     expect(store.alerts().length).toBe(4);
+    expect(store.academicStructure().classArms).toBe(2);
+    expect(store.assessmentSettings().gradingScale).toContain('A - F');
+    expect(store.rolePermissions().length).toBe(4);
+    expect(store.communicationSafeguarding().safeguardingContact).toContain(
+      'safeguarding@greenfield.edu.ng',
+    );
+    expect(store.setupChecklist().length).toBe(7);
+    expect(store.setupQuickActions().length).toBe(3);
   });
 
   it('should correctly compute active session and term objects', () => {
@@ -82,5 +90,79 @@ describe('SchoolAdminStore', () => {
     expect(store.totalStaffCount()).toBe(8);
     expect(store.criticalAlertsCount()).toBe(2);
     expect(store.totalLearnersCount()).toBeGreaterThan(200);
+  });
+
+  it('should update school profile fields', () => {
+    store.updateSchoolProfile({
+      name: 'Greenfield International College',
+      phone: '+234 800 000 0000',
+    });
+    expect(store.profile().name).toBe('Greenfield International College');
+    expect(store.profile().phone).toBe('+234 800 000 0000');
+  });
+
+  it('should update academic structure', () => {
+    store.updateAcademicStructure({
+      classArms: 3,
+      namingConvention: 'Year 7 - Year 12',
+    });
+    expect(store.academicStructure().classArms).toBe(3);
+    expect(store.academicStructure().namingConvention).toBe('Year 7 - Year 12');
+  });
+
+  it('should update assessment reporting settings', () => {
+    store.updateAssessmentSettings({
+      classworkWeight: 25,
+      assessmentsWeight: 35,
+      examsWeight: 40,
+    });
+    expect(store.assessmentSettings().classworkWeight).toBe(25);
+    expect(store.assessmentSettings().assessmentsWeight).toBe(35);
+    expect(store.assessmentSettings().examsWeight).toBe(40);
+  });
+
+  it('should toggle role permissions', () => {
+    const teacherPerm = store
+      .rolePermissions()
+      .find((r) => r.role === 'Teacher');
+    expect(teacherPerm?.auditLogs).toBe(false);
+
+    store.toggleRolePermission('Teacher', 'auditLogs');
+    const updated = store.rolePermissions().find((r) => r.role === 'Teacher');
+    expect(updated?.auditLogs).toBe(true);
+  });
+
+  it('should update communication and safeguarding settings', () => {
+    store.updateCommunicationSafeguarding({
+      parentCommunicationPreference: 'SMS Only',
+      safeguardingContact: 'lead@greenfield.edu.ng',
+    });
+    expect(
+      store.communicationSafeguarding().parentCommunicationPreference,
+    ).toBe('SMS Only');
+    expect(store.communicationSafeguarding().safeguardingContact).toBe(
+      'lead@greenfield.edu.ng',
+    );
+  });
+
+  it('should toggle setup checklist item status', () => {
+    const item = store.setupChecklist().find((i) => i.id === 'chk-7');
+    expect(item?.status).toBe('In Progress');
+
+    store.toggleChecklistItem('chk-7');
+    const updated = store.setupChecklist().find((i) => i.id === 'chk-7');
+    expect(updated?.status).toBe('Completed');
+  });
+
+  it('should record save setup changes and publish settings', () => {
+    expect(store.setupSaveStatus()).toBeNull();
+    store.saveSetupChanges();
+    expect(store.setupSaveStatus()).toContain('All changes saved at');
+
+    store.publishSettings();
+    expect(store.lastPublished()).not.toBe('Never');
+    expect(store.setupSaveStatus()).toContain(
+      'Settings published successfully',
+    );
   });
 });

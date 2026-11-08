@@ -9,14 +9,20 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   AcademicPerformanceOverview,
   AcademicSession,
+  AcademicStructure,
+  AssessmentReportingSettings,
+  CommunicationSafeguardingSettings,
   CurriculumCoverage,
   InterventionCase,
   LearnerRecord,
+  RolePermissionRow,
   SafeguardingNotice,
   SchoolAdminMetric,
   SchoolAlert,
   SchoolClass,
   SchoolProfile,
+  SetupChecklistItem,
+  SetupQuickAction,
   StaffMember,
   TeacherActivityMetric,
   TopPerformingSubject,
@@ -39,7 +45,15 @@ import {
 } from './school-admin-classes.data';
 import { SCHOOL_STAFF_DATA } from './school-admin-staff.data';
 import { SCHOOL_INTERVENTIONS_DATA } from './school-admin-interventions.data';
-import { SCHOOL_PROFILE_DATA } from './school-admin-setup.data';
+import {
+  ACADEMIC_STRUCTURE_DATA,
+  ASSESSMENT_SETTINGS_DATA,
+  COMMUNICATION_SAFEGUARDING_DATA,
+  ROLE_PERMISSIONS_DATA,
+  SCHOOL_PROFILE_DATA,
+  SETUP_CHECKLIST_DATA,
+  SETUP_QUICK_ACTIONS_DATA,
+} from './school-admin-setup.data';
 
 const STORAGE_KEY_SESSION = 'schoolhub_admin_session';
 const STORAGE_KEY_TERM = 'schoolhub_admin_term';
@@ -101,7 +115,24 @@ export class SchoolAdminStore {
   readonly interventions = signal<InterventionCase[]>(
     SCHOOL_INTERVENTIONS_DATA,
   );
+
+  // Setup Signals
   readonly profile = signal<SchoolProfile>(SCHOOL_PROFILE_DATA);
+  readonly academicStructure = signal<AcademicStructure>(
+    ACADEMIC_STRUCTURE_DATA,
+  );
+  readonly assessmentSettings = signal<AssessmentReportingSettings>(
+    ASSESSMENT_SETTINGS_DATA,
+  );
+  readonly rolePermissions = signal<RolePermissionRow[]>(ROLE_PERMISSIONS_DATA);
+  readonly communicationSafeguarding =
+    signal<CommunicationSafeguardingSettings>(COMMUNICATION_SAFEGUARDING_DATA);
+  readonly setupChecklist = signal<SetupChecklistItem[]>(SETUP_CHECKLIST_DATA);
+  readonly setupQuickActions = signal<SetupQuickAction[]>(
+    SETUP_QUICK_ACTIONS_DATA,
+  );
+  readonly setupSaveStatus = signal<string | null>(null);
+  readonly lastPublished = signal<string>('Never');
 
   // Summary Computations
   readonly totalClassesCount = computed(() => this.classes().length);
@@ -189,6 +220,79 @@ export class SchoolAdminStore {
    */
   getLearnersByClass(classId: string): LearnerRecord[] {
     return this.learners().filter((l) => l.classId === classId);
+  }
+
+  /**
+   * School Setup Mutations
+   */
+  updateSchoolProfile(partial: Partial<SchoolProfile>): void {
+    this.profile.update((p) => ({ ...p, ...partial }));
+  }
+
+  updateAcademicStructure(partial: Partial<AcademicStructure>): void {
+    this.academicStructure.update((s) => ({ ...s, ...partial }));
+  }
+
+  updateAssessmentSettings(
+    partial: Partial<AssessmentReportingSettings>,
+  ): void {
+    this.assessmentSettings.update((a) => ({ ...a, ...partial }));
+  }
+
+  toggleRolePermission(
+    roleName: string,
+    field: keyof Omit<RolePermissionRow, 'role'>,
+  ): void {
+    this.rolePermissions.update((rows) =>
+      rows.map((r) => (r.role === roleName ? { ...r, [field]: !r[field] } : r)),
+    );
+  }
+
+  updateCommunicationSafeguarding(
+    partial: Partial<CommunicationSafeguardingSettings>,
+  ): void {
+    this.communicationSafeguarding.update((c) => ({ ...c, ...partial }));
+  }
+
+  toggleChecklistItem(id: string): void {
+    this.setupChecklist.update((items) =>
+      items.map((item) => {
+        if (item.id === id) {
+          const nextStatus =
+            item.status === 'Completed'
+              ? 'In Progress'
+              : item.status === 'In Progress'
+                ? 'Completed'
+                : 'In Progress';
+          return { ...item, status: nextStatus };
+        }
+        return item;
+      }),
+    );
+  }
+
+  saveSetupChanges(): void {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    this.setupSaveStatus.set(`All changes saved at ${timeStr}`);
+  }
+
+  publishSettings(): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString([], {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    this.lastPublished.set(`${dateStr}, ${timeStr}`);
+    this.setupSaveStatus.set(`Settings published successfully (${dateStr})`);
   }
 
   private getInitialSession(): string {

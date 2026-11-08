@@ -1,0 +1,185 @@
+<div class="setup-card structure-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">menu_book</span>
+      <h2 class="card-title">2. Academic Structure</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="form-fields">
+      <div class="form-row">
+        <label for="academic-session" class="field-label"
+          >Academic Session</label
+        >
+        <div class="select-wrapper">
+          <select
+            id="academic-session"
+            class="form-select"
+            [value]="structure().session"
+            (change)="onFieldChange('session', $any($event.target).value)"
+          >
+            @if (sessions().length > 0) { @for (sess of sessions(); track
+            sess.id) {
+            <option [value]="sess.name">{{ sess.name }}</option>
+            } } @else {
+            <option [value]="structure().session">
+              {{ structure().session }}
+            </option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="current-term" class="field-label">Current Term</label>
+        <div class="select-wrapper">
+          <select
+            id="current-term"
+            class="form-select"
+            [value]="structure().term"
+            (change)="onFieldChange('term', $any($event.target).value)"
+          >
+            @for (t of terms; track t) {
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="naming-convention" class="field-label"
+          >Class Naming Convention</label
+        >
+        <div class="select-wrapper">
+          <select
+            id="naming-convention"
+            class="form-select"
+            [value]="structure().namingConvention"
+            (change)="onFieldChange('namingConvention', $any($event.target).value)"
+          >
+            @for (conv of namingConventions; track conv) {
+            <option [value]="conv">{{ conv }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="class-arms" class="field-label">Number of Class Arms</label>
+        <div class="stepper-input">
+          <input
+            id="class-arms"
+            type="number"
+            class="form-input text-center"
+            [value]="structure().classArms"
+            (change)="onFieldChange('classArms', +$any($event.target).value)"
+            min="1"
+            max="10"
+          />
+          <div class="stepper-controls">
+            <button
+              type="button"
+              class="stepper-btn"
+              (click)="incrementArms()"
+              aria-label="Increase class arms"
+            >
+              <span class="material-symbols-outlined">expand_less</span>
+            </button>
+            <button
+              type="button"
+              class="stepper-btn"
+              (click)="decrementArms()"
+              aria-label="Decrease class arms"
+            >
+              <span class="material-symbols-outlined">expand_more</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="date-range-row">
+        <div class="date-field">
+          <label for="start-date" class="date-label">Start Date</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon"
+              >calendar_month</span
+            >
+            <input
+              id="start-date"
+              type="date"
+              class="form-input date-input"
+              [value]="structure().startDate"
+              (change)="onFieldChange('startDate', $any($event.target).value)"
+            />
+          </div>
+        </div>
+
+        <div class="date-field">
+          <label for="end-date" class="date-label">End Date</label>
+          <div class="input-with-icon">
+            <span class="material-symbols-outlined input-icon"
+              >calendar_month</span
+            >
+            <input
+              id="end-date"
+              type="date"
+              class="form-input date-input"
+              [value]="structure().endDate"
+              (change)="onFieldChange('endDate', $any($event.target).value)"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Class Breakdown Mini-Cards -->
+    <div class="classes-breakdown-grid">
+      <div class="breakdown-card">
+        <div class="breakdown-icon-wrap">
+          <span class="material-symbols-outlined breakdown-icon">school</span>
+        </div>
+        <div class="breakdown-info">
+          <span class="breakdown-tag">Primary</span>
+          <span class="breakdown-count">{{ structure().primaryCount }}</span>
+          <span class="breakdown-label">Classes</span>
+        </div>
+      </div>
+
+      <div class="breakdown-card">
+        <div class="breakdown-icon-wrap">
+          <span class="material-symbols-outlined breakdown-icon"
+            >co_present</span
+          >
+        </div>
+        <div class="breakdown-info">
+          <span class="breakdown-tag">JSS</span>
+          <span class="breakdown-count">{{ structure().jssCount }}</span>
+          <span class="breakdown-label">Classes</span>
+        </div>
+      </div>
+
+      <div class="breakdown-card">
+        <div class="breakdown-icon-wrap">
+          <span class="material-symbols-outlined breakdown-icon"
+            >workspace_premium</span
+          >
+        </div>
+        <div class="breakdown-info">
+          <span class="breakdown-tag">SS</span>
+          <span class="breakdown-count">{{ structure().ssCount }}</span>
+          <span class="breakdown-label">Classes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

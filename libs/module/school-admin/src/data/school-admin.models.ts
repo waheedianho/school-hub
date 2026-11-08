@@ -180,3 +180,59 @@ export interface SchoolProfile {
   totalTeachers: number;
   gradingScale: string;
 }
+
+export interface AcademicStructure {
+  session: string;
+  term: string;
+  namingConvention: string;
+  classArms: number;
+  startDate: string;
+  endDate: string;
+  primaryCount: number;
+  jssCount: number;
+  ssCount: number;
+}
+
+export interface AssessmentReportingSettings {
+  gradingScale: string;
+  classworkWeight: number;
+  assessmentsWeight: number;
+  examsWeight: number;
+  reportCardFormat: string;
+  parentReportFrequency: string;
+  scoreApprovalWorkflow: boolean;
+}
+
+export interface RolePermissionRow {
+  role: string;
+  contentApproval: boolean;
+  gradeApproval: boolean;
+  communicationVisibility: boolean;
+  auditLogs: boolean;
+}
+
+export interface CommunicationSafeguardingSettings {
+  parentCommunicationPreference: string;
+  announcementEmail: boolean;
+  announcementSms: boolean;
+  announcementApp: boolean;
+  learnerCommunicationLogging: boolean;
+  safeguardingContact: string;
+  parentalConsentRequired: boolean;
+  mediaConsentRequired: boolean;
+}
+
+export interface SetupChecklistItem {
+  id: string;
+  label: string;
+  status: 'Completed' | 'In Progress' | 'Pending';
+}
+
+export interface SetupQuickAction {
+  id: string;
+  title: string;
+  description: string;
+  icon: string;
+  actionText: string;
+  route?: string;
+}
