@@ -104,3 +104,16 @@ export * from './learners/learners-needing-attention/learners-needing-attention'
 export * from './learners/recent-pending-submissions/recent-pending-submissions';
 export * from './learners/top-performers/top-performers';
 export * from './learners/learners-quick-actions/learners-quick-actions';
+export * from './data/teacher-reports.data';
+export * from './reports/reports';
+export * from './reports/reports-metrics/reports-metrics';
+export * from './reports/reports-filters/reports-filters';
+export * from './reports/reports-trend-chart/reports-trend-chart';
+export * from './reports/subject-performance-chart/subject-performance-chart';
+export * from './reports/mastery-distribution-chart/mastery-distribution-chart';
+export * from './reports/topic-mastery-table/topic-mastery-table';
+export * from './reports/recent-reports-table/recent-reports-table';
+export * from './reports/quick-reports-panel/quick-reports-panel';
+export * from './reports/reports-attention-panel/reports-attention-panel';
+export * from './reports/reports-export-panel/reports-export-panel';
+export * from './reports/learner-report-analysis/learner-report-analysis';

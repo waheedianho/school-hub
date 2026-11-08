@@ -119,6 +119,28 @@ export const teacherRoutes: Routes = [
         loadComponent: () =>
           import('./learners/learners').then((m) => m.TeacherLearnersComponent),
       },
+      {
+        path: 'reports',
+        title: 'Reports & Report Cards | SchoolHub',
+        loadComponent: () =>
+          import('./reports/reports').then((m) => m.TeacherReportsComponent),
+      },
+      {
+        path: 'reports/learner-analysis',
+        title: 'Learner Report Analysis | SchoolHub',
+        loadComponent: () =>
+          import(
+            './reports/learner-report-analysis/learner-report-analysis'
+          ).then((m) => m.LearnerReportAnalysisComponent),
+      },
+      {
+        path: 'reports/:id',
+        title: 'Learner Report Analysis | SchoolHub',
+        loadComponent: () =>
+          import(
+            './reports/learner-report-analysis/learner-report-analysis'
+          ).then((m) => m.LearnerReportAnalysisComponent),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -129,7 +151,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'assignments' &&
           page.path !== 'assessments' &&
           page.path !== 'gradebook' &&
-          page.path !== 'learners',
+          page.path !== 'learners' &&
+          page.path !== 'reports',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

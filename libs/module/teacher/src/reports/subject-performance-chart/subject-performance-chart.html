@@ -1,0 +1,48 @@
+<div class="chart-card">
+  <div class="card-header">
+    <div class="title-group">
+      <h3 class="card-title">Class Performance by Subject</h3>
+      <p class="card-subtitle">Average score (%)</p>
+    </div>
+  </div>
+
+  <div
+    class="bars-container"
+    role="img"
+    aria-label="Class performance by subject chart"
+  >
+    <div class="y-axis-labels" aria-hidden="true">
+      <span>100%</span>
+      <span>75%</span>
+      <span>50%</span>
+      <span>25%</span>
+      <span>0%</span>
+    </div>
+
+    <div class="bars-area">
+      <div class="grid-lines" aria-hidden="true">
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+        <div class="grid-line"></div>
+      </div>
+
+      <div class="bars-row">
+        @for (item of items(); track item.subject) {
+        <div class="bar-col">
+          <span class="bar-value">{{ item.score }}%</span>
+          <div class="bar-track">
+            <div
+              class="bar-fill"
+              [style.height.%]="item.score"
+              [attr.aria-label]="item.subject + ': ' + item.score + '%'"
+            ></div>
+          </div>
+          <span class="bar-subject">{{ item.subject }}</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

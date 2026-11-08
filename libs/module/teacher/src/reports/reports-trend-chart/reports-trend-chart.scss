@@ -1,0 +1,97 @@
+.chart-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+}
+
+.time-select-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.time-select {
+  height: 28px;
+  padding: 0 24px 0 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  appearance: none;
+  outline: none;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 4px;
+  font-size: 16px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.chart-container {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trend-svg {
+  width: 100%;
+  height: auto;
+  max-height: 190px;
+  overflow: visible;
+}
+
+.y-label {
+  font-size: 9px;
+  fill: #94a3b8;
+  font-weight: 500;
+}
+
+.x-label {
+  font-size: 9px;
+  fill: #64748b;
+  font-weight: 500;
+}
+
+.point-label {
+  font-size: 10px;
+  fill: #0f172a;
+  font-weight: 700;
+}

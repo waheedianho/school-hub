@@ -1,0 +1,42 @@
+<div class="attention-card">
+  <div class="card-header">
+    <h3 class="card-title">Learners Needing Attention</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="learners-list">
+    @for (item of learners(); track item.id) {
+    <div
+      class="learner-item"
+      role="button"
+      tabindex="0"
+      (click)="viewLearner.emit(item)"
+      (keydown.enter)="viewLearner.emit(item)"
+      (keydown.space)="viewLearner.emit(item); $event.preventDefault()"
+      [attr.aria-label]="'View report for ' + item.name"
+    >
+      <div
+        class="learner-avatar"
+        [style.background-color]="item.avatarColor"
+        aria-hidden="true"
+      >
+        {{ item.avatarText }}
+      </div>
+      <div class="learner-info">
+        <span class="learner-name">{{ item.name }}</span>
+        <span class="learner-meta"
+          >{{ item.className }} • {{ item.subject }}</span
+        >
+      </div>
+      <div class="learner-status-col">
+        <span class="status-badge" [class]="getStatusBadgeClass(item.status)">
+          {{ item.status }}
+        </span>
+        <span class="score-val">{{ item.score }}%</span>
+      </div>
+    </div>
+    }
+  </div>
+</div>

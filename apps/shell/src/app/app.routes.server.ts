@@ -18,6 +18,7 @@ export const serverRoutes: ServerRoute[] = [
   },
   { path: 'teacher/live-classes/:id', renderMode: RenderMode.Server },
   { path: 'teacher/assignments/:id', renderMode: RenderMode.Server },
+  { path: 'teacher/reports/:id', renderMode: RenderMode.Server },
   {
     path: '**',
     renderMode: RenderMode.Prerender,

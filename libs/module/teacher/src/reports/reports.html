@@ -1,0 +1,85 @@
+<div class="reports-page-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Reports &amp; Analytics</h1>
+      <p class="page-subtitle">
+        Track learner performance, class trends, academic mastery, and reporting
+        outputs.
+      </p>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Reports metrics">
+    <school-hub-reports-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Filter Toolbar -->
+  <section class="filters-section" aria-label="Reports filters">
+    <school-hub-reports-filters
+      (filtersChanged)="onFiltersChanged($event)"
+      (generateReport)="onGenerateReport()"
+    />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~72%) -->
+    <div class="left-column">
+      <!-- 3 Charts Subgrid -->
+      <section
+        class="charts-subgrid"
+        aria-label="Performance and mastery charts"
+      >
+        <school-hub-reports-trend-chart [points]="trendPoints()" />
+        <school-hub-subject-performance-chart [items]="subjectPerformance()" />
+        <school-hub-mastery-distribution-chart
+          [items]="masteryDistribution()"
+        />
+      </section>
+
+      <!-- Topic Mastery Analysis Table -->
+      <section class="table-section" aria-label="Topic mastery analysis">
+        <school-hub-topic-mastery-table
+          [topics]="topicMastery()"
+          (viewFullAnalysis)="onViewFullTopicAnalysis()"
+        />
+      </section>
+
+      <!-- Recent Generated Reports Table -->
+      <section class="table-section" aria-label="Recent generated reports">
+        <school-hub-recent-reports-table
+          [reports]="recentReports()"
+          (viewReport)="onViewReport()"
+          (downloadReport)="onDownloadReport()"
+          (openMenu)="onOpenMenu()"
+          (viewAllReports)="onViewAllReports()"
+        />
+      </section>
+    </div>
+
+    <!-- Right Column (~28%) -->
+    <aside class="right-column" aria-label="Quick reports and insights">
+      <!-- Quick Reports -->
+      <school-hub-quick-reports-panel
+        [reports]="quickReports()"
+        (reportSelected)="onQuickReportSelected($event)"
+      />
+
+      <!-- Learners Needing Attention -->
+      <school-hub-reports-attention-panel
+        [learners]="attentionLearners()"
+        (viewLearner)="onViewLearnerDetail()"
+        (viewAll)="onViewAllAttention()"
+      />
+
+      <!-- Export Options -->
+      <school-hub-reports-export-panel
+        (exportPdf)="onExportPdf()"
+        (exportExcel)="onExportExcel()"
+        (shareWithParent)="onShareWithParent()"
+      />
+    </aside>
+  </div>
+</div>

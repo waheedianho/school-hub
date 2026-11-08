@@ -1,0 +1,108 @@
+<div class="chart-card">
+  <div class="card-header">
+    <div class="title-group">
+      <h3 class="card-title">Mastery Distribution</h3>
+      <p class="card-subtitle">Based on mastery levels</p>
+    </div>
+  </div>
+
+  <div class="donut-and-legend">
+    <div class="donut-wrapper">
+      <svg
+        viewBox="0 0 120 120"
+        class="donut-svg"
+        role="img"
+        aria-label="Mastery distribution chart showing 112 learners across 4 performance tiers"
+      >
+        <circle
+          cx="60"
+          cy="60"
+          r="40"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="14"
+        />
+
+        <!-- Strong: 30% (green) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="40"
+          fill="none"
+          stroke="#22c55e"
+          stroke-width="14"
+          stroke-dasharray="75.4 251.32"
+          stroke-dashoffset="0"
+          transform="rotate(-90 60 60)"
+        />
+
+        <!-- Good: 38% (blue) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="40"
+          fill="none"
+          stroke="#3b82f6"
+          stroke-width="14"
+          stroke-dasharray="95.5 251.32"
+          stroke-dashoffset="-75.4"
+          transform="rotate(-90 60 60)"
+        />
+
+        <!-- Developing: 21% (orange) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="40"
+          fill="none"
+          stroke="#f97316"
+          stroke-width="14"
+          stroke-dasharray="52.8 251.32"
+          stroke-dashoffset="-170.9"
+          transform="rotate(-90 60 60)"
+        />
+
+        <!-- Weak: 11% (red) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="40"
+          fill="none"
+          stroke="#ef4444"
+          stroke-width="14"
+          stroke-dasharray="27.6 251.32"
+          stroke-dashoffset="-223.7"
+          transform="rotate(-90 60 60)"
+        />
+
+        <!-- Center Text -->
+        <text x="60" y="56" text-anchor="middle" class="donut-center-num">
+          {{ totalLearners() }}
+        </text>
+        <text x="60" y="70" text-anchor="middle" class="donut-center-label">
+          Learners
+        </text>
+      </svg>
+    </div>
+
+    <div class="legend-list">
+      @for (item of items(); track item.category) {
+      <div class="legend-item">
+        <div class="legend-left">
+          <span
+            class="legend-dot"
+            [style.background-color]="item.color"
+            aria-hidden="true"
+          ></span>
+          <span class="legend-category"
+            >{{ item.category }} ({{ item.range }})</span
+          >
+        </div>
+        <span class="legend-stats"
+          >{{ item.count }} ({{ item.percentage }}%)</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+</div>

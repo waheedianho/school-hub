@@ -1,0 +1,56 @@
+<div class="table-card">
+  <div class="card-header">
+    <h3 class="card-title">Topic Mastery Analysis</h3>
+  </div>
+
+  <div class="table-responsive">
+    <table class="mastery-table">
+      <thead>
+        <tr>
+          <th scope="col">Topic</th>
+          <th scope="col">Subject</th>
+          <th scope="col" class="text-center">Average Score</th>
+          <th scope="col" class="text-center">Mastery Level</th>
+          <th scope="col" class="text-right">Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of topics(); track item.id) {
+        <tr class="table-row">
+          <td class="topic-name">{{ item.topic }}</td>
+          <td class="topic-subject">{{ item.subject }}</td>
+          <td class="text-center score-val">{{ item.averageScore }}%</td>
+          <td class="text-center">
+            <span
+              class="mastery-pill"
+              [class]="getMasteryClass(item.masteryLevel)"
+            >
+              {{ item.masteryLevel }}
+            </span>
+          </td>
+          <td class="text-right">
+            <span
+              class="trend-val"
+              [class.trend-up]="item.trendDirection === 'up'"
+              [class.trend-down]="item.trendDirection === 'down'"
+            >
+              {{ item.trendDirection === 'up' ? '↑' : '↓' }} {{ item.trend }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <button
+      type="button"
+      class="view-link-btn"
+      (click)="viewFullAnalysis.emit()"
+    >
+      <span>View full topic analysis</span>
+      <span class="material-symbols-outlined link-icon">arrow_forward</span>
+    </button>
+  </div>
+</div>

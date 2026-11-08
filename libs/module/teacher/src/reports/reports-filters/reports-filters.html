@@ -1,0 +1,85 @@
+<div class="filters-card">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label class="filter-label" for="repClassSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="repClassSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="repSubjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="repSubjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="repTermSelect">Term</label>
+      <div class="select-wrapper">
+        <select
+          id="repTermSelect"
+          class="filter-select"
+          [ngModel]="selectedTerm()"
+          (ngModelChange)="selectedTerm.set($event); onFilterChange()"
+        >
+          @for (t of terms; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="repDateSelect">Date Range</label>
+      <div class="select-wrapper">
+        <span class="material-symbols-outlined date-prefix-icon"
+          >calendar_today</span
+        >
+        <select
+          id="repDateSelect"
+          class="filter-select with-prefix"
+          [ngModel]="selectedDateRange()"
+          (ngModelChange)="selectedDateRange.set($event); onFilterChange()"
+        >
+          @for (d of dateRanges; track d) {
+          <option [value]="d">{{ d }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-action-item">
+      <button
+        type="button"
+        class="btn-generate-report"
+        (click)="generateReport.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">description</span>
+        <span>Generate Report</span>
+      </button>
+    </div>
+  </div>
+</div>
