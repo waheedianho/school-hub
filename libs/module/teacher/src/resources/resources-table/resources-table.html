@@ -1,0 +1,124 @@
+<div class="table-container">
+  @if (resources().length === 0) {
+  <div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">folder_off</span>
+    <p class="empty-title">No resources found</p>
+    <p class="empty-desc">Try adjusting your filters or search terms.</p>
+  </div>
+  } @else {
+  <div class="table-responsive">
+    <table class="resources-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-name">
+            <span class="th-sortable">
+              <span>Resource Name</span>
+              <span class="material-symbols-outlined sort-icon"
+                >unfold_more</span
+              >
+            </span>
+          </th>
+          <th scope="col">Class</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Topic</th>
+          <th scope="col">Type</th>
+          <th scope="col">
+            <span class="th-sortable">
+              <span>Date Added</span>
+              <span class="material-symbols-outlined sort-icon"
+                >unfold_more</span
+              >
+            </span>
+          </th>
+          <th scope="col" class="text-right">Access / Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (res of resources(); track res.id) {
+        <tr class="table-row">
+          <td class="td-name">
+            <div class="resource-cell">
+              <div
+                class="format-icon-box"
+                [class]="getFormatColorClass(res.format)"
+              >
+                <span class="material-symbols-outlined"
+                  >{{ getFormatIcon(res.format) }}</span
+                >
+              </div>
+              <div class="resource-meta">
+                <span class="resource-title">{{ res.title }}</span>
+                <span class="resource-size"
+                  >{{ res.format }} • {{ res.size }}</span
+                >
+              </div>
+            </div>
+          </td>
+          <td class="td-class">{{ res.className }}</td>
+          <td class="td-subject">{{ res.subject }}</td>
+          <td class="td-topic">{{ res.topic }}</td>
+          <td class="td-type">
+            <span class="type-pill" [class]="getTypeBadgeClass(res.typeLabel)">
+              {{ res.typeLabel }}
+            </span>
+          </td>
+          <td class="td-date">{{ res.dateAdded }}</td>
+          <td class="text-right">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="viewResource.emit(res)"
+                [attr.aria-label]="'Preview ' + res.title"
+              >
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="downloadResource.emit(res)"
+                [attr.aria-label]="'Download ' + res.title"
+              >
+                <span class="material-symbols-outlined">download</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="openMenu.emit(res)"
+                [attr.aria-label]="'More options for ' + res.title"
+              >
+                <span class="material-symbols-outlined">more_horiz</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination-footer">
+    <span class="pagination-info"
+      >Showing 1 to {{ resources().length }} of 248 resources</span
+    >
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        disabled
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button type="button" class="page-num-btn active">1</button>
+      <button type="button" class="page-num-btn">2</button>
+      <button type="button" class="page-num-btn">3</button>
+      <span class="page-dots">...</span>
+      <button type="button" class="page-num-btn">42</button>
+      <button type="button" class="page-nav-btn" aria-label="Next page">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>

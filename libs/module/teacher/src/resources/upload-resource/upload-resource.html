@@ -1,0 +1,551 @@
+<div class="upload-resource-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification" role="status" aria-live="polite">
+    <span class="material-symbols-outlined toast-icon">check_circle</span>
+    <span class="toast-text">{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/resources" class="breadcrumb-link">Resources</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Upload Resource
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Upload Resource</h1>
+      <p class="page-subtitle">
+        Add a new teaching or learning resource and assign it to the right
+        class, subject, and topic.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button type="button" class="btn-save-draft" (click)="onSaveDraft()">
+        Save Draft
+      </button>
+
+      <button
+        type="button"
+        class="btn-upload-submit"
+        (click)="onSubmit()"
+        [disabled]="isSubmitting()"
+      >
+        <span class="material-symbols-outlined btn-icon">cloud_upload</span>
+        <span>{{ isSubmitting() ? 'Uploading...' : 'Upload Resource' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~72%) -->
+    <div class="left-column">
+      <!-- 1. Basic Information -->
+      <section class="form-card" aria-labelledby="step-1-title">
+        <div class="card-step-header">
+          <span class="step-badge">1</span>
+          <h2 id="step-1-title" class="step-title">1. Basic Information</h2>
+        </div>
+
+        <div class="form-grid-row-1">
+          <!-- Resource Title -->
+          <div class="form-group field-title">
+            <label class="form-label" for="resTitle">
+              Resource Title <span class="required">*</span>
+            </label>
+            <input
+              id="resTitle"
+              type="text"
+              class="form-control"
+              placeholder="Enter resource title"
+              [ngModel]="resourceTitle()"
+              (ngModelChange)="resourceTitle.set($event)"
+            />
+          </div>
+
+          <!-- Class -->
+          <div class="form-group field-class">
+            <label class="form-label" for="resClass">
+              Class <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="resClass"
+                class="form-select"
+                [ngModel]="selectedClass()"
+                (ngModelChange)="selectedClass.set($event)"
+              >
+                @for (c of classList; track c) {
+                <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="form-group field-subject">
+            <label class="form-label" for="resSubject">
+              Subject <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="resSubject"
+                class="form-select"
+                [ngModel]="selectedSubject()"
+                (ngModelChange)="selectedSubject.set($event)"
+              >
+                @for (s of subjectList; track s) {
+                <option [value]="s">{{ s }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Topic -->
+          <div class="form-group field-topic">
+            <label class="form-label" for="resTopic">
+              Topic <span class="required">*</span>
+            </label>
+            <input
+              id="resTopic"
+              type="text"
+              class="form-control"
+              placeholder="Enter topic"
+              [ngModel]="topic()"
+              (ngModelChange)="topic.set($event)"
+            />
+          </div>
+        </div>
+
+        <div class="form-grid-row-2">
+          <!-- Resource Type -->
+          <div class="form-group">
+            <label class="form-label" for="resType">
+              Resource Type <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="resType"
+                class="form-select"
+                [ngModel]="resourceType()"
+                (ngModelChange)="resourceType.set($event)"
+              >
+                @for (t of resourceTypeList; track t) {
+                <option [value]="t">{{ t }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Audience -->
+          <div class="form-group">
+            <label class="form-label" for="resAudience">
+              Audience <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="resAudience"
+                class="form-select"
+                [ngModel]="audience()"
+                (ngModelChange)="audience.set($event)"
+              >
+                @for (a of audienceList; track a) {
+                <option [value]="a">{{ a }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Description -->
+      <section class="form-card" aria-labelledby="step-2-title">
+        <div class="card-step-header">
+          <span class="step-badge">2</span>
+          <h2 id="step-2-title" class="step-title">2. Description</h2>
+        </div>
+        <p class="step-subtitle">Short description of this resource</p>
+
+        <div class="form-group textarea-group">
+          <textarea
+            class="form-textarea"
+            rows="4"
+            maxlength="1000"
+            placeholder="Describe what this resource is about and how it will be used..."
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+          ></textarea>
+          <div class="char-counter">{{ charCount() }} / 1000</div>
+        </div>
+      </section>
+
+      <!-- 3. File Upload -->
+      <section class="form-card" aria-labelledby="step-3-title">
+        <div class="card-step-header">
+          <span class="step-badge">3</span>
+          <h2 id="step-3-title" class="step-title">3. File Upload</h2>
+        </div>
+
+        @if (!uploadedFile()) {
+        <div
+          class="dropzone-area"
+          [class.drag-over]="isDragging()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <div class="dropzone-icon-circle">
+            <span class="material-symbols-outlined dropzone-icon"
+              >cloud_upload</span
+            >
+          </div>
+          <p class="dropzone-main-text">
+            Drag and drop files here or
+            <label class="browse-link">
+              browse
+              <input
+                type="file"
+                class="file-input-hidden"
+                (change)="onFileSelected($event)"
+                accept=".pdf,.docx,.pptx,.xlsx,.mp4"
+              />
+            </label>
+          </p>
+          <p class="dropzone-subtext">
+            Supported formats: PDF, DOCX, PPTX, XLSX, MP4
+          </p>
+          <p class="dropzone-subtext">Maximum file size: 100 MB</p>
+        </div>
+        } @else {
+        <div class="uploaded-file-card">
+          <div class="file-info-group">
+            <div class="file-icon-box">
+              <span class="material-symbols-outlined file-box-icon"
+                >description</span
+              >
+            </div>
+            <div class="file-text-details">
+              <span class="file-name">{{ uploadedFile()?.name }}</span>
+              <span class="file-size-meta"
+                >{{ uploadedFile()?.size }} • {{ uploadedFile()?.type }}</span
+              >
+            </div>
+          </div>
+          <button
+            type="button"
+            class="btn-remove-file"
+            (click)="onRemoveFile()"
+            aria-label="Remove uploaded file"
+          >
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        }
+      </section>
+
+      <!-- 4. Resource Settings -->
+      <section class="form-card" aria-labelledby="step-4-title">
+        <div class="card-step-header">
+          <span class="step-badge">4</span>
+          <h2 id="step-4-title" class="step-title">4. Resource Settings</h2>
+        </div>
+
+        <!-- Checkboxes row -->
+        <div class="settings-checkboxes-row">
+          <label class="custom-checkbox-label">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [ngModel]="isDownloadable()"
+              (ngModelChange)="isDownloadable.set($event)"
+            />
+            <span class="checkbox-text">Downloadable</span>
+          </label>
+
+          <label class="custom-checkbox-label">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [ngModel]="isLowData()"
+              (ngModelChange)="isLowData.set($event)"
+            />
+            <span class="checkbox-text">Low-data version available</span>
+          </label>
+
+          <label class="custom-checkbox-label">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [ngModel]="isShareImmediately()"
+              (ngModelChange)="isShareImmediately.set($event)"
+            />
+            <span class="checkbox-text">Share with class immediately</span>
+          </label>
+
+          <label class="custom-checkbox-label">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [ngModel]="isAddToDeliveryPack()"
+              (ngModelChange)="isAddToDeliveryPack.set($event)"
+            />
+            <span class="checkbox-text">Add to delivery pack</span>
+          </label>
+        </div>
+
+        <!-- Tags field -->
+        <div class="form-group tags-group">
+          <label class="form-label" for="resTags">Tags</label>
+          <div class="tags-input-container">
+            @for (tag of tags(); track tag) {
+            <span class="tag-chip">
+              {{ tag }}
+              <button
+                type="button"
+                class="btn-tag-remove"
+                (click)="onRemoveTag(tag)"
+                aria-label="Remove tag"
+              >
+                &times;
+              </button>
+            </span>
+            }
+            <input
+              id="resTags"
+              type="text"
+              class="tags-inline-input"
+              placeholder="Add tags (e.g., fractions, practice, exam prep)"
+              [ngModel]="currentTagInput()"
+              (ngModelChange)="currentTagInput.set($event)"
+              (keydown)="onAddTag($event)"
+            />
+          </div>
+          <p class="field-subtext">Press Enter to add a tag</p>
+        </div>
+      </section>
+
+      <!-- 5. Optional -->
+      <section class="form-card" aria-labelledby="step-5-title">
+        <div class="card-step-header">
+          <span class="step-badge">5</span>
+          <h2 id="step-5-title" class="step-title">5. Optional</h2>
+        </div>
+
+        <div class="form-grid-row-3">
+          <!-- Linked Week -->
+          <div class="form-group">
+            <label class="form-label" for="resWeek">Linked Week</label>
+            <div class="select-wrapper">
+              <select
+                id="resWeek"
+                class="form-select"
+                [ngModel]="linkedWeek()"
+                (ngModelChange)="linkedWeek.set($event)"
+              >
+                @for (w of weekList; track w) {
+                <option [value]="w">{{ w }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Estimated Study Time -->
+          <div class="form-group">
+            <label class="form-label" for="studyTime"
+              >Estimated Study Time</label
+            >
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-prefix-icon"
+                >schedule</span
+              >
+              <input
+                id="studyTime"
+                type="text"
+                class="form-control with-icon"
+                placeholder="e.g., 30 minutes"
+                [ngModel]="estimatedStudyTime()"
+                (ngModelChange)="estimatedStudyTime.set($event)"
+              />
+            </div>
+          </div>
+
+          <!-- Visibility -->
+          <div class="form-group">
+            <label class="form-label" for="resVisibility">Visibility</label>
+            <div class="select-wrapper input-with-icon">
+              <span class="material-symbols-outlined input-prefix-icon"
+                >public</span
+              >
+              <select
+                id="resVisibility"
+                class="form-select with-icon"
+                [ngModel]="visibility()"
+                (ngModelChange)="visibility.set($event)"
+              >
+                @for (vis of visibilityList; track vis) {
+                <option [value]="vis">{{ vis }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column (~28%) -->
+    <aside class="right-column" aria-label="Upload guidelines and summary">
+      <!-- Resource Upload Guidelines -->
+      <div class="side-card guidelines-card">
+        <div class="side-card-header">
+          <div class="side-card-icon-box purple">
+            <span class="material-symbols-outlined">menu_book</span>
+          </div>
+          <h3 class="side-card-title">Resource Upload Guidelines</h3>
+        </div>
+        <ul class="guidelines-list">
+          @for (item of guidelines(); track item) {
+          <li class="guideline-item">
+            <span class="material-symbols-outlined check-icon">check</span>
+            <span class="item-text">{{ item }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Recent Upload Tips -->
+      <div class="side-card tips-card">
+        <div class="side-card-header">
+          <div class="side-card-icon-box purple">
+            <span class="material-symbols-outlined">lightbulb</span>
+          </div>
+          <h3 class="side-card-title">Recent Upload Tips</h3>
+        </div>
+        <ul class="tips-list">
+          @for (tip of tips(); track tip) {
+          <li class="tip-item">
+            <span class="bullet-dot">•</span>
+            <span class="item-text">{{ tip }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="side-card quick-actions-card">
+        <div class="side-card-header">
+          <div class="side-card-icon-box purple">
+            <span class="material-symbols-outlined">bolt</span>
+          </div>
+          <h3 class="side-card-title">Quick Actions</h3>
+        </div>
+        <div class="quick-actions-list">
+          @for (action of quickActions(); track action.id) {
+          <button
+            type="button"
+            class="quick-action-row"
+            (click)="onQuickAction(action.id)"
+          >
+            <div class="action-left">
+              <span
+                class="material-symbols-outlined action-icon"
+                [class]="action.colorClass"
+              >
+                {{ action.icon }}
+              </span>
+              <span class="action-label">{{ action.label }}</span>
+            </div>
+            <span class="material-symbols-outlined chevron-icon"
+              >chevron_right</span
+            >
+          </button>
+          }
+        </div>
+      </div>
+
+      <!-- Resource Summary (Preview) -->
+      <div class="side-card summary-card">
+        <div class="side-card-header">
+          <div class="side-card-icon-box purple">
+            <span class="material-symbols-outlined">description</span>
+          </div>
+          <h3 class="side-card-title">Resource Summary (Preview)</h3>
+        </div>
+        <div class="summary-details-table">
+          <div class="summary-row">
+            <span class="summary-label">Title</span>
+            <span class="summary-value highlight"
+              >{{ resourceTitle() || '—' }}</span
+            >
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Class</span>
+            <span class="summary-value">{{ selectedClass() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Subject</span>
+            <span class="summary-value">{{ selectedSubject() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Topic</span>
+            <span class="summary-value">{{ topic() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Type</span>
+            <span class="summary-value">{{ resourceType() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Audience</span>
+            <span class="summary-value">{{ audience() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">Visibility</span>
+            <span class="summary-value">{{ visibility() || '—' }}</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-label">File</span>
+            <span class="summary-value file-value">
+              {{ uploadedFile() ? uploadedFile()?.name : 'Not uploaded yet' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

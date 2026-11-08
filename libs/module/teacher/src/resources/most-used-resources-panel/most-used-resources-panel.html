@@ -1,0 +1,35 @@
+<div class="panel-card">
+  <div class="card-header">
+    <h3 class="card-title">Most Used Resources</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="resources-list">
+    @for (item of items(); track item.id) {
+    <div
+      class="resource-item"
+      role="button"
+      tabindex="0"
+      (click)="viewResource.emit(item)"
+      (keydown.enter)="viewResource.emit(item)"
+      (keydown.space)="viewResource.emit(item); $event.preventDefault()"
+      [attr.aria-label]="item.title"
+    >
+      <div class="resource-icon-box" [class]="getFormatColor(item.format)">
+        <span class="material-symbols-outlined"
+          >{{ getFormatIcon(item.format) }}</span
+        >
+      </div>
+      <div class="resource-info">
+        <span class="resource-title">{{ item.title }}</span>
+        <span class="resource-meta"
+          >{{ item.className }} • {{ item.subject }}</span
+        >
+      </div>
+      <span class="usage-badge">{{ item.usageCount }}</span>
+    </div>
+    }
+  </div>
+</div>

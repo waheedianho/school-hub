@@ -1,0 +1,99 @@
+<div class="resources-page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">Resources</li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Resources</h1>
+      <p class="page-subtitle">
+        Access, organize, and share lesson materials, worksheets, videos, and
+        teaching aids.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-upload-resource"
+        (click)="onUploadResource()"
+      >
+        <span class="material-symbols-outlined btn-icon">cloud_upload</span>
+        <span>Upload Resource</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-create-folder"
+        (click)="onCreateFolder()"
+      >
+        <span class="material-symbols-outlined btn-icon"
+          >create_new_folder</span
+        >
+        <span>Create Folder</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~72%) -->
+    <div class="left-column">
+      <!-- Top Metrics Row (5 Cards) -->
+      <section class="metrics-section" aria-label="Resource metrics">
+        <school-hub-resources-metrics [metrics]="metrics()" />
+      </section>
+
+      <!-- Filter Toolbar -->
+      <section class="filters-section" aria-label="Resource filters">
+        <school-hub-resources-filters
+          (filtersChanged)="onFiltersChanged($event)"
+        />
+      </section>
+
+      <!-- Resources Table -->
+      <section class="table-section" aria-label="Resources list">
+        <school-hub-resources-table
+          [resources]="filteredResources()"
+          (viewResource)="onViewResource($event)"
+          (downloadResource)="onDownloadResource($event)"
+          (openMenu)="onOpenMenu($event)"
+        />
+      </section>
+    </div>
+
+    <!-- Right Column (~28%) -->
+    <aside
+      class="right-column"
+      aria-label="Resource insights and quick actions"
+    >
+      <!-- Recent Uploads -->
+      <school-hub-recent-uploads-panel
+        [uploads]="recentUploads()"
+        (viewUpload)="onViewUploadDetail($event)"
+        (viewAll)="onViewAllUploads()"
+      />
+
+      <!-- Most Used Resources -->
+      <school-hub-most-used-resources-panel
+        [items]="mostUsedResources()"
+        (viewResource)="onViewUsedResourceDetail($event)"
+        (viewAll)="onViewAllUsed()"
+      />
+
+      <!-- Quick Actions -->
+      <school-hub-resources-quick-actions
+        [actions]="quickActions()"
+        (actionSelected)="onQuickAction($event)"
+      />
+    </aside>
+  </div>
+</div>
