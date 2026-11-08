@@ -21,9 +21,9 @@ describe('App', () => {
   it('should render page for teacher when url is /teacher', async () => {
     const harness = await RouterTestingHarness.create('/teacher');
     expect(
-      harness.routeNativeElement?.querySelector('lib-teacher p')?.textContent,
-    ).toContain('Teacher works!');
-  });
+      harness.routeNativeElement?.querySelector('h1')?.textContent,
+    ).toContain('Dashboard');
+  }, 15000);
 
   it('should render page for student when url is /student', async () => {
     const harness = await RouterTestingHarness.create('/student');

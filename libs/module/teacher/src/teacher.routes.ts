@@ -89,6 +89,22 @@ export const teacherRoutes: Routes = [
             (m) => m.SubmissionReviewComponent,
           ),
       },
+      {
+        path: 'assessments',
+        title: 'Assessments & Question Bank | SchoolHub',
+        loadComponent: () =>
+          import('./assessments/assessments').then(
+            (m) => m.TeacherAssessmentsComponent,
+          ),
+      },
+      {
+        path: 'assessments/question-bank',
+        title: 'Question Bank | SchoolHub',
+        loadComponent: () =>
+          import('./assessments/question-bank/question-bank').then(
+            (m) => m.TeacherQuestionBankComponent,
+          ),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -96,7 +112,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'curriculum' &&
           page.path !== 'lessons' &&
           page.path !== 'live-classes' &&
-          page.path !== 'assignments',
+          page.path !== 'assignments' &&
+          page.path !== 'assessments',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

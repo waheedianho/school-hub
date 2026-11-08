@@ -1,0 +1,23 @@
+<div class="workflow-card">
+  <div class="card-header">
+    <h3 class="card-title">Assessment Design Workflow</h3>
+    <span class="card-subtitle">4-step creation guide</span>
+  </div>
+
+  <div class="workflow-steps">
+    @for (step of steps; track step.num; let last = $last) {
+    <div class="step-item" [class.last-step]="last">
+      <div class="step-indicator-col">
+        <div class="step-number">{{ step.num }}</div>
+        @if (!last) {
+        <div class="step-line"></div>
+        }
+      </div>
+      <div class="step-content">
+        <h4 class="step-title">{{ step.title }}</h4>
+        <p class="step-desc">{{ step.desc }}</p>
+      </div>
+    </div>
+    }
+  </div>
+</div>

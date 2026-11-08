@@ -1,0 +1,72 @@
+<div class="qb-container">
+  <!-- Page Header & Breadcrumb -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+        <button type="button" class="breadcrumb-link" (click)="goBack()">
+          Assessments & Question Bank
+        </button>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Question Bank</span>
+      </nav>
+      <div class="title-row">
+        <button
+          type="button"
+          class="back-btn"
+          (click)="goBack()"
+          aria-label="Back to assessments"
+        >
+          <span class="material-symbols-outlined">arrow_back</span>
+        </button>
+        <h1 class="page-title">Question Bank</h1>
+      </div>
+      <p class="page-subtitle">
+        Central repository of reusable questions. Filter by topic, difficulty,
+        or question type to quickly build quizzes and tests.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button type="button" class="secondary-btn">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <span>Import Questions</span>
+      </button>
+      <button type="button" class="primary-btn">
+        <span class="material-symbols-outlined">add</span>
+        <span>Add Question</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Question bank metrics">
+    <school-hub-qb-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (72%) -->
+    <div class="left-column">
+      <!-- Filter Toolbar -->
+      <school-hub-qb-filters (filtersChanged)="onFiltersChanged($event)" />
+
+      <!-- Questions Table -->
+      <school-hub-qb-table
+        [questions]="filteredQuestions()"
+        [selectedId]="selectedId()"
+        (selectQuestion)="onSelectQuestion($event)"
+      />
+
+      <!-- Selected Question Preview Card -->
+      <school-hub-selected-question-preview [question]="selectedQuestion()" />
+    </div>
+
+    <!-- Right Column (28%) -->
+    <div class="right-column">
+      <!-- Coverage / Summary Donut -->
+      <school-hub-question-bank-coverage [summaryItems]="qbSummary()" />
+
+      <!-- How Question Bank Works -->
+      <school-hub-qb-how-it-works />
+    </div>
+  </div>
+</div>

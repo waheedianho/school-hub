@@ -1,0 +1,48 @@
+<div class="summary-card">
+  <div class="card-header">
+    <div class="header-titles">
+      <h3 class="card-title">Question Bank Summary</h3>
+      <span class="card-subtitle">Breakdown by question format</span>
+    </div>
+    <span class="total-badge">{{ totalQuestions() }} Questions</span>
+  </div>
+
+  <div class="progress-list">
+    @for (item of summaryItems(); track item.id) {
+    <div class="progress-item">
+      <div class="progress-labels">
+        <span class="type-name">{{ item.label }}</span>
+        <span class="type-stats"
+          >{{ item.count }} ({{ item.percentage }}%)</span
+        >
+      </div>
+      <div
+        class="progress-track"
+        role="progressbar"
+        [attr.aria-valuenow]="item.percentage"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        <div
+          class="progress-fill"
+          [style.width.%]="item.percentage"
+          [style.background-color]="item.color"
+        ></div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <button
+      type="button"
+      class="view-full-btn"
+      (click)="openQuestionBank.emit()"
+      aria-label="View Full Question Bank"
+    >
+      <span class="material-symbols-outlined icon">inventory_2</span>
+      <span>View Full Question Bank</span>
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </button>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="practices-card">
+  <div class="card-header">
+    <div class="header-titles">
+      <h3 class="card-title">Assessment Best Practice</h3>
+      <span class="card-subtitle">Tips for effective assessments</span>
+    </div>
+  </div>
+
+  <div class="practices-list">
+    @for (bp of practices(); track bp.id) {
+    <div class="practice-item">
+      <div class="practice-icon-box tone-{{ bp.tone }}">
+        <span class="material-symbols-outlined">{{ bp.icon }}</span>
+      </div>
+      <p class="practice-text">{{ bp.title }}</p>
+    </div>
+    }
+  </div>
+</div>

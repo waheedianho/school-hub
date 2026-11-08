@@ -1,0 +1,32 @@
+<div class="activity-card">
+  <div class="card-header">
+    <div class="header-titles">
+      <h3 class="card-title">Recent Question Bank Activity</h3>
+      <span class="card-subtitle">Latest additions and edits</span>
+    </div>
+  </div>
+
+  <div class="activity-list">
+    @for (act of activities(); track act.id) {
+    <div class="activity-item">
+      <div
+        class="activity-avatar"
+        [style.background-color]="act.avatarColor"
+        [attr.aria-label]="act.userName"
+      >
+        {{ act.avatarText }}
+      </div>
+      <div class="activity-content">
+        <p class="activity-line">
+          <strong class="user-name">{{ act.userName }}</strong>
+          {{ ' ' + act.actionText }}
+        </p>
+        <div class="activity-meta">
+          <span class="topic-tag">{{ act.topic }}</span>
+          <span class="timestamp">{{ act.timestamp }}</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

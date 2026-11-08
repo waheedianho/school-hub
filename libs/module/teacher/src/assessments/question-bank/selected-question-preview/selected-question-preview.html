@@ -1,0 +1,149 @@
+<div class="preview-card">
+  <div class="preview-header">
+    <div class="header-left">
+      <h3 class="preview-title">Selected Question Preview</h3>
+      <span class="preview-subtitle"
+        >Question 1 of 248 · {{ question().className }}</span
+      >
+    </div>
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="duplicateQuestion.emit(question().id)"
+      >
+        <span class="material-symbols-outlined">content_copy</span>
+        <span>Duplicate</span>
+      </button>
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="editQuestion.emit(question().id)"
+      >
+        <span class="material-symbols-outlined">edit</span>
+        <span>Edit Question</span>
+      </button>
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="addToAssessment.emit(question().id)"
+      >
+        <span class="material-symbols-outlined">add</span>
+        <span>Add to Assessment</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="preview-columns-grid">
+    <!-- Col 1: Question & Options -->
+    <div class="preview-col col-question">
+      <h4 class="col-heading">Question Prompt & Options</h4>
+      <div class="prompt-box">
+        <p class="prompt-text">
+          Identify the part of speech of the underlined word. She
+          <span class="underlined-word">{{ question().underlinedWord }}</span>
+          finished her homework before dinner.
+        </p>
+      </div>
+
+      <div class="options-list">
+        @for (opt of question().options; track opt.label) {
+        <div class="option-item" [class.option-correct]="opt.isCorrect">
+          <div class="option-radio">
+            @if (opt.isCorrect) {
+            <span class="material-symbols-outlined check-icon"
+              >check_circle</span
+            >
+            } @else {
+            <span class="radio-circle"></span>
+            }
+          </div>
+          <span class="option-label">{{ opt.label }}.</span>
+          <span class="option-text">{{ opt.text }}</span>
+        </div>
+        }
+      </div>
+    </div>
+
+    <!-- Col 2: Explanation & Pedagogical Tags -->
+    <div class="preview-col col-pedagogy">
+      <h4 class="col-heading">Answer & Pedagogical Tags</h4>
+
+      <div class="pedagogy-item">
+        <span class="pedagogy-label">Correct Answer</span>
+        <span class="pedagogy-value highlight-answer"
+          >{{ question().correctAnswer }}</span
+        >
+      </div>
+
+      <div class="pedagogy-item">
+        <span class="pedagogy-label">Explanation & Feedback</span>
+        <p class="explanation-box">{{ question().explanation }}</p>
+      </div>
+
+      <div class="pedagogy-item">
+        <span class="pedagogy-label">Common Misconception</span>
+        <span class="misconception-badge"
+          >{{ question().misconceptionTag }}</span
+        >
+      </div>
+
+      <div class="pedagogy-item">
+        <span class="pedagogy-label">Bloom's Taxonomy Level</span>
+        <span class="pedagogy-value">{{ question().bloomsLevel }}</span>
+      </div>
+
+      <div class="pedagogy-item">
+        <span class="pedagogy-label">Teacher Rubric Note</span>
+        <span class="pedagogy-value muted">{{ question().rubricNote }}</span>
+      </div>
+    </div>
+
+    <!-- Col 3: Metadata & Usage -->
+    <div class="preview-col col-metadata">
+      <h4 class="col-heading">Metadata & Usage</h4>
+
+      <div class="meta-row">
+        <span class="meta-key">Subject / Class</span>
+        <span class="meta-val"
+          >{{ question().className }} · {{ question().subject }}</span
+        >
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Term / Week</span>
+        <span class="meta-val">{{ question().term }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Topic</span>
+        <span class="meta-val">{{ question().weekTopic }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Difficulty</span>
+        <span class="meta-val badge-easy">{{ question().difficulty }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Marks</span>
+        <span class="meta-val">{{ question().marks }} Mark</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Scoring Type</span>
+        <span class="meta-val">{{ question().scoringType }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Linked Assessments</span>
+        <span class="meta-val">{{ question().linkedAssessments }}</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="meta-key">Last Used</span>
+        <span class="meta-val">{{ question().lastUsed }}</span>
+      </div>
+    </div>
+  </div>
+</div>

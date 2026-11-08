@@ -1,0 +1,88 @@
+.practices-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  height: 100%;
+}
+
+.card-header {
+  margin-bottom: 14px;
+}
+
+.header-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.practices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.practice-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 10px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #f1f5f9;
+}
+
+.practice-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  span {
+    font-size: 16px;
+  }
+
+  &.tone-yellow {
+    background-color: #fef9c3;
+    color: #a16207;
+  }
+
+  &.tone-orange {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  &.tone-blue {
+    background-color: #e0f2fe;
+    color: #0284c7;
+  }
+
+  &.tone-purple {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+  }
+}
+
+.practice-text {
+  margin: 0;
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}

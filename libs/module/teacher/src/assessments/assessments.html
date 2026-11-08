@@ -1,0 +1,77 @@
+<div class="assessments-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Assessments & Question Bank</h1>
+      <p class="page-subtitle">
+        Create and manage quizzes, tests, and exams. Question bank items are
+        reusable and support auto-scoring and human review.
+      </p>
+    </div>
+    <div class="header-actions">
+      <button
+        type="button"
+        class="secondary-btn"
+        (click)="navigateToQuestionBank()"
+      >
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span>Question Bank</span>
+      </button>
+      <button type="button" class="primary-btn">
+        <span class="material-symbols-outlined">add</span>
+        <span>Create Assessment</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Assessments metrics">
+    <school-hub-assessments-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (72%) -->
+    <div class="left-column">
+      <!-- Filter Toolbar -->
+      <school-hub-assessments-filters
+        (filtersChanged)="onFiltersChanged($event)"
+      />
+
+      <!-- Assessment List Table -->
+      <school-hub-assessments-list-table
+        [assessments]="filteredAssessments()"
+        (openAssessment)="onOpenAssessment($event)"
+        (reviewAssessment)="onReviewAssessment()"
+      />
+
+      <!-- Bottom Subgrid: Coverage + Activity + Best Practice -->
+      <div class="bottom-subgrid">
+        <school-hub-question-bank-coverage
+          [summaryItems]="qbSummary()"
+          (viewAll)="navigateToQuestionBank()"
+        />
+        <school-hub-recent-qb-activity [activities]="recentActivity()" />
+        <school-hub-assessment-best-practices [practices]="bestPractices()" />
+      </div>
+    </div>
+
+    <!-- Right Column (28%) -->
+    <div class="right-column">
+      <!-- Question Bank Summary -->
+      <school-hub-question-bank-summary
+        [summaryItems]="qbSummary()"
+        (openQuestionBank)="navigateToQuestionBank()"
+      />
+
+      <!-- Quick Actions -->
+      <school-hub-assessments-quick-actions
+        [actions]="quickActions()"
+        (actionTriggered)="onQuickAction($event)"
+      />
+
+      <!-- Assessment Design Workflow Steps -->
+      <school-hub-assessment-design-workflow />
+    </div>
+  </div>
+</div>
