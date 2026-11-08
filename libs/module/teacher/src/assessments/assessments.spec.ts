@@ -71,7 +71,7 @@ describe('TeacherAssessmentsComponent', () => {
   });
 
   it('should navigate to review when Review button clicked', () => {
-    component.onReviewAssessment(component.allAssessments()[2]);
+    component.onReviewAssessment();
     expect(routerMock.navigate).toHaveBeenCalledWith([
       '/teacher/assignments/review',
     ]);

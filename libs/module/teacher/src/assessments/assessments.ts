@@ -123,7 +123,7 @@ export class TeacherAssessmentsComponent {
     }
   }
 
-  onReviewAssessment(_item: AssessmentItem): void {
+  onReviewAssessment(): void {
     this.router.navigate(['/teacher/assignments/review']);
   }
 }

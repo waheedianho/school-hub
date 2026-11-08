@@ -1,0 +1,186 @@
+<div class="table-container">
+  <div class="table-header-bar">
+    <div class="header-left">
+      <h2 class="table-title">Gradebook Records</h2>
+      <span class="count-badge">{{ records().length }} Records</span>
+    </div>
+  </div>
+
+  @if (records().length === 0) {
+  <div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">grading</span>
+    <p class="empty-title">No gradebook records found</p>
+    <p class="empty-desc">
+      Try clearing or adjusting your search or filter options.
+    </p>
+  </div>
+  } @else {
+  <div class="table-responsive">
+    <table class="gradebook-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-learner">Learner</th>
+          <th scope="col">Class</th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Quiz –</span>
+              <span>Parts of Speech</span>
+              <span class="th-max">/20</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Worksheet</span>
+              <span class="th-max">/20</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Essay /</span>
+              <span>Theory</span>
+              <span class="th-max">/25</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Portfolio</span>
+              <span>Task</span>
+              <span class="th-max">/15</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Attendance /</span>
+              <span>Participation</span>
+              <span class="th-max">/10</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">
+            <div class="th-column-split">
+              <span>Average</span>
+              <span class="th-max">/100</span>
+            </div>
+          </th>
+          <th scope="col" class="text-center">Grade</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rec of records(); track rec.id) {
+        <tr class="table-row">
+          <td class="td-learner">
+            <div class="learner-cell">
+              <div
+                class="learner-avatar"
+                [style.background-color]="rec.avatarColor"
+                [attr.aria-label]="rec.learnerName"
+              >
+                {{ rec.avatarText }}
+              </div>
+              <span class="learner-name">{{ rec.learnerName }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="class-text">{{ rec.className }}</span>
+          </td>
+          <td class="text-center">
+            <span class="score-val" [class]="getScoreClass(rec.quizScore, 20)">
+              {{ rec.quizScore }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span
+              class="score-val"
+              [class]="getScoreClass(rec.worksheetScore, 20)"
+            >
+              {{ rec.worksheetScore }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="score-val" [class]="getScoreClass(rec.essayScore, 25)">
+              {{ rec.essayScore }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span
+              class="score-val"
+              [class]="getScoreClass(rec.portfolioScore, 15)"
+            >
+              {{ rec.portfolioScore }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="score-val score-neutral">
+              {{ rec.attendanceScore }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span
+              class="avg-percentage"
+              [class]="getScoreClass(rec.averagePercentage, 100)"
+            >
+              {{ rec.averagePercentage }}%
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="grade-badge" [class]="getGradeClass(rec.grade)">
+              {{ rec.grade }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="status-pill" [class]="getStatusClass(rec.status)">
+              {{ rec.status }}
+            </span>
+          </td>
+          <td class="text-right">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="viewRecord.emit(rec)"
+                [attr.aria-label]="'View ' + rec.learnerName"
+              >
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="openMenu.emit(rec)"
+                [attr.aria-label]="'More options for ' + rec.learnerName"
+              >
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination-footer">
+    <span class="pagination-info"
+      >Showing 1 to {{ records().length }} of 112 learners</span
+    >
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        disabled
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button type="button" class="page-num-btn active">1</button>
+      <button type="button" class="page-num-btn">2</button>
+      <button type="button" class="page-num-btn">3</button>
+      <span class="pagination-dots">…</span>
+      <button type="button" class="page-num-btn">19</button>
+      <button type="button" class="page-nav-btn" aria-label="Next page">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,71 @@
+<div class="gradebook-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Gradebook</h1>
+      <p class="page-subtitle">
+        Manage verified scores, review class performance, and feed approved
+        results into reports and report cards.
+      </p>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Gradebook metrics">
+    <school-hub-gradebook-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (72%) -->
+    <div class="left-column">
+      <!-- Filter Toolbar -->
+      <school-hub-gradebook-filters
+        (filtersChanged)="onFiltersChanged($event)"
+      />
+
+      <!-- Gradebook Records Table -->
+      <school-hub-gradebook-records-table
+        [records]="filteredRecords()"
+        (viewRecord)="onViewRecord($event)"
+      />
+
+      <!-- Bottom Subgrid: Recent Score Activity + Assessment Weights + Learners Attention -->
+      <div class="bottom-subgrid">
+        <school-hub-recent-score-activity
+          [activities]="activities()"
+          (viewAll)="onViewAllActivity()"
+        />
+        <school-hub-assessment-weights [weights]="weights()" />
+        <school-hub-gradebook-learners-attention
+          [learners]="attentionLearners()"
+          (viewAll)="onViewAllAttention()"
+        />
+      </div>
+
+      <!-- Info Notice Banner -->
+      <div class="info-notice-banner" role="status">
+        <span class="material-symbols-outlined info-icon">info</span>
+        <span class="info-text">
+          Auto-scored quizzes enter the Gradebook automatically.
+          Teacher-reviewed tasks are added only after score approval.
+        </span>
+      </div>
+    </div>
+
+    <!-- Right Column (28%) -->
+    <div class="right-column">
+      <!-- Gradebook Summary Donut -->
+      <school-hub-gradebook-summary [segments]="segments()" />
+
+      <!-- Quick Actions -->
+      <school-hub-gradebook-quick-actions
+        [actions]="quickActions()"
+        (actionTriggered)="onQuickAction($event)"
+      />
+
+      <!-- How It Works Steps -->
+      <school-hub-gradebook-how-it-works />
+    </div>
+  </div>
+</div>

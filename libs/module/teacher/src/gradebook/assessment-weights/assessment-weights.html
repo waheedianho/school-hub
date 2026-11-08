@@ -1,0 +1,28 @@
+<div class="weights-card">
+  <div class="card-header">
+    <h3 class="card-title">Assessment Weights</h3>
+  </div>
+
+  <div class="weights-list">
+    @for (w of weights(); track w.id) {
+    <div class="weight-row">
+      <span class="weight-name">{{ w.name }}</span>
+      <div
+        class="bar-container"
+        role="progressbar"
+        [attr.aria-valuenow]="w.weightPercentage"
+        aria-valuemin="0"
+        aria-valuemax="100"
+      >
+        <div class="bar-fill" [style.width.%]="w.weightPercentage"></div>
+      </div>
+      <span class="weight-percent">{{ w.weightPercentage }}%</span>
+    </div>
+    }
+  </div>
+
+  <div class="weights-total-row">
+    <span class="total-label">Total</span>
+    <span class="total-percent">100%</span>
+  </div>
+</div>

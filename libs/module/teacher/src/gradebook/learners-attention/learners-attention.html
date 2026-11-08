@@ -1,0 +1,36 @@
+<div class="attention-card">
+  <div class="card-header">
+    <h3 class="card-title">Learners Needing Attention</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="learners-list">
+    @for (learner of learners(); track learner.id) {
+    <div class="learner-item">
+      <div
+        class="learner-avatar"
+        [style.background-color]="learner.avatarColor"
+        [attr.aria-label]="learner.name"
+      >
+        {{ learner.avatarText }}
+      </div>
+      <div class="learner-info">
+        <span class="learner-name">{{ learner.name }}</span>
+        <span class="learner-class">{{ learner.className }}</span>
+      </div>
+      <div class="learner-warning">
+        <span
+          class="warning-badge"
+          [class.severity-high]="learner.severity === 'high'"
+          [class.severity-medium]="learner.severity === 'medium'"
+        >
+          {{ learner.warningLabel }}
+        </span>
+        <span class="warning-details">{{ learner.details }}</span>
+      </div>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,97 @@
+<div class="filters-card">
+  <div class="filters-grid">
+    <div class="filter-item">
+      <label class="filter-label" for="gbTermSelect">Term</label>
+      <div class="select-wrapper">
+        <select
+          id="gbTermSelect"
+          class="filter-select"
+          [ngModel]="selectedTerm()"
+          (ngModelChange)="selectedTerm.set($event); onFilterChange()"
+        >
+          @for (term of terms; track term) {
+          <option [value]="term">{{ term }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="gbClassSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="gbClassSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="gbSubjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="gbSubjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="gbGroupSelect">Assessment Group</label>
+      <div class="select-wrapper">
+        <select
+          id="gbGroupSelect"
+          class="filter-select"
+          [ngModel]="selectedGroup()"
+          (ngModelChange)="selectedGroup.set($event); onFilterChange()"
+        >
+          @for (grp of assessmentGroups; track grp) {
+          <option [value]="grp">{{ grp }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item search-item">
+      <label class="filter-label" for="gbSearchInput">Search</label>
+      <div class="search-input-wrapper">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          id="gbSearchInput"
+          type="text"
+          class="search-input"
+          placeholder="Search learners..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($any($event.target).value)"
+          aria-label="Search learners"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearchInput('')"
+          aria-label="Clear search"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

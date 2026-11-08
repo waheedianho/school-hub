@@ -105,6 +105,14 @@ export const teacherRoutes: Routes = [
             (m) => m.TeacherQuestionBankComponent,
           ),
       },
+      {
+        path: 'gradebook',
+        title: 'Gradebook | SchoolHub',
+        loadComponent: () =>
+          import('./gradebook/gradebook').then(
+            (m) => m.TeacherGradebookComponent,
+          ),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -113,7 +121,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'lessons' &&
           page.path !== 'live-classes' &&
           page.path !== 'assignments' &&
-          page.path !== 'assessments',
+          page.path !== 'assessments' &&
+          page.path !== 'gradebook',
       ).map((page) => ({
         path: page.path,
         component: Teacher,
