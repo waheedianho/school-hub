@@ -1,0 +1,31 @@
+<div class="performers-card">
+  <div class="card-header">
+    <h3 class="card-title">Top Performers This Week</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="performers-list">
+    @for (item of performers(); track item.id) {
+    <div class="performer-item">
+      <div
+        class="performer-avatar"
+        [style.background-color]="item.avatarColor"
+        [attr.aria-label]="item.name"
+      >
+        {{ item.avatarText }}
+      </div>
+      <div class="performer-info">
+        <span class="performer-name">{{ item.name }}</span>
+        <span class="performer-meta"
+          >{{ item.className }} · {{ item.subject }}</span
+        >
+      </div>
+      <div class="performer-score-col">
+        <span class="score-badge">{{ item.score }}%</span>
+      </div>
+    </div>
+    }
+  </div>
+</div>

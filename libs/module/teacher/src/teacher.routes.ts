@@ -113,6 +113,12 @@ export const teacherRoutes: Routes = [
             (m) => m.TeacherGradebookComponent,
           ),
       },
+      {
+        path: 'learners',
+        title: 'Learners | SchoolHub',
+        loadComponent: () =>
+          import('./learners/learners').then((m) => m.TeacherLearnersComponent),
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -122,7 +128,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'live-classes' &&
           page.path !== 'assignments' &&
           page.path !== 'assessments' &&
-          page.path !== 'gradebook',
+          page.path !== 'gradebook' &&
+          page.path !== 'learners',
       ).map((page) => ({
         path: page.path,
         component: Teacher,
