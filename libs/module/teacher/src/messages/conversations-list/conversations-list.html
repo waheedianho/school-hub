@@ -1,0 +1,104 @@
+<div class="conversations-panel">
+  <!-- Tabs Header -->
+  <div class="filter-tabs-bar" role="tablist" aria-label="Conversation filters">
+    @for (tab of tabs; track tab) {
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="activeTab() === tab"
+      [attr.aria-selected]="activeTab() === tab"
+      (click)="onSelectTab(tab)"
+    >
+      {{ tab }}
+    </button>
+    }
+  </div>
+
+  <!-- Search & Filter Row -->
+  <div class="search-filter-box">
+    <div class="search-input-wrapper">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="text"
+        class="conversations-search-input"
+        placeholder="Search conversations..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="searchQuery.set($event)"
+      />
+    </div>
+    <button
+      type="button"
+      class="btn-filter-settings"
+      aria-label="Filter options"
+    >
+      <span class="material-symbols-outlined">tune</span>
+    </button>
+  </div>
+
+  <!-- Conversations List -->
+  <div class="conversations-scroll-list" role="list">
+    @for (conv of filteredConversations(); track conv.id) {
+    <div
+      role="listitem"
+      class="conversation-card"
+      [class.selected]="conv.id === selectedConversationId()"
+      [class.has-unread]="conv.unreadCount > 0"
+      (click)="onSelectConversation(conv)"
+      (keydown.enter)="onSelectConversation(conv)"
+      tabindex="0"
+    >
+      <!-- Avatar -->
+      <div class="avatar-col">
+        @if (conv.avatar.startsWith('assets/')) {
+        <img [src]="conv.avatar" [alt]="conv.name" class="user-avatar-img" />
+        } @else {
+        <div class="avatar-icon-circle" [class]="'avatar-' + conv.type">
+          <span class="material-symbols-outlined">{{ conv.avatar }}</span>
+        </div>
+        } @if (conv.isOnline) {
+        <span class="online-status-dot" aria-label="Online"></span>
+        }
+      </div>
+
+      <!-- Info Column -->
+      <div class="info-col">
+        <div class="name-time-row">
+          <h3 class="conv-name">{{ conv.name }}</h3>
+          <span class="conv-time">{{ conv.time }}</span>
+        </div>
+
+        @if (conv.subtitle) {
+        <p class="conv-subtitle">{{ conv.subtitle }}</p>
+        }
+
+        <div class="snippet-unread-row">
+          <p class="conv-snippet">{{ conv.lastMessage }}</p>
+          @if (conv.unreadCount > 0) {
+          <span class="unread-badge">{{ conv.unreadCount }}</span>
+          }
+        </div>
+      </div>
+    </div>
+    } @empty {
+    <div class="empty-conversations-state">
+      <span class="material-symbols-outlined empty-icon"
+        >chat_bubble_outline</span
+      >
+      <p class="empty-title">No conversations found</p>
+      <p class="empty-sub">Try adjusting your filters or search query.</p>
+    </div>
+    }
+  </div>
+
+  <!-- Panel Footer -->
+  <div class="conversations-footer">
+    <span class="count-label">
+      Showing 1-{{ filteredConversations().length }} of {{
+      conversations().length }} conversations
+    </span>
+    <button type="button" class="btn-view-all" (click)="onViewAll()">
+      View all
+    </button>
+  </div>
+</div>

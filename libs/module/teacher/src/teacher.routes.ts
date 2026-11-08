@@ -141,6 +141,30 @@ export const teacherRoutes: Routes = [
             './reports/learner-report-analysis/learner-report-analysis'
           ).then((m) => m.LearnerReportAnalysisComponent),
       },
+      {
+        path: 'messages',
+        title: 'Communication | SchoolHub',
+        loadComponent: () =>
+          import('./messages/messages').then((m) => m.TeacherMessagesComponent),
+      },
+      {
+        path: 'messages/create-announcement',
+        title: 'Create Announcement | SchoolHub',
+        loadComponent: () =>
+          import('./messages/create-announcement/create-announcement').then(
+            (m) => m.CreateAnnouncementComponent,
+          ),
+      },
+      {
+        path: 'communication',
+        redirectTo: 'messages',
+        pathMatch: 'full',
+      },
+      {
+        path: 'communication/create-announcement',
+        redirectTo: 'messages/create-announcement',
+        pathMatch: 'full',
+      },
       ...TEACHER_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -152,7 +176,8 @@ export const teacherRoutes: Routes = [
           page.path !== 'assessments' &&
           page.path !== 'gradebook' &&
           page.path !== 'learners' &&
-          page.path !== 'reports',
+          page.path !== 'reports' &&
+          page.path !== 'messages',
       ).map((page) => ({
         path: page.path,
         component: Teacher,

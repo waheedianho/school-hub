@@ -1,0 +1,224 @@
+<div class="chat-thread-container">
+  @if (conversation(); as conv) {
+  <!-- Chat Header -->
+  <header class="chat-header">
+    <div class="header-user-info">
+      <div class="avatar-wrapper">
+        @if (conv.avatar.startsWith('assets/')) {
+        <img [src]="conv.avatar" [alt]="conv.name" class="user-avatar-img" />
+        } @else {
+        <div class="avatar-icon-circle" [class]="'avatar-' + conv.type">
+          <span class="material-symbols-outlined">{{ conv.avatar }}</span>
+        </div>
+        } @if (conv.isOnline) {
+        <span class="online-indicator"></span>
+        }
+      </div>
+
+      <div class="user-meta-group">
+        <h2 class="user-name">{{ conv.name }}</h2>
+        <div class="status-row">
+          <span class="user-subtitle">{{ conv.subtitle }}</span>
+          @if (conv.isOnline) {
+          <span class="status-dot-separator">•</span>
+          <span class="active-now-text">
+            <span class="green-dot"></span> Active now
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="header-call-actions">
+      <button
+        type="button"
+        class="btn-call-action"
+        (click)="onVideoCall()"
+        aria-label="Start video call"
+      >
+        <span class="material-symbols-outlined">videocam</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-call-action"
+        (click)="onVoiceCall()"
+        aria-label="Start voice call"
+      >
+        <span class="material-symbols-outlined">call</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-call-action info-toggle-btn"
+        [class.active]="infoPanelOpen()"
+        (click)="onToggleInfo()"
+        aria-label="Toggle conversation details"
+      >
+        <span class="material-symbols-outlined">info</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Chat Messages Scroll Area -->
+  <div class="chat-messages-area" role="log" aria-label="Conversation messages">
+    <!-- Date Separator -->
+    <div class="date-separator-row">
+      <span class="date-chip">Today</span>
+    </div>
+
+    <!-- Messages Stream -->
+    <div class="messages-stream">
+      @for (msg of messages(); track msg.id) { @if (msg.sender === 'incoming') {
+      <!-- Incoming Message -->
+      <div class="message-row incoming-row">
+        <div class="msg-avatar-col">
+          @if (msg.avatar && msg.avatar.startsWith('assets/')) {
+          <img
+            [src]="msg.avatar"
+            [alt]="msg.senderName"
+            class="msg-sender-avatar"
+          />
+          } @else {
+          <div class="avatar-fallback">
+            <span class="material-symbols-outlined"
+              >{{ msg.avatar || 'person' }}</span
+            >
+          </div>
+          }
+        </div>
+
+        <div class="message-bubble-wrapper">
+          <div class="message-bubble incoming-bubble">
+            <p class="bubble-text">{{ msg.text }}</p>
+            @if (msg.attachment) {
+            <div class="attachment-box">
+              <div class="file-badge-type">
+                <span class="material-symbols-outlined">description</span>
+              </div>
+              <div class="file-text-meta">
+                <span class="attachment-name">{{ msg.attachment.name }}</span>
+                <span class="attachment-size"
+                  >{{ msg.attachment.format }} • {{ msg.attachment.size }}</span
+                >
+              </div>
+              <button
+                type="button"
+                class="btn-download-file"
+                (click)="onDownloadAttachment(msg.attachment)"
+                aria-label="Download attachment"
+              >
+                <span class="material-symbols-outlined">download</span>
+              </button>
+            </div>
+            }
+            <span class="message-timestamp">{{ msg.time }}</span>
+          </div>
+        </div>
+      </div>
+      } @else {
+      <!-- Outgoing Message -->
+      <div class="message-row outgoing-row">
+        <div class="message-bubble-wrapper">
+          <div class="message-bubble outgoing-bubble">
+            <p class="bubble-text">{{ msg.text }}</p>
+            @if (msg.attachment) {
+            <div class="attachment-box">
+              <div class="file-badge-type">
+                <span class="material-symbols-outlined">description</span>
+              </div>
+              <div class="file-text-meta">
+                <span class="attachment-name">{{ msg.attachment.name }}</span>
+                <span class="attachment-size"
+                  >{{ msg.attachment.format }} • {{ msg.attachment.size }}</span
+                >
+              </div>
+              <button
+                type="button"
+                class="btn-download-file"
+                (click)="onDownloadAttachment(msg.attachment)"
+                aria-label="Download attachment"
+              >
+                <span class="material-symbols-outlined">download</span>
+              </button>
+            </div>
+            }
+            <div class="outgoing-meta-row">
+              <span class="message-timestamp">{{ msg.time }}</span>
+              <span class="material-symbols-outlined receipt-icon"
+                >done_all</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      } }
+    </div>
+  </div>
+
+  <!-- Chat Input Section -->
+  <footer class="chat-input-bar">
+    <!-- Attached File Chip Preview -->
+    @if (attachedFile(); as file) {
+    <div class="attached-chip-row">
+      <span class="material-symbols-outlined file-chip-icon">attachment</span>
+      <span class="file-chip-name">{{ file.name }} ({{ file.size }})</span>
+      <button
+        type="button"
+        class="btn-chip-remove"
+        (click)="onRemoveAttachment()"
+        aria-label="Remove attachment"
+      >
+        &times;
+      </button>
+    </div>
+    }
+
+    <div class="input-controls-row">
+      <!-- Attachment Button -->
+      <label class="btn-attach-label" aria-label="Attach file">
+        <span class="material-symbols-outlined">attach_file</span>
+        <input
+          type="file"
+          class="hidden-file-input"
+          (change)="onFileAttached($event)"
+        />
+      </label>
+
+      <!-- Message Textarea -->
+      <div class="textarea-wrapper">
+        <textarea
+          class="message-textarea"
+          rows="1"
+          maxlength="2000"
+          placeholder="Type your message..."
+          [ngModel]="messageInput()"
+          (ngModelChange)="messageInput.set($event)"
+          (keydown)="onKeyDown($event)"
+        ></textarea>
+      </div>
+
+      <span class="char-count-pill">{{ charCount() }}/2000</span>
+
+      <!-- Send Button -->
+      <button
+        type="button"
+        class="btn-send-message"
+        (click)="onSend()"
+        [disabled]="!messageInput().trim() && !attachedFile()"
+        aria-label="Send message"
+      >
+        <span class="material-symbols-outlined">send</span>
+      </button>
+    </div>
+  </footer>
+  } @else {
+  <div class="no-conversation-selected">
+    <span class="material-symbols-outlined no-conv-icon">forum</span>
+    <h3 class="no-conv-title">Select a Conversation</h3>
+    <p class="no-conv-subtitle">
+      Choose a chat from the left list to view and continue messaging.
+    </p>
+  </div>
+  }
+</div>
