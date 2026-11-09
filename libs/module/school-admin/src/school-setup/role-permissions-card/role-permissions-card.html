@@ -1,0 +1,93 @@
+<div class="setup-card permissions-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">manage_accounts</span>
+      <h2 class="card-title">4. Teacher & Role Permissions</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="table-responsive">
+      <table
+        class="permissions-table"
+        aria-label="Staff role permissions matrix"
+      >
+        <thead>
+          <tr>
+            <th scope="col" class="th-role">Role</th>
+            <th scope="col" class="th-perm">Content<br />Approval</th>
+            <th scope="col" class="th-perm">Grade<br />Approval</th>
+            <th scope="col" class="th-perm">Communication<br />Visibility</th>
+            <th scope="col" class="th-perm">Audit<br />Logs</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of permissions(); track row.role) {
+          <tr>
+            <td class="td-role">{{ row.role }}</td>
+            <td class="td-perm">
+              <button
+                type="button"
+                class="toggle-switch"
+                [class.active]="row.contentApproval"
+                [attr.aria-checked]="row.contentApproval"
+                [attr.aria-label]="'Toggle Content Approval for ' + row.role"
+                role="switch"
+                (click)="onToggle(row.role, 'contentApproval')"
+              >
+                <span class="switch-handle"></span>
+              </button>
+            </td>
+            <td class="td-perm">
+              <button
+                type="button"
+                class="toggle-switch"
+                [class.active]="row.gradeApproval"
+                [attr.aria-checked]="row.gradeApproval"
+                [attr.aria-label]="'Toggle Grade Approval for ' + row.role"
+                role="switch"
+                (click)="onToggle(row.role, 'gradeApproval')"
+              >
+                <span class="switch-handle"></span>
+              </button>
+            </td>
+            <td class="td-perm">
+              <button
+                type="button"
+                class="toggle-switch"
+                [class.active]="row.communicationVisibility"
+                [attr.aria-checked]="row.communicationVisibility"
+                [attr.aria-label]="'Toggle Communication Visibility for ' + row.role"
+                role="switch"
+                (click)="onToggle(row.role, 'communicationVisibility')"
+              >
+                <span class="switch-handle"></span>
+              </button>
+            </td>
+            <td class="td-perm">
+              <button
+                type="button"
+                class="toggle-switch"
+                [class.active]="row.auditLogs"
+                [attr.aria-checked]="row.auditLogs"
+                [attr.aria-label]="'Toggle Audit Logs for ' + row.role"
+                role="switch"
+                (click)="onToggle(row.role, 'auditLogs')"
+              >
+                <span class="switch-handle"></span>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card-footer-info">
+    <span class="material-symbols-outlined info-icon">info</span>
+    <span class="info-text"
+      >Permissions control what each role can view and manage.</span
+    >
+  </div>
+</div>

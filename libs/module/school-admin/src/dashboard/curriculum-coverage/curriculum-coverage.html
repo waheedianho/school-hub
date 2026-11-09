@@ -1,0 +1,132 @@
+<div class="coverage-card">
+  <div class="card-header">
+    <div class="header-title-group">
+      <h2 class="card-title">Curriculum Coverage</h2>
+      <i
+        class="material-symbols-outlined info-icon"
+        title="Syllabus pacing across all school classes"
+        >info</i
+      >
+    </div>
+    <div class="term-selector">
+      <select
+        [(ngModel)]="selectedTerm"
+        class="term-dropdown"
+        aria-label="Select Term"
+      >
+        @for (opt of termOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="donut-content-layout">
+    <!-- SVG Donut Chart -->
+    <div class="donut-chart-wrap">
+      <svg class="donut-svg" viewBox="0 0 130 130" aria-hidden="true">
+        <!-- Background track -->
+        <circle
+          cx="65"
+          cy="65"
+          r="50"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="12"
+        />
+
+        <!-- On Track (Green) Segment -->
+        <circle
+          cx="65"
+          cy="65"
+          r="50"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="12"
+          [attr.stroke-dasharray]="onTrackDash"
+          stroke-dashoffset="0"
+          stroke-linecap="round"
+          transform="rotate(-90 65 65)"
+        />
+
+        <!-- Behind (Amber) Segment -->
+        <circle
+          cx="65"
+          cy="65"
+          r="50"
+          fill="none"
+          stroke="#f59e0b"
+          stroke-width="12"
+          [attr.stroke-dasharray]="behindDash"
+          [attr.stroke-dashoffset]="behindOffset"
+          transform="rotate(-90 65 65)"
+        />
+
+        <!-- At Risk (Red) Segment -->
+        <circle
+          cx="65"
+          cy="65"
+          r="50"
+          fill="none"
+          stroke="#ef4444"
+          stroke-width="12"
+          [attr.stroke-dasharray]="atRiskDash"
+          [attr.stroke-dashoffset]="atRiskOffset"
+          transform="rotate(-90 65 65)"
+        />
+      </svg>
+
+      <div class="donut-center-text">
+        <span class="donut-percent">{{ coverage().overallPercentage }}%</span>
+        <span class="donut-sublabel">Overall Coverage</span>
+      </div>
+    </div>
+
+    <!-- Status Breakdown -->
+    <div class="coverage-breakdown">
+      <div class="status-row">
+        <div class="status-indicator">
+          <span class="status-dot dot-on-track"></span>
+          <span class="status-name">On Track</span>
+        </div>
+        <div class="status-values">
+          <span class="status-pct">{{ coverage().onTrackPercentage }}%</span>
+          <span class="status-classes"
+            >{{ coverage().onTrackCount }} classes</span
+          >
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-indicator">
+          <span class="status-dot dot-behind"></span>
+          <span class="status-name">Behind</span>
+        </div>
+        <div class="status-values">
+          <span class="status-pct">{{ coverage().behindPercentage }}%</span>
+          <span class="status-classes"
+            >{{ coverage().behindCount }} classes</span
+          >
+        </div>
+      </div>
+
+      <div class="status-row">
+        <div class="status-indicator">
+          <span class="status-dot dot-at-risk"></span>
+          <span class="status-name">At Risk</span>
+        </div>
+        <div class="status-values">
+          <span class="status-pct">{{ coverage().atRiskPercentage }}%</span>
+          <span class="status-classes">{{ coverage().atRiskCount }} class</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/subjects-curriculum" class="footer-link">
+      <span>View coverage by class</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

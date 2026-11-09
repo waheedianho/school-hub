@@ -1,0 +1,150 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+  background: #fff;
+}
+section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.paper-scroll {
+  flex: 1;
+  min-height: 360px;
+  max-height: 460px;
+  overflow: auto;
+  background:
+    linear-gradient(90deg, #f5f3fb 1px, transparent 1px) 28px 0 / 100% 100%,
+    white;
+}
+.paper {
+  padding: 28px 35px 28px 42px;
+  color: #2d3545;
+  font-family: 'Segoe Print', 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+  line-height: 1.7;
+}
+h2 {
+  display: inline-block;
+  margin: 0 0 19px;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #8f66ce;
+  color: #273247;
+  font-size: 1.4em;
+  font-weight: 600;
+  line-height: 1.5;
+}
+p {
+  margin: 0;
+}
+.definition {
+  margin-bottom: 18px;
+  font-size: 1em;
+}
+ul {
+  margin: 0 0 17px;
+  padding-left: 20px;
+  font-size: 1em;
+}
+li + li {
+  margin-top: 9px;
+}
+.examples {
+  display: grid;
+  gap: 19px;
+}
+.examples p {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 1.15em;
+}
+.lead,
+.rest {
+  display: inline-block;
+  padding-bottom: 2px;
+  border-bottom: 2px solid currentColor;
+}
+.example-part {
+  display: inline-flex;
+  flex-direction: column;
+}
+.example-part small {
+  font-size: 0.75em;
+  font-family: Arial, sans-serif;
+}
+.lead {
+  color: #3973d6;
+}
+.rest {
+  color: #23946b;
+}
+small {
+  display: block;
+  margin-top: 5px;
+  color: #77919e;
+  font-size: 0.85em;
+}
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 43px;
+  padding: 4px;
+  border-top: 1px solid #ebe8f2;
+  background: #fcfbff;
+  color: #7b7291;
+  font-family: Arial, sans-serif;
+  font-size: typography.$caption;
+}
+button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 32px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  color: #69718a;
+  font-size: 18px;
+  cursor: pointer;
+}
+button:hover {
+  background: #f1eafb;
+}
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 2px;
+}
+button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.divider {
+  height: 20px;
+  margin: 0 4px;
+  border-left: 1px solid #e4deee;
+}
+:host:fullscreen section {
+  max-width: 1200px;
+  margin: auto;
+}
+:host:fullscreen .paper-scroll {
+  max-height: none;
+}
+:host:fullscreen .paper {
+  padding: 40px 8%;
+  font-size: 24px !important;
+}
+@media (max-width: 600px) {
+  .paper {
+    padding: 22px 20px;
+  }
+  .paper-scroll {
+    min-height: 330px;
+  }
+}

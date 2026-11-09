@@ -1,0 +1,59 @@
+<school-hub-dashboard-card
+  title="Current Topics by Class"
+  icon="ri-book-open-line"
+  tone="blue"
+  [compact]="true"
+>
+  <div class="table-responsive">
+    <table class="topics-table">
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Subject</th>
+          <th>Current Topic</th>
+          <th>Delivery Status</th>
+          <th>Average Score</th>
+          <th class="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of topics(); track item.id) {
+        <tr>
+          <td>
+            <span class="class-name">{{ item.className }}</span>
+          </td>
+          <td>
+            <span class="cell-text">{{ item.subject }}</span>
+          </td>
+          <td>
+            <span class="topic-name">{{ item.currentTopic }}</span>
+          </td>
+          <td>
+            <school-hub-status-badge
+              [label]="item.deliveryStatus"
+              [tone]="item.deliveryStatus === 'On Track' ? 'green' : 'orange'"
+            />
+          </td>
+          <td>
+            <div class="score-cell">
+              <span class="score-number">{{ item.averageScore }}%</span>
+              <div class="progress-wrap">
+                <school-hub-progress-bar
+                  [value]="item.averageScore"
+                  [label]="item.className + ' Average Score'"
+                  [tone]="getScoreTone(item.averageScore)"
+                />
+              </div>
+            </div>
+          </td>
+          <td class="text-right">
+            <a [routerLink]="item.classRoute" class="btn-open-class">
+              Open Class
+            </a>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</school-hub-dashboard-card>

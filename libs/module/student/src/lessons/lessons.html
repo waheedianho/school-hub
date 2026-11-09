@@ -1,0 +1,385 @@
+<div class="lessons-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  <header class="page-heading">
+    <h1>My Lessons</h1>
+    <p>Track your current, completed, and upcoming lessons.</p>
+  </header>
+
+  @if (missingLesson()) {
+  <div class="missing-lesson" role="status">
+    <span
+      >That lesson could not be found. Choose a lesson from the list
+      below.</span
+    ><button type="button" (click)="closeDialog()">Dismiss</button>
+  </div>
+  }
+
+  <div class="lessons-layout">
+    <div class="lessons-primary">
+      <div class="summary-grid">
+        <school-hub-dashboard-card
+          title="Current Lesson"
+          icon="ri-book-open-line"
+        >
+          <div class="current-summary">
+            <dl>
+              <dt>Subject</dt>
+              <dd>{{ currentLesson.subject }}</dd>
+              <dt>Topic</dt>
+              <dd>{{ currentLesson.title }}</dd>
+            </dl>
+            <school-hub-progress-ring
+              [value]="currentLesson.progress"
+              label="Current lesson completion"
+            />
+          </div>
+          <div class="term-row">
+            <span>Term</span
+            ><strong
+              >First Term <span aria-hidden="true">•</span> Week {{
+              currentLesson.week }}</strong
+            >
+          </div>
+          <div class="completion-row">
+            <span>Lesson Completion</span
+            ><school-hub-progress-bar
+              [value]="currentLesson.progress"
+              label="Lesson completion"
+            /><strong>{{ currentLesson.progress }}%</strong>
+          </div>
+          <button
+            class="primary-button current-button"
+            type="button"
+            (click)="openLesson(currentLesson)"
+          >
+            <i class="ri-play-circle-fill" aria-hidden="true"></i>Continue
+            Lesson
+          </button>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Next Recommended Lesson"
+          icon="ri-book-open-line"
+          tone="green"
+        >
+          <dl class="recommended-summary">
+            <dt>Subject</dt>
+            <dd>{{ recommendedLesson.subject }}</dd>
+            <dt>Topic</dt>
+            <dd>{{ recommendedLesson.title }}</dd>
+            <dt>Status</dt>
+            <dd><school-hub-status-badge label="Up Next" tone="green" /></dd>
+            <dt>Est. Time</dt>
+            <dd>
+              <i class="ri-time-line" aria-hidden="true"></i>{{
+              recommendedLesson.duration }} min
+            </dd>
+          </dl>
+          <button
+            class="primary-button green-button"
+            type="button"
+            (click)="openLesson(recommendedLesson)"
+          >
+            <i class="ri-play-circle-fill" aria-hidden="true"></i>Start Lesson
+          </button>
+        </school-hub-dashboard-card>
+
+        <school-hub-dashboard-card
+          title="Lesson Stats"
+          icon="ri-bar-chart-grouped-line"
+          tone="purple"
+        >
+          <dl class="lesson-stats">
+            @for (stat of stats; track stat.label) {
+            <div>
+              <dt>
+                <school-hub-icon-badge
+                  [icon]="stat.icon"
+                  [tone]="stat.tone"
+                  [soft]="true"
+                />{{ stat.label }}
+              </dt>
+              <dd>{{ stat.value }}</dd>
+            </div>
+            }
+          </dl>
+          <a
+            class="text-link"
+            routerLink="/student/progress"
+            [queryParams]="{ area: 'lessons' }"
+            >View Progress<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i
+          ></a>
+        </school-hub-dashboard-card>
+      </div>
+
+      <div class="lesson-filters" role="group" aria-label="Lesson filters">
+        <label class="search-field"
+          ><i class="ri-search-line" aria-hidden="true"></i
+          ><span class="visually-hidden">Search lessons</span
+          ><input
+            type="search"
+            placeholder="Search lessons"
+            [value]="search()"
+            (input)="filterChanged('q', $event)"
+        /></label>
+        <label
+          ><span>Subject</span
+          ><select
+            aria-label="Subject"
+            [value]="subject()"
+            (change)="filterChanged('subject', $event)"
+          >
+            <option value="" [selected]="!subject()">All Subjects</option>
+            @for (item of subjects; track item.id) {
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.label }}
+            </option>
+            }
+          </select></label
+        >
+        <label
+          ><span>Term</span
+          ><select
+            aria-label="Term"
+            [value]="term()"
+            (change)="filterChanged('term', $event)"
+          >
+            <option value="" [selected]="!term()">All Terms</option>
+            @for (item of terms; track item.id) {
+            <option [value]="item.id" [selected]="term() === item.id">
+              {{ item.label }}
+            </option>
+            }
+          </select></label
+        >
+        <label
+          ><span>Status</span
+          ><select
+            aria-label="Status"
+            [value]="status()"
+            (change)="filterChanged('status', $event)"
+          >
+            <option value="all" [selected]="status() === 'all'">
+              All Statuses
+            </option>
+            <option value="in-progress" [selected]="status() === 'in-progress'">
+              In Progress
+            </option>
+            <option value="completed" [selected]="status() === 'completed'">
+              Completed
+            </option>
+            <option value="upcoming" [selected]="status() === 'upcoming'">
+              Upcoming
+            </option>
+          </select></label
+        >
+      </div>
+
+      <div class="tabs-row">
+        <school-hub-filter-tabs
+          [tabs]="tabs"
+          [active]="status()"
+          panelId="lesson-results"
+          label="Lesson status"
+          (changed)="setFilter('status', $event)"
+        />@if (hasFilters()) {
+        <button type="button" class="clear-filters" (click)="clearFilters()">
+          Clear filters
+        </button>
+        }
+      </div>
+      <div
+        class="lesson-results"
+        id="lesson-results"
+        role="tabpanel"
+        [attr.aria-labelledby]="'lesson-results-' + status()"
+      >
+        <school-hub-lesson-table
+          [lessons]="visibleLessons()"
+          [selectedId]="selectedLesson()?.id"
+          (opened)="openLesson($event.lesson, $event.actions)"
+        />
+        <school-hub-pagination
+          [total]="filtered().length"
+          [page]="page()"
+          [pageSize]="pageSize"
+          itemLabel="lessons"
+          label="Lesson pages"
+          (pageChanged)="changePage($event)"
+        />
+      </div>
+
+      <div class="lessons-bottom">
+        <school-hub-dashboard-card
+          title="Recently Completed Lessons"
+          icon="ri-checkbox-circle-line"
+          tone="green"
+        >
+          <div class="recent-lessons">
+            @for (lesson of recentlyCompleted; track lesson.id) {
+            <button
+              type="button"
+              [attr.aria-label]="'Review completed lesson ' + lesson.title"
+              (click)="openLesson(lesson)"
+            >
+              <school-hub-subject-icon
+                [subject]="lesson.subjectId === 'english-language' ? 'english' : lesson.subjectId === 'basic-science' ? 'science' : 'mathematics'"
+              /><span
+                ><strong>{{ lesson.title }}</strong
+                ><small>{{ lesson.subject }} · Week {{ lesson.week }}</small
+                ><school-hub-status-badge label="Completed" tone="green"
+              /></span>
+            </button>
+            }
+          </div>
+        </school-hub-dashboard-card>
+        <school-hub-dashboard-card
+          title="Learning Tips"
+          icon="ri-lightbulb-line"
+          tone="orange"
+          ><p class="learning-tip">
+            Review lessons in small chunks and complete quizzes to reinforce
+            what you learn.
+          </p>
+          <i
+            class="ri-graduation-cap-line tip-illustration"
+            aria-hidden="true"
+          ></i
+        ></school-hub-dashboard-card>
+      </div>
+    </div>
+
+    <aside class="lessons-aside" aria-label="Lesson support">
+      <school-hub-dashboard-card title="Lesson Flow" icon="ri-route-line"
+        ><school-hub-learning-steps
+          [steps]="steps"
+          (selected)="followStep($event)"
+      /></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Pending Lesson Tasks"
+        icon="ri-clipboard-line"
+        tone="orange"
+        ><school-hub-task-list [tasks]="tasks()" /><button
+          class="text-link all-tasks"
+          type="button"
+          (click)="openTasks()"
+        >
+          View all tasks<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></button
+      ></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Common Mistake to Watch"
+        icon="ri-error-warning-fill"
+        tone="red"
+        ><div class="mistake-note">
+          <p>{{ commonMistake }}</p>
+          <i class="ri-focus-3-line" aria-hidden="true"></i></div
+      ></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Tutor Note"
+        icon="ri-chat-1-line"
+        tone="teal"
+        ><a
+          class="tutor-note"
+          routerLink="/student/feedback"
+          [queryParams]="{ feedbackId: tutorNote.id }"
+          ><p>{{ tutorNote.message }}</p>
+          <strong>– {{ tutorNote.tutor }}</strong></a
+        ></school-hub-dashboard-card
+      >
+    </aside>
+  </div>
+
+  <school-hub-dialog-panel
+    [open]="dialogOpen()"
+    [title]="dialogTitle()"
+    (dismissed)="closeDialog()"
+  >
+    @if (tasksOpen()) {
+    <p class="dialog-description">
+      Your next learning activities and their due dates.
+    </p>
+    <school-hub-task-list [tasks]="tasks()" />
+    } @else if (selectedLesson(); as lesson) { @if (actionsOpen()) {
+    <div class="lesson-menu">
+      <button type="button" (click)="openLesson(lesson)">
+        <i class="ri-book-open-line" aria-hidden="true"></i>View lesson overview</button
+      ><a
+        routerLink="/student/resources"
+        [queryParams]="{ lessonId: lesson.id, subjectId: lesson.subjectId }"
+        ><i class="ri-folder-open-line" aria-hidden="true"></i>Find lesson
+        resources</a
+      ><a
+        routerLink="/student/ask-tutor"
+        [queryParams]="{ contextType: 'lesson', contextId: lesson.id, subjectId: lesson.subjectId }"
+        ><i class="ri-chat-1-line" aria-hidden="true"></i>Ask your tutor</a
+      >
+    </div>
+    } @else {
+    <div class="overview-meta">
+      <school-hub-status-badge
+        [label]="statusLabels[lesson.status].label"
+        [tone]="statusLabels[lesson.status].tone"
+      /><span>{{ lesson.subject }}</span><span>Week {{ lesson.week }}</span
+      ><span>{{ lesson.duration }} min</span>
+    </div>
+    <div class="lesson-objective">
+      <h3>What you will learn</h3>
+      <p>{{ lesson.objective }}</p>
+    </div>
+    @if (!lesson.available) {
+    <p class="availability-note">
+      <i class="ri-lock-line" aria-hidden="true"></i>This lesson is coming up.
+      You can preview its objective; activities will unlock when the lesson is
+      available.
+    </p>
+    } @if (lesson.available) {
+    <div class="overview-progress">
+      <span>Lesson completion</span><strong>{{ lesson.progress }}%</strong
+      ><school-hub-progress-bar
+        [value]="lesson.progress"
+        [label]="lesson.title + ' completion'"
+      />
+    </div>
+    <a
+      class="primary-button resources-button"
+      routerLink="/student/resources"
+      [queryParams]="{ lessonId: lesson.id, subjectId: lesson.subjectId }"
+      ><i class="ri-book-open-line" aria-hidden="true"></i>{{ lesson.status ===
+      'completed' ? 'Review learning resources' : 'Open learning resources'
+      }}</a
+    >
+    <h3 class="related-heading">Related activities</h3>
+    <div class="related-activities">
+      @for (kind of activityKinds; track kind) { @if (lesson.activities[kind]
+      !== 'not-applicable' && lesson.activities[kind] !== 'locked') {
+      <a
+        [routerLink]="activityRoutes[kind]"
+        [queryParams]="activityQuery(lesson, kind)"
+        ><span>{{ activityLabels[kind] }}</span
+        ><school-hub-status-badge
+          [label]="lesson.activities[kind] === 'done' ? 'Done' : 'Pending'"
+          [tone]="lesson.activities[kind] === 'done' ? 'green' : 'orange'" /><i
+          class="ri-arrow-right-s-line"
+          aria-hidden="true"
+        ></i
+      ></a>
+      } }
+    </div>
+    }
+    <a
+      class="overview-help"
+      routerLink="/student/ask-tutor"
+      [queryParams]="{ contextType: 'lesson', contextId: lesson.id, subjectId: lesson.subjectId }"
+      ><i class="ri-question-line" aria-hidden="true"></i>Ask your tutor about
+      this lesson</a
+    >
+    } }
+  </school-hub-dialog-panel>
+</div>

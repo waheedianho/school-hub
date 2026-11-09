@@ -1,0 +1,50 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.player {
+  overflow: hidden;
+  border-radius: 9px 9px 0 0;
+  background: #161729;
+}
+video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #f6f2fc;
+}
+p {
+  margin: 0;
+  padding: 15px;
+  color: #fff;
+  font-size: typography.$body;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px 15px;
+  color: #d8d7e9;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+select {
+  padding: 4px;
+  border: 1px solid #696075;
+  border-radius: 5px;
+  background: #28223b;
+  color: white;
+  font: inherit;
+}
+select:focus-visible {
+  outline: 2px solid #d3a9ff;
+  outline-offset: 3px;
+}

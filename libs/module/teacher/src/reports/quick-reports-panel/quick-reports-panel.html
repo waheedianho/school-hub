@@ -1,0 +1,29 @@
+<div class="quick-reports-card">
+  <div class="card-header">
+    <h3 class="card-title">Quick Reports</h3>
+  </div>
+
+  <div class="reports-list">
+    @for (rep of reports(); track rep.id) {
+    <button
+      type="button"
+      class="report-item-btn"
+      (click)="onSelectReport(rep.id)"
+      [attr.aria-label]="rep.title + ': ' + rep.description"
+    >
+      <div class="report-left">
+        <div class="report-icon-box">
+          <span class="material-symbols-outlined">{{ rep.icon }}</span>
+        </div>
+        <div class="report-info">
+          <span class="report-title">{{ rep.title }}</span>
+          <span class="report-desc">{{ rep.description }}</span>
+        </div>
+      </div>
+      <span class="material-symbols-outlined report-chevron"
+        >chevron_right</span
+      >
+    </button>
+    }
+  </div>
+</div>

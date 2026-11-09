@@ -1,0 +1,598 @@
+<div class="create-announcement-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification" role="status" aria-live="polite">
+    <span class="material-symbols-outlined toast-icon">check_circle</span>
+    <span class="toast-text">{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/messages" class="breadcrumb-link"
+          >Communication</a
+        >
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        Create Announcement
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Create Announcement</h1>
+      <p class="page-subtitle">
+        Draft and send announcements to learners, parents, or classes.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button type="button" class="btn-save-draft" (click)="onSaveDraft()">
+        <span class="material-symbols-outlined btn-icon">draft</span>
+        <span>Save Draft</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-send-announcement"
+        (click)="onSendAnnouncement()"
+        [disabled]="isSending()"
+      >
+        <span class="material-symbols-outlined btn-icon">send</span>
+        <span>{{ isSending() ? 'Sending...' : 'Send Announcement' }}</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Grid -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~68%) -->
+    <div class="left-column">
+      <!-- 1. Announcement Details -->
+      <section class="form-card" aria-labelledby="details-title">
+        <div class="card-step-header">
+          <span class="step-badge">1</span>
+          <h2 id="details-title" class="step-title">Announcement Details</h2>
+        </div>
+
+        <div class="form-grid-row-1">
+          <!-- Title -->
+          <div class="form-group span-title">
+            <label class="form-label" for="annTitle">
+              Announcement Title <span class="required">*</span>
+            </label>
+            <input
+              id="annTitle"
+              type="text"
+              class="form-control"
+              placeholder="e.g., Mid-Term Assessment Notice"
+              [ngModel]="announcementTitle()"
+              (ngModelChange)="announcementTitle.set($event)"
+            />
+          </div>
+
+          <!-- Audience -->
+          <div class="form-group">
+            <label class="form-label" for="annAudience">
+              Audience <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="annAudience"
+                class="form-select"
+                [ngModel]="audience()"
+                (ngModelChange)="audience.set($event)"
+              >
+                @for (aud of audienceOptions; track aud) {
+                <option [value]="aud">{{ aud }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Class -->
+          <div class="form-group">
+            <label class="form-label" for="annClass">
+              Class <span class="required">*</span>
+            </label>
+            <div class="select-wrapper">
+              <select
+                id="annClass"
+                class="form-select"
+                [ngModel]="selectedClass()"
+                (ngModelChange)="selectedClass.set($event)"
+              >
+                @for (c of classOptions; track c) {
+                <option [value]="c">{{ c }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+
+          <!-- Subject -->
+          <div class="form-group">
+            <label class="form-label" for="annSubject"
+              >Subject (Optional)</label
+            >
+            <div class="select-wrapper">
+              <select
+                id="annSubject"
+                class="form-select"
+                [ngModel]="subject()"
+                (ngModelChange)="subject.set($event)"
+              >
+                @for (s of subjectOptions; track s) {
+                <option [value]="s">{{ s }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Priority Row -->
+        <div class="form-grid-row-2">
+          <div class="form-group priority-group">
+            <label class="form-label" for="annPriority">Priority</label>
+            <div class="select-wrapper input-with-icon">
+              <span
+                class="material-symbols-outlined input-prefix-icon flag-icon"
+                [class]="'priority-' + priority().toLowerCase()"
+              >
+                flag
+              </span>
+              <select
+                id="annPriority"
+                class="form-select with-icon"
+                [ngModel]="priority()"
+                (ngModelChange)="priority.set($event)"
+              >
+                @for (p of priorityOptions; track p) {
+                <option [value]="p">{{ p }}</option>
+                }
+              </select>
+              <span class="material-symbols-outlined select-arrow"
+                >expand_more</span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Message Content -->
+      <section class="form-card" aria-labelledby="content-title">
+        <div class="card-step-header">
+          <span class="step-badge">2</span>
+          <h2 id="content-title" class="step-title">Message Content</h2>
+        </div>
+
+        <!-- Rich Formatting Toolbar -->
+        <div
+          class="editor-toolbar"
+          role="toolbar"
+          aria-label="Formatting tools"
+        >
+          <div class="select-wrapper toolbar-select-wrapper">
+            <select class="toolbar-select" aria-label="Text style">
+              <option>Paragraph</option>
+              <option>Heading 1</option>
+              <option>Heading 2</option>
+            </select>
+            <span class="material-symbols-outlined select-arrow"
+              >expand_more</span
+            >
+          </div>
+
+          <div class="toolbar-divider"></div>
+
+          <button type="button" class="tool-btn" aria-label="Bold">
+            <span class="material-symbols-outlined">format_bold</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Italic">
+            <span class="material-symbols-outlined">format_italic</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Underline">
+            <span class="material-symbols-outlined">format_underlined</span>
+          </button>
+
+          <div class="toolbar-divider"></div>
+
+          <button type="button" class="tool-btn" aria-label="Bulleted list">
+            <span class="material-symbols-outlined">format_list_bulleted</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Numbered list">
+            <span class="material-symbols-outlined">format_list_numbered</span>
+          </button>
+
+          <div class="toolbar-divider"></div>
+
+          <button type="button" class="tool-btn" aria-label="Align left">
+            <span class="material-symbols-outlined">format_align_left</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Align center">
+            <span class="material-symbols-outlined">format_align_center</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Align right">
+            <span class="material-symbols-outlined">format_align_right</span>
+          </button>
+
+          <div class="toolbar-divider"></div>
+
+          <button type="button" class="tool-btn" aria-label="Insert link">
+            <span class="material-symbols-outlined">link</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Insert image">
+            <span class="material-symbols-outlined">image</span>
+          </button>
+
+          <div class="toolbar-divider"></div>
+
+          <button type="button" class="tool-btn" aria-label="Undo">
+            <span class="material-symbols-outlined">undo</span>
+          </button>
+          <button type="button" class="tool-btn" aria-label="Redo">
+            <span class="material-symbols-outlined">redo</span>
+          </button>
+        </div>
+
+        <!-- Textarea -->
+        <div class="content-textarea-wrapper">
+          <textarea
+            class="content-textarea"
+            rows="8"
+            maxlength="2000"
+            placeholder="Type your announcement content here..."
+            [ngModel]="messageContent()"
+            (ngModelChange)="messageContent.set($event)"
+          ></textarea>
+          <div class="char-counter-bottom">{{ charCount() }}/2000</div>
+        </div>
+      </section>
+
+      <!-- 3. Delivery Options -->
+      <section class="form-card" aria-labelledby="delivery-title">
+        <div class="card-step-header">
+          <span class="step-badge">3</span>
+          <h2 id="delivery-title" class="step-title">Delivery Options</h2>
+        </div>
+
+        <div class="delivery-options-grid">
+          <!-- In-app Notification -->
+          <label class="delivery-card" [class.selected]="inAppNotification()">
+            <input
+              type="checkbox"
+              class="delivery-checkbox"
+              [ngModel]="inAppNotification()"
+              (ngModelChange)="inAppNotification.set($event)"
+            />
+            <div class="delivery-icon-box purple">
+              <span class="material-symbols-outlined">notifications</span>
+            </div>
+            <div class="delivery-text-group">
+              <h4 class="delivery-name">In-app Notification</h4>
+              <p class="delivery-sub">Send notification within Learno app</p>
+            </div>
+          </label>
+
+          <!-- Email -->
+          <label class="delivery-card" [class.selected]="sendEmail()">
+            <input
+              type="checkbox"
+              class="delivery-checkbox"
+              [ngModel]="sendEmail()"
+              (ngModelChange)="sendEmail.set($event)"
+            />
+            <div class="delivery-icon-box blue">
+              <span class="material-symbols-outlined">mail</span>
+            </div>
+            <div class="delivery-text-group">
+              <h4 class="delivery-name">Email</h4>
+              <p class="delivery-sub">Send via email to recipients</p>
+            </div>
+          </label>
+
+          <!-- Parent Copy -->
+          <label class="delivery-card" [class.selected]="parentCopy()">
+            <input
+              type="checkbox"
+              class="delivery-checkbox"
+              [ngModel]="parentCopy()"
+              (ngModelChange)="parentCopy.set($event)"
+            />
+            <div class="delivery-icon-box green">
+              <span class="material-symbols-outlined">group</span>
+            </div>
+            <div class="delivery-text-group">
+              <h4 class="delivery-name">Parent Copy</h4>
+              <p class="delivery-sub">Send a copy to parents/guardians</p>
+            </div>
+          </label>
+
+          <!-- Schedule for Later -->
+          <label class="delivery-card" [class.selected]="scheduleForLater()">
+            <input
+              type="checkbox"
+              class="delivery-checkbox"
+              [ngModel]="scheduleForLater()"
+              (ngModelChange)="scheduleForLater.set($event)"
+            />
+            <div class="delivery-icon-box orange">
+              <span class="material-symbols-outlined">schedule</span>
+            </div>
+            <div class="delivery-text-group">
+              <h4 class="delivery-name">Schedule for Later</h4>
+              <p class="delivery-sub">Choose a future date and time to send</p>
+            </div>
+          </label>
+        </div>
+      </section>
+
+      <!-- Row: 4. Schedule & 5. Attachments -->
+      <div class="schedule-attachments-row">
+        <!-- 4. Schedule -->
+        <section class="form-card sub-card" aria-labelledby="schedule-title">
+          <div class="card-step-header">
+            <span class="step-badge">4</span>
+            <h2 id="schedule-title" class="step-title">Schedule</h2>
+          </div>
+
+          <div class="schedule-inputs-col">
+            <div class="form-group">
+              <label class="form-label" for="sendDate">Send Date</label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-prefix-icon"
+                  >calendar_today</span
+                >
+                <input
+                  id="sendDate"
+                  type="text"
+                  class="form-control with-icon"
+                  placeholder="e.g., May 22, 2024"
+                  [ngModel]="sendDate()"
+                  (ngModelChange)="sendDate.set($event)"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="sendTime">Send Time</label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-prefix-icon"
+                  >schedule</span
+                >
+                <input
+                  id="sendTime"
+                  type="text"
+                  class="form-control with-icon"
+                  placeholder="e.g., 10:00 AM"
+                  [ngModel]="sendTime()"
+                  (ngModelChange)="sendTime.set($event)"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Attachments -->
+        <section class="form-card sub-card" aria-labelledby="attachments-title">
+          <div class="card-step-header">
+            <span class="step-badge">5</span>
+            <h2 id="attachments-title" class="step-title">
+              Attachments (Optional)
+            </h2>
+          </div>
+
+          @if (!attachedFile()) {
+          <div
+            class="dropzone-box"
+            [class.drag-over]="isDragging()"
+            (dragover)="onDragOver($event)"
+            (dragleave)="onDragLeave($event)"
+            (drop)="onDrop($event)"
+          >
+            <div class="dropzone-icon-circle">
+              <span class="material-symbols-outlined">cloud_upload</span>
+            </div>
+            <p class="dropzone-label">
+              Drag and drop files here or click to
+              <label class="browse-link">
+                browse
+                <input
+                  type="file"
+                  class="hidden-file-input"
+                  (change)="onFileSelected($event)"
+                  accept=".pdf,.doc,.docx,.jpg,.png"
+                />
+              </label>
+            </p>
+            <p class="dropzone-sub">PDF, DOC, DOCX, JPG, PNG (Max 10MB)</p>
+          </div>
+          } @else {
+          <div class="attached-file-item">
+            <div class="file-item-left">
+              <div class="file-format-badge">
+                <span class="material-symbols-outlined">description</span>
+              </div>
+              <div class="file-item-info">
+                <span class="file-name">{{ attachedFile()?.name }}</span>
+                <span class="file-meta"
+                  >{{ attachedFile()?.format }} • {{ attachedFile()?.size
+                  }}</span
+                >
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn-file-remove"
+              (click)="onRemoveAttachment()"
+              aria-label="Remove attachment"
+            >
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+          }
+        </section>
+      </div>
+    </div>
+
+    <!-- Right Column (~32%) -->
+    <aside
+      class="right-column"
+      aria-label="Announcement preview and guidelines"
+    >
+      <!-- 1. Preview Card -->
+      <div class="side-card preview-card">
+        <div class="preview-header">
+          <div class="header-left">
+            <span class="material-symbols-outlined preview-icon"
+              >visibility</span
+            >
+            <h3 class="side-card-title">Preview</h3>
+          </div>
+          <p class="preview-sub">This is how your announcement will appear.</p>
+        </div>
+
+        <div class="announcement-preview-box">
+          <div class="preview-top-row">
+            <div class="ann-megaphone-circle">
+              <span class="material-symbols-outlined">campaign</span>
+            </div>
+            <span
+              class="priority-pill"
+              [class]="'priority-' + priority().toLowerCase()"
+            >
+              {{ priority() }} Priority
+            </span>
+          </div>
+
+          <h4 class="preview-ann-title">{{ announcementTitle() }}</h4>
+          <p class="preview-ann-meta">
+            {{ subject() }} • {{ selectedClass() }} • {{ sendDate() }} at {{
+            sendTime() }}
+          </p>
+
+          <div class="preview-ann-body">
+            <p>{{ messageContent() }}</p>
+          </div>
+
+          <div class="preview-footer-row">
+            @if (attachedFile()) {
+            <div class="attachment-pill">
+              <span class="material-symbols-outlined">attach_file</span>
+              <span>Attachment (1)</span>
+            </div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Announcement Guidelines -->
+      <div class="side-card guidelines-card">
+        <div class="side-card-header">
+          <div class="side-card-icon-box purple">
+            <span class="material-symbols-outlined">verified_user</span>
+          </div>
+          <h3 class="side-card-title">Announcement Guidelines</h3>
+        </div>
+
+        <ul class="guidelines-list">
+          @for (item of guidelines(); track item) {
+          <li class="guideline-item">
+            <span class="material-symbols-outlined check-icon"
+              >check_circle</span
+            >
+            <span class="item-text">{{ item }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- 3. Bottom Row: Quick Templates & Recipient Summary -->
+      <div class="side-widgets-subgrid">
+        <!-- Quick Templates -->
+        <div class="side-card templates-subcard">
+          <div class="side-card-header">
+            <div class="side-card-icon-box purple">
+              <span class="material-symbols-outlined">bolt</span>
+            </div>
+            <h3 class="side-card-title">Quick Templates</h3>
+          </div>
+          <div class="templates-list">
+            @for (tpl of quickTemplates; track tpl.id) {
+            <button
+              type="button"
+              class="template-row-btn"
+              (click)="onApplyTemplate(tpl)"
+            >
+              <div class="template-left">
+                <span class="material-symbols-outlined template-icon"
+                  >description</span
+                >
+                <span class="template-label">{{ tpl.label }}</span>
+              </div>
+              <span class="material-symbols-outlined chevron-icon"
+                >chevron_right</span
+              >
+            </button>
+            }
+          </div>
+        </div>
+
+        <!-- Recipient Summary -->
+        <div class="side-card summary-subcard">
+          <div class="side-card-header">
+            <div class="side-card-icon-box purple">
+              <span class="material-symbols-outlined">groups</span>
+            </div>
+            <h3 class="side-card-title">Recipient Summary</h3>
+          </div>
+          <div class="recipient-details-list">
+            <div class="rec-row">
+              <span class="rec-label">Audience</span>
+              <span class="rec-value">{{ recipientSummary().audience }}</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">Class</span>
+              <span class="rec-value">{{ recipientSummary().className }}</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">Learners</span>
+              <span class="rec-value">{{ recipientSummary().learners }}</span>
+            </div>
+            <div class="rec-row">
+              <span class="rec-label">Parents/Guardians</span>
+              <span class="rec-value">{{ recipientSummary().parents }}</span>
+            </div>
+            <div class="rec-row total-rec-row">
+              <span class="rec-label bold">Total Recipients</span>
+              <span class="rec-value total-bold"
+                >{{ recipientSummary().total }}</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

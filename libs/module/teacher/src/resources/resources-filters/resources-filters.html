@@ -1,0 +1,106 @@
+<div class="filters-card">
+  <div class="filters-row">
+    <div class="filter-item">
+      <label class="filter-label" for="resClassSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="resClassSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="resSubjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="resSubjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="resTypeSelect">Resource Type</label>
+      <div class="select-wrapper">
+        <select
+          id="resTypeSelect"
+          class="filter-select"
+          [ngModel]="selectedType()"
+          (ngModelChange)="selectedType.set($event); onFilterChange()"
+        >
+          @for (t of types; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="resTopicSelect">Topic</label>
+      <div class="select-wrapper">
+        <select
+          id="resTopicSelect"
+          class="filter-select"
+          [ngModel]="selectedTopic()"
+          (ngModelChange)="selectedTopic.set($event); onFilterChange()"
+        >
+          @for (top of topics; track top) {
+          <option [value]="top">{{ top }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item search-item">
+      <div class="search-input-wrapper">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search resources..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($any($event.target).value)"
+          aria-label="Search resources"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearchInput('')"
+          aria-label="Clear search"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="filter-action-item">
+      <button
+        type="button"
+        class="btn-filters-toggle"
+        (click)="toggleAdvancedFilters.emit()"
+        aria-label="Filter options"
+      >
+        <span class="material-symbols-outlined">tune</span>
+      </button>
+    </div>
+  </div>
+</div>

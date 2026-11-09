@@ -1,0 +1,92 @@
+.pending-submissions-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.view-all-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4f46e5;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.submissions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.submission-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submission-icon-box {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: #f1f5f9;
+  color: #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  span {
+    font-size: 18px;
+  }
+}
+
+.submission-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.submission-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.submission-meta {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.submission-timestamp {
+  font-size: 11px;
+  color: #94a3b8;
+  white-space: nowrap;
+}

@@ -1,0 +1,16 @@
+<ol aria-label="Video chapters">
+  @for(item of items();track item.start;let index=$index){
+  <li>
+    <button
+      type="button"
+      [class.active]="active()===index"
+      [attr.aria-current]="active()===index?'step':null"
+      (click)="selected.emit(item.start)"
+    >
+      <span class="marker" aria-hidden="true"
+        >@if(active()===index){<i class="ri-play-fill"></i>}</span
+      ><time>{{item.time}}</time><span>{{item.title}}</span>
+    </button>
+  </li>
+  }
+</ol>

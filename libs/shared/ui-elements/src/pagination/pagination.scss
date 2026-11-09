@@ -1,0 +1,52 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+}
+.pagination-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  border-top: 1px solid #eaf0f8;
+  color: #5d6e88;
+}
+p {
+  margin: 0;
+  font-size: typography.$caption;
+}
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+button {
+  display: grid;
+  place-items: center;
+  min-width: 25px;
+  height: 25px;
+  padding: 0 6px;
+  border: 1px solid #e5ebf6;
+  border-radius: 6px;
+  background: #fff;
+  color: #5a6a84;
+  font-size: typography.$caption;
+}
+button[aria-current='page'] {
+  border-color: #0866ff;
+  background: #0866ff;
+  color: white;
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+button:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 2px;
+}
+:host-context(.dark) button {
+  background: #15253e;
+}

@@ -1,0 +1,173 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.portfolio-aside {
+  display: grid;
+  gap: 16px;
+}
+.overall-progress {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+.overall-progress dl {
+  flex: 1;
+  margin: 0;
+}
+.overall-progress dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 0;
+  color: #5d718e;
+  font-size: typography.$caption;
+}
+.overall-progress dd {
+  margin: 0;
+  color: #3d5375;
+  font-weight: 650;
+}
+.aside-copy {
+  margin: 8px 0 16px;
+  color: #72829a;
+  font-size: typography.$caption;
+  line-height: 1.8;
+}
+.skill-list {
+  display: grid;
+  gap: 19px;
+}
+.skill-list > div {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr) 72px 34px;
+  align-items: center;
+  gap: 8px;
+  color: #5c718f;
+  font-size: typography.$caption;
+}
+.skill-list i {
+  color: #9370bf;
+  font-size: 19px;
+}
+.skill-list strong {
+  text-align: right;
+}
+.benefits {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+  color: #5c728f;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.quick-actions {
+  display: grid;
+  gap: 9px;
+}
+.quick-actions button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e6e5f3;
+  border-radius: 8px;
+  background: #fcfaff;
+  color: #8155bc;
+  text-align: left;
+}
+.quick-actions button > i {
+  font-size: 20px;
+}
+.quick-actions button > span {
+  flex: 1;
+  min-width: 0;
+}
+.quick-actions strong {
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.quick-actions small {
+  display: block;
+  margin-top: 5px;
+  color: #71809b;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+.help-panel {
+  display: flex;
+  align-items: start;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid #e3d8f9;
+  border-radius: 12px;
+  background: #faf7ff;
+  color: #7c62a0;
+}
+.help-panel > i {
+  color: #8c5bc8;
+  font-size: 28px;
+}
+.help-panel h3 {
+  margin: 0;
+  font-size: typography.$section;
+}
+.help-panel p {
+  margin: 10px 0 14px;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.help-panel a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #7940dc;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.dialog-copy,
+.task-guide {
+  color: #627693;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.dialog-copy {
+  margin: 0 0 20px;
+}
+.task-guide {
+  display: grid;
+  gap: 17px;
+  margin: 0 0 24px;
+  padding-left: 20px;
+  list-style: decimal;
+}
+.upload-task-list {
+  display: grid;
+  gap: 11px;
+}
+.upload-task-list a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e5e4f2;
+  border-radius: 9px;
+  color: #5e4d86;
+}
+.upload-task-list a > span {
+  flex: 1;
+  min-width: 0;
+}
+.upload-task-list strong {
+  display: block;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.upload-task-list small {
+  display: block;
+  margin-top: 5px;
+  color: #72809a;
+  font-size: typography.$caption;
+}

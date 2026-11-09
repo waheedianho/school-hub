@@ -1,0 +1,98 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.scroll {
+  position: relative;
+  overflow-x: auto;
+}
+table {
+  width: 100%;
+  min-width: 800px;
+  border-collapse: collapse;
+  color: #52627f;
+  font-size: typography.$caption;
+}
+th {
+  text-align: left;
+  padding: 12px 10px;
+  background: #f7f8fc;
+  color: #43516b;
+  font-weight: 650;
+  white-space: nowrap;
+}
+td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #edf0f6;
+  line-height: 1.6;
+}
+.name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 250px;
+}
+.name school-hub-icon-badge {
+  flex-shrink: 0;
+}
+.name a {
+  color: #293954;
+  font-weight: 650;
+  text-decoration: none;
+  font-size: typography.$body;
+}
+.name p {
+  margin: 3px 0 0;
+  color: #738099;
+  max-width: 290px;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.view,
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 33px;
+  border: 1px solid #e1e2f0;
+  border-radius: 6px;
+  background: white;
+  color: #53617c;
+  text-decoration: none;
+  cursor: pointer;
+}
+.view {
+  padding: 5px 12px;
+  font-weight: 600;
+}
+button {
+  width: 30px;
+  border-color: transparent;
+  font-size: 19px;
+}
+a:hover {
+  color: #7c35ce;
+}
+.view:hover,
+button:hover {
+  background: #faf6ff;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 2px;
+}
+.sr-only {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}

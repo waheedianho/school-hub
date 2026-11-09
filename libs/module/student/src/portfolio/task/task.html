@@ -1,0 +1,697 @@
+<div class="portfolio-task-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
+  <div class="task-toolbar">
+    <a
+      class="back-link"
+      routerLink="/student/portfolio-tasks"
+      [queryParams]="backQuery()"
+      ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to Portfolio
+      Tasks</a
+    >@if (task()) {
+    <div>
+      <button class="outline-button" type="button" (click)="downloadBrief()">
+        <i class="ri-download-line" aria-hidden="true"></i>Download Task Brief</button
+      ><button
+        class="outline-button"
+        type="button"
+        (click)="dialog.set('actions')"
+      >
+        More<i class="ri-arrow-down-s-line" aria-hidden="true"></i>
+      </button>
+    </div>
+    }
+  </div>
+  @if (task(); as task) { @if (!store.persistent()) {
+  <p class="notice" role="status">
+    Device storage is unavailable. Keep this page open to retain your draft and
+    files.
+  </p>
+  }
+  <div class="task-layout">
+    <div class="task-primary">
+      <header class="task-heading">
+        <div
+          class="task-illustration"
+          [class]="'task-illustration ' + task.tone"
+        >
+          <i [class]="task.icon" aria-hidden="true"></i>
+        </div>
+        <div>
+          <school-hub-status-badge
+            [label]="statuses[task.status].label"
+            [tone]="statuses[task.status].tone"
+          />
+          <h1>{{ task.title }}</h1>
+          <p>{{ task.description }}</p>
+          <div class="heading-meta">
+            <span
+              ><i class="ri-book-open-line" aria-hidden="true"></i>{{
+              task.subject }}</span
+            ><span>Week {{ task.week }}</span
+            ><span
+              ><i class="ri-user-line" aria-hidden="true"></i>Individual
+              Task</span
+            ><span class="due-date">Due: {{ date(task.dueAt) }}</span>
+          </div>
+          <school-hub-progress-bar
+            [value]="task.progress"
+            label="Portfolio task work progress"
+            tone="purple"
+          />
+        </div>
+      </header>
+      <school-hub-filter-tabs
+        [tabs]="tabs"
+        [active]="tab()"
+        panelId="portfolio-task-panel"
+        label="Portfolio task sections"
+        (changed)="setTab($event)"
+      />
+      @if (submissionErrors().length) {
+      <div class="validation-errors" role="alert">
+        <strong>Complete these before submitting:</strong>
+        <ul>
+          @for (error of submissionErrors(); track error) {
+          <li>{{ error }}</li>
+          }
+        </ul>
+        <button type="button" (click)="setTab('work')">Go to My Work</button>
+      </div>
+      }
+      <div
+        id="portfolio-task-panel"
+        role="tabpanel"
+        [attr.aria-labelledby]="'portfolio-task-panel-' + tab()"
+      >
+        @switch (tab()) { @case ('overview') {
+        <section class="task-section">
+          <h2>
+            <i class="ri-focus-3-line" aria-hidden="true"></i>What You Will Do
+          </h2>
+          <p>{{ task.brief }}</p>
+          <div class="connection-note">
+            <h3>
+              <i class="ri-lightbulb-line" aria-hidden="true"></i>Real-life
+              Connection
+            </h3>
+            <p>{{ task.connection }}</p>
+          </div>
+        </section>
+        <section class="task-section">
+          <h2>Your Tasks</h2>
+          <ol class="task-instructions">
+            @for (step of task.steps; track $index; let index = $index) {
+            <li>
+              <span>{{ index + 1 }}</span>
+              <p>{{ step }}</p>
+            </li>
+            }
+          </ol>
+          <div class="tips-note">
+            <h3>
+              <i class="ri-checkbox-circle-line" aria-hidden="true"></i>Tips
+            </h3>
+            <ul>
+              @for (tip of task.tips; track tip) {
+              <li>{{ tip }}</li>
+              }
+            </ul>
+          </div>
+          <div class="task-resources">
+            <h3>
+              <i class="ri-folder-open-line" aria-hidden="true"></i>Resources to
+              Help You
+            </h3>
+            <div>
+              <a
+                routerLink="/student/lessons"
+                [queryParams]="{ lessonId: task.lessonId, subject: task.subjectId }"
+                ><i class="ri-book-open-line" aria-hidden="true"></i
+                ><span
+                  >Related Lesson<small>Review the key ideas</small></span
+                ></a
+              ><button type="button" (click)="dialog.set('example')">
+                <i class="ri-file-list-3-line" aria-hidden="true"></i
+                ><span
+                  >Example Structure<small>A guide for your work</small></span
+                ></button
+              ><button
+                type="button"
+                [disabled]="!task.available"
+                (click)="downloadTemplate()"
+              >
+                <i class="ri-file-download-line" aria-hidden="true"></i
+                ><span
+                  >Task Template<small
+                    >{{ task.id === 'market-price-comparison' ? 'CSV
+                    spreadsheet' : 'Text outline' }}</small
+                  ></span
+                >
+              </button>
+            </div>
+          </div>
+          <div class="success-criteria">
+            <h3>
+              <i class="ri-medal-line" aria-hidden="true"></i>Success Criteria
+            </h3>
+            <ul>
+              @for (criterion of task.successCriteria; track criterion) {
+              <li>{{ criterion }}</li>
+              }
+            </ul>
+          </div>
+        </section>
+        <section class="task-section next-steps">
+          <h2>Next Steps</h2>
+          <p>
+            Complete your work, reflect on your learning, and submit before the
+            due date.
+          </p>
+          <school-hub-learning-steps
+            [steps]="journey"
+            (selected)="setTab($event)"
+          />@if (task.available) {
+          <button
+            class="portfolio-button"
+            type="button"
+            (click)="setTab(editable() ? 'work' : 'submission')"
+          >
+            {{ editable() ? 'Continue Working on My Task' : 'View My Submission'
+            }}<i class="ri-arrow-right-line" aria-hidden="true"></i>
+          </button>
+          } @else {
+          <p class="notice">
+            This task unlocks when its lesson becomes available.
+          </p>
+          }
+        </section>
+        } @case ('work') {
+        <section class="task-section">
+          <h2>My Work</h2>
+          <p>
+            Use this space to plan and write your response. You can also attach
+            files or photographs of your work.
+          </p>
+          @if (!task.available) {
+          <p class="notice">
+            This task is locked. You can read the brief and preview the related
+            lesson.
+          </p>
+          } @else { @if (!editable()) {
+          <p class="read-only-note">
+            Submitted work is read-only. You can review the evidence in
+            Submission.
+          </p>
+          }
+          <div class="work-fields">
+            <school-hub-written-answer
+              label="Research and planning"
+              kind="long"
+              [rows]="5"
+              [maxLength]="10000"
+              [fullWidth]="true"
+              [value]="task.planning"
+              [readonly]="!editable()"
+              placeholder="Record your plan, examples, and sources."
+              (changed)="edit('planning', $event)"
+            /><school-hub-written-answer
+              label="My written work"
+              kind="long"
+              [rows]="10"
+              [maxLength]="20000"
+              [fullWidth]="true"
+              [value]="task.work"
+              [readonly]="!editable()"
+              placeholder="Write your findings, calculations, and explanations here, or attach your work below."
+              (changed)="edit('work', $event)"
+            /><school-hub-written-answer
+              label="Reflection (required before submission)"
+              kind="long"
+              [rows]="5"
+              [maxLength]="5000"
+              [fullWidth]="true"
+              [value]="task.reflection"
+              [readonly]="!editable()"
+              placeholder="What did you learn? What was challenging? What would you improve?"
+              (changed)="edit('reflection', $event)"
+            />
+          </div>
+          <h3 class="attachment-heading">My Evidence</h3>
+          <school-hub-file-upload
+            [files]="task.files"
+            [accept]="accept"
+            [help]="uploadHelp"
+            [disabled]="!editable()"
+            [errors]="uploadErrors()"
+            (added)="attach($event)"
+            (removed)="removeFile($event)"
+            (previewed)="preview($event)"
+            (downloaded)="downloadFile($event)"
+          />
+          <div class="work-actions">
+            <button
+              class="outline-button"
+              type="button"
+              [disabled]="!store.ready()"
+              (click)="exit()"
+            >
+              Save &amp; Exit</button
+            >@if (editable()) {
+            <button class="outline-button" type="button" (click)="save()">
+              Save Draft</button
+            ><button
+              class="portfolio-button"
+              type="button"
+              (click)="setTab('submission')"
+            >
+              Review Submission<i
+                class="ri-arrow-right-line"
+                aria-hidden="true"
+              ></i>
+            </button>
+            }
+          </div>
+          }
+        </section>
+        } @case ('submission') {
+        <section class="task-section">
+          <h2>Submission</h2>
+          @if (submission(); as submission) {
+          <div class="submission-receipt">
+            <i class="ri-checkbox-circle-line" aria-hidden="true"></i>
+            <div>
+              <h3>
+                {{ task.status === 'needs-revision' ? 'Previous Submission' :
+                submission.id.startsWith('portfolio-') ? 'Practice Submission
+                Saved' : 'Sample Submission' }}
+              </h3>
+              <p>
+                {{ date(submission.submittedAt) }} · Version {{
+                submission.version }}
+              </p>
+              <small>Reference: {{ submission.id }}</small>
+            </div>
+          </div>
+          <p class="submission-state">
+            {{ task.status === 'completed' ? 'Your tutor has reviewed this
+            sample task. Open Feedback to see the comments.' : task.status ===
+            'needs-revision' ? 'Your tutor requested changes. Update your work
+            and reflection before resubmitting.' : 'Awaiting feedback. Your
+            submitted work is read-only.' }}
+          </p>
+          @if (submittedWork(); as work) {
+          <details class="submitted-evidence" [open]="!editable()">
+            <summary>View submitted work and reflection</summary>
+            <h3>Written Work</h3>
+            <p>{{ work.work || 'Evidence was provided as an attachment.' }}</p>
+            <h3>Reflection</h3>
+            <p>{{ work.reflection }}</p>
+            @if (work.fileNames.length) {
+            <h3>Submitted Files</h3>
+            <ul>
+              @for (name of work.fileNames; track $index) {
+              <li>{{ name }}</li>
+              }
+            </ul>
+            }
+          </details>
+          }@if (submission.note) {
+          <p class="submission-note">
+            <strong>Submission note:</strong> {{ submission.note }}
+          </p>
+          } } @if (task.available) { @if (editable()) {
+          <p>
+            Attach your evidence, then check that your written work and
+            reflection are ready.
+          </p>
+          <school-hub-file-upload
+            [files]="task.files"
+            [accept]="accept"
+            [help]="uploadHelp"
+            [disabled]="!editable()"
+            [errors]="uploadErrors()"
+            (added)="attach($event)"
+            (removed)="removeFile($event)"
+            (previewed)="preview($event)"
+            (downloaded)="downloadFile($event)"
+          />
+          <div class="submission-note-field">
+            <school-hub-written-answer
+              label="Submission note (optional)"
+              kind="long"
+              [rows]="3"
+              [maxLength]="2000"
+              [fullWidth]="true"
+              [value]="task.note"
+              placeholder="Add any context about your work."
+              (changed)="edit('note', $event)"
+            />
+          </div>
+          <p class="submission-check">
+            Written work:
+            <strong
+              >{{ task.work.trim() ? 'Added' : task.files.length ? 'Provided as
+              files' : 'Not added' }}</strong
+            >
+            · Reflection:
+            <strong
+              >{{ task.reflection.trim() ? 'Added' : 'Not added' }}</strong
+            >
+          </p>
+          <div class="work-actions">
+            <button
+              class="outline-button"
+              type="button"
+              (click)="setTab('work')"
+            >
+              Continue My Work</button
+            ><button
+              class="portfolio-button"
+              type="button"
+              [disabled]="submitting()"
+              (click)="confirmSubmission()"
+            >
+              {{ task.status === 'needs-revision' ? 'Resubmit Work' : 'Submit
+              Work' }}<i class="ri-upload-2-line" aria-hidden="true"></i>
+            </button>
+          </div>
+          } @else {
+          <h3 class="attachment-heading">Attached Evidence</h3>
+          <school-hub-file-upload
+            [files]="task.files"
+            [disabled]="true"
+            (previewed)="preview($event)"
+            (downloaded)="downloadFile($event)"
+          />
+          } } @else {
+          <p class="notice">
+            This task is locked. Submission becomes available with its lesson.
+          </p>
+          }
+        </section>
+        } @case ('feedback') {
+        <section class="task-section">
+          <h2>Feedback</h2>
+          @if (task.feedback; as feedback) { @if (earlierFeedback()) {
+          <p class="notice">
+            This feedback refers to your previous submission. Your revision is
+            awaiting review.
+          </p>
+          }
+          <div class="feedback-heading">
+            <div>
+              <h3>
+                {{ earlierFeedback() ? 'Feedback on Your Previous Submission' :
+                task.status === 'needs-revision' ? 'Changes Requested' : 'Your
+                Tutor’s Feedback' }}
+              </h3>
+              <p>{{ feedback.tutor }} · {{ date(feedback.date) }}</p>
+            </div>
+            <school-hub-rating-stars [value]="feedbackScore()" />
+          </div>
+          <blockquote>{{ feedback.comment }}</blockquote>
+          <h3>Next Steps</h3>
+          <ul class="feedback-steps">
+            @for (step of feedback.nextSteps; track step) {
+            <li>{{ step }}</li>
+            }
+          </ul>
+          <school-hub-rubric-table
+            [criteria]="rubric"
+            [scores]="feedback.scores"
+            label="Tutor rubric scores"
+          />@if (task.status === 'needs-revision') {
+          <button
+            class="portfolio-button revise-button"
+            type="button"
+            [disabled]="!editable()"
+            (click)="setTab('work')"
+          >
+            Revise My Work<i class="ri-pencil-line" aria-hidden="true"></i>
+          </button>
+          } } @else {
+          <div class="empty-feedback">
+            <i class="ri-chat-1-line" aria-hidden="true"></i>
+            <h3>
+              {{ task.status === 'submitted' ? 'Awaiting Feedback' : 'No
+              Feedback Yet' }}
+            </h3>
+            <p>
+              {{ task.status === 'submitted' ? 'A tutor review has not been
+              added for this task.' : 'Complete and submit your work to prepare
+              it for review.' }}
+            </p>
+            @if (editable()) {
+            <button
+              class="outline-button"
+              type="button"
+              (click)="setTab('work')"
+            >
+              Continue My Work
+            </button>
+            }
+          </div>
+          }
+        </section>
+        } @case ('rubric') {
+        <section class="task-section">
+          <h2>Task Rubric</h2>
+          <p>
+            Use these criteria to check your work. Your tutor awards the marks;
+            saving or submitting a draft does not create a grade.
+          </p>
+          <school-hub-rubric-table [criteria]="rubric" label="Task rubric" />
+          <div class="rubric-levels">
+            <h3>What Strong Work Looks Like</h3>
+            <ul>
+              @for (criterion of task.successCriteria; track criterion) {
+              <li>{{ criterion }}</li>
+              }
+            </ul>
+          </div>
+        </section>
+        } }
+      </div>
+      <p class="practice-note">
+        <i class="ri-save-line" aria-hidden="true"></i
+        ><span
+          >Practice portfolio · {{ store.saving() ? 'Saving your work…' :
+          store.ready() && store.persistent() ? 'Saved on this device.' :
+          store.ready() ? 'Kept for this visit.' : 'Loading saved work…' }}
+          Tutor delivery is not connected.</span
+        >
+      </p>
+      @if (message()) {
+      <p class="save-message" role="status">{{ message() }}</p>
+      }
+    </div>
+    <aside class="task-aside" aria-label="Portfolio task support">
+      <school-hub-dashboard-card
+        title="Task Progress"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="progress-ring">
+          <school-hub-progress-ring
+            [value]="task.progress"
+            label="Task preparation progress"
+            caption="Work Ready"
+            tone="purple"
+          />
+        </div>
+        <dl class="task-dates">
+          <div>
+            <dt>Last Updated</dt>
+            <dd>{{ date(task.updatedAt) }}</dd>
+          </div>
+          <div>
+            <dt>Task Started</dt>
+            <dd>
+              {{ task.status === 'not-started' ? 'Not started' :
+              date(task.startedAt) }}
+            </dd>
+          </div>
+          <div>
+            <dt>Time Spent</dt>
+            <dd>{{ time(task.secondsSpent) }}</dd>
+          </div>
+          <div>
+            <dt>Due Date</dt>
+            <dd>{{ date(task.dueAt) }}</dd>
+          </div>
+        </dl></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="What You Need to Submit"
+        icon="ri-file-list-3-line"
+        tone="green"
+        ><p class="aside-copy">
+          Your completed work, supporting evidence, and a short reflection.
+        </p>
+        <p class="aside-copy">Accepted file formats:</p>
+        <div class="file-formats">
+          <span>PDF</span><span>DOCX</span><span>XLSX</span
+          ><span>PNG / JPG</span><span>TXT / CSV</span>
+        </div>
+        <button
+          class="outline-button upload-work-button"
+          type="button"
+          [disabled]="!task.available"
+          (click)="setTab('submission')"
+        >
+          {{ editable() ? 'Upload My Work' : 'View Submission' }}
+        </button>
+        <p class="aside-copy">
+          You can also write directly in My Work.
+        </p></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Task Checklist"
+        icon="ri-list-check-2"
+        tone="purple"
+        ><school-hub-checklist
+          [items]="checklist()"
+          [disabled]="!editable()"
+          (changed)="check($event)"
+        />
+        <p class="aside-copy">
+          Planning, evidence, and reflection update automatically as you add
+          your work.
+        </p></school-hub-dashboard-card
+      >
+      <div class="task-help">
+        <i class="ri-customer-service-2-line" aria-hidden="true"></i>
+        <h3>Need Help?</h3>
+        <p>Stuck on your task? Ask your tutor for guidance.</p>
+        <a
+          routerLink="/student/ask-tutor"
+          [queryParams]="{ contextType: 'portfolio', contextId: task.id, subjectId: task.subjectId }"
+          >Ask Tutor<i class="ri-arrow-right-line" aria-hidden="true"></i
+        ></a>
+      </div>
+      <div class="task-help reminder">
+        <i class="ri-notification-3-line" aria-hidden="true"></i>
+        <h3>Reminder</h3>
+        <p>
+          Check the brief and rubric before submitting. Give yourself time to
+          improve your work.
+        </p>
+      </div>
+    </aside>
+  </div>
+  } @else {
+  <section class="task-missing">
+    <h1>Portfolio task not found</h1>
+    <p>This task could not be found. Choose a task from your portfolio.</p>
+    <a class="portfolio-button" routerLink="/student/portfolio-tasks"
+      >Browse Portfolio Tasks</a
+    >
+  </section>
+  }
+  <school-hub-dialog-panel
+    [open]="dialog() !== null"
+    [title]="dialogTitle()"
+    (dismissed)="closeDialog()"
+  >
+    @switch (dialog()) { @case ('submit') {
+    <div class="dialog-copy">
+      <p>You are submitting {{ task()?.title }}.</p>
+      <p>{{ task()?.files?.length }} attached files · Reflection added.</p>
+      <p>
+        Your practice submission will be saved on this device. It will be
+        read-only after submission. Tutor delivery is not connected.
+      </p>
+    </div>
+    <div class="dialog-actions">
+      <button
+        class="outline-button"
+        type="button"
+        [disabled]="submitting()"
+        (click)="closeDialog()"
+      >
+        Keep Working</button
+      ><button
+        class="portfolio-button"
+        type="button"
+        [disabled]="submitting()"
+        (click)="submit()"
+      >
+        {{ submitting() ? 'Saving…' : 'Confirm Submission' }}
+      </button>
+    </div>
+    } @case ('actions') {
+    <div class="more-actions">
+      <button class="outline-button" type="button" (click)="downloadBrief()">
+        Download Task Brief</button
+      ><button
+        class="outline-button"
+        type="button"
+        [disabled]="!task()?.available"
+        (click)="downloadTemplate()"
+      >
+        Download Task Template</button
+      ><button class="outline-button" type="button" (click)="exit()">
+        Save &amp; Exit</button
+      ><a
+        routerLink="/student/ask-tutor"
+        [queryParams]="{ contextType: 'portfolio', contextId: task()?.id, subjectId: task()?.subjectId }"
+        >Ask Tutor</a
+      >
+    </div>
+    } @case ('example') {
+    <div class="example-structure">
+      <p>This is a suggested structure. Use your own findings and examples.</p>
+      <ol>
+        <li>
+          <strong>Title and purpose:</strong> Explain what your task
+          investigates.
+        </li>
+        <li>
+          <strong>Plan and sources:</strong> Describe how you gathered your
+          information.
+        </li>
+        <li>
+          <strong>Findings:</strong> Use a labelled table, report, drawing, or
+          photos.
+        </li>
+        <li>
+          <strong>Explanation:</strong> Show calculations or give reasons for
+          your conclusions.
+        </li>
+        <li>
+          <strong>Reflection:</strong> Explain your learning and what you would
+          improve.
+        </li>
+      </ol>
+      @if (task()?.id === 'market-price-comparison') {
+      <p>
+        <strong>Example calculation:</strong> If 5 items cost ₦600 each, the
+        total cost is ₦3,000. Selling each for ₦800 gives ₦4,000 income and
+        ₦1,000 profit. These are practice figures.
+      </p>
+      }
+    </div>
+    } @case ('preview') { @if (previewIsImage()) {
+    <img
+      class="file-preview-image"
+      [src]="previewUrl()"
+      [alt]="previewFile()?.name ?? 'Attached evidence'"
+    />
+    } @else if (previewText()) {
+    <pre class="file-preview-text">{{ previewText() }}</pre>
+    } @else {
+    <p class="dialog-copy">
+      Download this file to view it in a compatible app.
+    </p>
+    }<button
+      class="outline-button"
+      type="button"
+      (click)="downloadFile(previewFile()?.id ?? '')"
+    >
+      Download File
+    </button>
+    } }
+  </school-hub-dialog-panel>
+</div>

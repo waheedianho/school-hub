@@ -1,0 +1,78 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.dashboard-card {
+  height: 100%;
+  padding: 15px;
+  border: 1px solid #e3e8f1;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 3px 5px #13274805,
+    0 7px 16px #13274802;
+  color: #182031;
+}
+
+.card-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  margin-bottom: 15px;
+}
+
+h2 {
+  margin: 0;
+  color: inherit;
+  font-size: typography.$section;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.heading-copy {
+  flex: 1;
+  min-width: 0;
+}
+.heading-copy p {
+  margin: 4px 0 0;
+  color: #647590;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+:host(.compact) .dashboard-card {
+  padding: 14px;
+  border-radius: 9px;
+  box-shadow: none;
+}
+:host(.compact) .card-heading {
+  align-items: start;
+  min-height: 24px;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+:host(.compact) school-hub-icon-badge {
+  transform: scale(0.72);
+  margin: -5px -4px -5px -5px;
+}
+
+.card-content {
+  min-width: 0;
+}
+@media (max-width: 600px) {
+  :host(.compact) .card-heading.has-subtitle {
+    flex-wrap: wrap;
+  }
+  :host(.compact) .has-subtitle .heading-copy {
+    flex-basis: 100%;
+  }
+}
+
+:host-context(.dark) .dashboard-card {
+  border-color: #263349;
+  background: #101c30;
+  color: #e4edf9;
+}

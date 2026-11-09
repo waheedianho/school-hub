@@ -1,0 +1,100 @@
+<div class="summary-card">
+  <div class="card-header">
+    <h3 class="card-title">Gradebook Summary</h3>
+  </div>
+
+  <div class="card-body">
+    <div class="donut-wrapper">
+      <svg
+        class="donut-svg"
+        viewBox="0 0 120 120"
+        role="img"
+        aria-label="Gradebook distribution by performance level"
+      >
+        <!-- Background track -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="13"
+        />
+        <!-- Segment A: 25.9% (green) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="13"
+          stroke-dasharray="74.8 214.2"
+          stroke-dashoffset="0"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Segment B: 42.9% (blue) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#3b82f6"
+          stroke-width="13"
+          stroke-dasharray="123.9 165.1"
+          stroke-dashoffset="-74.8"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Segment C: 17.9% (orange) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f97316"
+          stroke-width="13"
+          stroke-dasharray="51.6 237.4"
+          stroke-dashoffset="-198.7"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Segment Below Average: 13.4% (red) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#ef4444"
+          stroke-width="13"
+          stroke-dasharray="38.7 250.3"
+          stroke-dashoffset="-250.3"
+          transform="rotate(-90 60 60)"
+        />
+      </svg>
+      <div class="donut-center-info">
+        <span class="donut-total">{{ totalLearners() }}</span>
+        <span class="donut-sublabel">Learners</span>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="legend-list">
+      @for (seg of segments(); track seg.id) {
+      <div class="legend-row">
+        <div class="legend-left">
+          <span class="legend-dot" [style.background-color]="seg.color"></span>
+          <span class="legend-label">{{ seg.label }}</span>
+        </div>
+        <span class="legend-count"
+          >{{ seg.count }} ({{ seg.percentage }}%)</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="class-average-row">
+      <span class="avg-label">Class Average</span>
+      <span class="avg-val">{{ classAverage() }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,144 @@
+<div class="table-container">
+  <div class="table-header-bar">
+    <div class="header-left">
+      <h2 class="table-title">Question Bank Items</h2>
+      <span class="count-badge">{{ questions().length }} Questions</span>
+    </div>
+    <div class="header-right">
+      <button type="button" class="btn-bulk-import">
+        <span class="material-symbols-outlined">cloud_upload</span>
+        <span>Import</span>
+      </button>
+      <button type="button" class="btn-add-question">
+        <span class="material-symbols-outlined">add</span>
+        <span>Add Question</span>
+      </button>
+    </div>
+  </div>
+
+  @if (questions().length === 0) {
+  <div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">help_center</span>
+    <p class="empty-title">No questions found</p>
+    <p class="empty-desc">Try clearing filters or search terms.</p>
+  </div>
+  } @else {
+  <div class="table-responsive">
+    <table class="qb-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-preview">Question Preview</th>
+          <th scope="col">Type</th>
+          <th scope="col" class="text-center">Difficulty</th>
+          <th scope="col" class="text-center">Marks</th>
+          <th scope="col" class="text-center">Scoring</th>
+          <th scope="col">Misconception Tag</th>
+          <th scope="col">Last Updated</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of questions(); track item.id) {
+        <tr
+          class="table-row"
+          [class.selected-row]="item.id === selectedId()"
+          (click)="onRowClick(item)"
+          tabindex="0"
+          (keydown.enter)="onRowClick(item)"
+        >
+          <td class="td-preview">
+            <div class="preview-cell">
+              <span class="item-text">{{ item.titlePreview }}</span>
+              <span class="item-meta"
+                >{{ item.className }} · {{ item.topic }}</span
+              >
+            </div>
+          </td>
+          <td>
+            <span class="type-text">{{ item.questionType }}</span>
+          </td>
+          <td class="text-center">
+            <span
+              class="diff-badge"
+              [class]="getDifficultyClass(item.difficulty)"
+            >
+              {{ item.difficulty }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="marks-text"
+              >{{ item.marks }} {{ item.marks === 1 ? 'Mark' : 'Marks' }}</span
+            >
+          </td>
+          <td class="text-center">
+            <span
+              class="scoring-chip"
+              [class.chip-auto]="item.scoring === 'Auto'"
+              [class.chip-manual]="item.scoring === 'Manual'"
+            >
+              {{ item.scoring }}
+            </span>
+          </td>
+          <td>
+            <span class="misconception-tag">{{ item.misconceptionTag }}</span>
+          </td>
+          <td>
+            <span class="date-text">{{ item.lastUpdated }}</span>
+          </td>
+          <td class="text-right" (click)="$event.stopPropagation()">
+            <div class="action-buttons">
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="onRowClick(item)"
+                aria-label="Preview question"
+              >
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="editQuestion.emit(item)"
+                aria-label="Edit question"
+              >
+                <span class="material-symbols-outlined">edit</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="duplicateQuestion.emit(item)"
+                aria-label="Duplicate question"
+              >
+                <span class="material-symbols-outlined">content_copy</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination-footer">
+    <span class="pagination-info"
+      >Showing {{ questions().length }} of 248 questions</span
+    >
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        disabled
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button type="button" class="page-num-btn active">1</button>
+      <button type="button" class="page-num-btn">2</button>
+      <button type="button" class="page-num-btn">3</button>
+      <button type="button" class="page-nav-btn" aria-label="Next page">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>

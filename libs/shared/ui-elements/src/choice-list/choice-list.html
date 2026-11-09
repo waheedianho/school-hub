@@ -1,0 +1,24 @@
+<fieldset [disabled]="disabled()">
+  <legend>{{ label() }}</legend>
+  @for (option of options(); track $index; let index = $index) {
+  <label
+    [class.selected]="value() === index"
+    [class.correct]="correctIndex() === index"
+    [class.incorrect]="correctIndex() !== undefined && value() === index && correctIndex() !== index"
+    ><input
+      type="radio"
+      [name]="name()"
+      [value]="index"
+      [checked]="value() === index"
+      (change)="changed.emit(index)"
+    /><span class="choice-letter" aria-hidden="true">{{ letters[index] }}</span
+    ><span>{{ option }}</span>@if (correctIndex() === index) {
+    <i
+      class="ri-checkbox-circle-line"
+      role="img"
+      aria-label="Correct answer"
+    ></i>
+    }</label
+  >
+  }
+</fieldset>

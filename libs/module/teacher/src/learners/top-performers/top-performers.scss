@@ -1,0 +1,98 @@
+.performers-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.view-all-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4f46e5;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.performers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.performer-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.performer-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.performer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.performer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.performer-meta {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.performer-score-col {
+  display: flex;
+  align-items: center;
+}
+
+.score-badge {
+  font-size: 13px;
+  font-weight: 700;
+  color: #16a34a;
+  white-space: nowrap;
+}

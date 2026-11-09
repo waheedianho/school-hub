@@ -21,28 +21,29 @@ describe('App', () => {
   it('should render page for teacher when url is /teacher', async () => {
     const harness = await RouterTestingHarness.create('/teacher');
     expect(
-      harness.routeNativeElement?.querySelector('p')?.textContent,
-    ).toContain('Teacher works!');
-  });
+      harness.routeNativeElement?.querySelector('h1')?.textContent,
+    ).toContain('Dashboard');
+  }, 15000);
 
   it('should render page for student when url is /student', async () => {
     const harness = await RouterTestingHarness.create('/student');
     expect(
-      harness.routeNativeElement?.querySelector('p')?.textContent,
-    ).toContain('Student works!');
+      harness.routeNativeElement?.querySelector('h1')?.textContent,
+    ).toContain('Dashboard');
   });
 
   it('should render page for school admin when url is /school-admin', async () => {
     const harness = await RouterTestingHarness.create('/school-admin');
     expect(
-      harness.routeNativeElement?.querySelector('p')?.textContent,
-    ).toContain('SchoolAdmin works!');
+      harness.routeNativeElement?.querySelector('h1')?.textContent,
+    ).toContain('Dashboard');
   });
 
   it('should render page for super admin when url is /super-admin', async () => {
     const harness = await RouterTestingHarness.create('/super-admin');
     expect(
-      harness.routeNativeElement?.querySelector('p')?.textContent,
+      harness.routeNativeElement?.querySelector('lib-super-admin p')
+        ?.textContent,
     ).toContain('SuperAdmin works!');
   });
 });

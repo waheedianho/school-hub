@@ -1,0 +1,116 @@
+<div class="coverage-card">
+  <div class="card-header">
+    <div class="header-titles">
+      <h3 class="card-title">Question Bank Coverage</h3>
+      <span class="card-subtitle"
+        >{{ totalQuestions() }} questions across 5 types</span
+      >
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="donut-wrapper">
+      <svg
+        class="donut-svg"
+        viewBox="0 0 120 120"
+        role="img"
+        aria-label="Question bank coverage breakdown"
+      >
+        <!-- Background ring -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="12"
+        />
+        <!-- Multiple Choice (38.7%) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#4f46e5"
+          stroke-width="12"
+          stroke-dasharray="111.9 177.1"
+          stroke-dashoffset="0"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Short Answer (23.4%) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#10b981"
+          stroke-width="12"
+          stroke-dasharray="67.6 221.4"
+          stroke-dashoffset="-111.9"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Essay / Theory (13.7%) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#f97316"
+          stroke-width="12"
+          stroke-dasharray="39.6 249.4"
+          stroke-dashoffset="-179.5"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Word Problems (11.3%) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#06b6d4"
+          stroke-width="12"
+          stroke-dasharray="32.6 256.4"
+          stroke-dashoffset="-219.1"
+          transform="rotate(-90 60 60)"
+        />
+        <!-- Application Tasks (12.9%) -->
+        <circle
+          cx="60"
+          cy="60"
+          r="46"
+          fill="none"
+          stroke="#ec4899"
+          stroke-width="12"
+          stroke-dasharray="37.3 251.7"
+          stroke-dashoffset="-251.7"
+          transform="rotate(-90 60 60)"
+        />
+      </svg>
+      <div class="donut-center-info">
+        <span class="donut-total">{{ totalQuestions() }}</span>
+        <span class="donut-sublabel">Items</span>
+      </div>
+    </div>
+
+    <!-- Legend List -->
+    <div class="legend-list">
+      @for (item of summaryItems(); track item.id) {
+      <div class="legend-row">
+        <div class="legend-left">
+          <span class="legend-dot" [style.background-color]="item.color"></span>
+          <span class="legend-label">{{ item.label }}</span>
+        </div>
+        <span class="legend-count"
+          >{{ item.count }} ({{ item.percentage }}%)</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <button type="button" class="view-link-btn" (click)="viewAll.emit()">
+      Open Question Bank &rarr;
+    </button>
+  </div>
+</div>

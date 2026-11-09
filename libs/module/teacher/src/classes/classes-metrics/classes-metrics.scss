@@ -1,0 +1,172 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.metric-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+.metric-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  font-size: 22px;
+  flex-shrink: 0;
+
+  .tone-purple & {
+    background-color: #f5f3ff;
+    color: #7c3aed;
+  }
+
+  .tone-blue & {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+
+  .tone-green & {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+
+  .tone-orange & {
+    background-color: #fff7ed;
+    color: #ea580c;
+  }
+
+  .tone-pink & {
+    background-color: #fdf2f8;
+    color: #db2777;
+  }
+}
+
+.metric-right {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #64748b;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+  margin: 2px 0;
+}
+
+.metric-subtext {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: #64748b;
+  white-space: nowrap;
+
+  &.subtext-active {
+    color: #16a34a;
+    font-weight: 500;
+
+    .active-dot {
+      font-size: 8px;
+    }
+  }
+
+  &.subtext-growth {
+    color: #16a34a;
+    font-weight: 600;
+  }
+}
+
+:host-context(.dark) {
+  .metric-card {
+    background-color: #101c30;
+    border-color: #1e293b;
+  }
+
+  .metric-label {
+    color: #94a3b8;
+  }
+
+  .metric-value {
+    color: #f8fafc;
+  }
+
+  .metric-subtext {
+    color: #94a3b8;
+
+    &.subtext-active,
+    &.subtext-growth {
+      color: #4ade80;
+    }
+  }
+
+  .metric-icon-wrap {
+    .tone-purple & {
+      background-color: rgba(124, 58, 237, 0.15);
+      color: #a78bfa;
+    }
+
+    .tone-blue & {
+      background-color: rgba(37, 99, 235, 0.15);
+      color: #93c5fd;
+    }
+
+    .tone-green & {
+      background-color: rgba(22, 163, 74, 0.15);
+      color: #86efac;
+    }
+
+    .tone-orange & {
+      background-color: rgba(234, 88, 12, 0.15);
+      color: #fdba74;
+    }
+
+    .tone-pink & {
+      background-color: rgba(219, 39, 119, 0.15);
+      color: #f472b6;
+    }
+  }
+}

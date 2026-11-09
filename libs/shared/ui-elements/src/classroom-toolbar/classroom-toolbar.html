@@ -1,0 +1,61 @@
+<div class="toolbar" role="group" aria-label="Classroom controls">
+  <button
+    type="button"
+    [disabled]="disabled() || mediaBusy()"
+    [attr.aria-label]="micOn() ? 'Turn microphone off' : 'Turn microphone on'"
+    [attr.aria-pressed]="micOn()"
+    (click)="action.emit('mic')"
+  >
+    <i
+      [class]="micOn() ? 'ri-mic-line' : 'ri-mic-off-line'"
+      aria-hidden="true"
+    ></i
+    ><span>Mic</span></button
+  ><button
+    type="button"
+    [disabled]="disabled() || mediaBusy()"
+    [attr.aria-label]="cameraOn() ? 'Turn camera off' : 'Turn camera on'"
+    [attr.aria-pressed]="cameraOn()"
+    (click)="action.emit('camera')"
+  >
+    <i
+      [class]="cameraOn() ? 'ri-camera-line' : 'ri-camera-off-line'"
+      aria-hidden="true"
+    ></i
+    ><span>Camera</span></button
+  ><button
+    type="button"
+    [disabled]="disabled()"
+    aria-label="Raise hand"
+    [attr.aria-pressed]="handRaised()"
+    (click)="action.emit('hand')"
+  >
+    <i class="ri-hand" aria-hidden="true"></i><span>Raise Hand</span></button
+  ><button
+    type="button"
+    [disabled]="disabled()"
+    (click)="action.emit('reactions')"
+  >
+    <i class="ri-emotion-happy-line" aria-hidden="true"></i
+    ><span>Reactions</span></button
+  ><button
+    type="button"
+    [attr.aria-pressed]="chatVisible()"
+    (click)="action.emit('chat')"
+  >
+    <i class="ri-chat-1-line" aria-hidden="true"></i><span>Chat</span></button
+  ><button type="button" (click)="action.emit('participants')">
+    <i class="ri-group-line" aria-hidden="true"></i
+    ><span>{{ count() }} Participants</span></button
+  ><button type="button" (click)="action.emit('more')">
+    <i class="ri-more-fill" aria-hidden="true"></i><span>More</span></button
+  ><button
+    class="leave"
+    type="button"
+    [disabled]="disabled()"
+    (click)="action.emit('leave')"
+  >
+    <span>Leave Class</span
+    ><i class="ri-logout-box-r-line" aria-hidden="true"></i>
+  </button>
+</div>

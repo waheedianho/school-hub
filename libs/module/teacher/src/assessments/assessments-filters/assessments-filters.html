@@ -1,0 +1,112 @@
+<div class="filters-card">
+  <div class="filters-grid">
+    <div class="filter-item">
+      <label class="filter-label" for="termSelect">Term</label>
+      <div class="select-wrapper">
+        <select
+          id="termSelect"
+          class="filter-select"
+          [ngModel]="selectedTerm()"
+          (ngModelChange)="selectedTerm.set($event); onFilterChange()"
+        >
+          @for (term of terms; track term) {
+          <option [value]="term">{{ term }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="classSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="classSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="subjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="subjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="typeSelect">Assessment Type</label>
+      <div class="select-wrapper">
+        <select
+          id="typeSelect"
+          class="filter-select"
+          [ngModel]="selectedType()"
+          (ngModelChange)="selectedType.set($event); onFilterChange()"
+        >
+          @for (t of assessmentTypes; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="statusSelect">Status</label>
+      <div class="select-wrapper">
+        <select
+          id="statusSelect"
+          class="filter-select"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="selectedStatus.set($event); onFilterChange()"
+        >
+          @for (st of statuses; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrapper">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search assessments by title or topic..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+        aria-label="Search assessments"
+      />
+      @if (searchQuery()) {
+      <button
+        type="button"
+        class="clear-btn"
+        (click)="onSearchInput('')"
+        aria-label="Clear search"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      }
+    </div>
+  </div>
+</div>

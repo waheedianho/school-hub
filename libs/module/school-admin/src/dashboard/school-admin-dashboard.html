@@ -1,0 +1,67 @@
+<p class="sr-only">SchoolAdmin works!</p>
+<h1 class="sr-only">Dashboard</h1>
+
+<div class="admin-dashboard-container">
+  <!-- Welcome & Top Bar -->
+  <header class="dashboard-header">
+    <div class="welcome-section">
+      <h2 class="welcome-title">Welcome back, Admin 👋</h2>
+      <p class="welcome-subtitle">
+        Here's what's happening across your school today.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <div class="last-updated">
+        <span>Last updated: {{ lastUpdated() }}</span>
+        <button
+          type="button"
+          class="refresh-btn"
+          aria-label="Refresh dashboard data"
+          (click)="refresh()"
+        >
+          <i class="material-symbols-outlined">refresh</i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 6 KPI Metric Cards -->
+  <section class="dashboard-section" aria-label="Key Administrative Metrics">
+    <school-hub-admin-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Middle 3-Column Row: Academic Performance, Curriculum Coverage, Top Subjects -->
+  <div class="dashboard-row-3col" aria-label="Academic Analytics">
+    <div class="col-wrap">
+      <school-hub-academic-performance [performance]="performance()" />
+    </div>
+    <div class="col-wrap">
+      <school-hub-curriculum-coverage [coverage]="coverage()" />
+    </div>
+    <div class="col-wrap">
+      <school-hub-top-subjects [subjects]="topSubjects()" />
+    </div>
+  </div>
+
+  <!-- Bottom 3-Column Row: Alerts & Attention, Teacher Activity, Upcoming Events -->
+  <div class="dashboard-row-3col" aria-label="Operations and Alerts">
+    <div class="col-wrap">
+      <school-hub-admin-alerts
+        [alerts]="alerts()"
+        (dismiss)="onDismissAlert($event)"
+      />
+    </div>
+    <div class="col-wrap">
+      <school-hub-teacher-activity [activities]="teacherActivities()" />
+    </div>
+    <div class="col-wrap">
+      <school-hub-upcoming-events [events]="upcomingEvents()" />
+    </div>
+  </div>
+
+  <!-- Bottom Safeguarding Banner -->
+  <footer class="dashboard-footer-section" aria-label="Safeguarding Notice">
+    <school-hub-safeguarding-banner [notice]="safeguardingNotice()" />
+  </footer>
+</div>

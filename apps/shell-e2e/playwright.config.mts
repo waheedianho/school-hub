@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 import { nxE2EPreset } from '@nx/playwright/preset';
 import { workspaceRoot } from '@nx/devkit';
+import { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 // For CI, you may want to set BASE_URL to the deployed application.
 const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
@@ -22,7 +24,7 @@ const baseURL = process.env['BASE_URL'] || 'http://localhost:4200';
  * (.ts/.js/.mts/.mjs/.cts/.cjs).
  */
 export default defineConfig({
-  ...nxE2EPreset(import.meta.dirname, { testDir: './src' }),
+  ...nxE2EPreset(dirname(fileURLToPath(import.meta.url)), { testDir: './src' }),
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     baseURL,
@@ -30,12 +32,15 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   /* Run your local dev server before starting the tests */
-  webServer: {
-    command: 'pnpm exec nx run shell:serve',
-    url: 'http://localhost:4200',
-    reuseExistingServer: true,
-    cwd: workspaceRoot,
-  },
+  // An explicit BASE_URL points to a server that is already running.
+  webServer: process.env['BASE_URL']
+    ? undefined
+    : {
+        command: 'pnpm exec nx run shell:serve',
+        url: 'http://localhost:4200',
+        reuseExistingServer: true,
+        cwd: workspaceRoot,
+      },
   projects: [
     {
       name: 'chromium',

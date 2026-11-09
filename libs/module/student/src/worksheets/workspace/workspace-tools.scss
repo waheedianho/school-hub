@@ -1,0 +1,133 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+.workspace-tools {
+  display: grid;
+  gap: 6px;
+}
+.workspace-tools button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #526888;
+  font-size: typography.$body;
+  text-align: left;
+}
+.workspace-tools button:hover {
+  color: #7840dc;
+  background: #faf7ff;
+}
+.workspace-tools i {
+  color: #8261b1;
+  font-size: 20px;
+}
+.help-card {
+  padding: 20px;
+  border: 1px solid #e3d8fa;
+  border-radius: 12px;
+  background: #f8f4ff;
+  color: #7c60a8;
+}
+.help-card > i {
+  float: left;
+  margin-right: 10px;
+  color: #8556d0;
+  font-size: 23px;
+}
+.help-card h2 {
+  margin: 0;
+  font-size: typography.$section;
+  color: #664096;
+}
+.help-card p {
+  margin: 15px 0;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.help-card a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #7840dc;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.help-card.warm {
+  border-color: #f3dfb8;
+  background: #fffbf3;
+  color: #7e765f;
+}
+.help-card.warm > i,
+.help-card.warm h2 {
+  color: #b58027;
+}
+.scratch-label {
+  display: grid;
+  gap: 10px;
+  color: #5d718f;
+  font-size: typography.$body;
+}
+.scratch-label textarea {
+  width: 100%;
+  min-height: 220px;
+  padding: 14px;
+  border: 1px solid #d3ddef;
+  border-radius: 9px;
+  background: white;
+  color: #2c4263;
+  font: inherit;
+  font-size: typography.$reading;
+  line-height: 1.8;
+  resize: vertical;
+}
+.tool-copy,
+.submit-copy,
+.study-notes {
+  margin: 0 0 18px;
+  color: #627694;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.tool-copy {
+  margin-top: 16px;
+}
+.study-notes h3 {
+  color: #314c70;
+  font-size: typography.$section;
+}
+.study-notes ul {
+  margin: 14px 0 20px;
+  padding-left: 20px;
+  list-style: disc;
+}
+.study-notes li + li {
+  margin-top: 10px;
+}
+.study-notes a {
+  color: #7840dc;
+}
+.submit-copy p + p {
+  margin-top: 14px;
+}
+.dialog-actions {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.include-answers {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #526888;
+  font-size: typography.$body;
+}
+.include-answers input {
+  width: 17px;
+  height: 17px;
+  accent-color: #7840dc;
+}

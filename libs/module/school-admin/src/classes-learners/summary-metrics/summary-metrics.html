@@ -1,0 +1,61 @@
+<div class="metrics-grid">
+  <!-- Total Classes -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <span class="material-symbols-outlined metric-icon">groups</span>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Total Classes</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics().totalClasses }}</span>
+      </div>
+      <span class="metric-badge up">{{ metrics().totalClassesChange }}</span>
+    </div>
+  </div>
+
+  <!-- Total Learners -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <span class="material-symbols-outlined metric-icon">school</span>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Total Learners</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics().totalLearners }}</span>
+      </div>
+      <span class="metric-badge up">{{ metrics().totalLearnersChange }}</span>
+    </div>
+  </div>
+
+  <!-- Active Enrollments -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <span class="material-symbols-outlined metric-icon">how_to_reg</span>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Active Enrollments</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics().activeEnrollments }}</span>
+      </div>
+      <span class="metric-subtext"
+        >{{ metrics().activeEnrollmentsPercentage }}% of total learners</span
+      >
+    </div>
+  </div>
+
+  <!-- Average Class Size -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <span class="material-symbols-outlined metric-icon">bar_chart</span>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Average Class Size</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics().averageClassSize }}</span>
+      </div>
+      <span class="metric-badge down"
+        >{{ metrics().averageClassSizeChange }}</span
+      >
+    </div>
+  </div>
+</div>

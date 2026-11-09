@@ -1,0 +1,427 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+:host {
+  display: block;
+  color: #273a57;
+}
+.progress-page {
+  max-width: 1720px;
+  margin: auto;
+}
+.page-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin: 8px 0 24px;
+}
+h1 {
+  margin: 0 0 8px;
+  color: #16243c;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+.page-heading p,
+.card-copy,
+.dialog-copy {
+  margin: 0;
+  color: #647590;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.scope-controls {
+  display: flex;
+  gap: 10px;
+}
+.scope-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 170px;
+  padding: 0 10px;
+  border: 1px solid #dfe6f2;
+  border-radius: 8px;
+  background: white;
+  color: #8561ad;
+}
+.scope-controls label:first-child {
+  width: 210px;
+}
+select {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #526782;
+  font: inherit;
+  font-size: typography.$reading;
+}
+label:focus-within,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid #a581d8;
+  outline-offset: 3px;
+}
+.progress-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  align-items: start;
+  gap: 22px;
+}
+.progress-primary,
+.progress-aside {
+  display: grid;
+  min-width: 0;
+  gap: 22px;
+}
+.progress-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+.metric-card {
+  min-width: 0;
+  padding: 16px 12px;
+  border: 1px solid #e2e7f3;
+  border-radius: 12px;
+  background: white;
+}
+.metric-card.active {
+  border-color: #ae86e0;
+  box-shadow: 0 0 0 2px #f0e7fb;
+}
+.range-select {
+  display: block;
+  max-width: 175px;
+  flex-shrink: 0;
+  padding: 0 8px;
+  border: 1px solid #e2e7f3;
+  border-radius: 6px;
+}
+.range-select select {
+  height: 35px;
+  font-size: typography.$caption;
+}
+.card-copy {
+  margin-bottom: 18px;
+}
+.small-copy {
+  margin: 12px 0 0;
+  color: #73829a;
+  font-size: typography.$caption;
+  line-height: 1.8;
+}
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 20px;
+}
+.card-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin-top: 18px;
+  padding: 14px 0 0;
+  border: 0;
+  border-top: 1px solid #edf0f7;
+  background: transparent;
+  color: #8050b8;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.7;
+  text-decoration: none;
+  cursor: pointer;
+}
+.card-link:hover {
+  text-decoration: underline;
+}
+.performance-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chart-help {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8a79a5;
+  font-size: 18px;
+  cursor: pointer;
+}
+.chart-legend {
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 2px 0 0 44px;
+  color: #7d89a0;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+.evidence-link {
+  margin-top: 8px;
+  padding-top: 10px;
+}
+.snapshot-ring {
+  display: grid;
+  justify-items: center;
+  gap: 15px;
+  padding: 8px 0 18px;
+  border-bottom: 1px solid #edf0f7;
+}
+.snapshot-ring p {
+  margin: 0;
+  color: #73829a;
+  font-size: typography.$caption;
+  line-height: 1.8;
+  text-align: center;
+}
+.snapshot-metrics {
+  display: grid;
+  gap: 20px;
+  padding: 20px 0;
+}
+.snapshot-metrics > div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.snapshot-metrics span {
+  display: grid;
+  flex: 1;
+  gap: 5px;
+}
+.snapshot-metrics strong {
+  color: #3a4d69;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.snapshot-metrics small {
+  color: #73829a;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.snapshot-metrics b {
+  font-size: typography.$body;
+}
+.academic-skills {
+  padding: 13px;
+  border: 1px solid #e7e7f4;
+  border-radius: 8px;
+  background: #fdfcff;
+}
+.academic-skills > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 9px;
+  color: #5b6a85;
+  font-size: typography.$caption;
+}
+.academic-skills > div:not(:first-child) {
+  margin-top: 15px;
+}
+.academic-skills p {
+  margin: 12px 0 0;
+  color: #73829a;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.insight-notes {
+  display: grid;
+  gap: 14px;
+}
+.activity-focus {
+  margin: 25px 0 18px;
+}
+.progress-bottom {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) 320px;
+  align-items: stretch;
+  gap: 22px;
+}
+.encouragement {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 25px 22px 0;
+  overflow: hidden;
+  border: 1px solid #dfd0f2;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #f7f1ff, #eef1ff);
+}
+.encouragement h2 {
+  margin: 15px 0 12px;
+  color: #7046a8;
+  font-size: 20px;
+  line-height: 1.5;
+}
+.encouragement p {
+  margin: 0;
+  color: #786894;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.encouragement a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 17px 0;
+  border-top: 1px solid #ddd3f3;
+  color: #784bb2;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-decoration: none;
+}
+.learning-art {
+  position: relative;
+  width: 140px;
+  height: 100px;
+  margin: 4px auto 10px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, #d8c6fb, #ede6ff 65%, transparent 66%);
+}
+.learning-art i:first-child {
+  position: absolute;
+  top: 0;
+  left: 30px;
+  color: #8155c5;
+  font-size: 62px;
+  transform: rotate(-12deg);
+}
+.learning-art i:nth-child(2) {
+  position: absolute;
+  top: 0;
+  right: 4px;
+  color: #d7a034;
+  font-size: 25px;
+}
+.learning-art i:last-child {
+  position: absolute;
+  right: 14px;
+  bottom: -12px;
+  color: #5865bd;
+  font-size: 55px;
+  transform: rotate(8deg);
+}
+.dialog-copy {
+  margin-bottom: 22px;
+}
+.calculation-guide p {
+  margin: 0 0 16px;
+  color: #53657e;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.loading-note {
+  margin: 0 0 15px;
+  color: #73829a;
+  font-size: typography.$body;
+}
+.empty-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 15px;
+  border: 1px solid #e2d6f5;
+  border-radius: 8px;
+  color: #695683;
+  background: #faf7ff;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.empty-notice button {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: #784bb2;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+@media (max-width: 1450px) {
+  .progress-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .progress-layout {
+    grid-template-columns: minmax(0, 1fr) 290px;
+  }
+  .scope-controls {
+    flex-wrap: wrap;
+    justify-content: end;
+  }
+  .progress-bottom {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .encouragement {
+    grid-column: 1 / -1;
+    align-items: center;
+    text-align: center;
+    padding-top: 20px;
+  }
+}
+@media (max-width: 1100px) {
+  .page-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+  .progress-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .progress-aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+  }
+  .scope-controls {
+    justify-content: start;
+  }
+}
+@media (max-width: 650px) {
+  .scope-controls {
+    width: 100%;
+  }
+  .scope-controls label,
+  .scope-controls label:first-child {
+    width: 100%;
+  }
+  .evidence-grid,
+  .progress-aside,
+  .progress-bottom {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .encouragement {
+    grid-column: auto;
+  }
+  .progress-summary {
+    gap: 10px;
+  }
+  .metric-card {
+    padding: 15px 10px;
+  }
+  .range-select {
+    max-width: 130px;
+  }
+  .range-select select {
+    font-size: typography.$caption;
+  }
+  h1 {
+    font-size: 25px;
+  }
+}

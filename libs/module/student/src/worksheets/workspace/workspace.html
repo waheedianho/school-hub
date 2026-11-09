@@ -1,0 +1,433 @@
+<div class="workspace-page" [class.print-blank]="printBlank()">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
+  <div class="workspace-toolbar">
+    <a
+      class="back-link"
+      routerLink="/student/worksheets"
+      [queryParams]="backQuery()"
+      ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to
+      Worksheets</a
+    >@if (record()?.questions?.length && (record()?.available || completed())) {
+    <div>
+      <label class="zoom-label"
+        >Zoom<select
+          aria-label="Worksheet zoom"
+          [value]="zoom()"
+          (change)="resize($event)"
+        >
+          <option value="100">100%</option>
+          <option value="125">125%</option>
+          <option value="150">150%</option>
+        </select></label
+      ><button class="outline-button" type="button" (click)="tool.set('print')">
+        <i class="ri-printer-line" aria-hidden="true"></i>Download / Print
+      </button>
+    </div>
+    }
+  </div>
+  @if (record(); as worksheet) {
+  <header class="workspace-heading">
+    <school-hub-icon-badge
+      icon="ri-file-text-line"
+      tone="orange"
+      [soft]="true"
+      [large]="true"
+    />
+    <div>
+      <school-hub-status-badge
+        [label]="statuses[worksheet.status].label"
+        [tone]="statuses[worksheet.status].tone"
+      />
+      <h1>{{ worksheet.title }}</h1>
+      <p>
+        {{ worksheet.subject }} · Week {{ worksheet.week }} · {{
+        worksheet.questionCount }} Questions · {{ worksheet.totalMarks }} Marks
+      </p>
+    </div>
+  </header>
+  @if (completed()) {
+  <section class="completion-banner" aria-label="Worksheet result">
+    <div>
+      <school-hub-status-badge label="Completed" tone="green" />
+      <h2>
+        {{ worksheet.marks }} / {{ worksheet.totalMarks }} marks · {{
+        worksheet.percentage }}%
+      </h2>
+      <p>
+        Submitted {{ date(worksheet.submittedAt!) }} · {{ worksheet.correct ===
+        undefined ? 'Sample score summary' : worksheet.correct + ' correct
+        answers' }}
+      </p>
+    </div>
+    <a
+      routerLink="/student/lessons"
+      [queryParams]="{ lessonId: worksheet.lessonId, subject: worksheet.subjectId }"
+      class="outline-button"
+      >Review Lesson</a
+    >
+  </section>
+  } @if (!store.persistent()) {
+  <p class="notice" role="status">
+    Browser storage is unavailable. Keep this page open to retain your answers.
+  </p>
+  } @if (!worksheet.available && !completed()) {
+  <section class="workspace-empty">
+    <i class="ri-lock-line" aria-hidden="true"></i>
+    <h2>Worksheet locked</h2>
+    <p>
+      This worksheet unlocks when its lesson and practice questions are
+      available.
+    </p>
+    <a
+      routerLink="/student/lessons"
+      [queryParams]="{ lessonId: worksheet.lessonId }"
+      class="outline-button"
+      >Preview Lesson</a
+    >
+  </section>
+  } @else if (!worksheet.questions.length) {
+  <section class="workspace-empty">
+    <h2>Score summary available</h2>
+    <p>
+      Detailed questions and answers for this sample worksheet are not
+      available.
+    </p>
+    <a
+      routerLink="/student/worksheets"
+      [queryParams]="backQuery()"
+      class="worksheet-button"
+      >Browse Worksheets</a
+    >
+  </section>
+  } @else {
+  <div class="workspace-layout">
+    <div class="workspace-primary">
+      <section class="worksheet-instructions">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>
+        <div>
+          <h2>Instructions</h2>
+          <ul>
+            <li>Attempt every question and check your working.</li>
+            <li>
+              For calculations, enter the final number; commas are accepted.
+            </li>
+            <li>Use the scratch pad or paper to show your working.</li>
+            <li>
+              Your answers save in this tab. You can leave and return later.
+            </li>
+          </ul>
+        </div>
+      </section>
+      <div class="paper-scroll">
+        <div class="worksheet-paper" [style.zoom]="zoom() / 100">
+          @for (section of sections(); track section.title; let sectionIndex =
+          $index) {
+          <section
+            class="worksheet-section"
+            [attr.aria-labelledby]="'worksheet-section-' + sectionIndex"
+          >
+            <header>
+              <h2 [id]="'worksheet-section-' + sectionIndex">
+                Section {{ sectionIndex + 1 }}: {{ section.title }}
+              </h2>
+              <school-hub-status-badge
+                [label]="section.questions.length + ' Questions · ' + section.questions.length + ' Marks'"
+                tone="purple"
+              />
+            </header>
+            @for (item of section.questions; track item.question.id) {
+            <article
+              class="written-question"
+              [id]="'worksheet-question-' + item.index"
+              [class.current]="currentIndex() === item.index"
+            >
+              <div class="question-heading">
+                <h3>
+                  <span>{{ item.index + 1 }}.</span>{{ item.question.prompt }}
+                </h3>
+                @if (!completed()) {
+                <button
+                  type="button"
+                  class="mark-button"
+                  [disabled]="!editable()"
+                  [attr.aria-label]="'Mark question ' + (item.index + 1) + ' for review'"
+                  [attr.aria-pressed]="worksheet.marked.includes(item.index)"
+                  (click)="mark(item.index)"
+                >
+                  <i
+                    [class]="worksheet.marked.includes(item.index) ? 'ri-bookmark-fill' : 'ri-bookmark-line'"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+                }
+              </div>
+              <school-hub-written-answer
+                [label]="'Answer to question ' + (item.index + 1)"
+                [kind]="item.question.kind"
+                [value]="worksheet.answers[item.index]"
+                [readonly]="!editable()"
+                [review]="completed()"
+                [correct]="correct(item.question, worksheet.answers[item.index])"
+                [expected]="item.question.answer"
+                [explanation]="item.question.explanation"
+                (changed)="answer(item.index, $event)"
+                (focused)="focusQuestion(item.index)"
+              />
+            </article>
+            }
+          </section>
+          }
+        </div>
+      </div>
+      <div class="workspace-save">
+        <span
+          ><i class="ri-checkbox-circle-line" aria-hidden="true"></i>{{
+          completed() ? 'Submitted worksheet · read-only review' :
+          store.persistent() ? 'Answers saved in this browser tab' : 'Answers
+          kept for this visit' }}</span
+        >
+        <div>
+          @if (!completed()) {
+          <button
+            class="outline-button"
+            type="button"
+            [disabled]="!editable()"
+            (click)="exit()"
+          >
+            Save &amp; Exit</button
+          ><button
+            class="worksheet-button"
+            type="button"
+            [disabled]="!editable()"
+            (click)="continue()"
+          >
+            Save &amp; Continue<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i>
+          </button>
+          } @else {
+          <a
+            class="outline-button"
+            routerLink="/student/worksheets"
+            [queryParams]="backQuery()"
+            >Back to Worksheets</a
+          >
+          }
+        </div>
+      </div>
+      @if (savedMessage()) {
+      <p class="save-status" role="status">{{ savedMessage() }}</p>
+      }
+      <p class="worksheet-reminder">
+        <i class="ri-shield-check-line" aria-hidden="true"></i
+        ><strong>Remember:</strong> Practise today, perform better tomorrow.
+      </p>
+    </div>
+    <aside class="workspace-aside" aria-label="Worksheet tools and progress">
+      <school-hub-dashboard-card
+        title="Your Progress"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="progress-ring">
+          <school-hub-progress-ring
+            [value]="worksheet.progress"
+            label="Worksheet questions answered"
+            caption="Completed"
+            tone="purple"
+          />
+        </div>
+        <dl class="workspace-stats">
+          <div>
+            <dt>Questions Answered</dt>
+            <dd>{{ worksheet.answered }}/{{ worksheet.questionCount }}</dd>
+          </div>
+          <div>
+            <dt>Questions Left</dt>
+            <dd>{{ worksheet.questionCount - worksheet.answered }}</dd>
+          </div>
+          <div>
+            <dt>{{ completed() ? 'Marks Obtained' : 'Marks Available' }}</dt>
+            <dd>
+              {{ completed() ? worksheet.marks + '/' + worksheet.totalMarks :
+              worksheet.totalMarks }}
+            </dd>
+          </div>
+          <div>
+            <dt>Time Spent</dt>
+            <dd>{{ time(worksheet.elapsedSeconds) }}</dd>
+          </div>
+        </dl></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Question Navigator"
+        icon="ri-grid-line"
+        tone="purple"
+        ><school-hub-question-navigator
+          [total]="worksheet.questions.length"
+          [current]="currentIndex()"
+          [answered]="answered()"
+          [marked]="worksheet.marked"
+          (selected)="selectQuestion($event)"
+      /></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Tools"
+        icon="ri-tools-line"
+        tone="purple"
+        ><div class="workspace-tools">
+          <button type="button" (click)="tool.set('calculator')">
+            <i class="ri-calculator-line" aria-hidden="true"></i
+            >Calculator</button
+          ><button type="button" (click)="tool.set('scratch')">
+            <i class="ri-draft-line" aria-hidden="true"></i>Scratch Pad</button
+          ><button type="button" (click)="tool.set('notes')">
+            <i class="ri-file-list-3-line" aria-hidden="true"></i>{{
+            worksheet.subjectId === 'mathematics' ? 'Formula Sheet' : 'Study
+            Notes' }}</button
+          ><button type="button" (click)="tool.set('converter')">
+            <i class="ri-scales-3-line" aria-hidden="true"></i>Unit Converter
+          </button>
+        </div></school-hub-dashboard-card
+      >
+      @if (!completed()) {
+      <button
+        class="worksheet-button submit-worksheet"
+        type="button"
+        [disabled]="!editable()"
+        (click)="tool.set('submit')"
+      >
+        Submit Worksheet<i class="ri-check-line" aria-hidden="true"></i>
+      </button>
+      }
+      <div class="help-card">
+        <i class="ri-customer-service-2-line" aria-hidden="true"></i>
+        <h2>Need Help?</h2>
+        <p>Stuck on a question? Ask your tutor for guidance.</p>
+        <a
+          routerLink="/student/ask-tutor"
+          [queryParams]="{ contextType: 'worksheet', contextId: worksheet.id, questionId: worksheet.questions[currentIndex()]?.id, subjectId: worksheet.subjectId }"
+          >Ask Tutor<i class="ri-arrow-right-line" aria-hidden="true"></i
+        ></a>
+      </div>
+      <div class="help-card warm">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>
+        <h2>Tip</h2>
+        <p>
+          Read every question carefully, show your working, and review marked
+          questions before submitting.
+        </p>
+      </div>
+    </aside>
+  </div>
+  } } @else {
+  <section class="workspace-empty">
+    <h1>Worksheet not found</h1>
+    <p>This worksheet could not be found. Choose a worksheet from the list.</p>
+    <a class="worksheet-button" routerLink="/student/worksheets"
+      >Browse Worksheets</a
+    >
+  </section>
+  }
+  <school-hub-dialog-panel
+    [open]="tool() !== null"
+    [title]="toolTitle()"
+    (dismissed)="tool.set(null)"
+  >
+    @switch (tool()) { @case ('calculator') { <school-hub-calculator /> } @case
+    ('converter') { <school-hub-unit-converter /> } @case ('scratch') {
+    <label class="scratch-label"
+      >Your working notes<textarea
+        rows="10"
+        maxlength="10000"
+        [readOnly]="!editable()"
+        [value]="record()?.scratch ?? ''"
+        (input)="scratch($event)"
+        placeholder="Use this space for your working. Notes are saved with your worksheet."
+      ></textarea>
+    </label>
+    <p class="tool-copy">
+      Your scratch pad helps you work through the questions. It is not marked.
+    </p>
+    } @case ('notes') {
+    <div class="study-notes">
+      @if (record()?.subjectId === 'mathematics') {
+      <h3>Working with whole numbers</h3>
+      <ul>
+        <li>Line up digits by place value when adding or subtracting.</li>
+        <li>Regroup whenever a column needs it.</li>
+        <li>
+          Multiplication means equal groups; division shares into equal groups.
+        </li>
+        <li>
+          Check multiplication with division and addition with subtraction.
+        </li>
+        <li>1 kilometre = 1,000 metres; 1 metre = 100 centimetres.</li>
+        <li>1 kilogram = 1,000 grams; 1 litre = 1,000 millilitres.</li>
+      </ul>
+      } @else {
+      <h3>{{ record()?.topic }}</h3>
+      <p>{{ record()?.description }}</p>
+      <p>
+        Read the prompt carefully and enter a short answer. Check your spelling
+        before submitting.
+      </p>
+      }<a
+        routerLink="/student/lessons"
+        [queryParams]="{ lessonId: record()?.lessonId }"
+        >Review the related lesson</a
+      >
+    </div>
+    } @case ('submit') {
+    <div class="submit-copy">
+      <p>
+        You have answered
+        <strong
+          >{{ record()?.answered }} of {{ record()?.questionCount }}</strong
+        >
+        questions.
+      </p>
+      <p>
+        Unanswered questions receive no marks. Submission saves your practice
+        score and opens answer review.
+      </p>
+      @if (record()?.marked?.length) {
+      <p>You marked {{ record()?.marked?.length }} questions for review.</p>
+      }
+      <p>
+        You can continue editing before you submit. Submitted answers cannot be
+        changed.
+      </p>
+    </div>
+    <div class="dialog-actions">
+      <button class="outline-button" type="button" (click)="tool.set(null)">
+        Keep Working</button
+      ><button class="worksheet-button" type="button" (click)="submit()">
+        Submit and Review
+      </button>
+    </div>
+    } @case ('print') {
+    <p class="tool-copy">
+      Download a text worksheet for offline practice, or use your browser’s
+      print dialog to print or save as PDF.
+    </p>
+    <label class="include-answers"
+      ><input
+        type="checkbox"
+        [checked]="includeAnswers()"
+        (change)="toggleAnswers($event)"
+      />Include my answers{{ completed() ? ' and feedback' : '' }}</label
+    >
+    <div class="dialog-actions">
+      <button class="outline-button" type="button" (click)="download()">
+        <i class="ri-download-line" aria-hidden="true"></i>Download Worksheet
+        (.txt)</button
+      ><button class="worksheet-button" type="button" (click)="print()">
+        <i class="ri-printer-line" aria-hidden="true"></i>Print / Save as PDF
+      </button>
+    </div>
+    } }
+  </school-hub-dialog-panel>
+</div>

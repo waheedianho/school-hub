@@ -1,0 +1,40 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+.progress-ring-track {
+  display: grid;
+  place-items: center;
+  width: 100px;
+  height: 100px;
+  padding: 7px;
+  border-radius: 50%;
+}
+.progress-ring-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #fff;
+  color: #172033;
+}
+strong {
+  font-size: 22px;
+  line-height: 1.3;
+}
+span {
+  font-size: typography.$caption;
+  max-width: 100%;
+  padding: 0 4px;
+  text-align: center;
+  line-height: 1.35;
+}
+:host-context(.dark) .progress-ring-value {
+  background: #101c30;
+  color: #e4edf9;
+}

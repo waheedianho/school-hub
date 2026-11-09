@@ -1,0 +1,13 @@
+<div class="safeguarding-banner">
+  <div class="banner-content">
+    <div class="shield-icon-wrap">
+      <i class="material-symbols-outlined">shield</i>
+    </div>
+    <p class="banner-text">{{ notice().message }}</p>
+  </div>
+
+  <a [routerLink]="notice().reportLinkUrl" class="banner-link">
+    <span>{{ notice().reportLinkText }}</span>
+    <i class="material-symbols-outlined">arrow_forward</i>
+  </a>
+</div>

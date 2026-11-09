@@ -1,0 +1,25 @@
+<div class="pending-submissions-card">
+  <div class="card-header">
+    <h3 class="card-title">Recent Submissions Pending Review</h3>
+    <button type="button" class="view-all-link" (click)="viewAll.emit()">
+      View all
+    </button>
+  </div>
+
+  <div class="submissions-list">
+    @for (sub of submissions(); track sub.id) {
+    <div class="submission-item">
+      <div class="submission-icon-box">
+        <span class="material-symbols-outlined">description</span>
+      </div>
+      <div class="submission-info">
+        <span class="submission-title">{{ sub.title }}</span>
+        <span class="submission-meta"
+          >{{ sub.className }} · {{ sub.learnersCount }} learners</span
+        >
+      </div>
+      <span class="submission-timestamp">{{ sub.timestamp }}</span>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,111 @@
+<section [attr.aria-label]="label()">
+  @if (hint()) {
+  <p class="hint">{{ hint() }}</p>
+  }
+  <div
+    class="messages"
+    #messageList
+    aria-live="polite"
+    aria-relevant="additions"
+  >
+    @for (message of messages(); track message.id) {
+    <article
+      [attr.aria-label]="'Message from ' + message.name"
+      [class.tutor]="message.role === 'tutor'"
+      [class.you]="message.role === 'you'"
+    >
+      <span class="avatar"
+        >@if (message.image) { <img [src]="message.image" alt="" /> } @else { {{
+        message.initials }} }</span
+      >
+      <div class="message-body">
+        <header>
+          <strong>{{ message.name }}</strong>@if (message.role === 'tutor') {
+          <span>Tutor</span> }<time>{{ message.time }}</time>
+        </header>
+        <p>{{ message.text }}</p>
+        @if (message.attachments?.length) {
+        <ul class="message-files" aria-label="Message attachments">
+          @for (file of message.attachments; track file.id) {
+          <li>
+            <button
+              type="button"
+              [attr.aria-label]="'Open attachment ' + file.name"
+              (click)="attachmentOpened.emit(file.id)"
+            >
+              <i class="ri-attachment-2" aria-hidden="true"></i
+              ><span>{{file.name}}<small>{{file.detail}}</small></span
+              ><i class="ri-download-line" aria-hidden="true"></i>
+            </button>
+          </li>
+          }
+        </ul>
+        } @if (message.reactions.length) {
+        <div class="reactions">
+          @for (reaction of message.reactions; track reaction.id) {
+          <button
+            type="button"
+            [disabled]="!enabled()"
+            [attr.aria-label]="reaction.label + ' reaction to message by ' + message.name"
+            [attr.aria-pressed]="reaction.active"
+            (click)="reacted.emit({ id: message.id, reaction: reaction.id })"
+          >
+            {{ reaction.icon }} {{ reaction.count }}
+          </button>
+          }
+        </div>
+        }
+      </div>
+    </article>
+    } @empty {
+    <p class="empty">No messages yet.</p>
+    }
+  </div>
+  <ng-content select="[composer-attachments]" />
+  <form (submit)="send($event)">
+    <label class="visually-hidden" [for]="composerId()"
+      >{{composerLabel()}}</label
+    ><textarea
+      [id]="composerId()"
+      rows="2"
+      [maxLength]="maxLength()"
+      [placeholder]="placeholder()"
+      [value]="draft()"
+      [disabled]="!enabled()"
+      (input)="edit($event)"
+      (keydown)="keydown($event)"
+    ></textarea>
+    <ng-content select="[composer-tools]" />
+    @if (showEmoji()) {<button
+      type="button"
+      class="emoji-button"
+      aria-label="Choose chat emoji"
+      [attr.aria-expanded]="emojiOpen()"
+      [disabled]="!enabled()"
+      (click)="emojiOpen.set(!emojiOpen())"
+    >
+      <i class="ri-emotion-happy-line" aria-hidden="true"></i></button
+    >}
+    <button
+      type="submit"
+      class="send-button"
+      [attr.aria-label]="sendLabel()"
+      [disabled]="!enabled() || (!draft().trim() && !canSendEmpty())"
+    >
+      <i class="ri-send-plane-2-line" aria-hidden="true"></i
+      >{{sendText()}}</button
+    >@if (emojiOpen()) {
+    <div class="emoji-picker" aria-label="Chat emoji">
+      @for (emoji of emojis; track emoji) {
+      <button
+        type="button"
+        [attr.aria-label]="'Insert ' + emoji"
+        (click)="draftChanged.emit((draft() + emoji).slice(0, maxLength())); emojiOpen.set(false)"
+      >
+        {{ emoji }}
+      </button>
+      }
+    </div>
+    }
+  </form>
+</section>

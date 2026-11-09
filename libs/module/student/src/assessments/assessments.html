@@ -1,0 +1,469 @@
+<div class="assessments-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
+  <header class="page-heading">
+    <div>
+      <h1>Quizzes &amp; Assessments</h1>
+      <p>
+        Test your understanding, track your performance, and identify areas to
+        improve.
+      </p>
+    </div>
+    <label class="term-select"
+      ><i class="ri-calendar-line" aria-hidden="true"></i
+      ><span class="visually-hidden">Term</span
+      ><select
+        aria-label="Term"
+        [value]="term()"
+        (change)="filterChanged('term', $event)"
+      >
+        @for (item of terms; track item.id) {
+        <option [value]="item.id" [selected]="term() === item.id">
+          {{ item.label }}
+        </option>
+        }
+        <option value="all" [selected]="term() === 'all'">All Terms</option>
+      </select></label
+    >
+  </header>
+  @if (missingAssessment()) {
+  <div class="missing-record" role="status">
+    <span>That assessment could not be found. Choose an assessment below.</span
+    ><button type="button" (click)="closeDialog()">Dismiss</button>
+  </div>
+  }
+  <section class="assessment-stats" aria-label="Assessment summary">
+    <div class="average-card">
+      <school-hub-progress-ring
+        [value]="average()"
+        label="Overall quiz average"
+        tone="green"
+        caption="Average"
+      />
+      <div>
+        <span>Overall Quiz Average</span><strong>{{ average() }}%</strong
+        ><small>Keep learning. Keep improving!</small>
+      </div>
+    </div>
+    <school-hub-summary-stat
+      title="Quizzes Taken"
+      [value]="quizResults().length"
+      description="Completed quiz attempts"
+      icon="ri-clipboard-line"
+    /><school-hub-summary-stat
+      title="Assessments Taken"
+      [value]="assessmentCount()"
+      description="Tests and assessments"
+      icon="ri-file-list-3-line"
+      tone="purple"
+    /><school-hub-summary-stat
+      title="Best Score"
+      [value]="bestScore() === undefined ? '—' : bestScore() + '%'"
+      description="Your highest score"
+      icon="ri-star-line"
+      tone="orange"
+    /><school-hub-summary-stat
+      title="Areas to Improve"
+      [value]="weakTopics().length"
+      description="Topics to review"
+      icon="ri-focus-3-line"
+      tone="red"
+    />
+  </section>
+  <div class="assessment-layout">
+    <div class="assessment-primary">
+      <div
+        class="assessment-filters"
+        role="group"
+        aria-label="Assessment filters"
+      >
+        <label class="search-field"
+          ><i class="ri-search-line" aria-hidden="true"></i
+          ><span class="visually-hidden">Search assessments</span
+          ><input
+            type="search"
+            placeholder="Search assessments or topics"
+            [value]="search()"
+            (input)="filterChanged('q', $event)" /></label
+        ><label
+          ><span class="visually-hidden">Subject</span
+          ><select
+            aria-label="Subject"
+            [value]="subject()"
+            (change)="filterChanged('subjectId', $event)"
+          >
+            <option value="" [selected]="!subject()">All Subjects</option>
+            @for (item of subjects; track item.id) {
+            <option [value]="item.id" [selected]="subject() === item.id">
+              {{ item.name }}
+            </option>
+            }
+          </select></label
+        >
+      </div>
+      <school-hub-filter-tabs
+        [tabs]="tabs"
+        [active]="type()"
+        panelId="assessment-results"
+        label="Assessment type"
+        (changed)="setType($event)"
+      />
+      <div
+        id="assessment-results"
+        role="tabpanel"
+        [attr.aria-labelledby]="'assessment-results-' + type()"
+      >
+        @if (!resultsOnly()) {
+        <section class="upcoming-section" aria-labelledby="upcoming-heading">
+          <h2 id="upcoming-heading">
+            Upcoming <span>({{ upcoming().length }})</span>
+          </h2>
+          <div class="upcoming-list">
+            @for (assessment of upcoming(); track assessment.id) {
+            <a
+              class="assessment-item"
+              routerLink="/student/assessments"
+              [queryParams]="selectionQuery(assessment)"
+              ><school-hub-icon-badge
+                [icon]="kinds[assessment.kind].icon"
+                [tone]="kinds[assessment.kind].tone"
+                [soft]="true"
+                [large]="true" />
+              <div>
+                <div class="assessment-title">
+                  <h3>{{ assessment.title }}</h3>
+                  <school-hub-status-badge
+                    [label]="kinds[assessment.kind].label"
+                    [tone]="kinds[assessment.kind].tone"
+                  />
+                </div>
+                <p>{{ assessment.subject }} · Week {{ assessment.week }}</p>
+                <small
+                  ><i class="ri-calendar-line" aria-hidden="true"></i>Due: {{
+                  formatDate(assessment.dueAt) }}, 4:00 PM WAT</small
+                >
+              </div>
+              <div class="assessment-due">
+                <school-hub-status-badge
+                  [label]="assessment.available ? 'Due Soon' : 'Upcoming'"
+                  tone="orange"
+                /><span>Total Marks: {{ assessment.totalMarks }}</span>
+              </div>
+              <i class="ri-arrow-right-s-line" aria-hidden="true"></i
+            ></a>
+            } @empty {
+            <div class="empty-assessments">
+              <i class="ri-calendar-check-line" aria-hidden="true"></i>
+              <p>No upcoming assessments match these filters.</p>
+            </div>
+            }
+          </div>
+          <button
+            class="calendar-link"
+            type="button"
+            (click)="openView('calendar')"
+          >
+            <i class="ri-calendar-line" aria-hidden="true"></i>View Calendar
+          </button>
+        </section>
+        }
+        <section class="recent-section" aria-labelledby="recent-heading">
+          <div class="section-heading">
+            <h2 id="recent-heading">
+              {{ resultsOnly() ? 'All Results' : 'Recent Results' }}
+            </h2>
+            @if (resultsOnly()) {
+            <button type="button" (click)="showUpcoming()">
+              Back to overview
+            </button>
+            } @else {
+            <button type="button" (click)="showResults()">
+              View All Results
+            </button>
+            }
+          </div>
+          <div
+            class="results-scroll"
+            role="region"
+            aria-label="Assessment result list"
+            tabindex="0"
+          >
+            <table aria-label="Assessment results">
+              <thead>
+                <tr>
+                  <th scope="col">Title</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Topic</th>
+                  <th scope="col">Score</th>
+                  <th scope="col">Performance</th>
+                  <th scope="col">Date</th>
+                  <th scope="col">
+                    <span class="visually-hidden">Review</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (result of visibleResults(); track result.id) {
+                <tr>
+                  <th scope="row">
+                    <a
+                      [routerLink]="resultLink(result)"
+                      [queryParams]="filterQuery()"
+                      >{{ result.assessment.title }}</a
+                    ><small
+                      >{{ result.assessment.subject }} · Week {{
+                      result.assessment.week }}</small
+                    >
+                  </th>
+                  <td>
+                    <school-hub-status-badge
+                      [label]="kinds[result.assessment.kind].label"
+                      [tone]="kinds[result.assessment.kind].tone"
+                    />
+                  </td>
+                  <td>{{ result.assessment.topic }}</td>
+                  <td>
+                    <strong>{{ result.marks }}/{{ result.totalMarks }}</strong
+                    ><small>{{ result.percentage }}%</small>
+                  </td>
+                  <td>
+                    <school-hub-status-badge
+                      [label]="performance(result.percentage).label"
+                      [tone]="performance(result.percentage).tone"
+                    />
+                  </td>
+                  <td>{{ formatDate(result.date) }}</td>
+                  <td>
+                    <a
+                      [routerLink]="resultLink(result)"
+                      [queryParams]="filterQuery()"
+                      [attr.aria-label]="'Review result for ' + result.assessment.title"
+                      ><i class="ri-arrow-right-s-line" aria-hidden="true"></i
+                    ></a>
+                  </td>
+                </tr>
+                } @empty {
+                <tr>
+                  <td colspan="7" class="empty-results">
+                    No results match these filters.
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          @if (resultsOnly()) {
+          <school-hub-pagination
+            [total]="filteredResults().length"
+            [page]="page()"
+            itemLabel="results"
+            label="Result pages"
+            (pageChanged)="changePage($event)"
+          />
+          }
+        </section>
+      </div>
+    </div>
+    <aside class="assessment-aside" aria-label="Assessment insights">
+      <school-hub-dashboard-card
+        title="Performance Overview"
+        icon="ri-line-chart-line"
+        tone="purple"
+        ><p class="chart-caption">Your five most recent attempts</p>
+        <school-hub-performance-chart
+          [points]="trend()"
+          label="Scores from your recent assessment attempts"
+        />
+        <div class="topic-heading">
+          <h3>Topic Performance</h3>
+          <button type="button" (click)="openView('topics')">View All</button>
+        </div>
+        <div class="topic-progress">
+          @for (topic of topicStats().slice(0, 5); track topic.id) {
+          <a
+            routerLink="/student/resources"
+            [queryParams]="{ topicId: topic.id, subjectId: topic.subjectId }"
+            ><span>{{ topic.title }}</span
+            ><school-hub-progress-bar
+              [value]="topic.percentage"
+              [label]="topic.title + ' performance'"
+              [tone]="topic.percentage >= 70 ? 'green' : topic.percentage >= 50 ? 'orange' : 'red'"
+            /><strong>{{ topic.percentage }}%</strong></a
+          >
+          } @empty {
+          <p class="empty-topics">
+            Your topic performance will appear after an assessment.
+          </p>
+          }
+        </div></school-hub-dashboard-card
+      >
+      <div class="study-note warm">
+        <i class="ri-focus-3-line" aria-hidden="true"></i>
+        <div>
+          <h3>Keep Practising!</h3>
+          <p>
+            @if (weakTopics().length) { Spend a little more time on {{
+            weakTopics()[0].title }}. Review your answers and try a worksheet. }
+            @else { Keep building your understanding with regular practice. }
+          </p>
+        </div>
+      </div>
+      <div class="study-note cool">
+        <i class="ri-book-open-line" aria-hidden="true"></i>
+        <div>
+          <h3>What’s Next?</h3>
+          <p>
+            Review a lesson, complete your next assessment, and use your
+            feedback to improve.
+          </p>
+          <a routerLink="/student/lessons"
+            >Go to My Lessons<i
+              class="ri-arrow-right-s-line"
+              aria-hidden="true"
+            ></i
+          ></a>
+        </div>
+      </div>
+      <a
+        class="practice-link"
+        routerLink="/student/worksheets"
+        [queryParams]="{ subjectId: subject() || null }"
+        ><i class="ri-file-text-line" aria-hidden="true"></i
+        ><span><strong>Need More Practice?</strong>Go to Worksheets</span
+        ><i class="ri-arrow-right-s-line" aria-hidden="true"></i
+      ></a>
+    </aside>
+  </div>
+
+  <school-hub-dialog-panel
+    [open]="dialogOpen()"
+    [title]="dialogTitle()"
+    (dismissed)="closeDialog()"
+  >
+    @if (calendarOpen()) {
+    <p class="dialog-copy">
+      Upcoming assessments for your selected term and subject.
+    </p>
+    <ol class="calendar-list">
+      @for (assessment of upcoming(); track assessment.id) {
+      <li>
+        <a
+          routerLink="/student/assessments"
+          [queryParams]="selectionQuery(assessment)"
+          ><strong>{{ formatDate(assessment.dueAt) }}</strong
+          ><span>{{ assessment.title }}</span
+          ><small>{{ assessment.subject }} · 4:00 PM WAT</small></a
+        >
+      </li>
+      } @empty {
+      <li>No scheduled assessments match your filters.</li>
+      }
+    </ol>
+    } @else if (topicsOpen()) {
+    <div class="all-topics">
+      @for (topic of topicStats(); track topic.id) {
+      <a
+        routerLink="/student/resources"
+        [queryParams]="{ topicId: topic.id, subjectId: topic.subjectId }"
+        ><span>{{ topic.title }}</span
+        ><school-hub-progress-bar
+          [value]="topic.percentage"
+          [label]="topic.title + ' review performance'"
+          [tone]="topic.percentage >= 70 ? 'green' : 'orange'"
+        /><strong>{{ topic.percentage }}%</strong></a
+      >
+      } @empty {
+      <p>No topic results are available yet.</p>
+      }
+    </div>
+    } @else if (selected(); as assessment) { @if (selectedResult(); as result) {
+    <div class="result-preview">
+      <school-hub-progress-ring
+        [value]="result.percentage"
+        label="Quiz result percentage"
+        tone="purple"
+      />
+      <div>
+        <h3>{{ assessment.title }}</h3>
+        <strong>{{ result.marks }} / {{ result.totalMarks }} marks</strong>
+        <p>
+          {{ performance(result.percentage).label }} · {{
+          formatDate(result.date) }}
+        </p>
+      </div>
+    </div>
+    <a
+      class="assessment-button"
+      [routerLink]="resultLink(result)"
+      [queryParams]="filterQuery()"
+      >View answer review<i
+        class="ri-arrow-right-line"
+        aria-hidden="true"
+      ></i></a
+    ><button class="subtle-button" type="button" (click)="showInstructions()">
+      View assessment details
+    </button>
+    } @else {
+    <div class="instruction-meta">
+      <school-hub-status-badge
+        [label]="kinds[assessment.kind].label"
+        [tone]="kinds[assessment.kind].tone"
+      /><span>{{ assessment.subject }}</span
+      ><span>Week {{ assessment.week }}</span
+      ><school-hub-status-badge label="Practice mode" tone="neutral" />
+    </div>
+    <div class="instruction-stats">
+      <div>
+        <strong>{{ assessment.questionCount }}</strong><span>Questions</span>
+      </div>
+      <div><strong>{{ assessment.totalMarks }}</strong><span>Marks</span></div>
+      <div>
+        <strong>{{ assessment.durationMinutes }} min</strong
+        ><span>Duration</span>
+      </div>
+      <div>
+        <strong
+          >{{ store.usedAttempts(assessment.id) }}/{{ assessment.maxAttempts
+          }}</strong
+        ><span>Attempts used</span>
+      </div>
+    </div>
+    <h3 class="instruction-heading">Before you begin</h3>
+    <ul class="instruction-list">
+      <li>Read each question carefully and choose one answer.</li>
+      <li>You can mark questions for review and return to them.</li>
+      <li>
+        Use Pause Quiz if you need a break. Your answers are kept in this tab.
+      </li>
+      <li>The attempt submits automatically when time runs out.</li>
+    </ul>
+    @if (!assessment.available || !assessment.questions.length) {
+    <p class="availability-note">
+      <i class="ri-lock-line" aria-hidden="true"></i>{{ assessment.lockedReason
+      }}
+    </p>
+    } @else if (store.usedAttempts(assessment.id) >= assessment.maxAttempts &&
+    !store.draft(assessment.id)) {
+    <p class="availability-note">
+      You have used all available practice attempts.
+    </p>
+    }<button
+      type="button"
+      class="assessment-button"
+      [disabled]="!canStart(assessment)"
+      (click)="startSelected()"
+    >
+      <i class="ri-play-circle-line" aria-hidden="true"></i>{{
+      startLabel(assessment) }}</button
+    >@if (assessment.lessonId) {
+    <a
+      class="subtle-button"
+      routerLink="/student/lessons"
+      [queryParams]="{ lessonId: assessment.lessonId, subject: assessment.subjectId }"
+      >Review the lesson first</a
+    >
+    } } }
+  </school-hub-dialog-panel>
+</div>

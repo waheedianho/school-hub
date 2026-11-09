@@ -1,0 +1,59 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+}
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+li + li {
+  border-top: 1px solid #edf0f6;
+}
+a {
+  display: grid;
+  grid-template-columns: 33px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 10px;
+  row-gap: 3px;
+  padding: 12px 0;
+  color: #182031;
+  border-radius: 6px;
+}
+a:hover .task-title {
+  color: #0866ff;
+}
+a:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 4px;
+}
+school-hub-icon-badge {
+  grid-row: span 2;
+}
+.task-title {
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.due-label {
+  grid-column: 2;
+  color: #de334a;
+  font-size: typography.$caption;
+}
+.task-arrow {
+  display: none;
+}
+.empty-state {
+  padding: 18px 0;
+  color: #65738a;
+  font-size: typography.$body;
+}
+:host-context(.dark) {
+  a {
+    color: #e4edf9;
+  }
+  li + li {
+    border-color: #263349;
+  }
+}

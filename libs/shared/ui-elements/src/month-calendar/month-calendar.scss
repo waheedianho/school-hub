@@ -1,0 +1,76 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+h3 {
+  margin: 0;
+  color: #33455f;
+  font-size: typography.$section;
+}
+header button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid #e3e5f2;
+  border-radius: 6px;
+  background: white;
+  color: #7651a8;
+  font-size: 23px;
+  cursor: pointer;
+}
+.weekdays,
+.days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 5px;
+  text-align: center;
+}
+.weekdays {
+  margin-bottom: 9px;
+  color: #78839b;
+  font-size: typography.$caption;
+}
+.days button {
+  position: relative;
+  min-height: 40px;
+  padding: 6px 3px 10px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: #fafbfe;
+  color: #52637d;
+  font: inherit;
+  font-size: typography.$body;
+  cursor: pointer;
+}
+.days button:hover {
+  background: #f4edff;
+}
+.days .today {
+  border-color: #d3b8f7;
+}
+.days .selected {
+  background: #8551d2;
+  color: white;
+}
+.dot {
+  position: absolute;
+  bottom: 4px;
+  left: calc(50% - 2px);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #a270df;
+}
+.selected .dot {
+  background: white;
+}
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 2px;
+}

@@ -1,0 +1,122 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
+.dialog-description {
+  margin: 0 0 14px;
+  color: #5d6e88;
+  font-size: typography.$body;
+}
+.overview-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+  color: #60708b;
+  font-size: typography.$body;
+}
+.lesson-objective {
+  margin: 20px 0;
+  padding: 18px;
+  border: 1px solid #dceafd;
+  border-radius: 11px;
+  background: #f5f9ff;
+}
+.lesson-objective h3 {
+  margin: 0 0 8px;
+  font-size: 14px;
+}
+.lesson-objective p {
+  margin: 0;
+  color: #48607e;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.availability-note {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 9px;
+  background: #fff7e8;
+  color: #866314;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.availability-note i {
+  font-size: 18px;
+}
+.overview-progress {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  margin: 20px 0;
+  color: #425674;
+  font-size: typography.$body;
+}
+.overview-progress school-hub-progress-bar {
+  grid-column: 1 / -1;
+}
+.resources-button {
+  width: 100%;
+}
+.related-heading {
+  margin: 22px 0 10px;
+  font-size: typography.$body;
+}
+.related-activities {
+  display: grid;
+  gap: 8px;
+}
+.related-activities a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid #e3eaf4;
+  border-radius: 8px;
+  color: #314a6e;
+  font-size: typography.$body;
+}
+.related-activities a > span {
+  flex: 1;
+}
+.overview-help {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 22px;
+  color: #0866ff;
+  font-size: typography.$body;
+}
+.lesson-menu {
+  display: grid;
+  gap: 10px;
+}
+.lesson-menu a,
+.lesson-menu button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #e3eaf4;
+  border-radius: 9px;
+  background: #f8fbff;
+  color: #284974;
+  text-align: left;
+  font-size: typography.$body;
+}
+.lesson-menu i {
+  color: #0866ff;
+  font-size: 20px;
+}
+:host-context(.dark) {
+  .lesson-objective,
+  .lesson-menu a,
+  .lesson-menu button {
+    background: #15253e;
+    border-color: #263349;
+    color: #e4edf9;
+  }
+  .lesson-objective p {
+    color: #c5d5eb;
+  }
+}

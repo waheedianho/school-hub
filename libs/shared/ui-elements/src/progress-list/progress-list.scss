@@ -1,0 +1,139 @@
+@use '../styles/typography' as typography;
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #edf0f5;
+}
+.name {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  flex: 1 1 170px;
+  min-width: 0;
+}
+.name > school-hub-icon-badge {
+  flex-shrink: 0;
+}
+strong {
+  display: block;
+  color: #45516b;
+  font-size: typography.$body;
+  line-height: 1.7;
+  font-weight: 600;
+}
+small {
+  display: block;
+  margin-top: 3px;
+  color: #8a809b;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 1 160px;
+  min-width: 115px;
+}
+.progress school-hub-progress-bar {
+  flex: 1;
+  min-width: 45px;
+}
+.progress > span {
+  flex-shrink: 0;
+  color: #655579;
+  font-size: typography.$caption;
+  font-weight: 600;
+}
+.detail {
+  flex: 0 1 130px;
+  margin: 0;
+  color: #7d7190;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+a {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 76px;
+  min-height: 33px;
+  padding: 6px 10px;
+  border: 1px solid #dac9f0;
+  border-radius: 6px;
+  background: #fff;
+  color: #7b45bd;
+  font-size: typography.$caption;
+  text-decoration: none;
+  font-weight: 600;
+}
+a:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+.compact li {
+  border: 0;
+  padding: 9px 0;
+  gap: 12px;
+}
+.compact .name {
+  flex-basis: 230px;
+}
+.compact .progress {
+  flex-basis: 165px;
+}
+@media (max-width: 1550px) {
+  li {
+    flex-wrap: wrap;
+  }
+  .name {
+    flex-basis: calc(100% - 180px);
+  }
+  .detail {
+    flex: 1 1 180px;
+    padding-left: 46px;
+  }
+  .compact li {
+    flex-wrap: nowrap;
+  }
+  .compact .name {
+    flex-basis: 200px;
+  }
+}
+@media (max-width: 600px) {
+  li {
+    gap: 10px;
+  }
+  .name {
+    flex-basis: 100%;
+  }
+  .progress {
+    flex: 1 1 140px;
+  }
+  .detail {
+    flex-basis: 100%;
+    padding-left: 0;
+    order: 1;
+  }
+  a {
+    min-width: 90px;
+  }
+  .compact li {
+    flex-wrap: wrap;
+  }
+  .compact .name {
+    flex-basis: 100%;
+  }
+  .compact .progress {
+    padding-left: 44px;
+    flex: 1;
+  }
+}

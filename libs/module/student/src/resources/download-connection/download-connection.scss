@@ -1,0 +1,43 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+.connection-copy {
+  color: #6b7890;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+h3 {
+  margin-top: 0;
+  color: #685078;
+  font-size: typography.$section;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 22px;
+}
+button,
+a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px 13px;
+  border: 1px solid #dfd0ef;
+  border-radius: 6px;
+  color: #793fc0;
+  background: white;
+  font: inherit;
+  font-size: typography.$body;
+  text-decoration: none;
+  cursor: pointer;
+}
+.primary {
+  background: #8042d0;
+  color: white;
+  border-color: #8042d0;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #9b6bce;
+  outline-offset: 3px;
+}

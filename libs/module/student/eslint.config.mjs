@@ -34,7 +34,7 @@ export default [
         'error',
         {
           type: 'element',
-          prefix: 'lib',
+          prefix: 'school-hub',
           style: 'kebab-case',
         },
       ],

@@ -1,0 +1,36 @@
+<div
+  class="rubric-scroll"
+  role="region"
+  [attr.aria-label]="label() + ' details'"
+  tabindex="0"
+>
+  <table [attr.aria-label]="label()">
+    <thead>
+      <tr>
+        <th scope="col">Criterion</th>
+        <th scope="col">What to aim for</th>
+        <th scope="col">{{ scores() ? 'Score' : 'Marks' }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (criterion of criteria(); track criterion.id; let index = $index) {
+      <tr>
+        <th scope="row">{{ criterion.title }}</th>
+        <td>{{ criterion.description }}</td>
+        <td>
+          @if (scores()) { <strong>{{ scores()?.[index] }} / </strong> }{{
+          criterion.max }}
+        </td>
+      </tr>
+      }
+    </tbody>
+    <tfoot>
+      <tr>
+        <th scope="row" colspan="2">Total</th>
+        <td>
+          @if (scores()) { <strong>{{ obtained() }} / </strong> }{{ total() }}
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

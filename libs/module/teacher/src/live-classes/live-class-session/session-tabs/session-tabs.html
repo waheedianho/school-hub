@@ -1,0 +1,111 @@
+<div class="session-tabs-card">
+  <!-- Tabs Navigation Header -->
+  <div class="tabs-header">
+    <div class="tabs-nav" role="tablist">
+      @for (tab of tabs; track tab) {
+      <button
+        type="button"
+        class="tab-btn"
+        role="tab"
+        [attr.aria-selected]="activeTab() === tab"
+        [class.active]="activeTab() === tab"
+        (click)="selectTab(tab)"
+      >
+        {{ tab }}
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Tab Content Body -->
+  <div class="tab-content-body">
+    @if (activeTab() === 'Class Info') {
+    <div class="class-info-grid">
+      <!-- Column 1: Lesson Plan -->
+      <div class="info-column">
+        <h4 class="column-title">Lesson Plan</h4>
+        <ul class="lesson-plan-list">
+          @for (step of sessionDetails().lessonPlanSteps; track step.step) {
+          <li class="plan-item">
+            <span class="bullet-dot"></span>
+            <span class="plan-text">{{ step.step }}</span>
+            <span class="plan-duration">({{ step.duration }})</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Column 2: Key Points -->
+      <div class="info-column">
+        <h4 class="column-title">Key Points</h4>
+        <ul class="key-points-list">
+          @for (point of sessionDetails().keyPoints; track point) {
+          <li class="point-item">
+            <span class="material-symbols-outlined check-circle-icon"
+              >check_circle</span
+            >
+            <span class="point-text">{{ point }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Column 3: Today's Activity & Homework -->
+      <div class="info-column actions-cards-column">
+        <div class="mini-activity-card">
+          <div class="activity-header">
+            <span class="material-symbols-outlined activity-icon"
+              >assignment</span
+            >
+            <h5 class="activity-title">
+              {{ sessionDetails().todayActivity.title }}
+            </h5>
+          </div>
+          <p class="activity-desc">
+            {{ sessionDetails().todayActivity.description }}
+          </p>
+          <button type="button" class="activity-action-btn">
+            {{ sessionDetails().todayActivity.buttonText }}
+          </button>
+        </div>
+
+        <div class="mini-activity-card">
+          <div class="activity-header">
+            <span class="material-symbols-outlined hw-icon">menu_book</span>
+            <h5 class="activity-title">
+              {{ sessionDetails().homework.title }}
+            </h5>
+          </div>
+          <p class="activity-desc">
+            {{ sessionDetails().homework.description }}
+          </p>
+          <button type="button" class="activity-action-btn">
+            {{ sessionDetails().homework.buttonText }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attached Materials Row -->
+    <div class="attached-materials-section">
+      <h5 class="attached-title">Attached Materials</h5>
+      <div class="materials-chips-row">
+        @for (mat of sessionDetails().attachedMaterials; track mat.id) {
+        <div class="material-chip">
+          <span class="material-symbols-outlined chip-icon">description</span>
+          <span class="chip-name">{{ mat.name }}</span>
+          <span class="format-badge {{ mat.badgeClass }}"
+            >{{ mat.format }}</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+    } @else {
+    <!-- Other tabs placeholder -->
+    <div class="tab-fallback">
+      <p>Displaying contents for <strong>{{ activeTab() }}</strong>.</p>
+    </div>
+    }
+  </div>
+</div>

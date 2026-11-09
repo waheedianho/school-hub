@@ -1,0 +1,38 @@
+<school-hub-dashboard-card
+  title="This Week's Curriculum Focus"
+  icon="ri-focus-3-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="focus-list">
+    @for (item of items(); track item.id) {
+    <div class="focus-item-card">
+      <div class="focus-left">
+        <span class="class-badge" [class]="'badge-' + item.classTone">
+          {{ item.className }}
+        </span>
+
+        <div class="focus-text">
+          <strong class="subject-title">{{ item.subject }}</strong>
+          <span class="topic-subtitle">{{ item.topic }}</span>
+        </div>
+      </div>
+
+      <div class="focus-right">
+        <school-hub-status-badge
+          [tone]="item.statusTone === 'green' ? 'green' : item.statusTone === 'orange' ? 'orange' : 'purple'"
+          [label]="item.status"
+          size="sm"
+        />
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="focus-footer">
+    <a routerLink="/teacher/curriculum" class="footer-link">
+      <span>View all weekly focus</span>
+      <i class="ri-arrow-right-s-line" aria-hidden="true"></i>
+    </a>
+  </div>
+</school-hub-dashboard-card>

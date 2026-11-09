@@ -1,0 +1,307 @@
+<div class="feedback-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  <header class="page-heading">
+    <div>
+      <h1>Feedback</h1>
+      <p>Learn from your feedback and take the next step to improve.</p>
+    </div>
+    <label class="term-select"
+      ><i class="ri-calendar-line" aria-hidden="true"></i
+      ><select
+        aria-label="Term"
+        [value]="term()"
+        (change)="change('term', $event)"
+      >
+        <option value="all" [selected]="term() === 'all'">All Terms</option>
+        @for (item of terms; track item.id) {
+        <option [value]="item.id" [selected]="term() === item.id">
+          {{ item.label }}
+        </option>
+        }
+      </select></label
+    >
+  </header>
+  <section class="feedback-summary" aria-label="Feedback totals">
+    <school-hub-summary-stat
+      title="Total Feedback"
+      [value]="scoped().length"
+      description="Across your learning activities"
+      icon="ri-message-2-line"
+      tone="purple"
+    />
+    <school-hub-summary-stat
+      title="Needs Action"
+      [value]="scoped().length - reviewed()"
+      description="Review and take your next step"
+      icon="ri-error-warning-line"
+      tone="orange"
+    />
+    <school-hub-summary-stat
+      title="Reviewed"
+      [value]="reviewed()"
+      description="Keep putting feedback into practice"
+      icon="ri-check-double-line"
+      tone="green"
+    />
+    <school-hub-summary-stat
+      title="Average Performance"
+      [value]="average()"
+      description="Average activity score on a 5-point scale"
+      icon="ri-star-line"
+      tone="purple"
+    />
+  </section>
+  <div class="feedback-filters">
+    <label
+      ><i class="ri-search-line" aria-hidden="true"></i
+      ><input
+        type="search"
+        aria-label="Search feedback"
+        placeholder="Search feedback, topics, or tutors"
+        [value]="search()"
+        (input)="change('q', $event)" /></label
+    ><label
+      ><select
+        aria-label="Subject"
+        [value]="subject()"
+        (change)="change('subjectId', $event)"
+      >
+        <option value="" [selected]="!subject()">All Subjects</option>
+        @for (item of subjects; track item.id) {
+        <option [value]="item.id" [selected]="subject() === item.id">
+          {{ item.name }}
+        </option>
+        }
+      </select></label
+    >
+  </div>
+  <school-hub-filter-tabs
+    [tabs]="tabs()"
+    [active]="tab()"
+    panelId="feedback-results"
+    label="Feedback categories"
+    (changed)="setTab($event)"
+  />
+  @if (missing()) {
+  <p class="notice" role="status">
+    That feedback could not be found.<button type="button" (click)="dismiss()">
+      Dismiss
+    </button>
+  </p>
+  } @if (!store.reviews.persistent()) {
+  <p class="notice" role="status">
+    Review status is available for this visit. Your browser could not save it
+    for later.
+  </p>
+  }
+  <div class="feedback-layout">
+    <section
+      class="feedback-list"
+      id="feedback-results"
+      role="tabpanel"
+      [attr.aria-labelledby]="'feedback-results-' + tab()"
+    >
+      <header class="list-heading">
+        <h2>Recent Feedback</h2>
+        <select
+          aria-label="Sort feedback"
+          [value]="sort()"
+          (change)="change('sort', $event)"
+        >
+          @for (item of sortOptions; track item.id) {
+          <option [value]="item.id" [selected]="sort() === item.id">
+            {{ item.label }}
+          </option>
+          }
+        </select>
+      </header>
+      @if (!store.ready()) {
+      <p class="empty-state" role="status">Loading your feedback…</p>
+      } @else {
+      <div class="feedback-items">
+        @for (entry of visible(); track entry.id) {
+        <a
+          class="feedback-item"
+          [class.selected]="selected()?.id === entry.id"
+          [attr.aria-current]="selected()?.id === entry.id ? 'true' : null"
+          [routerLink]="'/student/feedback'"
+          [queryParams]="selectionQuery(entry)"
+          fragment="feedback-detail"
+        >
+          <div class="item-top">
+            <school-hub-icon-badge
+              [icon]="kinds[entry.kind].icon"
+              [tone]="kinds[entry.kind].tone"
+            /><school-hub-status-badge
+              [label]="entry.reviewed ? 'Reviewed' : 'Needs Action'"
+              [tone]="entry.reviewed ? 'green' : 'orange'"
+            />
+          </div>
+          <h3>{{ entry.title }}</h3>
+          <p>{{ entry.subject }} · {{ kinds[entry.kind].label }}</p>
+          <div class="item-score">
+            <span
+              >Score:
+              <strong
+                >{{ entry.score === undefined ? '—' : entry.score + '%'
+                }}</strong
+              ></span
+            ><span>{{ date(entry.date) }}</span>
+          </div>
+          <div class="item-bottom">
+            <span
+              ><i class="ri-user-line" aria-hidden="true"></i>{{ entry.author
+              }}</span
+            ><i class="ri-arrow-right-line" aria-hidden="true"></i>
+          </div>
+        </a>
+        } @empty {
+        <div class="empty-state">
+          <i class="ri-chat-search-line" aria-hidden="true"></i>
+          <h3>No feedback found</h3>
+          <p>Try another search, subject, or category.</p>
+          <button type="button" (click)="clear()">Clear filters</button>
+        </div>
+        }
+      </div>
+      <school-hub-pagination
+        [total]="filtered().length"
+        [page]="page()"
+        itemLabel="feedback items"
+        label="Feedback pages"
+        (pageChanged)="changePage($event)"
+      />
+      }
+    </section>
+    <div class="selected-panel" id="feedback-detail">
+      @if (store.ready()) { @if (selected(); as entry) { @if (outside()) {
+      <p class="selection-note" role="status">
+        This selected feedback is outside the current list page or
+        filters.<button type="button" (click)="dismiss()">
+          Show current list selection
+        </button>
+      </p>
+      }
+      <school-hub-feedback-detail
+        [entry]="entry"
+        [workQuery]="actionQuery(entry.work)"
+        [tutorQuery]="tutorQuery()"
+        (reviewedChanged)="markReviewed($event)"
+      />
+      } @else {
+      <div class="detail-empty">
+        <i class="ri-discuss-line" aria-hidden="true"></i>
+        <h2>Your feedback will appear here</h2>
+        <p>
+          Complete an available quiz or worksheet to receive a practice review.
+        </p>
+        <a routerLink="/student/assessments">Go to Quizzes &amp; Assessments</a>
+      </div>
+      } }
+    </div>
+    <aside class="feedback-aside" aria-label="Feedback insights">
+      <school-hub-dashboard-card
+        title="Feedback Summary"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="review-summary">
+          <school-hub-progress-ring
+            [value]="progress()"
+            label="Feedback reviewed"
+            caption="Reviewed"
+            tone="purple"
+          />
+          <dl>
+            <div>
+              <dt>Total Feedback</dt>
+              <dd>{{ scoped().length }}</dd>
+            </div>
+            <div>
+              <dt>Reviewed</dt>
+              <dd>{{ reviewed() }}</dd>
+            </div>
+            <div>
+              <dt>Needs Action</dt>
+              <dd>{{ scoped().length - reviewed() }}</dd>
+            </div>
+          </dl>
+        </div></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Focus Areas"
+        icon="ri-focus-3-line"
+        tone="orange"
+        ><p class="aside-copy">
+          Topics with the lowest average activity scores in your selected term
+          and subject.
+        </p>
+        <div class="focus-areas">
+          @for (area of focusAreas(); track area.id) {
+          <div>
+            <a
+              routerLink="/student/resources"
+              [queryParams]="{ subjectId: area.subjectId, topicId: area.topicId }"
+              >{{ area.title }}</a
+            ><strong>{{ area.score }}%</strong
+            ><school-hub-progress-bar
+              [value]="area.score"
+              [label]="area.title + ' average score'"
+              [tone]="area.score >= 70 ? 'green' : 'orange'"
+            />
+          </div>
+          } @empty {
+          <p class="aside-copy">No scores in this selection yet.</p>
+          }
+        </div>
+        <a
+          class="card-link"
+          routerLink="/student/progress"
+          [queryParams]="{ term: term() === 'all' ? null : term(), subjectId: subject() || null }"
+          >View My Progress<i
+            class="ri-arrow-right-s-line"
+            aria-hidden="true"
+          ></i></a
+      ></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Quick Actions"
+        icon="ri-flashlight-line"
+        tone="purple"
+        ><nav class="quick-actions" aria-label="Feedback next steps">
+          @if (practice(); as link) {
+          <a [routerLink]="link.route" [queryParams]="actionQuery(link)"
+            ><i class="ri-restart-line" aria-hidden="true"></i
+            ><span
+              ><strong>{{ link.label }}</strong
+              ><small>{{ link.description }}</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i
+          ></a>
+          } @if (followUp(); as link) {
+          <a [routerLink]="link.route" [queryParams]="actionQuery(link)"
+            ><i class="ri-question-answer-line" aria-hidden="true"></i
+            ><span
+              ><strong>{{ link.label }}</strong
+              ><small>{{ link.description }}</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i
+          ></a>
+          } @if (selected()) {
+          <a routerLink="/student/ask-tutor" [queryParams]="tutorQuery()"
+            ><i class="ri-chat-1-line" aria-hidden="true"></i
+            ><span
+              ><strong>Ask Tutor</strong
+              ><small>Get help with this feedback.</small></span
+            ><i class="ri-arrow-right-s-line" aria-hidden="true"></i
+          ></a>
+          }
+        </nav></school-hub-dashboard-card
+      >
+      <div class="feedback-tip">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>
+        <h3>Feedback helps you grow!</h3>
+        <p>
+          Read it, learn from it, and try again. Every small improvement counts.
+        </p>
+      </div>
+    </aside>
+  </div>
+</div>

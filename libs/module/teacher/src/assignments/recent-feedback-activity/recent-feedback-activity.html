@@ -1,0 +1,35 @@
+<div class="feedback-activity-card">
+  <div class="card-header">
+    <h3 class="card-title">Recent Feedback Activity</h3>
+  </div>
+
+  <div class="feedback-list">
+    @for (item of feedbackList(); track item.id) {
+    <div class="feedback-item">
+      <div class="feedback-avatar" [style.background-color]="item.avatarColor">
+        {{ item.avatarText }}
+      </div>
+      <div class="feedback-content">
+        <div class="feedback-meta-row">
+          <span class="learner-topic-text">
+            <strong>{{ item.learnerName }}</strong> &ndash; {{ item.topic }}
+          </span>
+          <div class="time-bubble-group">
+            <span class="feedback-time">{{ item.timestamp }}</span>
+            <span class="material-symbols-outlined bubble-icon"
+              >chat_bubble_outline</span
+            >
+          </div>
+        </div>
+        <p class="comment-snippet">&ldquo;{{ item.comment }}&rdquo;</p>
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="view-link"
+      >View all feedback activity &rarr;</a
+    >
+  </div>
+</div>

@@ -1,0 +1,66 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
+.assessment-button,
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 9px 16px;
+  border: 1px solid #7940dc;
+  border-radius: 7px;
+  background: #7940dc;
+  color: #fff;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.assessment-button:hover {
+  background: #6830c7;
+}
+.outline-button {
+  border-color: #dbe2ef;
+  background: white;
+  color: #445a7a;
+}
+.outline-button:hover {
+  border-color: #a88ce4;
+  background: #f9f6ff;
+}
+.assessment-button:disabled,
+.outline-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  color: #7940dc;
+  font-size: typography.$body;
+}
+.subtle-button {
+  display: block;
+  padding: 12px;
+  border: 0;
+  background: transparent;
+  color: #7940dc;
+  text-align: center;
+  font-size: typography.$body;
+}
+.eyebrow {
+  display: block;
+  color: #7a659c;
+  font-size: typography.$body;
+}
+.dialog-copy {
+  color: #5d708e;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #9567ec;
+  outline-offset: 3px;
+}

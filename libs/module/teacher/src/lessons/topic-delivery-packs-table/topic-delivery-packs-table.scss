@@ -1,0 +1,215 @@
+.table-container {
+  overflow-x: auto;
+  margin: 0;
+}
+
+.packs-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+
+  th {
+    padding: 10px 12px;
+    background-color: #f8fafc;
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    border-bottom: 1px solid #e2e8f0;
+    white-space: nowrap;
+
+    &.text-right {
+      text-align: right;
+    }
+  }
+
+  td {
+    padding: 11px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+
+    &.text-right {
+      text-align: right;
+    }
+  }
+
+  tbody tr {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f8fafc;
+    }
+
+    &.row-selected {
+      background-color: #f5f3ff;
+    }
+  }
+}
+
+.topic-link {
+  font-weight: 600;
+  color: #4f46e5;
+  white-space: nowrap;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.class-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 6px;
+  white-space: nowrap;
+
+  &.badge-purple {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+  }
+
+  &.badge-blue {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+
+  &.badge-green {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+}
+
+.subject-text,
+.week-text {
+  color: #334155;
+  white-space: nowrap;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  white-space: nowrap;
+
+  .pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+
+  &.pill-ready {
+    background-color: #dcfce7;
+    color: #15803d;
+
+    .pill-dot {
+      background-color: #16a34a;
+    }
+  }
+
+  &.pill-progress {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+
+    .pill-dot {
+      background-color: #2563eb;
+    }
+  }
+
+  &.pill-review {
+    background-color: #ffedd5;
+    color: #c2410c;
+
+    .pill-dot {
+      background-color: #ea580c;
+    }
+  }
+}
+
+.materials-row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mat-icon-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  color: #475569;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  border: 1px solid #e2e8f0;
+}
+
+.mat-extra-badge {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  font-size: 10px;
+  font-weight: 600;
+  color: #475569;
+}
+
+.updated-text {
+  font-size: 11px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.btn-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #f1f5f9;
+    color: #1e293b;
+  }
+}
+
+.materials-legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 14px 4px;
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #64748b;
+
+  .legend-icon {
+    font-size: 13px;
+    color: #4f46e5;
+  }
+
+  &.extra-legend {
+    color: #94a3b8;
+  }
+}

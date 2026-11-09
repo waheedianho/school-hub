@@ -1,0 +1,58 @@
+@if (!disabled()) {
+<label class="upload-zone" (dragover)="drag($event)" (drop)="drop($event)">
+  <input
+    type="file"
+    multiple
+    [accept]="accept()"
+    [disabled]="disabled()"
+    [attr.aria-label]="label()"
+    (change)="change($event)"
+  />
+  <i class="ri-upload-cloud-2-line" aria-hidden="true"></i
+  ><strong>Choose files or drag them here</strong><span>{{ help() }}</span>
+</label>
+} @if (errors().length) {
+<div class="upload-errors" role="alert">
+  <ul>
+    @for (error of errors(); track $index) {
+    <li>{{ error }}</li>
+    }
+  </ul>
+</div>
+}
+<ul class="file-list" aria-label="Attached files">
+  @for (file of files(); track file.id) {
+  <li>
+    <i class="ri-attachment-2" aria-hidden="true"></i
+    ><span
+      ><strong>{{ file.name }}</strong
+      ><small>{{ size(file.size) }}</small></span
+    >
+    <div>
+      <button
+        type="button"
+        [attr.aria-label]="'Preview ' + file.name"
+        (click)="previewed.emit(file.id)"
+      >
+        <i class="ri-eye-line" aria-hidden="true"></i></button
+      ><button
+        type="button"
+        [attr.aria-label]="'Download ' + file.name"
+        (click)="downloaded.emit(file.id)"
+      >
+        <i class="ri-download-line" aria-hidden="true"></i></button
+      >@if (!disabled()) {
+      <button
+        type="button"
+        [attr.aria-label]="'Remove ' + file.name"
+        (click)="removed.emit(file.id)"
+      >
+        <i class="ri-delete-bin-line" aria-hidden="true"></i>
+      </button>
+      }
+    </div>
+  </li>
+  } @empty {
+  <li class="no-files">{{emptyMessage()}}</li>
+  }
+</ul>

@@ -1,0 +1,183 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+h2 {
+  margin: 0 0 16px;
+  color: #33425f;
+  font-size: typography.$section;
+  font-weight: 650;
+}
+h3 {
+  margin: 24px 0 12px;
+  color: #3e4d6a;
+  font-size: typography.$section;
+  font-weight: 600;
+}
+.overview > p,
+.reading-section p,
+.personal-notes > p,
+.transcript > p {
+  margin: 0 0 18px;
+  color: #68758e;
+  font-size: typography.$reading;
+  line-height: 1.9;
+}
+.objectives {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 22px;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+}
+.objectives li {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  color: #66718b;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.objectives i {
+  color: #7d3ed4;
+  font-size: 18px;
+}
+.reading-section {
+  margin-top: 24px;
+  padding-top: 5px;
+  border-top: 1px solid #f0ebf6;
+}
+.reading-section h3 {
+  color: #735297;
+}
+.overview .small-copy {
+  margin: 15px 0 0;
+  color: #8a8199;
+  font-size: typography.$caption;
+  line-height: 1.8;
+}
+.sample-paper {
+  padding: 13px;
+  border: 1px solid #dfd4ef;
+  border-radius: 6px;
+  background: #fcf8ff;
+}
+.lesson-link,
+.external-link {
+  margin-top: 16px;
+}
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.personal-notes > header,
+.transcript > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.personal-notes h2,
+.transcript h2 {
+  margin: 0;
+}
+.personal-notes {
+  scroll-margin-top: 96px;
+}
+.personal-notes form {
+  display: grid;
+  gap: 14px;
+  padding: 17px;
+  border: 1px solid #e5d8f4;
+  border-radius: 8px;
+  background: #fcfaff;
+}
+.link-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #7f6c95;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.link-note input {
+  accent-color: #8741d3;
+}
+.note-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.notes-list {
+  display: grid;
+  gap: 14px;
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.notes-list li {
+  padding: 17px;
+  border: 1px solid #e9e4f1;
+  border-radius: 8px;
+  background: white;
+}
+.notes-list li > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  color: #8b8199;
+  font-size: typography.$caption;
+}
+.notes-list p {
+  margin: 12px 0;
+  color: #5c6d84;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: typography.$reading;
+  line-height: 1.8;
+}
+.notes-list li > div {
+  display: flex;
+  gap: 15px;
+}
+.empty-note {
+  color: #8a8199;
+  font-size: typography.$body;
+}
+.transcript article {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+  padding: 21px 0;
+  border-top: 1px solid #eae6f3;
+}
+.transcript article > button {
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+.transcript article h3 {
+  margin: 0 0 10px;
+}
+.transcript article p {
+  margin: 0 0 10px;
+  color: #66748c;
+  font-size: typography.$reading;
+  line-height: 1.9;
+}
+.transcript article .example {
+  color: #7a5d99;
+}
+@media (max-width: 600px) {
+  .objectives,
+  .related-grid {
+    grid-template-columns: 1fr;
+  }
+  .transcript article {
+    gap: 12px;
+  }
+  .personal-notes form {
+    padding: 12px;
+  }
+}

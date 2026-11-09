@@ -1,0 +1,171 @@
+<div class="table-container">
+  @if (learners().length === 0) {
+  <div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">group_off</span>
+    <p class="empty-title">No learners found</p>
+    <p class="empty-desc">
+      Try clearing or adjusting your search or filter options.
+    </p>
+  </div>
+  } @else {
+  <div class="table-responsive">
+    <table class="learners-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-checkbox">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [checked]="isAllSelected()"
+              (change)="toggleSelectAll()"
+              aria-label="Select all learners"
+            />
+          </th>
+          <th scope="col" class="th-learner">Learner</th>
+          <th scope="col" class="text-center">Class</th>
+          <th scope="col">Subject Load</th>
+          <th scope="col" class="text-center">Tasks</th>
+          <th scope="col" class="text-center">
+            <span class="th-with-info">
+              <span>Average Score</span>
+              <span class="material-symbols-outlined header-info-icon"
+                >info</span
+              >
+            </span>
+          </th>
+          <th scope="col" class="text-center">Attendance</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col">Last Activity</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (lrn of learners(); track lrn.id) {
+        <tr class="table-row" [class.row-selected]="isSelected(lrn.id)">
+          <td class="td-checkbox">
+            <input
+              type="checkbox"
+              class="custom-checkbox"
+              [checked]="isSelected(lrn.id)"
+              (change)="toggleSelect(lrn.id)"
+              [attr.aria-label]="'Select ' + lrn.name"
+            />
+          </td>
+          <td class="td-learner">
+            <div class="learner-cell">
+              <div
+                class="learner-avatar"
+                [style.background-color]="lrn.avatarColor"
+                [attr.aria-label]="lrn.name"
+              >
+                {{ lrn.avatarText }}
+              </div>
+              <div class="learner-meta">
+                <span class="learner-name">{{ lrn.name }}</span>
+                <span class="learner-id">{{ lrn.learnerId }}</span>
+              </div>
+            </div>
+          </td>
+          <td class="text-center">
+            <span
+              class="class-badge"
+              [class]="getClassBadgeTone(lrn.className)"
+            >
+              {{ lrn.className }}
+            </span>
+          </td>
+          <td>
+            <span class="subjects-text">{{ lrn.subjectsCount }}</span>
+          </td>
+          <td class="text-center">
+            <span class="tasks-count">{{ lrn.pendingTasksCount }}</span>
+          </td>
+          <td class="text-center">
+            <div class="score-cell">
+              <span
+                class="score-percent"
+                [class]="getScoreClass(lrn.averageScore)"
+              >
+                {{ lrn.averageScore }}%
+              </span>
+              <span class="score-band">{{ lrn.performanceBand }}</span>
+            </div>
+          </td>
+          <td class="text-center">
+            <span
+              class="attendance-val"
+              [class]="getAttendanceClass(lrn.attendanceRate)"
+            >
+              {{ lrn.attendanceRate }}%
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="status-pill" [class]="getStatusClass(lrn.status)">
+              <span class="status-dot">●</span>
+              <span>{{ lrn.status }}</span>
+            </span>
+          </td>
+          <td>
+            <span class="activity-text">{{ lrn.lastActivity }}</span>
+          </td>
+          <td class="text-right">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="viewLearner.emit(lrn)"
+                [attr.aria-label]="'View profile for ' + lrn.name"
+              >
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button
+                type="button"
+                class="icon-btn"
+                (click)="openMenu.emit(lrn)"
+                [attr.aria-label]="'More options for ' + lrn.name"
+              >
+                <span class="material-symbols-outlined">more_horiz</span>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination-footer">
+    <span class="pagination-info"
+      >Showing 1 to {{ learners().length }} of 112 learners</span
+    >
+    <div class="pagination-right">
+      <div class="rows-per-page">
+        <span>Rows per page</span>
+        <select class="rows-select" aria-label="Rows per page">
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+        </select>
+      </div>
+      <div class="pagination-controls">
+        <button
+          type="button"
+          class="page-nav-btn"
+          disabled
+          aria-label="Previous page"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <button type="button" class="page-num-btn active">1</button>
+        <button type="button" class="page-num-btn">2</button>
+        <button type="button" class="page-num-btn">3</button>
+        <button type="button" class="page-num-btn">4</button>
+        <button type="button" class="page-num-btn">5</button>
+        <button type="button" class="page-nav-btn" aria-label="Next page">
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

@@ -1,0 +1,52 @@
+<div class="activity-card">
+  <div class="card-header">
+    <h2 class="card-title">Teacher Activity Overview</h2>
+    <div class="term-selector">
+      <select
+        [(ngModel)]="selectedTerm"
+        class="term-dropdown"
+        aria-label="Select Term"
+      >
+        @for (opt of termOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="activities-list">
+    @for (item of activities(); track item.id) {
+    <div class="activity-row">
+      <div class="activity-icon-wrap" [attr.data-tone]="item.tone">
+        <i class="material-symbols-outlined">{{ item.icon }}</i>
+      </div>
+
+      <div class="activity-label">{{ item.label }}</div>
+
+      <div class="activity-stats">
+        @if (item.isCountOnly) {
+        <span class="count-val">{{ item.completed }}</span>
+        <span class="pct-dash">—</span>
+        } @else {
+        <span class="ratio-val">{{ item.completed }} / {{ item.total }}</span>
+        <span
+          class="pct-val"
+          [class.pct-high]="(item.percentage ?? 0) >= 70"
+          [class.pct-mid]="(item.percentage ?? 0) >= 50 && (item.percentage ?? 0) < 70"
+          [class.pct-low]="(item.percentage ?? 0) < 50"
+        >
+          {{ item.percentage }}%
+        </span>
+        }
+      </div>
+    </div>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/teachers-staff" class="footer-link">
+      <span>View teacher performance</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

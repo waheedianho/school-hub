@@ -1,0 +1,92 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  outline: none;
+  scroll-margin-top: 100px;
+}
+
+:host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+  border-color: #8042d0;
+  box-shadow:
+    0 0 0 2px rgba(128, 66, 208, 0.2),
+    0 4px 12px rgba(128, 66, 208, 0.08);
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &.mt-4 {
+    margin-top: 16px;
+  }
+}
+
+.control-label {
+  font-size: typography.$caption;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.segmented-control {
+  display: flex;
+  background: #f1f3f7;
+  border-radius: 10px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.seg-btn {
+  flex: 1;
+  padding: 6px 10px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: typography.$caption;
+  font-weight: 500;
+  color: #647590;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: #182031;
+  }
+
+  &.active {
+    background: #ffffff;
+    color: #8042d0;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+:host-context(.dark) {
+  :host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+    border-color: #a855f7;
+    box-shadow:
+      0 0 0 2px rgba(168, 85, 247, 0.25),
+      0 4px 12px rgba(168, 85, 247, 0.15);
+  }
+
+  .control-label {
+    color: #9ca3af;
+  }
+
+  .segmented-control {
+    background: #1e293b;
+  }
+
+  .seg-btn {
+    color: #94a3b8;
+
+    &:hover {
+      color: #f1f5f9;
+    }
+
+    &.active {
+      background: #2e1065;
+      color: #c084fc;
+    }
+  }
+}

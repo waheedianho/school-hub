@@ -1,0 +1,22 @@
+<ol aria-label="This week’s recorded learning">
+  @for(day of days();track day.date){
+  <li>
+    <button
+      type="button"
+      [class]="day.state"
+      [attr.aria-label]="day.description"
+      [attr.aria-current]="day.state==='today'?'date':null"
+      (click)="selected.emit(day.date)"
+    >
+      <span aria-hidden="true">
+        @if (day.state === 'complete') {
+        <i class="ri-check-line"></i>
+        } @else if (day.state === 'today') {
+        <i class="ri-circle-line"></i>
+        }
+      </span>
+      <strong>{{ day.label }}</strong>
+    </button>
+  </li>
+  }
+</ol>

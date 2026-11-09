@@ -1,0 +1,73 @@
+<school-hub-dashboard-card
+  title="Your Classes"
+  icon="ri-group-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="table-container">
+    <table class="classes-table">
+      <thead>
+        <tr>
+          <th class="col-class">Class</th>
+          <th class="col-subject">Subject</th>
+          <th class="col-learners">Learners</th>
+          <th class="col-average">Class Average</th>
+          <th class="col-attendance">Attendance</th>
+          <th class="col-activity">Last Activity</th>
+          <th class="col-status">Status</th>
+          <th class="col-actions text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cls of classes(); track cls.id) {
+        <tr>
+          <td class="col-class">
+            <span class="class-badge" [class]="'badge-' + cls.badgeTone">
+              {{ cls.name }}
+            </span>
+          </td>
+          <td class="col-subject">
+            <span class="cell-text">{{ cls.subject }}</span>
+          </td>
+          <td class="col-learners">
+            <span class="cell-number">{{ cls.learnersCount }}</span>
+          </td>
+          <td class="col-average">
+            <strong class="cell-average">{{ cls.classAverage }}%</strong>
+          </td>
+          <td class="col-attendance">
+            <span class="cell-number">{{ cls.attendanceRate }}%</span>
+          </td>
+          <td class="col-activity">
+            <span class="cell-muted">{{ cls.lastActivity }}</span>
+          </td>
+          <td class="col-status">
+            <span class="status-pill pill-active"> {{ cls.status }} </span>
+          </td>
+          <td class="col-actions text-right">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="btn-icon"
+                (click)="onViewClass(cls)"
+                aria-label="View class details"
+                title="View Details"
+              >
+                <i class="ri-eye-line" aria-hidden="true"></i>
+              </button>
+              <button
+                type="button"
+                class="btn-icon"
+                aria-label="More options"
+                title="More Options"
+              >
+                <i class="ri-more-line" aria-hidden="true"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</school-hub-dashboard-card>

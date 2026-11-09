@@ -1,0 +1,128 @@
+<div class="info-panel-container">
+  <!-- 1. Conversation Info -->
+  @if (conversation(); as conv) {
+  <div class="panel-card info-card">
+    <div class="card-header">
+      <div class="icon-circle purple">
+        <span class="material-symbols-outlined">info</span>
+      </div>
+      <h3 class="card-title">Conversation Info</h3>
+    </div>
+
+    <div class="details-list">
+      <div class="detail-row">
+        <span class="detail-label">Contact</span>
+        <span class="detail-value highlight">{{ conv.name }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Relationship</span>
+        <span class="detail-value">{{ conv.relationship || 'Contact' }}</span>
+      </div>
+      @if (conv.learnerName) {
+      <div class="detail-row">
+        <span class="detail-label">Learner</span>
+        <span class="detail-value">{{ conv.learnerName }}</span>
+      </div>
+      }
+      <div class="detail-row">
+        <span class="detail-label">Class</span>
+        <span class="detail-value">{{ conv.className || 'All Classes' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Subject</span>
+        <span class="detail-value">{{ conv.subject || 'All Subjects' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Joined</span>
+        <span class="detail-value">{{ conv.joinedDate || 'Sep 2024' }}</span>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- 2. Quick Templates -->
+  <div class="panel-card templates-card">
+    <div class="card-header">
+      <div class="icon-circle purple">
+        <span class="material-symbols-outlined">bolt</span>
+      </div>
+      <h3 class="card-title">Quick Templates</h3>
+    </div>
+
+    <div class="templates-list">
+      @for (tpl of templates(); track tpl.id) {
+      <button
+        type="button"
+        class="template-row-btn"
+        (click)="onSelectTemplate(tpl)"
+      >
+        <div class="template-left">
+          <span class="material-symbols-outlined template-icon"
+            >description</span
+          >
+          <span class="template-label">{{ tpl.label }}</span>
+        </div>
+        <span class="material-symbols-outlined chevron-icon"
+          >chevron_right</span
+        >
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- 3. Recent Announcements -->
+  <div class="panel-card announcements-card">
+    <div class="card-header space-between">
+      <div class="header-left">
+        <div class="icon-circle purple">
+          <span class="material-symbols-outlined">campaign</span>
+        </div>
+        <h3 class="card-title">Recent Announcements</h3>
+      </div>
+      <button
+        type="button"
+        class="btn-view-all-ann"
+        (click)="onViewAllAnnouncements()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="announcements-list">
+      @for (ann of announcements(); track ann.id) {
+      <div
+        class="announcement-item-card"
+        (click)="onAnnouncementClick(ann)"
+        (keydown.enter)="onAnnouncementClick(ann)"
+        tabindex="0"
+        role="button"
+      >
+        <div class="ann-title-row">
+          <h4 class="ann-title">{{ ann.title }}</h4>
+          <span class="ann-date">{{ ann.date }}</span>
+        </div>
+        <p class="ann-snippet">{{ ann.snippet }}</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- 4. Communication Guidelines -->
+  <div class="panel-card guidelines-card">
+    <div class="card-header">
+      <div class="icon-circle purple">
+        <span class="material-symbols-outlined">verified_user</span>
+      </div>
+      <h3 class="card-title">Communication Guidelines</h3>
+    </div>
+
+    <ul class="guidelines-list">
+      @for (item of guidelines(); track item) {
+      <li class="guideline-item">
+        <span class="material-symbols-outlined check-icon">check_circle</span>
+        <span class="item-text">{{ item }}</span>
+      </li>
+      }
+    </ul>
+  </div>
+</div>

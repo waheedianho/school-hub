@@ -1,0 +1,109 @@
+.attention-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.view-all-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #4f46e5;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.learners-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.learner-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.learner-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.learner-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 90px;
+}
+
+.learner-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  white-space: nowrap;
+}
+
+.learner-class {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.learner-warning {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.warning-badge {
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.severity-high {
+    color: #dc2626;
+  }
+
+  &.severity-medium {
+    color: #ea580c;
+  }
+}
+
+.warning-details {
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+}

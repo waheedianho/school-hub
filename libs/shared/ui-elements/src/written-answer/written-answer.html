@@ -1,0 +1,44 @@
+<div
+  class="answer"
+  [class.wide]="fullWidth()"
+  [class.correct]="review() && correct()"
+  [class.incorrect]="review() && !correct()"
+>
+  @if (kind() === 'long') {
+  <label>
+    <span class="answer-label">{{ label() }}</span>
+    <textarea
+      [rows]="rows()"
+      [attr.maxlength]="maxLength()"
+      [value]="value()"
+      [readOnly]="readonly()"
+      (input)="change($event)"
+      (focus)="focused.emit()"
+      [placeholder]="placeholder() ?? 'Enter your final numeric answer'"
+    ></textarea>
+  </label>
+  } @else {
+  <label>
+    <span class="answer-label">{{ label() }}</span>
+    <input
+      type="text"
+      [attr.inputmode]="kind() === 'number' ? 'decimal' : 'text'"
+      [attr.maxlength]="maxLength()"
+      [value]="value()"
+      [readOnly]="readonly()"
+      (input)="change($event)"
+      (focus)="focused.emit()"
+      [placeholder]="placeholder() ?? (readonly() ? 'Not answered' : 'Your answer')"
+    />
+  </label>
+  } @if (review()) {
+  <div class="answer-feedback">
+    <strong
+      >{{ correct() ? 'Correct' : value().trim() ? 'Keep practising' : 'Not
+      answered' }}</strong
+    >
+    @if (!correct()) { <span>Answer: {{ expected() }}</span> }
+    <p>{{ explanation() }}</p>
+  </div>
+  }
+</div>

@@ -1,0 +1,39 @@
+<div class="alerts-card">
+  <div class="card-header">
+    <div class="header-title-group">
+      <h2 class="card-title">Alerts & Attention</h2>
+      <span class="alerts-badge">{{ alerts().length }}</span>
+    </div>
+  </div>
+
+  <div class="alerts-list">
+    @for (alert of alerts(); track alert.id) {
+    <a
+      [routerLink]="alert.route"
+      class="alert-row"
+      [attr.data-severity]="alert.severity"
+    >
+      <div class="alert-icon-wrap" [attr.data-severity]="alert.severity">
+        <i class="material-symbols-outlined">{{ alert.icon }}</i>
+      </div>
+
+      <div class="alert-info">
+        <span class="alert-title">{{ alert.title }}</span>
+        <span class="alert-desc">{{ alert.description }}</span>
+      </div>
+
+      <div class="alert-action-group">
+        <span class="alert-count">{{ alert.count }}</span>
+        <i class="material-symbols-outlined chevron-icon">chevron_right</i>
+      </div>
+    </a>
+    }
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/school-admin/interventions" class="footer-link">
+      <span>View all alerts</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</div>

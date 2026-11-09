@@ -25,6 +25,7 @@ export default {
                 'auth',
                 'student',
                 'teacher',
+                'school',
                 'admin',
                 'shared',
                 'api',

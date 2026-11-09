@@ -1,0 +1,53 @@
+<div class="live-classes-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Live Classes</h1>
+      <p class="page-subtitle">
+        Schedule, manage and review your live classes. Track attendance,
+        recordings and access class materials.
+      </p>
+    </div>
+  </header>
+
+  <!-- Top Metrics -->
+  <section class="metrics-section" aria-label="Live classes metrics">
+    <school-hub-live-classes-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (72%) -->
+    <div class="left-column">
+      <!-- Filter Toolbar -->
+      <school-hub-live-classes-filters
+        (filtersChanged)="onFiltersChanged($event)"
+      />
+
+      <!-- Scheduled Live Classes Table -->
+      <school-hub-scheduled-live-classes-table
+        [scheduledClasses]="filteredScheduledClasses()"
+        (joinSession)="onJoinClass()"
+      />
+
+      <!-- Bottom Subgrid: Attendance Snapshot + Class Materials -->
+      <div class="bottom-subgrid">
+        <school-hub-live-attendance-snapshot
+          [attendanceData]="attendanceSnapshot()"
+        />
+        <school-hub-class-materials-recordings
+          [materials]="materialsRecordings()"
+        />
+      </div>
+    </div>
+
+    <!-- Right Column (28%) -->
+    <div class="right-column">
+      <!-- Today's Schedule Timeline -->
+      <school-hub-live-class-schedule [scheduleItems]="todaySchedule()" />
+
+      <!-- Quick Actions -->
+      <school-hub-live-classes-quick-actions [actions]="quickActions()" />
+    </div>
+  </div>
+</div>

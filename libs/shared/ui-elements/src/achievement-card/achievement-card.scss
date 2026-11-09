@@ -1,0 +1,75 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+button {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  padding: 18px 10px 13px;
+  border: 1px solid color-mix(in srgb, var(--award-color) 18%, white);
+  border-radius: 8px;
+  background: linear-gradient(145deg, var(--award-soft), #fff);
+  color: #42516b;
+  text-align: center;
+  font: inherit;
+  cursor: pointer;
+}
+.shield {
+  display: grid;
+  place-items: center;
+  width: 61px;
+  height: 67px;
+  clip-path: polygon(
+    50% 0,
+    95% 16%,
+    90% 65%,
+    73% 86%,
+    50% 100%,
+    27% 86%,
+    10% 65%,
+    5% 16%
+  );
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--award-color) 65%, white),
+    var(--award-color)
+  );
+  box-shadow: inset 0 0 0 6px #ffffff30;
+  color: #fff;
+  font-size: 30px;
+}
+strong {
+  font-size: typography.$body;
+  font-weight: 650;
+  line-height: 1.5;
+}
+.description {
+  color: #6c7590;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+small {
+  margin-top: auto;
+  color: #827491;
+  font-size: typography.$caption;
+  line-height: 1.5;
+}
+.locked .shield {
+  background: #c7becf;
+}
+.locked {
+  background: #faf8fc;
+}
+button:hover {
+  border-color: var(--award-color);
+}
+button:focus-visible {
+  outline: 2px solid var(--award-color);
+  outline-offset: 3px;
+}

@@ -1,0 +1,12 @@
+@let badge=achievement();<button
+  type="button"
+  [class.locked]="!badge.earned"
+  [attr.aria-label]="'View '+badge.title+' achievement'"
+  (click)="selected.emit(badge.id)"
+>
+  <span class="shield" aria-hidden="true"
+    ><i [class]="badge.earned?badge.icon:'ri-lock-line'"></i></span
+  ><strong>{{badge.title}}</strong
+  ><span class="description">{{badge.description}}</span
+  ><small>{{badge.detail}}</small>
+</button>

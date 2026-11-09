@@ -1,0 +1,96 @@
+.workflow-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.workflow-steps {
+  display: flex;
+  flex-direction: column;
+}
+
+.step-item {
+  display: flex;
+  gap: 12px;
+  position: relative;
+
+  &.last-step {
+    .step-indicator-col {
+      padding-bottom: 0;
+    }
+  }
+}
+
+.step-indicator-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: #eef2ff;
+  border: 2px solid #6366f1;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  z-index: 1;
+}
+
+.step-line {
+  width: 2px;
+  flex: 1;
+  background-color: #e2e8f0;
+  border-style: dashed;
+  margin-top: 4px;
+}
+
+.step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding-bottom: 12px;
+}
+
+.step-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.step-desc {
+  font-size: 11px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.35;
+}

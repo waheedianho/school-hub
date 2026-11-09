@@ -1,0 +1,21 @@
+:host {
+  display: block;
+  outline: none;
+  scroll-margin-top: 100px;
+}
+
+:host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+  border-color: #8042d0;
+  box-shadow:
+    0 0 0 2px rgba(128, 66, 208, 0.2),
+    0 4px 12px rgba(128, 66, 208, 0.08);
+}
+
+:host-context(.dark) {
+  :host(.active-card) school-hub-dashboard-card ::ng-deep .dashboard-card {
+    border-color: #a855f7;
+    box-shadow:
+      0 0 0 2px rgba(168, 85, 247, 0.25),
+      0 4px 12px rgba(168, 85, 247, 0.15);
+  }
+}

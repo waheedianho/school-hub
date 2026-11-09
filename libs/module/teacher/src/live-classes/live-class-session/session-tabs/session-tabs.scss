@@ -1,0 +1,267 @@
+.session-tabs-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tabs-header {
+  border-bottom: 1px solid #f1f5f9;
+  background-color: #ffffff;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+
+.tabs-nav {
+  display: flex;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 12px 14px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    color: #0f172a;
+  }
+
+  &.active {
+    color: var(--primary-color, #4f46e5);
+    border-bottom-color: var(--primary-color, #4f46e5);
+  }
+}
+
+.tab-content-body {
+  padding: 18px 20px;
+}
+
+.class-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.1fr;
+  gap: 24px;
+}
+
+.info-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.column-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.lesson-plan-list,
+.key-points-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-item {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 12px;
+  color: #334155;
+}
+
+.bullet-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  flex-shrink: 0;
+  transform: translateY(-2px);
+}
+
+.plan-text {
+  font-weight: 500;
+}
+
+.plan-duration {
+  font-size: 11px;
+  color: #64748b;
+}
+
+.point-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 12px;
+  color: #334155;
+  line-height: 1.4;
+}
+
+.check-circle-icon {
+  font-size: 16px;
+  color: #4f46e5;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.point-text {
+  font-weight: 500;
+}
+
+.actions-cards-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mini-activity-card {
+  padding: 12px 14px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.activity-icon {
+  font-size: 16px;
+  color: #7c3aed;
+}
+
+.hw-icon {
+  font-size: 16px;
+  color: #10b981;
+}
+
+.activity-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.activity-desc {
+  font-size: 11.5px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.35;
+}
+
+.activity-action-btn {
+  align-self: flex-start;
+  margin-top: 4px;
+  padding: 4px 10px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background-color: #f1f5f9;
+    border-color: #94a3b8;
+  }
+}
+
+.attached-materials-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.attached-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.materials-chips-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.material-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.chip-icon {
+  font-size: 16px;
+  color: #64748b;
+}
+
+.format-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 4px;
+
+  &.badge-pdf {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+
+  &.badge-docx {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  &.badge-pptx {
+    background-color: #ffedd5;
+    color: #ea580c;
+  }
+}
+
+.tab-fallback {
+  padding: 32px 16px;
+  text-align: center;
+  color: #64748b;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .class-info-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

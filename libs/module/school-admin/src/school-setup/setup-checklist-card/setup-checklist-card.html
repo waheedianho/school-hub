@@ -1,0 +1,60 @@
+<div class="setup-card checklist-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">verified</span>
+      <h2 class="card-title">6. Quick Setup Checklist</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="checklist-items">
+      @for (item of checklist(); track item.id) {
+      <div
+        class="checklist-row"
+        [class.completed]="item.status === 'Completed'"
+        [class.in-progress]="item.status === 'In Progress'"
+        (click)="onItemClick(item.id)"
+        role="button"
+        tabindex="0"
+        [attr.aria-label]="item.label + ': ' + item.status"
+      >
+        <div class="item-left">
+          @if (item.status === 'Completed') {
+          <span class="material-symbols-outlined status-bullet completed"
+            >check_circle</span
+          >
+          } @else {
+          <span class="material-symbols-outlined status-bullet in-progress"
+            >pending</span
+          >
+          }
+          <span class="item-label">{{ item.label }}</span>
+        </div>
+
+        <div class="item-right">
+          @if (item.status === 'Completed') {
+          <span class="status-badge completed">
+            <span class="material-symbols-outlined badge-icon"
+              >check_circle</span
+            >
+            <span>Completed</span>
+          </span>
+          } @else {
+          <span class="status-badge in-progress">
+            <span class="material-symbols-outlined badge-icon">sync</span>
+            <span>In Progress</span>
+          </span>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a href="javascript:void(0)" class="checklist-link">
+      <span>View checklist details</span>
+      <span class="material-symbols-outlined link-arrow">arrow_forward</span>
+    </a>
+  </div>
+</div>

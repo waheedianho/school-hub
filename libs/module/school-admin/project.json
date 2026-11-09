@@ -6,24 +6,10 @@
   "projectType": "library",
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
-      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
-      "defaultConfiguration": "production",
-      "options": {
-        "project": "libs/module/school-admin/ng-package.json",
-        "tsConfig": "libs/module/school-admin/tsconfig.lib.json"
-      },
-      "configurations": {
-        "production": {
-          "tsConfig": "libs/module/school-admin/tsconfig.lib.prod.json"
-        },
-        "development": {}
-      }
-    },
     "test": {
       "executor": "@nx/angular:unit-test",
       "options": {
+        "buildTarget": "shell:build:development",
         "watch": false
       }
     },

@@ -1,0 +1,38 @@
+@let user=profile();
+<section aria-label="Learner identity">
+  <img [src]="user.avatar" [alt]="user.name+' profile picture'" />
+  <div class="identity">
+    <header>
+      <h2>{{user.name}}</h2>
+      <school-hub-status-badge [label]="user.badge" tone="purple" />
+    </header>
+    <ul>
+      @for(contact of user.contacts;track contact.icon){
+      <li>
+        <i [class]="contact.icon" aria-hidden="true"></i
+        ><span>{{contact.text}}</span>
+      </li>
+      }
+    </ul>
+    <button type="button" [disabled]="disabled()" (click)="edited.emit()">
+      <i class="ri-pencil-line" aria-hidden="true"></i>Edit Profile
+    </button>
+  </div>
+  <dl>
+    <div>
+      <dt>Member since</dt>
+      <dd>
+        <i class="ri-calendar-line" aria-hidden="true"></i>{{user.memberSince}}
+      </dd>
+    </div>
+    <div>
+      <dt>Account type</dt>
+      <dd>
+        {{user.accountType}}<school-hub-status-badge
+          [label]="user.status"
+          tone="green"
+        />
+      </dd>
+    </div>
+  </dl>
+</section>

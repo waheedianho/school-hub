@@ -1,0 +1,154 @@
+<div class="setup-card assessment-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon"
+        >assignment_turned_in</span
+      >
+      <h2 class="card-title">3. Assessment & Reporting Settings</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="form-fields">
+      <div class="form-row">
+        <label for="grading-scale" class="field-label">Grading Scale</label>
+        <div class="select-wrapper">
+          <select
+            id="grading-scale"
+            class="form-select"
+            [value]="settings().gradingScale"
+            (change)="onFieldChange('gradingScale', $any($event.target).value)"
+          >
+            @for (scale of gradingScales; track scale) {
+            <option [value]="scale">{{ scale }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <!-- Assessment Weighting -->
+      <div class="weighting-section">
+        <span class="field-label">Assessment Weighting</span>
+
+        <!-- Segmented bar -->
+        <div
+          class="weighting-bar"
+          role="progressbar"
+          aria-label="Assessment weighting distribution"
+        >
+          <div
+            class="bar-segment classwork"
+            [style.width.%]="settings().classworkWeight"
+            [title]="'Classwork ' + settings().classworkWeight + '%'"
+          ></div>
+          <div
+            class="bar-segment assessments"
+            [style.width.%]="settings().assessmentsWeight"
+            [title]="'Assessments ' + settings().assessmentsWeight + '%'"
+          ></div>
+          <div
+            class="bar-segment exams"
+            [style.width.%]="settings().examsWeight"
+            [title]="'Exams ' + settings().examsWeight + '%'"
+          ></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="weighting-legend">
+          <div class="legend-item">
+            <span class="legend-dot classwork"></span>
+            <span class="legend-name">Classwork</span>
+            <span class="legend-value">{{ settings().classworkWeight }}%</span>
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot assessments"></span>
+            <span class="legend-name">Assessments</span>
+            <span class="legend-value"
+              >{{ settings().assessmentsWeight }}%</span
+            >
+          </div>
+
+          <div class="legend-item">
+            <span class="legend-dot exams"></span>
+            <span class="legend-name">Exams</span>
+            <span class="legend-value">{{ settings().examsWeight }}%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="report-card-format" class="field-label"
+          >Report Card Format</label
+        >
+        <div class="select-wrapper">
+          <select
+            id="report-card-format"
+            class="form-select"
+            [value]="settings().reportCardFormat"
+            (change)="onFieldChange('reportCardFormat', $any($event.target).value)"
+          >
+            @for (fmt of reportFormats; track fmt) {
+            <option [value]="fmt">{{ fmt }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <div class="form-row">
+        <label for="parent-report-frequency" class="field-label"
+          >Parent Report Frequency</label
+        >
+        <div class="select-wrapper">
+          <select
+            id="parent-report-frequency"
+            class="form-select"
+            [value]="settings().parentReportFrequency"
+            (change)="onFieldChange('parentReportFrequency', $any($event.target).value)"
+          >
+            @for (freq of reportFrequencies; track freq) {
+            <option [value]="freq">{{ freq }}</option>
+            }
+          </select>
+          <span class="material-symbols-outlined select-arrow"
+            >expand_more</span
+          >
+        </div>
+      </div>
+
+      <!-- Toggle: Score Approval Workflow -->
+      <div class="toggle-row">
+        <label for="score-approval-toggle" class="field-label"
+          >Score Approval Workflow</label
+        >
+        <div class="switch-container">
+          <button
+            id="score-approval-toggle"
+            type="button"
+            class="toggle-switch"
+            [class.active]="settings().scoreApprovalWorkflow"
+            [attr.aria-checked]="settings().scoreApprovalWorkflow"
+            role="switch"
+            (click)="toggleScoreApproval()"
+          >
+            <span class="switch-handle"></span>
+          </button>
+          <span class="switch-status-text">
+            {{ settings().scoreApprovalWorkflow ? 'Enabled' : 'Disabled' }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer-info">
+    <span class="material-symbols-outlined info-icon">info</span>
+    <span class="info-text">Gradebooks feed reports and report cards.</span>
+  </div>
+</div>

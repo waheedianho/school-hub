@@ -1,0 +1,47 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+a {
+  display: flex;
+  gap: 11px;
+  color: #182031;
+  border-radius: 8px;
+}
+a:hover .metric-title {
+  color: #0866ff;
+}
+a:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 5px;
+}
+.metric {
+  flex: 1;
+  min-width: 0;
+}
+.metric-title {
+  display: block;
+  margin-bottom: 4px;
+  font-size: typography.$caption;
+  font-weight: 500;
+}
+strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+.metric-detail {
+  display: block;
+  margin-top: 8px;
+  color: #66738a;
+  font-size: typography.$caption;
+}
+:host(.prominent) strong {
+  font-size: 24px;
+}
+:host-context(.dark) a {
+  color: #e4edf9;
+}

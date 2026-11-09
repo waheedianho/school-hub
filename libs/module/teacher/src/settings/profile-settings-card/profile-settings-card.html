@@ -1,0 +1,115 @@
+<div class="settings-card profile-card">
+  <div class="card-step-header">
+    <span class="step-badge">1</span>
+    <h2 class="step-title">Profile Settings</h2>
+  </div>
+
+  <div class="profile-content-layout">
+    <!-- Avatar Section -->
+    <div class="avatar-section">
+      <div class="avatar-wrapper">
+        <img
+          [src]="profile().avatar"
+          [alt]="profile().name"
+          class="profile-avatar-img"
+        />
+        <button
+          type="button"
+          class="btn-camera-upload"
+          (click)="onAvatarChange()"
+          aria-label="Change profile photo"
+        >
+          <span class="material-symbols-outlined">photo_camera</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Details Section -->
+    <div class="details-section">
+      @if (!isEditing()) {
+      <div class="profile-info-grid">
+        <div class="info-row">
+          <span class="info-label">Full Name</span>
+          <span class="info-value">{{ profile().name }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Email</span>
+          <span class="info-value">{{ profile().email }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Phone</span>
+          <span class="info-value">{{ profile().phone }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Staff ID</span>
+          <span class="info-value">{{ profile().staffId }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">Subject Specialty</span>
+          <span class="info-value">{{ profile().specialty }}</span>
+        </div>
+      </div>
+      } @else {
+      <div class="edit-profile-form">
+        <div class="form-group">
+          <label class="form-label" for="editName">Full Name</label>
+          <input
+            id="editName"
+            type="text"
+            class="form-control"
+            [ngModel]="editName()"
+            (ngModelChange)="editName.set($event)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editPhone">Phone</label>
+          <input
+            id="editPhone"
+            type="text"
+            class="form-control"
+            [ngModel]="editPhone()"
+            (ngModelChange)="editPhone.set($event)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="editSpecialty"
+            >Subject Specialty</label
+          >
+          <input
+            id="editSpecialty"
+            type="text"
+            class="form-control"
+            [ngModel]="editSpecialty()"
+            (ngModelChange)="editSpecialty.set($event)"
+          />
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Bottom Action Button -->
+  <div class="card-footer-action">
+    @if (!isEditing()) {
+    <button type="button" class="btn-edit-profile" (click)="onStartEdit()">
+      <span class="material-symbols-outlined btn-icon">edit_square</span>
+      <span>Edit Profile</span>
+    </button>
+    } @else {
+    <div class="edit-actions-group">
+      <button type="button" class="btn-cancel-edit" (click)="onCancelEdit()">
+        Cancel
+      </button>
+      <button type="button" class="btn-save-edit" (click)="onSaveEdit()">
+        Save Changes
+      </button>
+    </div>
+    }
+  </div>
+</div>

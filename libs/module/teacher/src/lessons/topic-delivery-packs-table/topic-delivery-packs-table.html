@@ -1,0 +1,126 @@
+<school-hub-dashboard-card
+  title="Topic Delivery Packs"
+  icon="ri-stack-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="table-container">
+    <table class="packs-table">
+      <thead>
+        <tr>
+          <th class="col-topic">Topic</th>
+          <th class="col-class">Class</th>
+          <th class="col-subject">Subject</th>
+          <th class="col-week">Week</th>
+          <th class="col-status">Delivery Pack Status</th>
+          <th class="col-materials">Materials Included</th>
+          <th class="col-updated">Last Updated</th>
+          <th class="col-action text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (pack of packs(); track pack.id) {
+        <tr
+          [class.row-selected]="pack.id === selectedPackId()"
+          (click)="onSelect(pack)"
+        >
+          <td class="col-topic">
+            <span class="topic-link">{{ pack.topic }}</span>
+          </td>
+
+          <td class="col-class">
+            <span class="class-badge" [class]="'badge-' + pack.classTone">
+              {{ pack.className }}
+            </span>
+          </td>
+
+          <td class="col-subject">
+            <span class="subject-text">{{ pack.subject }}</span>
+          </td>
+
+          <td class="col-week">
+            <span class="week-text">{{ pack.week }}</span>
+          </td>
+
+          <td class="col-status">
+            <span
+              class="status-pill"
+              [class.pill-ready]="pack.status === 'Ready'"
+              [class.pill-progress]="pack.status === 'In Progress'"
+              [class.pill-review]="pack.status === 'Pending Review'"
+            >
+              <span class="pill-dot"></span>
+              {{ pack.status }}
+            </span>
+          </td>
+
+          <td class="col-materials">
+            <div class="materials-row">
+              @for (icon of pack.materials; track $index) {
+              <span class="mat-icon-box" aria-hidden="true">
+                <i [class]="icon"></i>
+              </span>
+              } @if (pack.materialsExtraCount) {
+              <span class="mat-extra-badge">
+                +{{ pack.materialsExtraCount }}
+              </span>
+              }
+            </div>
+          </td>
+
+          <td class="col-updated">
+            <span class="updated-text">{{ pack.lastUpdated }}</span>
+          </td>
+
+          <td class="col-action text-right" (click)="$event.stopPropagation()">
+            <button
+              type="button"
+              class="btn-icon"
+              (click)="onSelect(pack)"
+              aria-label="More options for pack"
+              title="Options"
+            >
+              <i class="ri-more-line" aria-hidden="true"></i>
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Legend Footer -->
+  <div class="materials-legend">
+    <div class="legend-item">
+      <i class="ri-file-text-line legend-icon" aria-hidden="true"></i>
+      <span>Lesson Note</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-book-open-line legend-icon" aria-hidden="true"></i>
+      <span>Tutor Guide</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-slideshow-line legend-icon" aria-hidden="true"></i>
+      <span>Slides</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-file-list-line legend-icon" aria-hidden="true"></i>
+      <span>Worksheet</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-checkbox-line legend-icon" aria-hidden="true"></i>
+      <span>Assessment</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-briefcase-line legend-icon" aria-hidden="true"></i>
+      <span>Portfolio Task</span>
+    </div>
+    <div class="legend-item">
+      <i class="ri-video-line legend-icon" aria-hidden="true"></i>
+      <span>Video</span>
+    </div>
+    <div class="legend-item extra-legend">
+      <span>+1 more item</span>
+    </div>
+  </div>
+</school-hub-dashboard-card>

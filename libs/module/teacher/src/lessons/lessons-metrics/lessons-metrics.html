@@ -1,0 +1,21 @@
+<div class="metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="metric-card">
+    <div
+      class="metric-icon-box"
+      [class]="'tone-' + metric.tone"
+      aria-hidden="true"
+    >
+      <i [class]="metric.icon"></i>
+    </div>
+
+    <div class="metric-info">
+      <span class="metric-label">{{ metric.label }}</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metric.value }}</span>
+      </div>
+      <span class="metric-subtext"> {{ metric.subtext }} </span>
+    </div>
+  </div>
+  }
+</div>

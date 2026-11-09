@@ -1,0 +1,116 @@
+<div class="scheduled-classes-card">
+  <div class="card-header">
+    <h2 class="card-title">Scheduled Live Classes</h2>
+  </div>
+
+  <div class="table-responsive">
+    <table class="live-classes-table">
+      <thead>
+        <tr>
+          <th>Class</th>
+          <th>Subject</th>
+          <th>Topic</th>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Meeting Link</th>
+          <th>Attendance</th>
+          <th>Recording</th>
+          <th>Status</th>
+          <th class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of scheduledClasses(); track item.id) {
+        <tr class="table-row">
+          <td>
+            <span class="class-badge">{{ item.className }}</span>
+          </td>
+          <td>
+            <span class="subject-text">{{ item.subject }}</span>
+          </td>
+          <td>
+            <span class="topic-text">{{ item.topic }}</span>
+          </td>
+          <td>
+            <div class="date-cell">
+              <span class="material-symbols-outlined date-icon"
+                >calendar_today</span
+              >
+              <span>{{ item.date }}</span>
+            </div>
+          </td>
+          <td>
+            <span class="time-text">{{ item.time }}</span>
+          </td>
+          <td>
+            <button type="button" class="join-link-btn" (click)="onJoin(item)">
+              <span class="material-symbols-outlined link-icon">link</span>
+              <span>Join</span>
+            </button>
+          </td>
+          <td>
+            @if (item.attendancePresent !== undefined) {
+            <div class="attendance-cell">
+              <span class="attendance-count">
+                {{ item.attendancePresent }} / {{ item.attendanceTotal }}
+              </span>
+              <span class="attendance-rate-pill">
+                {{ item.attendanceRate }}%
+              </span>
+            </div>
+            } @else {
+            <span class="empty-dash">—</span>
+            }
+          </td>
+          <td>
+            @if (item.recordingAvailable) {
+            <div class="recording-badge">
+              <span class="material-symbols-outlined check-icon"
+                >check_circle</span
+              >
+              <span>Available</span>
+            </div>
+            } @else {
+            <span class="empty-dash">—</span>
+            }
+          </td>
+          <td>
+            <span
+              class="status-pill"
+              [class.status-live-now]="item.status === 'Live Now'"
+              [class.status-upcoming]="item.status === 'Upcoming'"
+              [class.status-completed]="item.status === 'Completed'"
+              [class.status-followup]="item.status === 'Needs Follow-up'"
+            >
+              @if (item.status === 'Live Now') {
+              <span class="live-dot"></span>
+              } {{ item.status }}
+            </span>
+          </td>
+          <td class="text-right">
+            <button
+              type="button"
+              class="icon-btn-more"
+              aria-label="Class actions"
+            >
+              <span class="material-symbols-outlined">more_horiz</span>
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="empty-state">
+            No live classes match your selected filters.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <button type="button" class="view-all-link" (click)="onViewAll()">
+      View all live classes &rsaquo;
+    </button>
+  </div>
+</div>

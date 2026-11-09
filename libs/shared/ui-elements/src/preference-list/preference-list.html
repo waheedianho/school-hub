@@ -1,0 +1,33 @@
+<ul [attr.aria-label]="label()">
+  @for(item of items();track item.id){
+  <li>
+    @if(item.checked!==undefined){<label
+      ><i [class]="item.icon" aria-hidden="true"></i><span>{{item.label}}</span
+      ><input
+        type="checkbox"
+        role="switch"
+        [attr.aria-label]="item.label"
+        [checked]="item.checked"
+        [disabled]="item.disabled"
+        (change)="toggled.emit({id:item.id,checked:$any($event.target).checked})" /><span
+        class="switch-track"
+        aria-hidden="true"
+      ></span></label
+    >}@else if(item.route){<a
+      [routerLink]="item.route"
+      [queryParams]="item.queryParams"
+      ><i [class]="item.icon" aria-hidden="true"></i
+      ><span>{{item.label}}</span
+      >@if(item.value){<strong>{{item.value}}</strong>}<i
+        class="ri-arrow-right-s-line chevron"
+        aria-hidden="true"
+      ></i></a
+    >}@else{
+    <div>
+      <i [class]="item.icon" aria-hidden="true"></i><span>{{item.label}}</span
+      ><strong>{{item.value}}</strong>
+    </div>
+    }
+  </li>
+  }
+</ul>

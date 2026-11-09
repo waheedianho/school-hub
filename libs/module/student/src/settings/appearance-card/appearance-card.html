@@ -1,0 +1,87 @@
+<school-hub-dashboard-card
+  title="Appearance"
+  subtitle="Customise how the app looks"
+  icon="ri-palette-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="control-group">
+    <span class="control-label">Theme</span>
+    <div
+      class="segmented-control"
+      role="radiogroup"
+      aria-label="Theme selection"
+    >
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="theme() === 'light'"
+        (click)="themeSelected.emit('light')"
+        role="radio"
+        [attr.aria-checked]="theme() === 'light'"
+      >
+        Light
+      </button>
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="theme() === 'dark'"
+        (click)="themeSelected.emit('dark')"
+        role="radio"
+        [attr.aria-checked]="theme() === 'dark'"
+      >
+        Dark
+      </button>
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="theme() === 'system'"
+        (click)="themeSelected.emit('system')"
+        role="radio"
+        [attr.aria-checked]="theme() === 'system'"
+      >
+        System
+      </button>
+    </div>
+  </div>
+
+  <div class="control-group mt-4">
+    <span class="control-label">Text Size</span>
+    <div
+      class="segmented-control"
+      role="radiogroup"
+      aria-label="Text size selection"
+    >
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="textSize() === 'small'"
+        (click)="textSizeSelected.emit('small')"
+        role="radio"
+        [attr.aria-checked]="textSize() === 'small'"
+      >
+        A-
+      </button>
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="textSize() === 'medium'"
+        (click)="textSizeSelected.emit('medium')"
+        role="radio"
+        [attr.aria-checked]="textSize() === 'medium'"
+      >
+        Medium
+      </button>
+      <button
+        type="button"
+        class="seg-btn"
+        [class.active]="textSize() === 'large'"
+        (click)="textSizeSelected.emit('large')"
+        role="radio"
+        [attr.aria-checked]="textSize() === 'large'"
+      >
+        A+
+      </button>
+    </div>
+  </div>
+</school-hub-dashboard-card>

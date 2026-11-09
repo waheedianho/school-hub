@@ -1,0 +1,202 @@
+@use '../../../ui-elements/src/styles/typography' as typography;
+
+.navigation-backdrop {
+  display: none;
+}
+@media (max-width: 1279px) {
+  .navigation-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 6;
+    border: 0;
+    background: #0c1e3d55;
+    backdrop-filter: blur(2px);
+  }
+}
+
+.learner-shell {
+  min-height: 100vh;
+  font-size: typography.$body;
+  line-height: 1.5;
+  background: #fcfdff;
+  .sidebar-area {
+    width: 260px;
+    border-right: 1px solid #e2e8f1;
+    border-radius: 0;
+  }
+  .sidebar-area .logo {
+    height: 80px;
+    padding: 24px 20px 18px;
+    border: 0;
+  }
+  .sidebar-area .logo img {
+    width: 33px;
+    height: 36px;
+  }
+  .sidebar-area .logo > a > span {
+    font-size: 25px;
+    color: #0b47c4;
+    letter-spacing: -0.8px;
+  }
+  .sidebar-area > div:last-child {
+    display: flex;
+    flex-direction: column;
+    padding: 95px 10px 20px;
+    overflow-x: hidden;
+  }
+  .sidebar-area .accordion {
+    overflow-x: hidden;
+  }
+  .sidebar-area .accordion > span {
+    display: none;
+  }
+  .sidebar-area .accordion-item {
+    margin-bottom: 5px;
+    white-space: normal;
+  }
+  .sidebar-area .accordion-button {
+    min-height: 42px;
+    padding-left: 12px;
+    padding-right: 10px;
+    border-radius: 9px;
+    font-size: 13.5px;
+    color: #36445e;
+    white-space: normal;
+    line-height: 1.35;
+  }
+  .sidebar-area .accordion-button .title {
+    flex: 1;
+    min-width: 0;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  .sidebar-area .accordion-item .accordion-button.active {
+    background: linear-gradient(110deg, #0a6cff, #0758ed);
+    color: #fff;
+    box-shadow: 0 4px 9px #096bff12;
+  }
+  .sidebar-area .accordion-item .accordion-button.active i {
+    color: #fff;
+  }
+  .sidebar-area .accordion-button > i {
+    margin-right: 10px;
+    font-size: 20px;
+    color: #45516a;
+    flex-shrink: 0;
+  }
+  .sidebar-encouragement {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 14px;
+    margin: auto 4px 0;
+    border: 1px solid #e0e7f2;
+    border-radius: 13px;
+    background: linear-gradient(120deg, #f9fbff, white);
+    color: #182031;
+  }
+  .sidebar-encouragement > i {
+    font-size: 38px;
+    color: #0966ff;
+  }
+  .sidebar-encouragement strong {
+    font-size: typography.$body;
+  }
+  .sidebar-encouragement p {
+    margin: 4px 0 0;
+    font-size: typography.$caption;
+  }
+  .header-area {
+    top: 8px;
+    padding: 9px 0;
+    box-shadow: none;
+    background: transparent;
+  }
+  .header-area > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .header-area ul {
+    margin-top: 0;
+  }
+  .header-area .profile-menu > button > img {
+    width: 37px;
+    height: 37px;
+    border: 1px solid #e4e9f2;
+  }
+  .header-area .profile-menu > button > span {
+    color: #1a2336;
+    font-size: typography.$body;
+  }
+  .header-area .notifications-menu > button > i {
+    color: #19233a;
+  }
+  .main-content {
+    padding-top: 95px;
+  }
+  school-hub-footer {
+    display: block;
+    margin-top: 12px;
+  }
+  @media (min-width: 1280px) {
+    .main-content {
+      padding: 25px 26px 0 286px;
+    }
+    .header-area {
+      left: auto;
+      right: 30px;
+      width: auto;
+    }
+    .header-area .hide-sidebar-toggle {
+      display: none;
+    }
+    &.sidebar-hidden .header-area .hide-sidebar-toggle {
+      display: inline-block;
+    }
+    &.sidebar-hidden .main-content {
+      padding-left: 26px;
+    }
+    &.sidebar-hidden .header-area {
+      left: auto;
+    }
+  }
+  @media (max-width: 1279px) {
+    .header-area {
+      top: 0;
+      padding: 12px 0;
+      border-bottom: 1px solid #e9edf4;
+      border-radius: 0;
+      background: #fcfdff;
+    }
+  }
+}
+.dark .learner-shell {
+  background: #0a0e19;
+  .header-area {
+    background: #0a0e19;
+  }
+  .header-area .profile-menu > button > span {
+    color: #e4edf9;
+  }
+  .sidebar-encouragement {
+    background: #101c30;
+    color: #e4edf9;
+    border-color: #263349;
+  }
+}
+@media print {
+  .learner-shell:has(school-hub-worksheet-workspace) {
+    background: white;
+    .sidebar-area,
+    .header-area,
+    school-hub-footer,
+    .navigation-backdrop {
+      display: none !important;
+    }
+    .main-content {
+      padding: 0 !important;
+    }
+  }
+}

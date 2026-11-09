@@ -1,0 +1,873 @@
+<div class="add-learner-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li><a href="javascript:void(0)" (click)="onCancel()">Home</a></li>
+      <li class="separator">/</li>
+      <li>
+        <a href="javascript:void(0)" (click)="onCancel()">Classes & Learners</a>
+      </li>
+      <li class="separator">/</li>
+      <li class="current" aria-current="page">Add Learner</li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text">
+      <h1 class="page-title">Add Learner</h1>
+      <p class="page-subtitle">
+        Create a learner record, assign class details, and link guardian
+        information.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-cancel" (click)="onCancel()">
+        Cancel
+      </button>
+      <button type="button" class="btn-save-draft" (click)="onSaveDraft()">
+        <span class="material-symbols-outlined btn-icon">bookmark</span>
+        <span>Save Draft</span>
+      </button>
+      <button type="button" class="btn-create" (click)="onSubmit()">
+        <span class="material-symbols-outlined btn-icon">add</span>
+        <span>Create Learner</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <div class="form-layout-grid">
+    <!-- Left Form Sections -->
+    <div class="sections-column">
+      <!-- Section 1: Learner Profile -->
+      <section class="form-section-card" aria-labelledby="sec-1-title">
+        <div class="section-header">
+          <span class="step-badge">1</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon">face</span>
+            <h2 id="sec-1-title" class="section-title">Learner Profile</h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="profile-top-row">
+            <div class="avatar-upload-box">
+              <div class="avatar-circle">
+                <span class="material-symbols-outlined camera-icon"
+                  >photo_camera</span
+                >
+              </div>
+              <button type="button" class="btn-upload-photo">
+                Upload Photo
+              </button>
+              <span class="upload-hint">JPG, PNG (Max 2MB)</span>
+            </div>
+
+            <div class="profile-fields-grid">
+              <div class="form-field">
+                <label for="first-name" class="field-label">First Name *</label>
+                <input
+                  id="first-name"
+                  type="text"
+                  class="form-input"
+                  placeholder="Enter first name"
+                  [value]="formData().firstName"
+                  (input)="updateField('firstName', $any($event.target).value)"
+                  required
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="middle-name" class="field-label">Middle Name</label>
+                <input
+                  id="middle-name"
+                  type="text"
+                  class="form-input"
+                  placeholder="Enter middle name"
+                  [value]="formData().middleName"
+                  (input)="updateField('middleName', $any($event.target).value)"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="last-name" class="field-label">Last Name *</label>
+                <input
+                  id="last-name"
+                  type="text"
+                  class="form-input"
+                  placeholder="Enter last name"
+                  [value]="formData().lastName"
+                  (input)="updateField('lastName', $any($event.target).value)"
+                  required
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="gender" class="field-label">Gender *</label>
+                <div class="select-wrapper">
+                  <select
+                    id="gender"
+                    class="form-select"
+                    [value]="formData().gender"
+                    (change)="updateField('gender', $any($event.target).value)"
+                  >
+                    <option value="Female">Female</option>
+                    <option value="Male">Male</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <span class="material-symbols-outlined select-arrow"
+                    >expand_more</span
+                  >
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label for="dob" class="field-label">Date of Birth *</label>
+                <input
+                  id="dob"
+                  type="date"
+                  class="form-input"
+                  [value]="formData().dateOfBirth"
+                  (change)="updateField('dateOfBirth', $any($event.target).value)"
+                  required
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="adm-no" class="field-label"
+                  >Admission Number *</label
+                >
+                <input
+                  id="adm-no"
+                  type="text"
+                  class="form-input"
+                  placeholder="e.g., ADM/2024/0001"
+                  [value]="formData().admissionNumber"
+                  (input)="updateField('admissionNumber', $any($event.target).value)"
+                  required
+                />
+              </div>
+
+              <div class="form-field col-span-2">
+                <label for="learner-id" class="field-label"
+                  >Learner ID (Auto)</label
+                >
+                <div class="input-with-icon">
+                  <input
+                    id="learner-id"
+                    type="text"
+                    class="form-input disabled-input"
+                    value="Will be generated automatically"
+                    disabled
+                  />
+                  <span class="material-symbols-outlined input-lock-icon"
+                    >lock</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Academic Placement -->
+      <section class="form-section-card" aria-labelledby="sec-2-title">
+        <div class="section-header">
+          <span class="step-badge">2</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon">school</span>
+            <h2 id="sec-2-title" class="section-title">Academic Placement</h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid-4">
+            <div class="form-field">
+              <label for="class-level" class="field-label">Class Level *</label>
+              <div class="select-wrapper">
+                <select
+                  id="class-level"
+                  class="form-select"
+                  [value]="formData().classLevel"
+                  (change)="updateField('classLevel', $any($event.target).value)"
+                >
+                  @for (lvl of classLevels; track lvl) {
+                  <option [value]="lvl">{{ lvl }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="arm-section" class="field-label"
+                >Arm / Section *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="arm-section"
+                  class="form-select"
+                  [value]="formData().arm"
+                  (change)="updateField('arm', $any($event.target).value)"
+                >
+                  @for (a of arms; track a) {
+                  <option [value]="a">{{ a }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="adm-date" class="field-label">Admission Date *</label>
+              <input
+                id="adm-date"
+                type="date"
+                class="form-input"
+                [value]="formData().admissionDate"
+                (change)="updateField('admissionDate', $any($event.target).value)"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="enroll-status" class="field-label"
+                >Enrollment Status *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="enroll-status"
+                  class="form-select"
+                  [value]="formData().enrollmentStatus"
+                  (change)="updateField('enrollmentStatus', $any($event.target).value)"
+                >
+                  <option value="Active">Active</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="house-group" class="field-label"
+                >House / Group (Optional)</label
+              >
+              <input
+                id="house-group"
+                type="text"
+                class="form-input"
+                placeholder="Select or enter house"
+                [value]="formData().houseGroup"
+                (input)="updateField('houseGroup', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-field col-span-3">
+              <label for="prev-school" class="field-label"
+                >Previous School (Optional)</label
+              >
+              <input
+                id="prev-school"
+                type="text"
+                class="form-input"
+                placeholder="Enter previous school name"
+                [value]="formData().previousSchool"
+                (input)="updateField('previousSchool', $any($event.target).value)"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Login & Account Access -->
+      <section class="form-section-card" aria-labelledby="sec-3-title">
+        <div class="section-header">
+          <span class="step-badge">3</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon">lock</span>
+            <h2 id="sec-3-title" class="section-title">
+              Login & Account Access
+            </h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid-4">
+            <div class="form-field">
+              <label for="user-email" class="field-label"
+                >Username / Email *</label
+              >
+              <input
+                id="user-email"
+                type="text"
+                class="form-input"
+                placeholder="Enter email or username"
+                [value]="formData().username"
+                (input)="updateField('username', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="temp-pwd" class="field-label"
+                >Temporary Password *</label
+              >
+              <div class="input-with-icon">
+                <input
+                  id="temp-pwd"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-input"
+                  [value]="formData().temporaryPassword"
+                  (input)="updateField('temporaryPassword', $any($event.target).value)"
+                />
+                <button
+                  type="button"
+                  class="btn-pwd-toggle"
+                  (click)="togglePasswordVisibility()"
+                  aria-label="Toggle password visibility"
+                >
+                  <span class="material-symbols-outlined"
+                    >{{ showPassword() ? 'visibility_off' : 'visibility'
+                    }}</span
+                  >
+                </button>
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="login-method" class="field-label"
+                >Login Method *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="login-method"
+                  class="form-select"
+                  [value]="formData().loginMethod"
+                  (change)="updateField('loginMethod', $any($event.target).value)"
+                >
+                  @for (m of loginMethods; track m) {
+                  <option [value]="m">{{ m }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <span class="field-label">Learner Account Active</span>
+              <div class="switch-row">
+                <button
+                  type="button"
+                  class="toggle-switch"
+                  [class.active]="formData().accountActive"
+                  role="switch"
+                  [attr.aria-checked]="formData().accountActive"
+                  (click)="updateField('accountActive', !formData().accountActive)"
+                  aria-label="Toggle learner account active status"
+                >
+                  <span class="switch-handle"></span>
+                </button>
+                <span class="switch-label"
+                  >{{ formData().accountActive ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Parent / Guardian Information -->
+      <section class="form-section-card" aria-labelledby="sec-4-title">
+        <div class="section-header">
+          <span class="step-badge">4</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon"
+              >family_restroom</span
+            >
+            <h2 id="sec-4-title" class="section-title">
+              Parent / Guardian Information
+            </h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid-4">
+            <div class="form-field col-span-2">
+              <label for="guardian-name" class="field-label"
+                >Parent / Guardian Full Name *</label
+              >
+              <input
+                id="guardian-name"
+                type="text"
+                class="form-input"
+                placeholder="Enter full name"
+                [value]="formData().parentName"
+                (input)="updateField('parentName', $any($event.target).value)"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="relationship" class="field-label"
+                >Relationship *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="relationship"
+                  class="form-select"
+                  [value]="formData().parentRelationship"
+                  (change)="updateField('parentRelationship', $any($event.target).value)"
+                >
+                  @for (r of relationships; track r) {
+                  <option [value]="r">{{ r }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="parent-phone" class="field-label"
+                >Phone Number *</label
+              >
+              <input
+                id="parent-phone"
+                type="tel"
+                class="form-input"
+                placeholder="+234 801 234 5678"
+                [value]="formData().parentPhone"
+                (input)="updateField('parentPhone', $any($event.target).value)"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="whatsapp-no" class="field-label"
+                >WhatsApp Number</label
+              >
+              <input
+                id="whatsapp-no"
+                type="tel"
+                class="form-input"
+                placeholder="+234 801 234 5678"
+                [value]="formData().parentWhatsApp"
+                (input)="updateField('parentWhatsApp', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-field col-span-2">
+              <label for="home-address" class="field-label"
+                >Home Address *</label
+              >
+              <input
+                id="home-address"
+                type="text"
+                class="form-input"
+                placeholder="Enter full home address"
+                [value]="formData().homeAddress"
+                (input)="updateField('homeAddress', $any($event.target).value)"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="emerg-contact" class="field-label"
+                >Emergency Contact (Name & Phone) *</label
+              >
+              <input
+                id="emerg-contact"
+                type="text"
+                class="form-input"
+                placeholder="Enter contact name and phone"
+                [value]="formData().emergencyContact"
+                (input)="updateField('emergencyContact', $any($event.target).value)"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 5: Learning & Support Notes -->
+      <section class="form-section-card" aria-labelledby="sec-5-title">
+        <div class="section-header">
+          <span class="step-badge">5</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon">favorite</span>
+            <h2 id="sec-5-title" class="section-title">
+              Learning & Support Notes
+            </h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid-4">
+            <div class="form-field">
+              <label for="med-notes" class="field-label"
+                >Medical / Allergy Note (Optional)</label
+              >
+              <input
+                id="med-notes"
+                type="text"
+                class="form-input"
+                placeholder="E.g., Asthma, Peanuts allergy"
+                [value]="formData().medicalNotes"
+                (input)="updateField('medicalNotes', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="support-needs" class="field-label"
+                >Special Support Needs (Optional)</label
+              >
+              <input
+                id="support-needs"
+                type="text"
+                class="form-input"
+                placeholder="E.g., Dyslexia, ADHD"
+                [value]="formData().supportNeeds"
+                (input)="updateField('supportNeeds', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="transport-mode" class="field-label"
+                >Transport / Day Student *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="transport-mode"
+                  class="form-select"
+                  [value]="formData().transportMode"
+                  (change)="updateField('transportMode', $any($event.target).value)"
+                >
+                  @for (t of transportModes; track t) {
+                  <option [value]="t">{{ t }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="remarks" class="field-label"
+                >Remarks (Optional)</label
+              >
+              <input
+                id="remarks"
+                type="text"
+                class="form-input"
+                placeholder="Additional notes about learner"
+                [value]="formData().remarks"
+                (input)="updateField('remarks', $any($event.target).value)"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Consent & Safeguarding -->
+      <section class="form-section-card" aria-labelledby="sec-6-title">
+        <div class="section-header">
+          <span class="step-badge">6</span>
+          <div class="header-title-wrap">
+            <span class="material-symbols-outlined section-icon"
+              >verified_user</span
+            >
+            <h2 id="sec-6-title" class="section-title">
+              Consent & Safeguarding
+            </h2>
+          </div>
+        </div>
+
+        <div class="section-body">
+          <div class="consent-grid">
+            <label class="consent-checkbox-card">
+              <input
+                type="checkbox"
+                class="custom-check"
+                [checked]="formData().parentConsentConfirmed"
+                (change)="updateField('parentConsentConfirmed', !formData().parentConsentConfirmed)"
+              />
+              <div class="consent-text">
+                <span class="consent-title">Parent Consent Confirmed *</span>
+                <span class="consent-desc"
+                  >I confirm consent for school enrollment</span
+                >
+              </div>
+            </label>
+
+            <label class="consent-checkbox-card">
+              <input
+                type="checkbox"
+                class="custom-check"
+                [checked]="formData().mediaConsent"
+                (change)="updateField('mediaConsent', !formData().mediaConsent)"
+              />
+              <div class="consent-text">
+                <span class="consent-title">Media Consent *</span>
+                <span class="consent-desc"
+                  >I consent to photos/videos for school use</span
+                >
+              </div>
+            </label>
+
+            <label class="consent-checkbox-card">
+              <input
+                type="checkbox"
+                class="custom-check"
+                [checked]="formData().dataPrivacyAcknowledged"
+                (change)="updateField('dataPrivacyAcknowledged', !formData().dataPrivacyAcknowledged)"
+              />
+              <div class="consent-text">
+                <span class="consent-title"
+                  >Data Privacy Acknowledgement *</span
+                >
+                <span class="consent-desc"
+                  >I acknowledge data privacy policy</span
+                >
+              </div>
+            </label>
+
+            <div class="form-field comm-pref-field">
+              <label for="comm-pref" class="field-label"
+                >Communication Preference *</label
+              >
+              <div class="select-wrapper">
+                <select
+                  id="comm-pref"
+                  class="form-select"
+                  [value]="formData().communicationPreference"
+                  (change)="updateField('communicationPreference', $any($event.target).value)"
+                >
+                  @for (cp of commPreferences; track cp) {
+                  <option [value]="cp">{{ cp }}</option>
+                  }
+                </select>
+                <span class="material-symbols-outlined select-arrow"
+                  >expand_more</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-column" aria-label="Registration summary and tips">
+      <!-- Enrollment Summary Card -->
+      <div class="side-card enrollment-summary">
+        <div class="side-card-header">
+          <span class="material-symbols-outlined card-icon">assignment</span>
+          <h3 class="side-card-title">Enrollment Summary</h3>
+        </div>
+
+        <div class="summary-list">
+          <div class="summary-item">
+            <span class="summary-label">School</span>
+            <span class="summary-value">{{ store.profile().name }}</span>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Academic Session</span>
+            <span class="summary-value">2024/2025</span>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Term</span>
+            <span class="summary-value">{{ store.profile().activeTerm }}</span>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Class</span>
+            <span class="summary-value"
+              >{{ formData().classLevel || 'Not Selected' }}</span
+            >
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Arm / Section</span>
+            <span class="summary-value"
+              >{{ formData().arm || 'Not Selected' }}</span
+            >
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Enrollment Status</span>
+            <span
+              class="status-badge"
+              [class.pending]="formData().enrollmentStatus === 'Pending'"
+              [class.active]="formData().enrollmentStatus === 'Active'"
+            >
+              {{ formData().enrollmentStatus }}
+            </span>
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">Account Status</span>
+            <span
+              class="status-badge"
+              [class.active]="formData().accountActive"
+              [class.inactive]="!formData().accountActive"
+            >
+              {{ formData().accountActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Progress Checklist Card -->
+      <div class="side-card progress-checklist">
+        <div class="side-card-header">
+          <span class="material-symbols-outlined card-icon">checklist</span>
+          <h3 class="side-card-title">Progress Checklist</h3>
+        </div>
+
+        <div class="checklist-list">
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isProfileComplete()"
+            >
+              {{ isProfileComplete() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="item-name">Learner Profile</span>
+            <span class="status-text" [class.done]="isProfileComplete()"
+              >{{ isProfileComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isPlacementComplete()"
+            >
+              {{ isPlacementComplete() ? 'check_circle' :
+              'radio_button_unchecked' }}
+            </span>
+            <span class="item-name">Academic Placement</span>
+            <span class="status-text" [class.done]="isPlacementComplete()"
+              >{{ isPlacementComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isLoginComplete()"
+            >
+              {{ isLoginComplete() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="item-name">Login & Account</span>
+            <span class="status-text" [class.done]="isLoginComplete()"
+              >{{ isLoginComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isGuardianComplete()"
+            >
+              {{ isGuardianComplete() ? 'check_circle' :
+              'radio_button_unchecked' }}
+            </span>
+            <span class="item-name">Guardian Information</span>
+            <span class="status-text" [class.done]="isGuardianComplete()"
+              >{{ isGuardianComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isSupportComplete()"
+            >
+              {{ isSupportComplete() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="item-name">Support & Notes</span>
+            <span class="status-text" [class.done]="isSupportComplete()"
+              >{{ isSupportComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+
+          <div class="checklist-item">
+            <span
+              class="material-symbols-outlined item-status"
+              [class.done]="isConsentComplete()"
+            >
+              {{ isConsentComplete() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="item-name">Consent & Safeguarding</span>
+            <span class="status-text" [class.done]="isConsentComplete()"
+              >{{ isConsentComplete() ? 'Complete' : 'Incomplete' }}</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Required Fields Card -->
+      <div class="side-card required-fields-card">
+        <div class="side-card-header">
+          <span class="material-symbols-outlined card-icon info">info</span>
+          <h3 class="side-card-title">Required Fields</h3>
+        </div>
+        <p class="card-desc">
+          Fields marked with * are required. Ensure all mandatory sections are
+          completed before creating a learner record.
+        </p>
+      </div>
+
+      <!-- Tips Card -->
+      <div class="side-card tips-card">
+        <div class="side-card-header">
+          <span class="material-symbols-outlined card-icon bulb"
+            >lightbulb</span
+          >
+          <h3 class="side-card-title">Tips</h3>
+        </div>
+        <ul class="tips-list">
+          <li>Use a clear passport photo for easy identification.</li>
+          <li>
+            Verify guardian contact details to ensure effective communication.
+          </li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Bottom Safeguarding Banner -->
+  <footer class="safeguarding-footer-banner">
+    <div class="banner-left">
+      <span class="material-symbols-outlined banner-icon">lock</span>
+      <span class="banner-text">
+        Learner records are secure and confidential. All data is used solely for
+        academic and administrative purposes to support learner success and
+        school oversight.
+      </span>
+    </div>
+    <button type="button" class="btn-security-info">
+      <span class="material-symbols-outlined">shield</span>
+      <span>Learn more about data security</span>
+    </button>
+  </footer>
+</div>

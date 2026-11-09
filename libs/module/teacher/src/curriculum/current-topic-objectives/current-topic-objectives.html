@@ -1,0 +1,61 @@
+<school-hub-dashboard-card
+  title="Current Topic Objectives"
+  icon="ri-compass-3-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="objectives-container">
+    <div class="topic-header-subtitle">
+      {{ objective().subject }} – {{ objective().topic }}
+    </div>
+
+    <!-- 1. Curriculum Objective -->
+    <div class="objective-section">
+      <div class="section-icon-box tone-blue" aria-hidden="true">
+        <i class="ri-focus-2-line"></i>
+      </div>
+      <div class="section-content">
+        <h5 class="section-title">Curriculum Objective</h5>
+        <p class="section-text">{{ objective().objective }}</p>
+      </div>
+    </div>
+
+    <!-- 2. Academic Focus -->
+    <div class="objective-section">
+      <div class="section-icon-box tone-purple" aria-hidden="true">
+        <i class="ri-graduation-cap-line"></i>
+      </div>
+      <div class="section-content">
+        <h5 class="section-title">Academic Focus</h5>
+        <p class="section-text">{{ objective().academicFocus }}</p>
+      </div>
+    </div>
+
+    <!-- 3. Common Misconception -->
+    <div class="objective-section">
+      <div class="section-icon-box tone-orange" aria-hidden="true">
+        <i class="ri-error-warning-line"></i>
+      </div>
+      <div class="section-content">
+        <h5 class="section-title">Common Misconception to Watch</h5>
+        <p class="section-text">{{ objective().misconception }}</p>
+      </div>
+    </div>
+
+    <!-- 4. Linked Delivery Pack -->
+    <div class="linked-pack-box">
+      <div class="pack-info">
+        <i class="ri-file-text-line pack-icon" aria-hidden="true"></i>
+        <div class="pack-text">
+          <span class="pack-label">Linked Delivery Pack</span>
+          <span class="pack-title">{{ objective().linkedPackTitle }}</span>
+        </div>
+      </div>
+      <school-hub-status-badge
+        [tone]="objective().linkedPackStatus === 'Ready' ? 'green' : 'orange'"
+        [label]="objective().linkedPackStatus"
+        size="sm"
+      />
+    </div>
+  </div>
+</school-hub-dashboard-card>

@@ -1,0 +1,77 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+li + li {
+  border-top: 1px solid #edf0f7;
+}
+a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 0;
+  color: #334963;
+  text-decoration: none;
+}
+a:hover strong {
+  color: #7846b4;
+  text-decoration: underline;
+}
+a:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+  border-radius: 5px;
+}
+.activity-copy {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  gap: 5px;
+}
+strong {
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.activity-copy > span,
+.meta {
+  color: #70809a;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.meta {
+  max-width: 85px;
+  flex-shrink: 0;
+  text-align: right;
+}
+.action {
+  padding: 5px 10px;
+  border: 1px solid #e4d6f8;
+  border-radius: 5px;
+  color: #794aad;
+  background: #f7f1ff;
+  font-size: typography.$caption;
+  font-weight: 600;
+}
+.empty-state {
+  padding: 16px 0;
+  color: #70809a;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+@media (max-width: 420px) {
+  a {
+    flex-wrap: wrap;
+  }
+  .meta {
+    margin-left: 45px;
+    max-width: none;
+    text-align: left;
+  }
+}

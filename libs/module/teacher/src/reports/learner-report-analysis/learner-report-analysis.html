@@ -1,0 +1,538 @@
+<div class="analysis-page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/reports" class="breadcrumb-link"
+          >Reports &amp; Analytics</a
+        >
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ detail().name }}
+      </li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Learner Report Analysis</h1>
+      <p class="page-subtitle">
+        Individual academic performance and progress report for {{ detail().name
+        }}.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-generate-report"
+        (click)="onGenerateReport()"
+      >
+        <span class="material-symbols-outlined btn-icon">description</span>
+        <span>Generate Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Row -->
+  <section class="metrics-section" aria-label="Learner performance metrics">
+    <school-hub-reports-metrics [metrics]="detail().metrics" />
+  </section>
+
+  <!-- Student Profile Card Banner -->
+  <section class="student-profile-banner" aria-label="Learner profile details">
+    <div class="profile-left">
+      <div
+        class="student-avatar"
+        [style.background-color]="detail().avatarColor"
+        aria-hidden="true"
+      >
+        {{ detail().avatarText }}
+      </div>
+      <div class="student-info">
+        <div class="name-status-row">
+          <h2 class="student-name">{{ detail().name }}</h2>
+          <span class="status-badge-active">{{ detail().status }}</span>
+        </div>
+        <div class="id-row">
+          <span class="id-label">Learner ID: {{ detail().learnerId }}</span>
+          <button
+            type="button"
+            class="copy-id-btn"
+            (click)="onCopyId()"
+            aria-label="Copy learner ID"
+          >
+            <span class="material-symbols-outlined">content_copy</span>
+          </button>
+          @if (copied()) {
+          <span class="copied-tooltip">Copied!</span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Class</span>
+        <span class="meta-value">{{ detail().className }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Subject Load</span>
+        <span class="meta-value">{{ detail().subjectLoad }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Age</span>
+        <span class="meta-value">{{ detail().age }}</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Guardian</span>
+        <span class="meta-value">{{ detail().guardian }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~72%) -->
+    <div class="left-column">
+      <!-- 2 Charts Subgrid -->
+      <section
+        class="charts-row"
+        aria-label="Learner trends and subject performance"
+      >
+        <!-- Performance Trend -->
+        <div class="chart-box">
+          <div class="box-header">
+            <div>
+              <h3 class="box-title">Performance Trend</h3>
+              <p class="box-subtitle">Average score over time (Weekly)</p>
+            </div>
+            <div class="box-select-wrapper">
+              <span class="select-label">Weekly</span>
+            </div>
+          </div>
+          <div class="svg-container">
+            <svg
+              viewBox="0 0 380 160"
+              class="chart-svg"
+              role="img"
+              aria-label="Performance trend showing progression from 62 percent to 76 percent"
+            >
+              <defs>
+                <linearGradient
+                  id="learnerTrendGrad"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.25" />
+                  <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.0" />
+                </linearGradient>
+              </defs>
+              <line
+                x1="25"
+                y1="20"
+                x2="365"
+                y2="20"
+                stroke="#f1f5f9"
+                stroke-width="1"
+              />
+              <line
+                x1="25"
+                y1="55"
+                x2="365"
+                y2="55"
+                stroke="#f1f5f9"
+                stroke-width="1"
+              />
+              <line
+                x1="25"
+                y1="90"
+                x2="365"
+                y2="90"
+                stroke="#f1f5f9"
+                stroke-width="1"
+              />
+              <line
+                x1="25"
+                y1="125"
+                x2="365"
+                y2="125"
+                stroke="#f1f5f9"
+                stroke-width="1"
+              />
+
+              <path
+                d="M 40 73 L 115 67 L 190 61 L 265 55 L 340 52 L 340 135 L 40 135 Z"
+                fill="url(#learnerTrendGrad)"
+              />
+              <path
+                d="M 40 73 L 115 67 L 190 61 L 265 55 L 340 52"
+                fill="none"
+                stroke="#7c3aed"
+                stroke-width="2.5"
+              />
+
+              <circle
+                cx="40"
+                cy="73"
+                r="4"
+                fill="#ffffff"
+                stroke="#7c3aed"
+                stroke-width="2"
+              />
+              <text x="40" y="63" text-anchor="middle" class="chart-num">
+                62%
+              </text>
+              <text x="40" y="150" text-anchor="middle" class="chart-date">
+                Apr 14–20
+              </text>
+
+              <circle
+                cx="115"
+                cy="67"
+                r="4"
+                fill="#ffffff"
+                stroke="#7c3aed"
+                stroke-width="2"
+              />
+              <text x="115" y="57" text-anchor="middle" class="chart-num">
+                66%
+              </text>
+              <text x="115" y="150" text-anchor="middle" class="chart-date">
+                Apr 21–27
+              </text>
+
+              <circle
+                cx="190"
+                cy="61"
+                r="4"
+                fill="#ffffff"
+                stroke="#7c3aed"
+                stroke-width="2"
+              />
+              <text x="190" y="51" text-anchor="middle" class="chart-num">
+                70%
+              </text>
+              <text x="190" y="150" text-anchor="middle" class="chart-date">
+                Apr 28–May 4
+              </text>
+
+              <circle
+                cx="265"
+                cy="55"
+                r="4"
+                fill="#ffffff"
+                stroke="#7c3aed"
+                stroke-width="2"
+              />
+              <text x="265" y="45" text-anchor="middle" class="chart-num">
+                74%
+              </text>
+              <text x="265" y="150" text-anchor="middle" class="chart-date">
+                May 5–11
+              </text>
+
+              <circle
+                cx="340"
+                cy="52"
+                r="4"
+                fill="#ffffff"
+                stroke="#7c3aed"
+                stroke-width="2"
+              />
+              <text x="340" y="42" text-anchor="middle" class="chart-num">
+                76%
+              </text>
+              <text x="340" y="150" text-anchor="middle" class="chart-date">
+                May 12–18
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Subject Performance -->
+        <div class="chart-box">
+          <div class="box-header">
+            <div>
+              <h3 class="box-title">Subject Performance</h3>
+              <p class="box-subtitle">Average score (%)</p>
+            </div>
+          </div>
+          <div class="bars-layout">
+            <div class="bar-unit">
+              <span class="bar-val">82%</span>
+              <div class="track">
+                <div class="fill" style="height: 82%"></div>
+              </div>
+              <span class="bar-lbl">English Language</span>
+            </div>
+            <div class="bar-unit">
+              <span class="bar-val">74%</span>
+              <div class="track">
+                <div class="fill" style="height: 74%"></div>
+              </div>
+              <span class="bar-lbl">Mathematics</span>
+            </div>
+            <div class="bar-unit">
+              <span class="bar-val">78%</span>
+              <div class="track">
+                <div class="fill" style="height: 78%"></div>
+              </div>
+              <span class="bar-lbl">Basic Science</span>
+            </div>
+            <div class="bar-unit">
+              <span class="bar-val">70%</span>
+              <div class="track">
+                <div class="fill" style="height: 70%"></div>
+              </div>
+              <span class="bar-lbl">Civic Education</span>
+            </div>
+            <div class="bar-unit">
+              <span class="bar-val">65%</span>
+              <div class="track">
+                <div class="fill" style="height: 65%"></div>
+              </div>
+              <span class="bar-lbl">Business Studies</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2 Tables Row: Topic Mastery + Recent Assessments -->
+      <section class="tables-row" aria-label="Topic mastery and assessments">
+        <!-- Topic Mastery Analysis -->
+        <div class="sub-table-card">
+          <h3 class="sub-card-title">Topic Mastery Analysis</h3>
+          <div class="table-responsive">
+            <table class="simple-table">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Subject</th>
+                  <th class="text-center">Score</th>
+                  <th class="text-center">Mastery</th>
+                  <th class="text-right">Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (item of detail().topicMastery; track item.id) {
+                <tr>
+                  <td class="font-semibold">{{ item.topic }}</td>
+                  <td class="text-muted">{{ item.subject }}</td>
+                  <td class="text-center font-semibold">
+                    {{ item.averageScore }}%
+                  </td>
+                  <td class="text-center">
+                    <span
+                      class="pill-tag"
+                      [class.pill-good]="item.masteryLevel === 'Good'"
+                      [class.pill-dev]="item.masteryLevel === 'Developing'"
+                    >
+                      {{ item.masteryLevel }}
+                    </span>
+                  </td>
+                  <td class="text-right">
+                    <span
+                      class="trend-text"
+                      [class.up]="item.trendDirection === 'up'"
+                      [class.down]="item.trendDirection === 'down'"
+                    >
+                      {{ item.trendDirection === 'up' ? '↑' : '↓' }} {{
+                      item.trend }}
+                    </span>
+                  </td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Recent Assessments -->
+        <div class="sub-table-card">
+          <h3 class="sub-card-title">Recent Assessments</h3>
+          <div class="table-responsive">
+            <table class="simple-table">
+              <thead>
+                <tr>
+                  <th>Assessment</th>
+                  <th>Subject</th>
+                  <th>Date</th>
+                  <th class="text-center">Score</th>
+                  <th>Teacher Remark</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (asmt of detail().recentAssessments; track asmt.id) {
+                <tr>
+                  <td class="font-semibold">{{ asmt.title }}</td>
+                  <td class="text-muted">{{ asmt.subject }}</td>
+                  <td class="text-muted">{{ asmt.date }}</td>
+                  <td class="text-center font-semibold">{{ asmt.score }}%</td>
+                  <td class="remark-text">{{ asmt.teacherRemark }}</td>
+                </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Banner: Tutor Comments & Plan -->
+      <section
+        class="tutor-plan-card"
+        aria-label="Tutor comments and development plan"
+      >
+        <h3 class="plan-card-title">Tutor Comments &amp; Plan</h3>
+        <div class="plan-columns-grid">
+          <!-- Strengths -->
+          <div class="plan-column">
+            <h4 class="column-heading">Strengths</h4>
+            <ul class="plan-items-list">
+              @for (str of detail().commentsPlan.strengths; track str) {
+              <li class="plan-item">
+                <span class="material-symbols-outlined check-icon"
+                  >check_circle</span
+                >
+                <span>{{ str }}</span>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <!-- Weak Areas -->
+          <div class="plan-column">
+            <h4 class="column-heading">Weak Areas</h4>
+            <ul class="plan-items-list">
+              @for (weak of detail().commentsPlan.weakAreas; track weak) {
+              <li class="plan-item">
+                <span class="material-symbols-outlined warn-icon">error</span>
+                <span>{{ weak }}</span>
+              </li>
+              }
+            </ul>
+          </div>
+
+          <!-- Next Steps -->
+          <div class="plan-column">
+            <h4 class="column-heading">Next Steps</h4>
+            <ul class="plan-items-list">
+              @for (step of detail().commentsPlan.nextSteps; track step) {
+              <li class="plan-item">
+                <span class="material-symbols-outlined step-icon"
+                  >arrow_circle_right</span
+                >
+                <span>{{ step }}</span>
+              </li>
+              }
+            </ul>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Right Column (~28%) -->
+    <aside class="right-column" aria-label="Learner key insights and portfolio">
+      <!-- Key Strengths -->
+      <div class="sidebar-box">
+        <h3 class="sidebar-box-title">Key Strengths</h3>
+        <ul class="strength-list">
+          @for (item of detail().keyStrengths; track item) {
+          <li class="strength-item">
+            <span class="material-symbols-outlined check-icon"
+              >check_circle</span
+            >
+            <span>{{ item }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Intervention Needed -->
+      <div class="sidebar-box">
+        <h3 class="sidebar-box-title">Intervention Needed</h3>
+        <ul class="intervention-list">
+          @for (item of detail().interventionsNeeded; track item) {
+          <li class="intervention-item">
+            <span class="material-symbols-outlined warn-icon">error</span>
+            <span>{{ item }}</span>
+          </li>
+          }
+        </ul>
+      </div>
+
+      <!-- Recent Portfolio Evidence -->
+      <div class="sidebar-box">
+        <div class="box-header-row">
+          <h3 class="sidebar-box-title">Recent Portfolio Evidence</h3>
+          <button
+            type="button"
+            class="view-all-link"
+            (click)="onViewAllPortfolio()"
+          >
+            View all
+          </button>
+        </div>
+        <div class="portfolio-list">
+          @for (port of detail().portfolioEvidence; track port.id) {
+          <div class="portfolio-item">
+            <div class="port-icon-box">
+              <span class="material-symbols-outlined">description</span>
+            </div>
+            <div class="port-info">
+              <span class="port-title">{{ port.title }}</span>
+              <span class="port-meta">{{ port.subject }}</span>
+            </div>
+            <span class="port-date">{{ port.date }}</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Parent-Ready Summary & Export -->
+      <div class="sidebar-box export-box">
+        <h3 class="sidebar-box-title">Parent-Ready Summary &amp; Export</h3>
+        <p class="export-desc">
+          Create a sharable summary of Maryam's progress for parents or
+          guardians.
+        </p>
+        <div class="export-actions-row">
+          <button
+            type="button"
+            class="export-action-btn"
+            (click)="onDownloadPdf()"
+          >
+            <span class="material-symbols-outlined icon-red"
+              >picture_as_pdf</span
+            >
+            <span>Download PDF</span>
+          </button>
+          <button
+            type="button"
+            class="export-action-btn"
+            (click)="onShareWithParent()"
+          >
+            <span class="material-symbols-outlined icon-purple">share</span>
+            <span>Share with Parent</span>
+          </button>
+          <button
+            type="button"
+            class="export-action-btn"
+            (click)="onPrintReport()"
+          >
+            <span class="material-symbols-outlined icon-green">print</span>
+            <span>Print Report</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

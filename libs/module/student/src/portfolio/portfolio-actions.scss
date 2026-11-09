@@ -1,0 +1,72 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.portfolio-button,
+.outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 9px 15px;
+  border: 1px solid #7940dc;
+  border-radius: 7px;
+  background: #7940dc;
+  color: white;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+}
+.outline-button {
+  border-color: #ddd2f3;
+  background: white;
+  color: #7543b5;
+}
+.portfolio-button:hover {
+  background: #6831c7;
+}
+.outline-button:hover {
+  background: #f8f4ff;
+}
+button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #7940dc;
+  font-size: typography.$body;
+}
+.notice,
+.practice-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #efddb7;
+  border-radius: 9px;
+  background: #fffaef;
+  color: #8b6e3a;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.notice button {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-decoration: underline;
+}
+.practice-note {
+  border-color: #e5dcf8;
+  background: #faf7ff;
+  color: #76618e;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid #aa84df;
+  outline-offset: 3px;
+}

@@ -1,0 +1,67 @@
+<div class="teacher-lessons-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Lessons & Delivery Packs</h1>
+      <p class="page-subtitle">
+        Manage lesson packs, teaching materials, tutor guides, worksheets,
+        assessments, and topic delivery readiness.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/teacher/curriculum" class="btn btn-outline">
+        <i class="ri-book-open-line" aria-hidden="true"></i>
+        <span>View Scheme of Work</span>
+      </a>
+      <button type="button" class="btn btn-primary">
+        <i class="ri-add-line" aria-hidden="true"></i>
+        <span>Create New Pack</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Top Metrics Bar -->
+  <section class="metrics-section" aria-label="Lessons delivery metrics">
+    <school-hub-lessons-metrics [metrics]="metrics" />
+  </section>
+
+  <!-- Main 2-Column Content Grid -->
+  <div class="lessons-layout-grid">
+    <!-- Left Column (~72% width) -->
+    <div class="left-content-column">
+      <!-- Filters Toolbar -->
+      <school-hub-lessons-filters (filterChange)="onFilterChange($event)" />
+
+      <!-- Topic Delivery Packs Table -->
+      <school-hub-topic-delivery-packs-table
+        [packs]="filteredPacks()"
+        [selectedPackId]="selectedPack().id"
+        (selectPack)="onSelectPack($event)"
+      />
+
+      <!-- 3-Card Bottom Subgrid -->
+      <div class="bottom-cards-subgrid">
+        <school-hub-lesson-timeline [items]="lessonTimeline" />
+        <school-hub-pack-completion-status
+          [tiers]="completionTiers"
+          [totalPacks]="128"
+        />
+        <school-hub-lessons-quick-actions [actions]="quickActions" />
+      </div>
+    </div>
+
+    <!-- Right Column (~28% width) -->
+    <div class="right-content-column">
+      <school-hub-selected-pack-overview
+        [pack]="selectedPack()"
+        (openPack)="onOpenPack($event)"
+        (editPack)="onEditPack($event)"
+      />
+      <school-hub-misconception-notes
+        [notes]="misconceptionNotes"
+        (viewNote)="onViewMisconceptionNote($event)"
+      />
+    </div>
+  </div>
+</div>

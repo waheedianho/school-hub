@@ -1,0 +1,174 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+.scroll-hint {
+  display: none;
+}
+@media (max-width: 540px) {
+  .scroll-hint {
+    display: block;
+    margin: 0;
+    padding: 12px 16px 0;
+    color: #64748b;
+    font-size: typography.$caption;
+  }
+}
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 11px 11px 0 0;
+}
+table {
+  width: 100%;
+  min-width: 890px;
+  border-collapse: collapse;
+  color: #40516e;
+  font-size: typography.$body;
+  text-align: left;
+}
+thead {
+  background: #fbfcff;
+}
+thead th {
+  padding: 13px 9px;
+  font-size: typography.$caption;
+  font-weight: 600;
+  white-space: nowrap;
+}
+thead th:first-child {
+  padding-left: 16px;
+}
+tbody td,
+tbody th {
+  padding: 9px;
+  border-top: 1px solid #edf1f7;
+  vertical-align: middle;
+}
+tbody th {
+  padding-left: 16px;
+}
+tbody tr:hover,
+.selected-row {
+  background: #f8fbff;
+}
+.lesson-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 220px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #182031;
+  text-align: left;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.subject-symbol {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 29px;
+  height: 29px;
+  border-radius: 5px;
+  background: #0866ff;
+  color: white;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.subject-symbol.green {
+  background: #0eac66;
+  font-size: 17px;
+}
+.subject-symbol.orange {
+  background: #f39a15;
+  font-size: 20px;
+}
+.duration,
+.locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+.duration i,
+.locked i {
+  color: #8493ab;
+  font-size: typography.$body;
+}
+.locked {
+  color: #7a8aa3;
+  font-size: typography.$caption;
+}
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.lesson-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 70px;
+  padding: 5px 8px;
+  border: 1px solid #8eb8ff;
+  border-radius: 5px;
+  background: #fff;
+  color: #0866ff;
+  font-size: typography.$caption;
+}
+.lesson-action.continue {
+  border-color: #0866ff;
+  background: #0866ff;
+  color: #fff;
+}
+.lesson-action.completed {
+  border-color: #9fd4bd;
+  color: #087d4d;
+}
+.more-actions {
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  color: #52627c;
+  font-size: 15px;
+}
+button:focus-visible,
+a:focus-visible,
+.table-scroll:focus-visible {
+  outline: 2px solid #0866ff;
+  outline-offset: 2px;
+}
+.empty-state {
+  padding: 40px 16px;
+  text-align: center;
+}
+.empty-state > * {
+  display: block;
+  margin-bottom: 6px;
+}
+.empty-state > i {
+  color: #7793c3;
+  font-size: 24px;
+}
+:host-context(.dark) {
+  table {
+    color: #c8d6eb;
+  }
+  thead,
+  tbody tr:hover,
+  .selected-row {
+    background: #15253e;
+  }
+  .lesson-title {
+    color: #e4edf9;
+  }
+  tbody td,
+  tbody th {
+    border-color: #263349;
+  }
+}

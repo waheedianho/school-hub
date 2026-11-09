@@ -1,0 +1,41 @@
+<school-hub-dashboard-card
+  title="Help & Support"
+  subtitle="Get help when you need it"
+  icon="ri-question-line"
+  tone="purple"
+  [compact]="true"
+>
+  <div class="setting-rows-list">
+    <button
+      type="button"
+      class="setting-row-action"
+      (click)="modalRequested.emit('help')"
+    >
+      <div class="row-icon"><i class="ri-questionnaire-line"></i></div>
+      <span class="row-label">Visit Help Centre</span>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </button>
+
+    <a routerLink="/student/ask-tutor" class="setting-row-action">
+      <div class="row-icon"><i class="ri-customer-service-2-line"></i></div>
+      <span class="row-label">Chat with Support</span>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </a>
+
+    <button
+      type="button"
+      class="setting-row-action"
+      (click)="modalRequested.emit('report')"
+    >
+      <div class="row-icon"><i class="ri-flag-line"></i></div>
+      <span class="row-label">Report an Issue</span>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </button>
+
+    <a routerLink="/student/feedback" class="setting-row-action">
+      <div class="row-icon"><i class="ri-feedback-line"></i></div>
+      <span class="row-label">Give Feedback</span>
+      <i class="ri-arrow-right-s-line row-chevron" aria-hidden="true"></i>
+    </a>
+  </div>
+</school-hub-dashboard-card>

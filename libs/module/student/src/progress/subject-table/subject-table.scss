@@ -1,0 +1,89 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid #e7eaf3;
+  border-radius: 8px;
+}
+table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  text-align: left;
+}
+th,
+td {
+  padding: 13px 12px;
+  border-bottom: 1px solid #edf0f7;
+  color: #52627d;
+  font-size: typography.$body;
+  line-height: 1.6;
+}
+thead th {
+  color: #73809a;
+  background: #fafbff;
+  font-size: typography.$caption;
+  font-weight: 600;
+}
+tbody tr:last-child > * {
+  border-bottom: 0;
+}
+tbody th a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #334862;
+  font-weight: 600;
+}
+school-hub-subject-icon {
+  display: flex;
+  flex-shrink: 0;
+  width: 38px;
+  height: 42px;
+  transform: scale(0.65);
+}
+a {
+  color: #6e45a9;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+a:focus-visible,
+.table-scroll:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+.lesson-score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 130px;
+}
+.lesson-score strong {
+  width: 38px;
+  font-size: typography.$caption;
+  font-weight: 500;
+}
+school-hub-progress-bar {
+  flex: 1;
+}
+small {
+  color: #7b879b;
+  font-size: typography.$caption;
+}
+.empty-state {
+  padding: 24px;
+  text-align: center;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

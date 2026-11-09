@@ -1,0 +1,103 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+}
+article {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 16px;
+}
+.session-copy {
+  flex: 1;
+  min-width: 0;
+}
+h3 {
+  margin: 0 0 6px;
+  font-size: typography.$body;
+  line-height: 1.6;
+}
+h3 button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #243752;
+  font: inherit;
+  font-weight: 650;
+  text-align: left;
+  cursor: pointer;
+}
+h3 button:hover {
+  color: #763cd2;
+}
+p {
+  margin: 0 0 10px;
+  color: #64738b;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.session-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: #6c7890;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+.session-meta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.session-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-shrink: 0;
+}
+.join {
+  min-width: 84px;
+  min-height: 37px;
+  padding: 7px 14px;
+  border: 1px solid #a27bdf;
+  border-radius: 6px;
+  background: white;
+  color: #7b3fce;
+  font: inherit;
+  font-size: typography.$body;
+  cursor: pointer;
+}
+.more {
+  width: 30px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #53607e;
+  font-size: 22px;
+  cursor: pointer;
+}
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+@media (max-width: 700px) {
+  article {
+    flex-wrap: wrap;
+    align-items: start;
+    gap: 12px;
+    padding: 16px 12px;
+  }
+  .session-copy {
+    flex-basis: calc(100% - 72px);
+  }
+  .session-actions {
+    width: 100%;
+    justify-content: end;
+  }
+}

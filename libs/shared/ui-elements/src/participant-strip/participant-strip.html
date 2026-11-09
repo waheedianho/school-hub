@@ -1,0 +1,26 @@
+<div class="strip" role="list" aria-label="Practice participants">
+  @for (person of people(); track person.id) {
+  <div
+    class="tile"
+    [class.self]="person.self"
+    role="listitem"
+    [style.--tile-color]="colors[person.tone].color"
+    [style.--tile-soft]="colors[person.tone].soft"
+  >
+    @if (person.self && stream()) {
+    <school-hub-local-video [stream]="stream()" /> } @else {
+    <div class="initials" aria-hidden="true">{{ person.initials }}</div>
+    }<span class="name">{{ person.self ? 'You' : person.name }}</span
+    ><i
+      class="mic"
+      [class]="'mic ' + (person.self && micOn() ? 'ri-mic-line' : 'ri-mic-off-line')"
+      aria-hidden="true"
+    ></i
+    >@if (person.self && handRaised()) {
+    <span class="hand" aria-label="Your hand is raised">✋</span> }
+  </div>
+  }<button type="button" class="view-all" (click)="viewAll.emit()">
+    <i class="ri-group-line" aria-hidden="true"></i><strong>View All</strong
+    ><span>{{ people().length }} participants</span>
+  </button>
+</div>

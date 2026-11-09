@@ -1,0 +1,13 @@
+<school-hub-dashboard-card
+  title="Notifications"
+  subtitle="Choose how you want to be notified"
+  icon="ri-notification-3-line"
+  tone="purple"
+  [compact]="true"
+>
+  <school-hub-preference-list
+    [items]="items()"
+    label="Notification settings list"
+    (toggled)="onToggle($event)"
+  />
+</school-hub-dashboard-card>

@@ -1,0 +1,194 @@
+<div
+  class="header-area bg-white dark:bg-[#0c1427] py-[13px] px-[20px] md:px-[25px] fixed top-0 z-[6] rounded-b-md transition-all"
+  id="header-area"
+>
+  <div class="md:flex md:items-center md:justify-between">
+    <div class="flex items-center justify-center md:justify-normal">
+      <!-- Sidebar Toggle -->
+      <div
+        class="relative leading-none top-px ltr:mr-[13px] ltr:md:mr-[18px] ltr:lg:mr-[23px] rtl:ml-[13px] rtl:md:ml-[18px] rtl:lg:ml-[23px]"
+      >
+        <button
+          aria-label="Toggle navigation"
+          type="button"
+          class="hide-sidebar-toggle transition-all inline-block hover:text-primary-500"
+          (click)="onToggleSidebar()"
+        >
+          <i class="material-symbols-outlined !text-[20px]">menu</i>
+        </button>
+      </div>
+
+      <!-- Search -->
+      @if (!compact) {
+      <form class="relative w-[250px] lg:w-[260px]">
+        <input
+          type="text"
+          placeholder="Search here....."
+          class="bg-gray-50 border border-gray-50 h-[44px] rounded-md w-full block text-black pt-[11px] pb-[12px] px-[13px] md:px-[16px] placeholder:text-gray-500 outline-0 dark:bg-[#15203c] dark:text-white dark:border-[#15203c] dark:placeholder:text-gray-400"
+        />
+        <button
+          type="button"
+          class="absolute text-primary-500 mt-[2px] ltr:right-[13px] ltr:md:right-[15px] rtl:left-[13px] rtl:md:left-[15px] top-1/2 -translate-y-1/2"
+        >
+          <i class="material-symbols-outlined !text-[20px]">search</i>
+        </button>
+      </form>
+      }
+    </div>
+
+    <!-- Right side actions -->
+    <ul
+      class="flex items-center justify-center md:justify-normal mt-[13px] md:mt-0"
+    >
+      <!-- Fullscreen -->
+      @if (!compact) {
+      <li
+        class="relative mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+      >
+        <button
+          type="button"
+          class="leading-none inline-block transition-all relative top-[2px] hover:text-primary-500"
+          (click)="toggleFullscreen()"
+        >
+          <i class="material-symbols-outlined !text-[22px] md:!text-[24px]">
+            {{ isFullscreen ? 'fullscreen_exit' : 'fullscreen' }}
+          </i>
+        </button>
+      </li>
+      }
+
+      <!-- Notifications -->
+      <li
+        class="relative notifications-menu mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+      >
+        <button
+          aria-label="Notifications"
+          [attr.aria-expanded]="buttonStates['notificationsMenuBtn']"
+          type="button"
+          class="leading-none inline-block transition-all relative top-[2px] hover:text-primary-500"
+          (click)="toggleClass('notificationsMenuBtn')"
+          [class.active]="buttonStates['notificationsMenuBtn']"
+        >
+          <i class="material-symbols-outlined !text-[22px] md:!text-[24px]"
+            >notifications</i
+          >
+          <span
+            class="top-[3px] ltr:right-[4px] rtl:left-[4px] w-[6px] h-[6px] rounded-full absolute bg-orange-500"
+          ></span>
+        </button>
+        <div
+          class="notifications-menu-dropdown bg-white dark:bg-[#0c1427] transition-all shadow-3xl dark:shadow-none py-[17px] absolute mt-[17px] md:mt-[20px] w-[290px] md:w-[350px] z-[1] top-full ltr:-right-[120px] ltr:md:right-0 rtl:-left-[120px] rtl:md:left-0 rounded-md"
+        >
+          <div class="flex items-center justify-between px-[20px] pb-[17px]">
+            <span class="font-semibold text-black dark:text-white text-[15px]">
+              Notifications
+              <span
+                class="text-gray-500 dark:text-gray-400 font-normal text-base"
+                >(0)</span
+              >
+            </span>
+            <a routerLink="." class="text-primary-500">Clear All</a>
+          </div>
+          <div class="text-center py-[20px] text-gray-400">
+            <i class="material-symbols-outlined !text-[32px] mb-[8px]"
+              >notifications_off</i
+            >
+            <p>No new notifications</p>
+          </div>
+        </div>
+      </li>
+
+      <!-- Profile Menu -->
+      <li
+        class="relative profile-menu mx-[8px] md:mx-[10px] lg:mx-[12px] ltr:first:ml-0 ltr:last:mr-0 rtl:first:mr-0 rtl:last:ml-0"
+      >
+        <button
+          aria-label="Open profile menu"
+          [attr.aria-expanded]="buttonStates['profileMenuBtn']"
+          type="button"
+          class="flex items-center -mx-[5px] relative ltr:pr-[14px] rtl:pl-[14px] text-black dark:text-white"
+          (click)="toggleClass('profileMenuBtn')"
+          [class.active]="buttonStates['profileMenuBtn']"
+        >
+          <img
+            [src]="user.avatarUrl"
+            class="w-[35px] h-[35px] md:w-[42px] md:h-[42px] rounded-full ltr:md:mr-[2px] ltr:lg:mr-[8px] rtl:md:ml-[2px] rtl:lg:ml-[8px] border-[2px] border-primary-200 inline-block"
+            alt=""
+          />
+          <span
+            class="block max-w-[160px] truncate font-semibold text-[0] lg:text-base"
+            >{{ user.name }}</span
+          >
+          <i
+            class="ri-arrow-down-s-line text-[15px] absolute ltr:-right-[3px] rtl:-left-[3px] top-1/2 -translate-y-1/2 mt-px"
+          ></i>
+        </button>
+        <div
+          class="profile-menu-dropdown bg-white dark:bg-[#0c1427] transition-all shadow-3xl dark:shadow-none py-[22px] absolute mt-[13px] md:mt-[14px] w-[195px] z-[1] top-full ltr:right-0 rtl:left-0 rounded-md"
+        >
+          <div
+            class="flex items-center border-b border-gray-100 dark:border-[#172036] pb-[12px] mx-[20px] mb-[10px]"
+          >
+            <img
+              [src]="user.avatarUrl"
+              class="rounded-full w-[31px] h-[31px] ltr:mr-[9px] rtl:ml-[9px] border-2 border-primary-200 inline-block"
+              alt=""
+            />
+            <div class="min-w-0">
+              <span
+                class="block truncate text-black dark:text-white font-medium"
+                >{{ user.name }}</span
+              >
+              <span class="block text-xs">{{ user.role }}</span>
+            </div>
+          </div>
+          <ul>
+            <li>
+              <a
+                [routerLink]="user.profileRoute"
+                (click)="buttonStates['profileMenuBtn'] = false"
+                class="block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500"
+              >
+                <i
+                  class="material-symbols-outlined top-1/2 -translate-y-1/2 !text-[22px] absolute ltr:left-[20px] rtl:right-[20px]"
+                  >account_circle</i
+                >
+                My Profile
+              </a>
+            </li>
+            <li>
+              <a
+                [routerLink]="user.settingsRoute"
+                (click)="buttonStates['profileMenuBtn'] = false"
+                class="block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500"
+              >
+                <i
+                  class="material-symbols-outlined top-1/2 -translate-y-1/2 !text-[22px] absolute ltr:left-[20px] rtl:right-[20px]"
+                  >settings</i
+                >
+                Settings
+              </a>
+            </li>
+          </ul>
+          <div
+            class="border-t border-gray-100 dark:border-[#172036] mx-[20px] my-[9px]"
+          ></div>
+          <ul>
+            <li>
+              <a
+                routerLink="/auth/logout"
+                class="block relative py-[7px] ltr:pl-[50px] ltr:pr-[20px] rtl:pr-[50px] rtl:pl-[20px] text-black dark:text-white transition-all hover:text-primary-500"
+              >
+                <i
+                  class="material-symbols-outlined top-1/2 -translate-y-1/2 !text-[22px] absolute ltr:left-[20px] rtl:right-[20px]"
+                  >logout</i
+                >
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

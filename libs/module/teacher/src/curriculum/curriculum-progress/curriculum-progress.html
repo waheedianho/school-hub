@@ -1,0 +1,83 @@
+<school-hub-dashboard-card
+  [title]="subjectTitle()"
+  icon="ri-line-chart-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="progress-card-content">
+    <!-- Legend -->
+    <div class="legend-row">
+      <div class="legend-item">
+        <span class="legend-dot dot-completed"></span>
+        <span class="legend-text">Completed</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot dot-in-progress"></span>
+        <span class="legend-text">In Progress</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot dot-upcoming"></span>
+        <span class="legend-text">Upcoming</span>
+      </div>
+    </div>
+
+    <!-- Weeks Timeline Block Grid -->
+    <div class="timeline-block-grid">
+      <div class="timeline-labels-col">
+        <span class="row-label">Week</span>
+        <span class="row-label">Topic Coverage</span>
+      </div>
+
+      <div class="timeline-weeks-container">
+        <div class="weeks-numbers-row">
+          @for (w of weeks(); track w.week) {
+          <span class="week-number">{{ w.week }}</span>
+          }
+        </div>
+
+        <div class="weeks-blocks-row">
+          @for (w of weeks(); track w.week) {
+          <div
+            class="week-block"
+            [class]="'block-' + w.status"
+            [attr.title]="'Week ' + w.week + ': ' + (w.topicName ?? w.status)"
+          >
+            @if (w.status === 'completed' || w.status === 'in-progress') {
+            <i class="ri-check-line block-icon" aria-hidden="true"></i>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom summary metrics -->
+    <div class="summary-metrics-row">
+      <div class="summary-metric">
+        <span class="metric-big-val">{{ overallCoverage() }}</span>
+        <span class="metric-caption">Overall Coverage</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-metric">
+        <span class="metric-big-val">{{ topicsCompleted() }}</span>
+        <span class="metric-caption">Topics Completed</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-metric">
+        <span class="metric-big-val">{{ topicsInProgress() }}</span>
+        <span class="metric-caption">Topics In Progress</span>
+      </div>
+
+      <div class="summary-divider"></div>
+
+      <div class="summary-metric">
+        <span class="metric-big-val">{{ topicsUpcoming() }}</span>
+        <span class="metric-caption">Topics Upcoming</span>
+      </div>
+    </div>
+  </div>
+</school-hub-dashboard-card>

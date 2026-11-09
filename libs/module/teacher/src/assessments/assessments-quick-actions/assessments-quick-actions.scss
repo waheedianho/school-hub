@@ -1,0 +1,84 @@
+.actions-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.action-item-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    background-color: #eef2ff;
+    border-color: #c7d2fe;
+
+    .action-icon {
+      color: #4f46e5;
+    }
+
+    .action-label {
+      color: #4338ca;
+    }
+
+    .action-chevron {
+      color: #4338ca;
+    }
+  }
+}
+
+.action-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.action-icon {
+  font-size: 18px;
+  color: #64748b;
+  transition: color 0.15s ease;
+}
+
+.action-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  transition: color 0.15s ease;
+}
+
+.action-chevron {
+  font-size: 16px;
+  color: #94a3b8;
+  transition: color 0.15s ease;
+}

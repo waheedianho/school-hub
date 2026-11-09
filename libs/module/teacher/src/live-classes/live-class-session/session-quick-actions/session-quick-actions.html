@@ -1,0 +1,51 @@
+<div class="session-quick-actions-card">
+  <div class="card-header">
+    <h3 class="card-title">Quick Actions</h3>
+  </div>
+
+  <div class="actions-grid">
+    <button
+      type="button"
+      class="grid-action-btn"
+      (click)="onAction('add-poll')"
+    >
+      <div class="btn-icon-wrapper tone-green">
+        <span class="material-symbols-outlined">bar_chart</span>
+      </div>
+      <span class="btn-label">Add Poll</span>
+    </button>
+
+    <button
+      type="button"
+      class="grid-action-btn"
+      (click)="onAction('share-material')"
+    >
+      <div class="btn-icon-wrapper tone-orange">
+        <span class="material-symbols-outlined">share</span>
+      </div>
+      <span class="btn-label">Share Material</span>
+    </button>
+
+    <button
+      type="button"
+      class="grid-action-btn"
+      (click)="onAction('assign-activity')"
+    >
+      <div class="btn-icon-wrapper tone-purple">
+        <span class="material-symbols-outlined">assignment</span>
+      </div>
+      <span class="btn-label">Assign Activity</span>
+    </button>
+
+    <button
+      type="button"
+      class="grid-action-btn"
+      (click)="onAction('record-class')"
+    >
+      <div class="btn-icon-wrapper tone-red">
+        <span class="material-symbols-outlined">radio_button_checked</span>
+      </div>
+      <span class="btn-label">Record Class</span>
+    </button>
+  </div>
+</div>

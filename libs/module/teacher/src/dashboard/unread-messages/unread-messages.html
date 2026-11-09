@@ -1,0 +1,32 @@
+<school-hub-dashboard-card
+  title="Unread Messages"
+  icon="ri-mail-line"
+  tone="blue"
+  [compact]="true"
+>
+  <a card-action routerLink="/teacher/messages" class="card-header-link">
+    View All
+  </a>
+
+  <div class="messages-list">
+    @for (msg of messages(); track msg.id) {
+    <div class="message-item">
+      <div class="msg-avatar-wrap">
+        <i [class]="msg.avatarIcon" aria-hidden="true"></i>
+      </div>
+      <div class="msg-body">
+        <div class="msg-header">
+          <strong class="sender-name">{{ msg.senderName }}</strong>
+          <span class="msg-time">{{ msg.time }}</span>
+        </div>
+        <div class="msg-footer">
+          <p class="msg-snippet">{{ msg.snippet }}</p>
+          @if (msg.unreadCount > 0) {
+          <span class="unread-badge">{{ msg.unreadCount }}</span>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</school-hub-dashboard-card>

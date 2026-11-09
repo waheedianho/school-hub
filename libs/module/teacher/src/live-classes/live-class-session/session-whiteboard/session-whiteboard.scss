@@ -1,0 +1,279 @@
+.whiteboard-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.whiteboard-header {
+  padding: 12px 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.whiteboard-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.whiteboard-body {
+  position: relative;
+  display: flex;
+  background-color: #ffffff;
+  min-height: 380px;
+}
+
+.board-canvas-wrapper {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background-color: #ffffff;
+}
+
+.board-canvas {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 24px;
+  align-items: start;
+  transform-origin: center center;
+  transition: transform 0.2s ease;
+}
+
+.presentation-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.slide-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #1e1b4b;
+  margin: 0;
+  letter-spacing: 0.5px;
+}
+
+.slide-intro {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  margin: 0;
+}
+
+.types-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.type-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.type-heading {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.type-desc {
+  font-weight: 400;
+  color: #475569;
+}
+
+.type-example {
+  font-size: 12px;
+  color: #166534;
+  margin: 0;
+  padding-left: 14px;
+}
+
+.example-label {
+  font-weight: 600;
+  color: #15803d;
+}
+
+.board-divider {
+  width: 1px;
+  height: 100%;
+  min-height: 300px;
+  background-color: #f1f5f9;
+}
+
+.handwriting-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-left: 8px;
+}
+
+.notes-heading {
+  font-size: 15px;
+  font-weight: 700;
+  color: #dc2626;
+  margin: 0;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Caveat', cursive, sans-serif;
+}
+
+.handwriting-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.handwriting-line {
+  font-size: 13px;
+  color: #1e293b;
+  margin: 0;
+  font-family: 'Comic Sans MS', 'Chalkboard SE', 'Caveat', cursive, sans-serif;
+}
+
+.handwritten-text {
+  color: #1e3a8a;
+  margin-left: 4px;
+}
+
+.tools-palette {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px;
+  background-color: #ffffff;
+  border-left: 1px solid #f1f5f9;
+  width: 44px;
+  flex-shrink: 0;
+}
+
+.palette-tool-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  color: #64748b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+  }
+
+  &.active {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+  }
+}
+
+.palette-colors {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.color-dot-btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+
+  &.active {
+    border-color: #0f172a;
+    box-shadow: 0 0 0 1px #ffffff;
+  }
+}
+
+.whiteboard-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px;
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  font-size: 12px;
+}
+
+.zoom-controls,
+.center-tools,
+.page-navigation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  .material-symbols-outlined {
+    font-size: 18px;
+  }
+
+  &:hover:not(:disabled) {
+    color: #0f172a;
+    background-color: #f1f5f9;
+  }
+
+  &:disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+  }
+}
+
+.zoom-text,
+.page-text {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #475569;
+  min-width: 36px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .board-canvas {
+    grid-template-columns: 1fr;
+  }
+
+  .board-divider {
+    display: none;
+  }
+}

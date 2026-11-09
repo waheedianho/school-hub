@@ -1,0 +1,94 @@
+<div class="communication-page-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification" role="status" aria-live="polite">
+    <span class="material-symbols-outlined toast-icon">info</span>
+    <span class="toast-text">{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">Communication</li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Communication</h1>
+      <p class="page-subtitle">
+        Manage class announcements, learner messages, parent communication, and
+        follow-up conversations.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-create-announcement"
+        (click)="onCreateAnnouncement()"
+      >
+        <span class="material-symbols-outlined btn-icon">campaign</span>
+        <span>Create Announcement</span>
+      </button>
+
+      <button type="button" class="btn-new-message" (click)="onNewMessage()">
+        <span class="material-symbols-outlined btn-icon">edit_square</span>
+        <span>New Message</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main 3-Column Layout Grid -->
+  <div
+    class="communication-layout-grid"
+    [class.info-panel-closed]="!isInfoPanelOpen()"
+  >
+    <!-- Left: Conversations List Column (~300px) -->
+    <aside class="conversations-column" aria-label="Conversations list">
+      <school-hub-conversations-list
+        [conversations]="conversations()"
+        [selectedConversationId]="selectedConversation()?.id ?? null"
+        (conversationSelected)="onConversationSelected($event)"
+        (viewAllClicked)="onConversationSelected(conversations()[0])"
+      />
+    </aside>
+
+    <!-- Center: Chat Conversation Thread (1fr) -->
+    <main class="chat-thread-column" aria-label="Chat messages">
+      <school-hub-chat-thread
+        [conversation]="selectedConversation()"
+        [messages]="currentMessages()"
+        [infoPanelOpen]="isInfoPanelOpen()"
+        (messageSent)="onMessageSent($event)"
+        (toggleInfoPanel)="onToggleInfoPanel()"
+        (startVideoCall)="onStartVideoCall($event)"
+        (startVoiceCall)="onStartVoiceCall($event)"
+      />
+    </main>
+
+    <!-- Right: Conversation Details & Side Widgets (~320px) -->
+    @if (isInfoPanelOpen()) {
+    <aside
+      class="info-sidebar-column"
+      aria-label="Conversation details and guidelines"
+    >
+      <school-hub-conversation-info-panel
+        [conversation]="selectedConversation()"
+        [templates]="templates()"
+        [announcements]="announcements()"
+        [guidelines]="guidelines()"
+        (templateSelected)="onTemplateSelected($event)"
+        (viewAllAnnouncements)="onViewAllAnnouncements()"
+        (announcementClicked)="onAnnouncementClicked($event)"
+      />
+    </aside>
+    }
+  </div>
+</div>

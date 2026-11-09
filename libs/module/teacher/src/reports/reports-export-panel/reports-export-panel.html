@@ -1,0 +1,37 @@
+<div class="export-card">
+  <div class="card-header">
+    <h3 class="card-title">Export Options</h3>
+  </div>
+
+  <div class="export-buttons-grid">
+    <button
+      type="button"
+      class="export-btn btn-pdf"
+      (click)="exportPdf.emit()"
+      aria-label="Export as PDF"
+    >
+      <span class="material-symbols-outlined icon-pdf">picture_as_pdf</span>
+      <span class="btn-label">PDF</span>
+    </button>
+
+    <button
+      type="button"
+      class="export-btn btn-excel"
+      (click)="exportExcel.emit()"
+      aria-label="Export as Excel"
+    >
+      <span class="material-symbols-outlined icon-excel">table_view</span>
+      <span class="btn-label">Excel</span>
+    </button>
+
+    <button
+      type="button"
+      class="export-btn btn-share"
+      (click)="shareWithParent.emit()"
+      aria-label="Share with parent"
+    >
+      <span class="material-symbols-outlined icon-share">people</span>
+      <span class="btn-label">Share with Parent</span>
+    </button>
+  </div>
+</div>

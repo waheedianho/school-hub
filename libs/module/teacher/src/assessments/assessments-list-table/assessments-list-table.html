@@ -1,0 +1,107 @@
+<div class="table-container">
+  <div class="table-header-bar">
+    <div class="header-left">
+      <h2 class="table-title">Assessment List</h2>
+      <span class="count-badge">{{ assessments().length }} Assessments</span>
+    </div>
+  </div>
+
+  @if (assessments().length === 0) {
+  <div class="empty-state">
+    <span class="material-symbols-outlined empty-icon">assignment_late</span>
+    <p class="empty-title">No assessments found</p>
+    <p class="empty-desc">Try adjusting your filters or search terms.</p>
+  </div>
+  } @else {
+  <div class="table-responsive">
+    <table class="assessments-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-title">Assessment Title</th>
+          <th scope="col">Type</th>
+          <th scope="col" class="text-center">Questions</th>
+          <th scope="col">Scoring</th>
+          <th scope="col">Scheduled</th>
+          <th scope="col" class="text-center">Submissions</th>
+          <th scope="col" class="text-center">Avg Score</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of assessments(); track item.id) {
+        <tr class="table-row">
+          <td class="td-title">
+            <div class="title-cell">
+              <span class="item-title">{{ item.title }}</span>
+              <span class="item-meta"
+                >{{ item.className }} · {{ item.topic }}</span
+              >
+            </div>
+          </td>
+          <td>
+            <span class="type-pill" [class]="getTypeBadgeClass(item.type)">
+              {{ item.type }}
+            </span>
+          </td>
+          <td class="text-center">
+            <span class="number-cell">{{ item.questionsCount }}</span>
+          </td>
+          <td>
+            <span class="scoring-text">{{ item.scoringMethod }}</span>
+          </td>
+          <td>
+            <span class="date-text">{{ item.scheduledDate }}</span>
+          </td>
+          <td class="text-center">
+            <span class="submissions-cell">{{ item.submissionsText }}</span>
+          </td>
+          <td class="text-center">
+            <span class="score-pill">{{ item.averageScoreText }}</span>
+          </td>
+          <td class="text-center">
+            <span class="status-pill" [class]="getStatusClass(item.status)">
+              {{ item.status }}
+            </span>
+          </td>
+          <td class="text-right">
+            <button
+              type="button"
+              class="action-btn"
+              [class.btn-review]="item.status === 'Pending Review'"
+              [class.btn-open]="item.status !== 'Pending Review'"
+              (click)="onActionClick(item)"
+              [attr.aria-label]="(item.status === 'Pending Review' ? 'Review ' : 'Open ') + item.title"
+            >
+              @if (item.status === 'Pending Review') { Review } @else { Open }
+            </button>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-pagination-footer">
+    <span class="pagination-info"
+      >Showing {{ assessments().length }} of 36 assessments</span
+    >
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        disabled
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+      <button type="button" class="page-num-btn active">1</button>
+      <button type="button" class="page-num-btn">2</button>
+      <button type="button" class="page-num-btn">3</button>
+      <button type="button" class="page-nav-btn" aria-label="Next page">
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+  }
+</div>

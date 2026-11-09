@@ -1,0 +1,148 @@
+<div class="result-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
+  <a
+    class="back-link"
+    routerLink="/student/assessments"
+    [queryParams]="backQuery()"
+    ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to Quizzes &amp;
+    Assessments</a
+  >
+  @if (result(); as result) { @if (assessment(); as assessment) {
+  <header class="result-heading">
+    <div>
+      <span class="eyebrow"
+        >{{ assessment.subject }} · {{ kinds[assessment.kind].label }}</span
+      >
+      <h1>Assessment Results</h1>
+      <p>{{ assessment.title }}</p>
+    </div>
+    <school-hub-status-badge
+      [label]="result.source === 'practice' ? 'Practice result' : 'Sample result'"
+      tone="purple"
+    />
+  </header>
+  @if (result.expired) {
+  <p class="expiry-note" role="status">
+    Time ran out, so your practice attempt was submitted automatically.
+  </p>
+  }
+  <section class="score-summary" aria-label="Result summary">
+    <school-hub-progress-ring
+      [value]="result.percentage"
+      label="Assessment score"
+      [tone]="result.percentage >= assessment.passingPercentage ? 'green' : 'orange'"
+    />
+    <div>
+      <school-hub-status-badge
+        [label]="result.percentage >= assessment.passingPercentage ? 'Passed' : 'Keep Practising'"
+        [tone]="result.percentage >= assessment.passingPercentage ? 'green' : 'orange'"
+      />
+      <h2>{{ result.marks }} / {{ result.totalMarks }} marks</h2>
+      <p>
+        {{ performance(result.percentage).label }} · {{ formatDate(result.date)
+        }}
+      </p>
+      <small>Passing score: {{ assessment.passingPercentage }}%</small>
+    </div>
+    <div class="result-actions">
+      @if (canRetry()) {
+      <button class="assessment-button" type="button" (click)="retry()">
+        {{ store.draft(assessment.id) ? 'Resume practice' : 'Try another
+        practice attempt' }}
+      </button>
+      } @else if (assessment.available) {
+      <span class="attempt-limit">No practice attempts remaining</span> }<a
+        class="outline-button"
+        routerLink="/student/resources"
+        [queryParams]="{ subjectId: assessment.subjectId, topicId: assessment.topicId }"
+        >Find practice resources</a
+      >
+    </div>
+  </section>
+  <div class="result-stats">
+    <school-hub-summary-stat
+      title="Score"
+      [value]="result.percentage + '%'"
+      description="Of the available marks"
+      icon="ri-bar-chart-line"
+      tone="purple"
+    /><school-hub-summary-stat
+      title="Correct Answers"
+      [value]="result.correctCount === undefined ? '—' : result.correctCount + ' / ' + assessment.questionCount"
+      description="Unanswered questions receive no marks"
+      icon="ri-checkbox-circle-line"
+      tone="green"
+    /><school-hub-summary-stat
+      title="Attempts Used"
+      [value]="store.usedAttempts(assessment.id) + ' / ' + assessment.maxAttempts"
+      description="For this assessment"
+      icon="ri-repeat-line"
+    />
+  </div>
+  @if (reviewAvailable()) {
+  <section class="answer-review" aria-labelledby="review-heading">
+    <h2 id="review-heading">Answer Review</h2>
+    <p>Review your choices and the explanations below.</p>
+    @for (question of assessment.questions; track question.id; let index =
+    $index) {
+    <article class="review-question">
+      <div class="review-question-header">
+        <span>Question {{ index + 1 }}</span
+        ><school-hub-status-badge
+          [label]="result.answers?.[index] === question.correctIndex ? 'Correct' : result.answers?.[index] === null ? 'Not Answered' : 'Incorrect'"
+          [tone]="result.answers?.[index] === question.correctIndex ? 'green' : 'red'"
+        />
+      </div>
+      <h3>{{ question.prompt }}</h3>
+      <school-hub-choice-list
+        [options]="question.options"
+        [name]="'review-' + question.id"
+        [label]="question.prompt"
+        [value]="result.answers?.[index] ?? null"
+        [disabled]="true"
+        [correctIndex]="question.correctIndex"
+      />
+      <p class="explanation">
+        <i class="ri-lightbulb-line" aria-hidden="true"></i>{{
+        question.explanation }}
+      </p>
+    </article>
+    }
+  </section>
+  }
+  <section class="result-next">
+    <h2>Keep your learning moving</h2>
+    <p>Use your results to decide what to practise next.</p>
+    <div>
+      @if (assessment.lessonId) {
+      <a
+        routerLink="/student/lessons"
+        [queryParams]="{ lessonId: assessment.lessonId, subject: assessment.subjectId }"
+        ><i class="ri-book-open-line" aria-hidden="true"></i>Review lesson</a
+      >
+      }<a
+        routerLink="/student/worksheets"
+        [queryParams]="{ subjectId: assessment.subjectId, topicId: assessment.topicId }"
+        ><i class="ri-file-text-line" aria-hidden="true"></i>Try a worksheet</a
+      ><a
+        routerLink="/student/ask-tutor"
+        [queryParams]="{ contextType: 'assessment', contextId: assessment.id, subjectId: assessment.subjectId }"
+        ><i class="ri-chat-1-line" aria-hidden="true"></i>Ask a tutor</a
+      >
+    </div>
+  </section>
+  } } @else if (!store.ready()) {
+  <p class="result-loading" role="status">Loading your practice result…</p>
+  } @else {
+  <section class="result-loading">
+    <h1>Result not found</h1>
+    <p>
+      This result is not available in the current browser tab. Choose a result
+      from your assessments.
+    </p>
+  </section>
+  }
+</div>

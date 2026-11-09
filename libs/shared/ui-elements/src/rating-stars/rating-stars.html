@@ -1,0 +1,8 @@
+<span
+  class="rating"
+  role="img"
+  [attr.aria-label]="'Rated ' + score() + ' out of 100'"
+  ><span class="stars" aria-hidden="true"
+    >★★★★★<span [style.width.%]="score()">★★★★★</span></span
+  ><strong aria-hidden="true">{{ score() }}%</strong></span
+>

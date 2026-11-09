@@ -1,0 +1,129 @@
+<div class="filters-card">
+  <div class="filters-grid">
+    <div class="filter-item">
+      <label class="filter-label" for="qbTermSelect">Term</label>
+      <div class="select-wrapper">
+        <select
+          id="qbTermSelect"
+          class="filter-select"
+          [ngModel]="selectedTerm()"
+          (ngModelChange)="selectedTerm.set($event); onFilterChange()"
+        >
+          @for (term of terms; track term) {
+          <option [value]="term">{{ term }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="qbClassSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="qbClassSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="qbSubjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="qbSubjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="qbTopicSelect">Topic</label>
+      <div class="select-wrapper">
+        <select
+          id="qbTopicSelect"
+          class="filter-select"
+          [ngModel]="selectedTopic()"
+          (ngModelChange)="selectedTopic.set($event); onFilterChange()"
+        >
+          @for (top of topics; track top) {
+          <option [value]="top">{{ top }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="qbTypeSelect">Question Type</label>
+      <div class="select-wrapper">
+        <select
+          id="qbTypeSelect"
+          class="filter-select"
+          [ngModel]="selectedType()"
+          (ngModelChange)="selectedType.set($event); onFilterChange()"
+        >
+          @for (t of questionTypes; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="qbDiffSelect">Difficulty</label>
+      <div class="select-wrapper">
+        <select
+          id="qbDiffSelect"
+          class="filter-select"
+          [ngModel]="selectedDifficulty()"
+          (ngModelChange)="selectedDifficulty.set($event); onFilterChange()"
+        >
+          @for (d of difficulties; track d) {
+          <option [value]="d">{{ d }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-bar-row">
+    <div class="search-input-wrapper">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search question text, tags, or topics..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+        aria-label="Search question bank"
+      />
+      @if (searchQuery()) {
+      <button
+        type="button"
+        class="clear-btn"
+        (click)="onSearchInput('')"
+        aria-label="Clear search"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,107 @@
+<div class="filters-card">
+  <div class="filters-grid">
+    <div class="filter-item">
+      <label class="filter-label" for="lrnClassSelect">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="lrnClassSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="selectedClass.set($event); onFilterChange()"
+        >
+          @for (c of classes; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="lrnSubjectSelect">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="lrnSubjectSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="selectedSubject.set($event); onFilterChange()"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="lrnBandSelect">Performance Band</label>
+      <div class="select-wrapper">
+        <select
+          id="lrnBandSelect"
+          class="filter-select"
+          [ngModel]="selectedBand()"
+          (ngModelChange)="selectedBand.set($event); onFilterChange()"
+        >
+          @for (b of performanceBands; track b) {
+          <option [value]="b">{{ b }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item">
+      <label class="filter-label" for="lrnAttendanceSelect">Attendance</label>
+      <div class="select-wrapper">
+        <select
+          id="lrnAttendanceSelect"
+          class="filter-select"
+          [ngModel]="selectedAttendance()"
+          (ngModelChange)="selectedAttendance.set($event); onFilterChange()"
+        >
+          @for (a of attendanceOptions; track a) {
+          <option [value]="a">{{ a }}</option>
+          }
+        </select>
+        <span class="material-symbols-outlined select-icon">expand_more</span>
+      </div>
+    </div>
+
+    <div class="filter-item search-item">
+      <div class="search-input-wrapper">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          id="lrnSearchInput"
+          type="text"
+          class="search-input"
+          placeholder="Search by learner name or ID..."
+          [value]="searchQuery()"
+          (input)="onSearchInput($any($event.target).value)"
+          aria-label="Search by learner name or ID"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearchInput('')"
+          aria-label="Clear search"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+        }
+      </div>
+    </div>
+
+    <div class="filter-actions-item">
+      <button
+        type="button"
+        class="btn-filters-toggle"
+        (click)="toggleAdvancedFilters.emit()"
+      >
+        <span class="material-symbols-outlined">tune</span>
+        <span>Filters</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+<ul>
+  @for (item of items(); track item.id) {
+  <li>
+    <label [class.checked]="item.checked"
+      ><input
+        type="checkbox"
+        [checked]="item.checked"
+        [disabled]="disabled() || item.disabled"
+        (change)="change(item.id, $event)"
+      /><span>{{ item.label }}</span></label
+    >
+  </li>
+  }
+</ul>

@@ -1,0 +1,160 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+section {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+  height: 100%;
+  padding: 22px;
+  border: 1px solid #e4e5f0;
+  border-radius: 10px;
+  background: white;
+}
+img {
+  width: 100px;
+  height: 100px;
+  flex-shrink: 0;
+  object-fit: cover;
+  border: 7px solid #e2d8ff;
+  border-radius: 50%;
+  background: #efe7ff;
+}
+.identity {
+  flex: 1;
+  min-width: 0;
+}
+header {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 13px;
+}
+h2 {
+  margin: 0;
+  color: #28334e;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+ul {
+  display: grid;
+  gap: 11px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+}
+li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #65718a;
+  font-size: typography.$body;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+li i {
+  color: #8472a2;
+  font-size: 17px;
+  flex-shrink: 0;
+}
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 7px 13px;
+  border: 1px solid #d9c6f7;
+  border-radius: 6px;
+  background: white;
+  color: #7939ca;
+  font: inherit;
+  font-size: typography.$body;
+  font-weight: 600;
+  cursor: pointer;
+}
+button:focus-visible {
+  outline: 2px solid #8b42dc;
+  outline-offset: 3px;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+dl {
+  flex: 0 1 165px;
+  min-width: 135px;
+  margin: 15px 0 0;
+  padding-left: 18px;
+  border-left: 1px solid #ece7f5;
+}
+dl > div + div {
+  margin-top: 27px;
+}
+dt {
+  margin-bottom: 7px;
+  color: #8a809c;
+  font-size: typography.$caption;
+}
+dd {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 0;
+  color: #52627c;
+  font-size: typography.$body;
+  font-weight: 600;
+  line-height: 1.6;
+}
+dd > i {
+  font-size: 17px;
+  color: #87739d;
+}
+@media (max-width: 1350px) {
+  section {
+    flex-wrap: wrap;
+  }
+  dl {
+    display: flex;
+    flex-basis: 100%;
+    justify-content: space-between;
+    gap: 20px;
+    margin: 0;
+    padding: 16px 0 0;
+    border-left: 0;
+    border-top: 1px solid #ece7f5;
+  }
+  dl > div + div {
+    margin: 0;
+  }
+}
+@media (max-width: 600px) {
+  section {
+    gap: 15px;
+    padding: 17px;
+  }
+  img {
+    width: 78px;
+    height: 78px;
+    border-width: 5px;
+  }
+  h2 {
+    font-size: 18px;
+  }
+  .identity {
+    flex-basis: calc(100% - 100px);
+  }
+  dl {
+    flex-wrap: wrap;
+  }
+  li {
+    font-size: typography.$body;
+  }
+}

@@ -1,0 +1,37 @@
+<div class="admin-metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="metric-card" [attr.data-tone]="metric.tone">
+    <div class="metric-header">
+      <div class="metric-icon-wrap" [attr.data-tone]="metric.tone">
+        <i class="material-symbols-outlined">{{ metric.icon }}</i>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">{{ metric.label }}</span>
+        <span class="metric-value">{{ metric.value }}</span>
+      </div>
+    </div>
+
+    <div class="metric-footer">
+      <span
+        class="metric-change"
+        [class.trend-up]="metric.trend === 'up'"
+        [class.trend-neutral]="metric.trend === 'neutral'"
+        [class.trend-down]="metric.trend === 'down'"
+      >
+        {{ metric.changeText }}
+      </span>
+
+      <svg class="sparkline-svg" viewBox="0 0 110 28" aria-hidden="true">
+        <polyline
+          fill="none"
+          [attr.stroke]="getToneStroke(metric.tone)"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [attr.points]="getSparklinePoints(metric.sparkline)"
+        />
+      </svg>
+    </div>
+  </div>
+  }
+</div>

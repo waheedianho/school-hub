@@ -1,0 +1,34 @@
+<div
+  class="main-wrapper"
+  [class.sidebar-hidden]="isSidebarHidden"
+  [class.learner-shell]="variant === 'learner'"
+>
+  <school-hub-sidebar
+    [sections]="sidebarSections"
+    [logoText]="logoText"
+    [logoIcon]="logoIcon"
+    [theme]="sidebarTheme"
+    [encouragement]="encouragement"
+    (closeSidebar)="isSidebarHidden = false"
+  ></school-hub-sidebar>
+
+  <school-hub-header
+    [user]="user"
+    [compact]="variant === 'learner'"
+    (toggleSidebar)="onToggleSidebar()"
+  ></school-hub-header>
+
+  @if (isSidebarHidden) {
+  <button
+    class="navigation-backdrop"
+    type="button"
+    aria-label="Close navigation overlay"
+    (click)="isSidebarHidden = false"
+  ></button>
+  }
+
+  <div class="main-content" [class.active]="isSidebarHidden">
+    <router-outlet></router-outlet>
+    <school-hub-footer></school-hub-footer>
+  </div>
+</div>

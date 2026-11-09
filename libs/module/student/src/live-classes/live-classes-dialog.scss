@@ -1,0 +1,154 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.code-form {
+  display: grid;
+  gap: 15px;
+}
+.code-form p,
+.help-copy p {
+  margin: 0 0 10px;
+  color: #6f7e95;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.code-form label {
+  color: #576a83;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.code-form input {
+  min-width: 0;
+  width: 100%;
+  height: 45px;
+  padding: 10px 12px;
+  border: 1px solid #dfd9ec;
+  border-radius: 7px;
+  color: #596780;
+  background: white;
+  font: inherit;
+  font-size: typography.$reading;
+  text-transform: uppercase;
+}
+.code-form .primary-button {
+  justify-self: start;
+}
+.error {
+  color: #b84e63 !important;
+}
+.class-dialog-heading {
+  display: flex;
+  align-items: start;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+.class-dialog-heading h3 {
+  margin: 0 0 7px;
+  color: #354660;
+  font-size: 20px;
+  line-height: 1.6;
+}
+.class-dialog-heading p {
+  margin: 0;
+  color: #768299;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.class-details {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 22px;
+}
+.class-details > div {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 11px;
+  border-bottom: 1px solid #eeedf6;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+dt {
+  color: #8290a5;
+}
+dd {
+  margin: 0;
+  color: #5d6b83;
+  text-align: right;
+}
+.section-heading {
+  margin: 0 0 12px;
+  color: #52637c;
+  font-size: typography.$section;
+}
+.objectives,
+.full-rules {
+  margin: 0 0 18px;
+  padding-left: 23px;
+  color: #6c7d95;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.full-rules li + li {
+  margin-top: 9px;
+}
+.practice-note {
+  margin: 14px 0;
+  padding: 13px;
+  border: 1px solid #e4d9f5;
+  border-radius: 8px;
+  color: #88749a;
+  background: #fcf9ff;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.enter-button {
+  margin-top: 5px;
+}
+.dialog-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.calendar-events {
+  margin: 22px 0;
+}
+.calendar-events h3 {
+  margin: 0 0 14px;
+  color: #586b84;
+  font-size: typography.$section;
+}
+.calendar-events > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 12px;
+  border: 1px solid #e6dfef;
+  border-radius: 7px;
+  color: #7c6296;
+  background: #fdfbff;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.calendar-events span {
+  display: grid;
+  gap: 7px;
+}
+.calendar-events strong {
+  color: #5f6a83;
+  font-size: typography.$body;
+  line-height: 1.6;
+}
+.calendar-events small {
+  color: #8d94a7;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.calendar-events p {
+  color: #8e97a7;
+  font-size: typography.$body;
+}

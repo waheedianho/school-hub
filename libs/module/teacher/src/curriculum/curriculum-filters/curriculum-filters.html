@@ -1,0 +1,70 @@
+<div class="filters-toolbar">
+  <div class="dropdowns-group">
+    <div class="filter-field">
+      <label for="curriculum-term-select" class="field-label">Term</label>
+      <div class="select-wrapper">
+        <select
+          id="curriculum-term-select"
+          [(ngModel)]="selectedTerm"
+          (ngModelChange)="onFilterUpdated()"
+          class="filter-select"
+        >
+          <option value="Term 1 2025/2026">Term 1 2025/2026</option>
+          <option value="Term 2 2025/2026">Term 2 2025/2026</option>
+          <option value="Term 3 2025/2026">Term 3 2025/2026</option>
+        </select>
+        <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <div class="filter-field">
+      <label for="curriculum-class-select" class="field-label">Class</label>
+      <div class="select-wrapper">
+        <select
+          id="curriculum-class-select"
+          [(ngModel)]="selectedClass"
+          (ngModelChange)="onFilterUpdated()"
+          class="filter-select"
+        >
+          <option value="All Classes">All Classes</option>
+          <option value="JSS 1A">JSS 1A</option>
+          <option value="JSS 1B">JSS 1B</option>
+          <option value="JSS 2A">JSS 2A</option>
+        </select>
+        <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <div class="filter-field">
+      <label for="curriculum-subject-select" class="field-label">Subject</label>
+      <div class="select-wrapper">
+        <select
+          id="curriculum-subject-select"
+          [(ngModel)]="selectedSubject"
+          (ngModelChange)="onFilterUpdated()"
+          class="filter-select"
+        >
+          <option value="All Subjects">All Subjects</option>
+          <option value="English Language">English Language</option>
+          <option value="Mathematics">Mathematics</option>
+          <option value="Basic Science">Basic Science</option>
+        </select>
+        <i class="ri-arrow-down-s-line select-arrow" aria-hidden="true"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="search-field">
+    <div class="search-input-wrapper">
+      <i class="ri-search-line search-icon" aria-hidden="true"></i>
+      <input
+        type="search"
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onFilterUpdated()"
+        placeholder="Search subjects or topics..."
+        class="search-input"
+        aria-label="Search subjects or topics"
+      />
+    </div>
+  </div>
+</div>

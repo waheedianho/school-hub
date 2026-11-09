@@ -1,0 +1,426 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+:host {
+  display: block;
+  color: #253750;
+}
+.worksheets-page {
+  max-width: 1720px;
+  margin: auto;
+}
+.page-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 77px;
+  margin-bottom: 22px;
+}
+h1 {
+  margin: 0 0 8px;
+  color: #172033;
+  font-size: 27px;
+  font-weight: 750;
+  letter-spacing: -0.5px;
+}
+.page-heading p {
+  margin: 0;
+  color: #62718a;
+  font-size: typography.$body;
+}
+.term-select {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  width: 180px;
+  padding: 0 12px;
+  border: 1px solid #dfe5f0;
+  border-radius: 8px;
+  background: white;
+  color: #7658a3;
+}
+select,
+input {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  border: 0;
+  background: transparent;
+  color: #526581;
+  font: inherit;
+  font-size: typography.$reading;
+  outline: none;
+}
+.worksheet-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.worksheet-filters label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  padding: 0 12px;
+  border: 1px solid #dfe5f0;
+  border-radius: 8px;
+  background: white;
+}
+.worksheet-filters i {
+  color: #7689a7;
+}
+label:focus-within {
+  outline: 2px solid #bda6e9;
+  outline-offset: 1px;
+}
+.filter-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+  color: #735a9c;
+  font-size: typography.$caption;
+}
+.filter-note button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #7840dc;
+  text-decoration: underline;
+}
+.worksheet-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  align-items: start;
+  gap: 20px;
+  margin-top: 16px;
+}
+.worksheet-primary,
+.worksheet-aside {
+  min-width: 0;
+}
+.worksheet-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+.list-and-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 16px;
+}
+.worksheet-list {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e1e7f3;
+  border-radius: 12px;
+  background: white;
+}
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 16px 8px;
+}
+h2 {
+  margin: 0;
+  color: #293a55;
+  font-size: typography.$section;
+  font-weight: 650;
+}
+.section-heading > span {
+  color: #76869e;
+  font-size: typography.$caption;
+  white-space: nowrap;
+}
+.worksheet-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 14px;
+  border: 1px solid transparent;
+  border-bottom-color: #edf0f7;
+}
+.worksheet-row.selected {
+  border-color: #b49ae6;
+  border-radius: 9px;
+  background: #faf7ff;
+}
+.worksheet-select {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #344a69;
+  text-align: left;
+}
+.worksheet-row-info {
+  min-width: 0;
+}
+.worksheet-row-info strong,
+.worksheet-row-info > span,
+.worksheet-row-info small {
+  display: block;
+}
+.worksheet-row-info strong {
+  margin-bottom: 6px;
+  color: #293b59;
+  font-size: typography.$body;
+  font-weight: 650;
+}
+.worksheet-row-info > span,
+small {
+  font-size: typography.$caption;
+  color: #687b98;
+  line-height: 1.7;
+}
+.worksheet-row-info small {
+  margin: 5px 0 9px;
+}
+.worksheet-row-action {
+  display: grid;
+  gap: 7px;
+  font-size: typography.$caption;
+}
+.worksheet-row-action > span:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px;
+  color: #667996;
+}
+.worksheet-row-action strong {
+  color: #344866;
+}
+.worksheet-row-action a {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  min-height: 33px;
+  padding: 5px 8px;
+  border: 1px solid #dbcef3;
+  border-radius: 6px;
+  background: white;
+  color: #7840dc;
+  font-weight: 600;
+}
+.selected .worksheet-row-action a {
+  background: #7840dc;
+  color: white;
+}
+.locked-label {
+  color: #8c7d9f;
+}
+.empty-state {
+  padding: 30px 16px;
+  color: #6e809b;
+  font-size: typography.$body;
+  text-align: center;
+}
+.empty-state > i {
+  font-size: 28px;
+}
+.empty-state h3 {
+  margin: 12px 0;
+  color: #405674;
+  font-size: typography.$section;
+}
+.empty-state p {
+  margin-bottom: 18px;
+}
+.worksheet-aside {
+  display: grid;
+  gap: 15px;
+}
+.overall-ring {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+.status-counts {
+  margin: 0;
+}
+.status-counts > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid #edf0f7;
+  font-size: typography.$body;
+}
+.status-counts dd {
+  margin: 0;
+  font-weight: 650;
+}
+.status-counts > div:first-child dt {
+  color: #07844f;
+}
+.status-counts > div:nth-child(2) dt {
+  color: #7940dc;
+}
+.status-counts > div:last-child dt {
+  color: #b57118;
+}
+.topic-links {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+  color: #617590;
+  font-size: typography.$body;
+}
+.topic-links a:hover {
+  color: #7840dc;
+}
+.practice-note {
+  display: flex;
+  align-items: start;
+  gap: 12px;
+  padding: 17px;
+  border: 1px solid #e5d8ff;
+  border-radius: 11px;
+  background: #faf7ff;
+  color: #654698;
+}
+.practice-note > i {
+  font-size: 26px;
+}
+.practice-note h3 {
+  margin: 0;
+  font-size: typography.$body;
+  font-weight: 650;
+}
+.practice-note p {
+  margin: 7px 0 12px;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.practice-note a,
+.practice-note button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #7840dc;
+  font-size: typography.$body;
+  font-weight: 600;
+  text-align: left;
+}
+.print-note {
+  border-color: #dbe7fa;
+  background: #f1f6ff;
+  color: #466388;
+}
+.print-note button {
+  color: #286bd1;
+}
+.worksheet-tips {
+  display: flex;
+  align-items: start;
+  gap: 20px;
+  margin-top: 22px;
+  padding: 22px;
+  border: 1px solid #f3dfbb;
+  border-radius: 12px;
+  background: #fffbf3;
+}
+.worksheet-tips > i {
+  color: #e3a535;
+  font-size: 29px;
+}
+.worksheet-tips > div {
+  flex: 1;
+  min-width: 0;
+}
+.worksheet-tips > div:last-child {
+  padding-left: 20px;
+  border-left: 1px solid #f0dfc3;
+}
+.worksheet-tips ul,
+.worksheet-tips p {
+  margin: 12px 0 0;
+  color: #6c7391;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.worksheet-tips ul {
+  padding-left: 16px;
+  list-style: disc;
+}
+@media (max-width: 1550px) {
+  .worksheet-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1200px) {
+  .worksheet-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .worksheet-aside {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 850px) {
+  .list-and-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 540px) {
+  .page-heading {
+    display: block;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  .page-heading p {
+    line-height: 1.8;
+  }
+  .term-select {
+    margin-top: 14px;
+  }
+  .worksheet-filters,
+  .worksheet-aside {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .worksheet-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .worksheet-row-action {
+    grid-template-columns: minmax(0, 1fr) 110px;
+    align-items: center;
+    margin-left: 56px;
+  }
+  .worksheet-row-action small {
+    grid-column: 1/-1;
+  }
+  .worksheet-row-action a,
+  .worksheet-row-action .locked-label {
+    grid-column: 2;
+  }
+  .worksheet-tips {
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 17px;
+  }
+  .worksheet-tips > div {
+    flex-basis: calc(100% - 50px);
+  }
+  .worksheet-tips > div:last-child {
+    margin-left: 42px;
+    padding-left: 0;
+    border: 0;
+  }
+}

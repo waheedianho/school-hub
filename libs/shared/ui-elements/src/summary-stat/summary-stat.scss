@@ -1,0 +1,86 @@
+@use '../styles/typography' as typography;
+
+:host {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+.summary-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 20px;
+  border: 1px solid #e1e8f4;
+  border-radius: 14px;
+  background: #fff;
+  color: #182031;
+  box-shadow: 0 3px 8px #13274803;
+}
+.stat-title {
+  display: block;
+  margin-bottom: 5px;
+  color: #5c6d87;
+  font-size: typography.$body;
+}
+strong {
+  display: block;
+  color: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.stat-description {
+  display: block;
+  margin-top: 7px;
+  color: #72819a;
+  font-size: typography.$caption;
+  line-height: 1.6;
+}
+:host-context(.dark) .summary-stat {
+  border-color: #263349;
+  background: #101c30;
+  color: #e4edf9;
+}
+:host(.tile) .summary-stat {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 19px 10px 13px;
+  border-color: color-mix(in srgb, var(--stat-color) 15%, white);
+  background: linear-gradient(150deg, var(--stat-soft), white);
+  text-align: center;
+}
+:host(.tile) .summary-stat > div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+:host(.tile) .stat-title {
+  order: 1;
+  margin: 0;
+  font-size: typography.$caption;
+}
+:host(.tile) .stat-description {
+  order: 2;
+  margin: 0;
+}
+@media (max-width: 540px) {
+  .summary-stat {
+    gap: 10px;
+    padding: 14px 12px;
+    align-items: start;
+  }
+  school-hub-icon-badge {
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+  }
+  strong {
+    font-size: 22px;
+  }
+  .stat-title,
+  .stat-description {
+    font-size: typography.$caption;
+  }
+}

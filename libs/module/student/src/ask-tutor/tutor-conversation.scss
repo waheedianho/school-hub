@@ -1,0 +1,152 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+.conversation-card {
+  min-width: 0;
+  padding-bottom: 13px;
+  border: 1px solid #e3ddec;
+  border-radius: 9px;
+  background: white;
+}
+.conversation-heading {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 17px 20px;
+}
+.conversation-heading .text-button {
+  margin-left: auto;
+}
+.conversation-status {
+  padding: 3px 7px;
+  border-radius: 4px;
+  color: #795897;
+  background: #f1e9fb;
+  font-size: typography.$caption;
+}
+.question-context {
+  display: flex;
+  align-items: start;
+  gap: 10px;
+  margin: 0 20px 8px;
+  padding: 12px;
+  border: 1px solid #eee5f8;
+  border-radius: 7px;
+  background: #fdfbff;
+}
+.question-context > div {
+  min-width: 0;
+}
+.question-context small {
+  display: block;
+  color: #93819f;
+  font-size: typography.$caption;
+}
+.question-context a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+  font-size: typography.$body;
+  color: #7953b3;
+  text-decoration: none;
+  font-weight: 600;
+}
+.question-context p {
+  margin: 8px 0 0;
+  color: #71809a;
+  font-size: typography.$body;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.composer-extra {
+  margin: 0 20px;
+}
+.answer-rating {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 16px;
+  padding-top: 10px;
+  border-top: 1px solid #eee8f4;
+  color: #7e7290;
+  font-size: typography.$caption;
+}
+.answer-rating button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: #7d6a95;
+  background: transparent;
+  font-size: 19px;
+  cursor: pointer;
+}
+.answer-rating button[aria-pressed='true'] {
+  background: #eee3fc;
+  border-color: #c6a7ec;
+  color: #7a36c4;
+}
+.attach-button {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 0;
+  border: 0;
+  background: transparent;
+  color: #7d43be;
+  font: inherit;
+  font-size: typography.$body;
+  cursor: pointer;
+}
+.attached-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+}
+.attached-chips li {
+  display: flex;
+  max-width: 100%;
+  border: 1px solid #e2d3f5;
+  border-radius: 5px;
+  background: #faf6ff;
+}
+.attached-chips button {
+  border: 0;
+  padding: 7px;
+  background: transparent;
+  font: inherit;
+  font-size: typography.$caption;
+  color: #795399;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+.conversation-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 12px;
+  padding: 9px 20px;
+  color: #9382a3;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.conversation-footer p {
+  margin: 0;
+}
+.conversation-footer > span {
+  white-space: nowrap;
+}
+.conversation-actions {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 20px;
+  padding-top: 9px;
+  border-top: 1px solid #f0ebf6;
+}

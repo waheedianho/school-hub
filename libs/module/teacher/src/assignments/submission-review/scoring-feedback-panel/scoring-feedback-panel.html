@@ -1,0 +1,198 @@
+<div class="feedback-panel-container">
+  <!-- Card 1: Scoring & Feedback -->
+  <div class="scoring-card">
+    <div class="card-header">
+      <h4 class="card-title">Scoring & Feedback</h4>
+    </div>
+
+    <div class="scoring-body">
+      <!-- Marks & Score Row -->
+      <div class="score-fields-grid">
+        <div class="score-box-col">
+          <span class="field-label">Total Marks</span>
+          <span class="marks-display">/ {{ totalMarks() }}</span>
+        </div>
+
+        <div class="score-box-col">
+          <span class="field-label">Score Awarded</span>
+          <div class="score-stepper-wrapper">
+            <input
+              type="number"
+              class="stepper-input"
+              [min]="0"
+              [max]="totalMarks()"
+              [ngModel]="currentScore()"
+              (ngModelChange)="onScoreChange($event)"
+              aria-label="Score awarded"
+            />
+            <span class="stepper-denominator">/ {{ totalMarks() }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Percentage & Grade Row -->
+      <div class="percentage-grade-row">
+        <div class="percent-col">
+          <span class="field-label">Percentage</span>
+          <span class="percent-val">{{ percentage() }}%</span>
+        </div>
+
+        <div class="grade-col">
+          <span class="field-label">Grade (Optional)</span>
+          <div class="select-wrapper">
+            <select
+              class="grade-select"
+              [ngModel]="currentGrade()"
+              (ngModelChange)="currentGrade.set($event)"
+              aria-label="Grade select"
+            >
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="F">F</option>
+            </select>
+            <span class="material-symbols-outlined select-arrow"
+              >expand_more</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Rubric Summary Badges -->
+      <div class="rubric-summary-section">
+        <span class="section-label">Rubric Summary</span>
+        <div class="rubric-pills-row">
+          @for (r of rubrics(); track r.id) {
+          <span class="rubric-pill">
+            <strong>{{ r.score }}/{{ r.maxMarks }}</strong> {{ r.criteria }}
+          </span>
+          }
+        </div>
+      </div>
+
+      <!-- Feedback to Learner -->
+      <div class="feedback-input-section">
+        <span class="section-label">Feedback to Learner</span>
+        <textarea
+          class="feedback-textarea"
+          rows="4"
+          placeholder="Write personalized feedback..."
+          [ngModel]="feedbackText()"
+          (ngModelChange)="feedbackText.set($event)"
+          aria-label="Feedback to learner"
+        ></textarea>
+      </div>
+
+      <!-- Misconception Tags -->
+      <div class="misconceptions-section">
+        <div class="section-label-with-icon">
+          <span class="section-label">Misconception Tags</span>
+          <span class="material-symbols-outlined info-icon">info</span>
+        </div>
+        <div class="tags-row">
+          @for (tag of tags(); track tag) {
+          <span class="tag-chip">
+            <span>{{ tag }}</span>
+            <button
+              type="button"
+              class="remove-tag-btn"
+              (click)="removeTag(tag)"
+              [attr.aria-label]="'Remove ' + tag"
+            >
+              &times;
+            </button>
+          </span>
+          }
+          <button
+            type="button"
+            class="add-tag-btn"
+            (click)="addTag()"
+            aria-label="Add tag"
+          >
+            + Add Tag
+          </button>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons-group">
+        <button type="button" class="btn-save-draft" (click)="onSaveDraft()">
+          Save Draft
+        </button>
+        <button
+          type="button"
+          class="btn-approve-score"
+          (click)="onApproveScore()"
+        >
+          Approve Score
+        </button>
+        <button
+          type="button"
+          class="btn-send-gradebook"
+          (click)="onSendToGradebook()"
+        >
+          Send to Gradebook
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Submission Workflow -->
+  <div class="workflow-card">
+    <div class="card-header">
+      <h4 class="card-title">Submission Workflow</h4>
+    </div>
+
+    <div class="workflow-list">
+      <!-- Step 1: Submission Received -->
+      <div class="workflow-step-item">
+        <div class="step-icon-col">
+          <div class="step-circle step-done">
+            <span class="material-symbols-outlined check-icon">check</span>
+          </div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-info">
+          <h5 class="step-title">Submission Received</h5>
+          <span class="step-meta">3 May 2026, 09:42 AM</span>
+        </div>
+      </div>
+
+      <!-- Step 2: Teacher Review -->
+      <div class="workflow-step-item">
+        <div class="step-icon-col">
+          <div class="step-circle step-active">2</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-info">
+          <h5 class="step-title">Teacher Review</h5>
+          <span class="step-meta status-in-progress">In progress</span>
+        </div>
+      </div>
+
+      <!-- Step 3: Score Approved -->
+      <div class="workflow-step-item">
+        <div class="step-icon-col">
+          <div class="step-circle step-pending">3</div>
+          <div class="step-line"></div>
+        </div>
+        <div class="step-info">
+          <h5 class="step-title">Score Approved</h5>
+          <span class="step-meta">Pending</span>
+        </div>
+      </div>
+
+      <!-- Step 4: Sent to Gradebook -->
+      <div class="workflow-step-item last-step">
+        <div class="step-icon-col">
+          <div class="step-circle step-pending">4</div>
+        </div>
+        <div class="step-info">
+          <h5 class="step-title">Sent to Gradebook</h5>
+          <span class="step-meta">Pending</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

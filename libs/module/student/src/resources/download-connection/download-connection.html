@@ -1,0 +1,34 @@
+<school-hub-dialog-panel
+  title="Resource Download Connection"
+  [open]="!!store.connectionPrompt()"
+  (dismissed)="store.connectionPrompt.set(null)"
+  >@if(store.connectionPrompt();as request){
+  <div class="connection-copy">
+    <h3>{{store.resource(request.resourceId)?.title}}</h3>
+    @if(request.reason==='wifi-required'){
+    <p>
+      Your profile is set to download resource files over Wi-Fi or a wired
+      connection. Connect to an allowed network, or update your preference in
+      Profile.
+    </p>
+    }@else{
+    <p>
+      This browser cannot identify whether you are using Wi-Fi. Your profile
+      asks for Wi-Fi downloads, so confirm if you want to download this file
+      once on the current connection.
+    </p>
+    }
+    <div class="actions">
+      <button type="button" (click)="store.connectionPrompt.set(null)">
+        Cancel Download</button
+      >@if(request.reason==='unavailable'){<button
+        type="button"
+        class="primary"
+        (click)="store.approveConnectionOnce()"
+      >
+        Download Once</button
+      >}<a routerLink="/student/profile">Review Profile Preferences</a>
+    </div>
+  </div>
+  }</school-hub-dialog-panel
+>

@@ -1,0 +1,76 @@
+<school-hub-dashboard-card
+  title="Class Performance Overview"
+  icon="ri-pie-chart-line"
+  [showIcon]="false"
+  [compact]="true"
+>
+  <div class="overview-container">
+    <div class="chart-wrapper">
+      <svg
+        class="donut-chart"
+        viewBox="0 0 100 100"
+        aria-label="Performance distribution chart"
+      >
+        <!-- Background track -->
+        <circle
+          cx="50"
+          cy="50"
+          [attr.r]="radius"
+          fill="none"
+          stroke="#f1f5f9"
+          stroke-width="12"
+        />
+
+        <!-- Segments rotated to start from 12 o'clock (-90deg) -->
+        <g transform="rotate(-90 50 50)">
+          @for (slice of slices(); track slice.label) {
+          <circle
+            cx="50"
+            cy="50"
+            [attr.r]="radius"
+            fill="none"
+            [attr.stroke]="slice.color"
+            stroke-width="12"
+            [attr.stroke-dasharray]="slice.dashArray"
+            [attr.stroke-dashoffset]="slice.dashOffset"
+            stroke-linecap="round"
+          />
+          }
+        </g>
+
+        <!-- Center text -->
+        <text
+          x="50"
+          y="48"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          class="center-val"
+        >
+          {{ overallAverage() }}%
+        </text>
+        <text
+          x="50"
+          y="62"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          class="center-sub"
+        >
+          Average
+        </text>
+      </svg>
+    </div>
+
+    <div class="legend-list">
+      @for (tier of tiers(); track tier.label) {
+      <div class="legend-row">
+        <div class="legend-left">
+          <span class="legend-dot" [style.background-color]="tier.color"></span>
+          <span class="legend-label">{{ tier.label }}</span>
+          <span class="legend-range">({{ tier.range }})</span>
+        </div>
+        <span class="legend-percentage">{{ tier.percentage }}%</span>
+      </div>
+      }
+    </div>
+  </div>
+</school-hub-dashboard-card>

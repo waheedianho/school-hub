@@ -1,0 +1,70 @@
+<div class="scroll">
+  <table aria-label="Resource library">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Type</th>
+        <th scope="col">Subject</th>
+        <th scope="col">Added On</th>
+        <th scope="col">Size</th>
+        <th scope="col"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody>
+      @for(row of rows(); track row.id){
+      <tr>
+        <td>
+          <div class="name">
+            <school-hub-icon-badge
+              [icon]="row.icon"
+              [tone]="row.tone"
+              [soft]="true"
+            />
+            <div>
+              <a [routerLink]="row.route" [queryParams]="row.queryParams"
+                >{{ row.title }}</a
+              >
+              <p>{{ row.description }}</p>
+            </div>
+          </div>
+        </td>
+        <td>
+          <school-hub-status-badge
+            [label]="row.available ? row.typeLabel : 'Locked'"
+            [tone]="row.available ? row.tone : 'neutral'"
+          />
+        </td>
+        <td>{{ row.subject }}</td>
+        <td>{{ row.date }}</td>
+        <td>{{ row.size }}</td>
+        <td>
+          <div class="actions">
+            @if(row.externalUrl && row.available){<a
+              class="view"
+              [href]="row.externalUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="'Visit ' + row.title + ' (opens in a new tab)'"
+              (click)="visited.emit(row.id)"
+              >Visit<i class="ri-external-link-line" aria-hidden="true"></i></a
+            >}@else{<a
+              class="view"
+              [routerLink]="row.route"
+              [queryParams]="row.queryParams"
+              [attr.aria-label]="'View ' + row.title"
+              >View</a
+            >}<button
+              type="button"
+              [disabled]="disabled()"
+              [attr.aria-label]="'More options for ' + row.title"
+              (click)="more.emit(row.id)"
+            >
+              <i class="ri-more-fill" aria-hidden="true"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

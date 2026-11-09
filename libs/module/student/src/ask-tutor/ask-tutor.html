@@ -1,0 +1,373 @@
+<div class="tutor-page">
+  <header class="page-heading">
+    <div>
+      <h1>Ask Tutor</h1>
+      <p>Ask questions, explore explanations, and understand better.</p>
+    </div>
+    <button class="outline-button" type="button" (click)="open('tutors')">
+      <i class="ri-group-line" aria-hidden="true"></i>View Tutors
+      ({{tutors.length}})
+    </button>
+  </header>
+  @if(contextError() || notice() || store.error()) {
+  <p class="notice" role="status">
+    {{store.error() || contextError() || notice()}}
+  </p>
+  }
+  <div class="tutor-columns">
+    <main class="question-column">
+      <section class="question-start" aria-labelledby="new-question-heading">
+        <div>
+          <h2 id="new-question-heading">Start a new question</h2>
+          <p>Choose a subject and tell your tutor where you need help.</p>
+          <school-hub-filter-tabs
+            appearance="pills"
+            [tabs]="subjects"
+            [active]="subject()"
+            panelId="tutor-conversation-panel"
+            label="Question subject"
+            (changed)="selectSubject($event)"
+          />
+        </div>
+        <button type="button" class="tutor-summary" (click)="open('tutors')">
+          <strong>Your subject tutors <span>{{tutors.length}}</span></strong
+          ><span class="tutor-avatars" aria-hidden="true"
+            >@for(person of tutors; track person.id){@if(person.image){<img
+              [src]="person.image"
+              alt=""
+            />}@else{<span>{{person.initials}}</span>}}</span
+          ><span class="tutor-directory-link"
+            >View all tutors<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i
+          ></span>
+        </button>
+      </section>
+      <section
+        id="tutor-conversation-panel"
+        class="conversation-card"
+        role="tabpanel"
+        aria-labelledby="conversation-heading"
+      >
+        <header class="conversation-heading">
+          <h2 id="conversation-heading">Your Conversation</h2>
+          <span class="conversation-status"
+            >{{question()?'Not sent':sample()?'Sample conversation':'New
+            question'}}</span
+          ><button type="button" class="text-button" (click)="newQuestion()">
+            New Question
+          </button>
+        </header>
+        @if(context();as activity){
+        <div class="question-context">
+          <school-hub-icon-badge
+            icon="ri-links-line"
+            tone="purple"
+            [soft]="true"
+          />
+          <div>
+            <small>Question about</small
+            ><a [routerLink]="activity.route" [queryParams]="activity.query"
+              >{{activity.title}}<i
+                class="ri-arrow-right-up-line"
+                aria-hidden="true"
+              ></i></a
+            >@if(activity.description){
+            <p>{{activity.description}}</p>
+            }
+          </div>
+        </div>
+        }
+        <school-hub-chat-panel
+          appearance="conversation"
+          label="Tutor conversation"
+          composerId="tutor-question"
+          composerLabel="Your question"
+          placeholder="Type your question here…"
+          sendLabel="Save question locally"
+          sendText="Save Question"
+          [showEmoji]="false"
+          [maxLength]="maxText"
+          [messages]="messages()"
+          [draft]="draft().text"
+          [enabled]="enabled()"
+          [canSendEmpty]="!!draft().files.length"
+          (draftChanged)="store.edit(key(),$event)"
+          (sent)="saveQuestion()"
+          (attachmentOpened)="openFile($event)"
+        >
+          <div composer-tools>
+            <button
+              class="attach-button"
+              type="button"
+              [disabled]="!enabled()"
+              (click)="open('attachments')"
+            >
+              <i class="ri-attachment-2" aria-hidden="true"></i>Attach file
+            </button>
+          </div>
+          <div composer-attachments class="composer-extra">
+            @if(sample()){
+            <div class="answer-rating">
+              <span>Rate this sample answer:</span
+              ><button
+                type="button"
+                aria-label="Helpful sample answer"
+                [attr.aria-pressed]="rating()==='helpful'"
+                [disabled]="!enabled()"
+                (click)="rate('helpful')"
+              >
+                <i class="ri-thumb-up-line" aria-hidden="true"></i></button
+              ><button
+                type="button"
+                aria-label="Unhelpful sample answer"
+                [attr.aria-pressed]="rating()==='unhelpful'"
+                [disabled]="!enabled()"
+                (click)="rate('unhelpful')"
+              >
+                <i class="ri-thumb-down-line" aria-hidden="true"></i>
+              </button>
+            </div>
+            } @if(draft().files.length){
+            <ul class="attached-chips" aria-label="Question draft attachments">
+              @for(file of draft().files;track file.id){
+              <li>
+                <button type="button" (click)="openFile(file.id)">
+                  {{file.name}}</button
+                ><button
+                  type="button"
+                  [attr.aria-label]="'Remove '+file.name"
+                  (click)="store.removeFile(key(),file.id)"
+                >
+                  <i class="ri-close-line" aria-hidden="true"></i>
+                </button>
+              </li>
+              }
+            </ul>
+            }
+          </div>
+        </school-hub-chat-panel>
+        <footer class="conversation-footer">
+          <p role="status" aria-label="Question storage status">
+            {{storageStatus()}}
+          </p>
+          <span>{{draft().text.length}} / {{maxText}}</span>
+        </footer>
+        <div class="conversation-actions">
+          <button
+            class="text-button"
+            type="button"
+            [disabled]="!messages().length&&!draft().text&&!draft().files.length"
+            (click)="exportConversation()"
+          >
+            <i class="ri-download-line" aria-hidden="true"></i>Download
+            Conversation</button
+          >@if(question()){<button
+            class="text-button danger"
+            type="button"
+            (click)="open('delete')"
+          >
+            Delete Local Question</button
+          >}
+        </div>
+      </section>
+    </main>
+    <aside aria-label="Tutor help and question history">
+      <school-hub-dashboard-card
+        title="How it works"
+        icon="ri-question-answer-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><ol class="help-steps">
+          <li>
+            <school-hub-icon-badge
+              icon="ri-chat-3-line"
+              tone="purple"
+              [soft]="true"
+            />
+            <div>
+              <strong>1. Ask your question</strong>
+              <p>Describe what you tried and where you got stuck.</p>
+            </div>
+          </li>
+          <li>
+            <school-hub-icon-badge
+              icon="ri-user-line"
+              tone="green"
+              [soft]="true"
+            />
+            <div>
+              <strong>2. Explore an explanation</strong>
+              <p>
+                Read the sample tutor replies and revisit the related lesson.
+              </p>
+            </div>
+          </li>
+          <li>
+            <school-hub-icon-badge
+              icon="ri-lightbulb-line"
+              tone="orange"
+              [soft]="true"
+            />
+            <div>
+              <strong>3. Learn &amp; improve</strong>
+              <p>Try an example yourself to check your understanding.</p>
+            </div>
+          </li>
+        </ol>
+        <p class="local-note">
+          Tutor delivery and live availability are not connected in this
+          preview.
+        </p></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Popular topics"
+        icon="ri-book-open-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><button
+          card-action
+          class="text-button"
+          type="button"
+          (click)="open('topics')"
+        >
+          View all</button
+        ><school-hub-activity-list
+          [items]="topics().slice(0,6)"
+          label="Popular tutor topics"
+      /></school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Your past questions"
+        icon="ri-question-line"
+        [showIcon]="false"
+        [compact]="true"
+        ><button
+          card-action
+          class="text-button"
+          type="button"
+          (click)="open('history')"
+        >
+          View all</button
+        ><school-hub-activity-list
+          [items]="history().slice(0,3)"
+          label="Past tutor questions"
+        /><button
+          type="button"
+          class="outline-button new-question"
+          (click)="newQuestion()"
+        >
+          <i class="ri-chat-new-line" aria-hidden="true"></i>Ask a new question
+        </button></school-hub-dashboard-card
+      >
+    </aside>
+  </div>
+</div>
+<school-hub-dialog-panel
+  [open]="!!view()"
+  [title]="dialogTitle()"
+  (dismissed)="close()"
+>
+  @switch(view()) { @case('tutors') {
+  <p class="dialog-copy">
+    Sample subject assignments. Live availability and tutor delivery are not
+    connected.
+  </p>
+  <ul class="tutor-directory">
+    @for(person of tutors;track person.id){
+    <li>
+      @if(person.image){<img [src]="person.image" alt="" />}@else{<span
+        class="initials"
+        >{{person.initials}}</span
+      >}
+      <div>
+        <strong>{{person.name}}</strong>
+        <p>{{person.description}}</p>
+        <small>Availability not connected</small>
+      </div>
+      <button
+        type="button"
+        class="outline-button"
+        (click)="newQuestion(person.id)"
+      >
+        Ask a Question<span class="visually-hidden">
+          about {{person.description}}</span
+        >
+      </button>
+    </li>
+    }
+  </ul>
+  } @case('topics') {
+  <p class="dialog-copy">
+    Choose a lesson to attach it to a new {{tutor().description}} question.
+  </p>
+  <school-hub-activity-list [items]="topics()" label="All tutor topics" />}
+  @case('history') {<label class="history-search"
+    >Search past questions<input
+      type="search"
+      [value]="historySearch()"
+      (input)="historySearch.set($any($event.target).value)"
+      placeholder="Search this subject’s questions…" /></label
+  ><school-hub-activity-list
+    [items]="filteredHistory()"
+    label="All past tutor questions"
+    emptyMessage="No questions match this search."
+  />} @case('attachments') {
+  <p class="dialog-copy">
+    Attach up to three images, PDF files, or text files, at most 2 MB each.
+    Files stay on this device and are not uploaded to a tutor.
+  </p>
+  <school-hub-file-upload
+    [files]="draft().files"
+    label="Attach question files"
+    accept=".png,.jpg,.jpeg,.webp,.pdf,.txt"
+    help="PNG, JPEG, WebP, PDF, or TXT · 2 MB per file · 3 files per message"
+    emptyMessage="No files attached to this question."
+    [errors]="store.uploadErrors()"
+    [disabled]="!enabled()"
+    (added)="store.attach(key(),$event)"
+    (removed)="store.removeFile(key(),$event)"
+    (previewed)="openFile($event)"
+    (downloaded)="downloadFile($event)"
+  /><button class="outline-button" type="button" (click)="close()">Done</button
+  >} @case('file') {@if(file();as attachment){
+  <div class="attachment-preview">
+    <h3>{{attachment.name}}</h3>
+    <p>{{fileSize(attachment.size)}} · Local attachment</p>
+    @if(preview().image){<img
+      [src]="preview().image"
+      [alt]="attachment.name"
+    />}@else if(preview().text!==undefined){
+    <pre>{{preview().text}}</pre>
+    <p>Text preview shows up to 10,000 characters.</p>
+    }@else if(preview().error){
+    <p role="alert">{{preview().error}}</p>
+    }@else if(attachment.type==='application/pdf'){
+    <p>Download this PDF to open it in your preferred viewer.</p>
+    }<button
+      class="primary-button"
+      type="button"
+      (click)="downloadFile(attachment.id)"
+    >
+      Download Attachment
+    </button>
+  </div>
+  }@else{
+  <p class="dialog-copy">
+    That attachment is unavailable. Return to the conversation to choose
+    another.
+  </p>
+  }} @case('delete') {
+  <p class="dialog-copy">
+    Delete this local question, its follow-up messages, and its attached files?
+    Downloaded files and sample conversations will remain available.
+  </p>
+  <div class="dialog-actions">
+    <button class="outline-button" type="button" (click)="close()">
+      Cancel</button
+    ><button class="primary-button" type="button" (click)="deleteQuestion()">
+      Confirm Delete Local Question
+    </button>
+  </div>
+  } }
+</school-hub-dialog-panel>

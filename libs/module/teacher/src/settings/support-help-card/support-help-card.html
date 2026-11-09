@@ -1,0 +1,101 @@
+<div class="settings-card support-card">
+  <div class="card-step-header">
+    <span class="step-badge">6</span>
+    <h2 class="step-title">Support &amp; Help</h2>
+  </div>
+
+  <div class="support-items-list">
+    @for (item of items(); track item.id) {
+    <button type="button" class="support-row-btn" (click)="onItemClick(item)">
+      <div class="support-icon-wrap">
+        <span class="material-symbols-outlined">{{ item.icon }}</span>
+      </div>
+      <div class="support-text-wrap">
+        <span class="support-title">{{ item.title }}</span>
+        <span class="support-subtitle">{{ item.subtitle }}</span>
+      </div>
+      <span class="material-symbols-outlined chevron-icon">chevron_right</span>
+    </button>
+    }
+  </div>
+
+  <!-- Help Modal Dialog -->
+  @if (activeModal()) {
+  <div class="modal-backdrop">
+    <div
+      class="modal-dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalHelpTitle"
+    >
+      <div class="modal-header">
+        <h3 id="modalHelpTitle" class="modal-title">
+          @switch (activeModal()) { @case ('teacher-guide') { Teacher Handbook
+          &amp; Guide } @case ('help-center') { SchoolHub Help Center } @case
+          ('contact-support') { Contact Support Team } @case ('report-issue') {
+          Report an Issue } }
+        </h3>
+        <button
+          type="button"
+          class="btn-close-modal"
+          (click)="closeModal()"
+          aria-label="Close modal"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        @switch (activeModal()) { @case ('teacher-guide') {
+        <p class="modal-text">
+          Explore comprehensive tutorials on managing class rosters,
+          synchronizing grades, setting rubrics, and scheduling live classes.
+        </p>
+        <div class="guide-topics">
+          <div class="topic-pill">Classroom Management</div>
+          <div class="topic-pill">Automated Grading</div>
+          <div class="topic-pill">Live Class Delivery</div>
+        </div>
+        } @case ('help-center') {
+        <p class="modal-text">
+          Browse our searchable knowledge base for troubleshooting, video
+          walkthroughs, and FAQs.
+        </p>
+        <div class="faq-item">
+          <span class="faq-q">How do I change my default grading scale?</span>
+          <span class="faq-a"
+            >Navigate to Settings &gt; Grading &amp; Review Preferences and
+            choose your preferred scale.</span
+          >
+        </div>
+        } @case ('contact-support') {
+        <p class="modal-text">
+          Support is available Monday to Friday, 8:00 AM – 6:00 PM WAT.
+        </p>
+        <div class="contact-card">
+          <span class="material-symbols-outlined contact-icon">mail</span>
+          <div>
+            <span class="contact-label">Email Support</span>
+            <span class="contact-value">support@learno.school</span>
+          </div>
+        </div>
+        } @case ('report-issue') {
+        <p class="modal-text">
+          Found a bug or have an idea to improve the platform? Let our
+          development team know.
+        </p>
+        <div class="feedback-info">
+          <span
+            >Issue reports include browser telemetry to expedite fixes.</span
+          >
+        </div>
+        } }
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="closeModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

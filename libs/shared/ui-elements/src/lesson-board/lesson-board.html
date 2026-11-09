@@ -1,0 +1,74 @@
+<section aria-label="Lesson presentation">
+  <div class="paper-scroll">
+    @if (slide(); as slide) {
+    <div class="paper" [style.font-size.px]="16 * zoom() / 100">
+      <h2>{{ slide.title }}</h2>
+      <p class="definition">{{ slide.definition }}</p>
+      @if (slide.bullets.length) {
+      <ul>
+        @for (item of slide.bullets; track $index) {
+        <li>{{ item }}</li>
+        }
+      </ul>
+      }
+      <div class="examples">
+        @for (example of slide.examples; track $index) {
+        <div>
+          <p>
+            <span class="example-part"
+              ><span class="lead">{{ example.lead }}</span> @if
+              (example.leadLabel) {
+              <small>{{ example.leadLabel }}</small> } </span
+            ><span class="example-part"
+              ><span class="rest">{{ example.rest }}</span> @if
+              (example.restLabel) { <small>{{ example.restLabel }}</small> }
+            </span>
+          </p>
+          @if (example.note) { <small>{{ example.note }}</small> }
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  <nav aria-label="Lesson slide controls">
+    <button
+      type="button"
+      aria-label="Previous lesson slide"
+      [disabled]="index() === 0"
+      (click)="changed.emit(index() - 1)"
+    >
+      <i class="ri-arrow-left-s-line" aria-hidden="true"></i></button
+    ><span>{{ index() + 1 }} / {{ slides().length }}</span
+    ><button
+      type="button"
+      aria-label="Next lesson slide"
+      [disabled]="index() >= slides().length - 1"
+      (click)="changed.emit(index() + 1)"
+    >
+      <i class="ri-arrow-right-s-line" aria-hidden="true"></i></button
+    ><span class="divider"></span
+    ><button
+      type="button"
+      aria-label="Zoom lesson out"
+      [disabled]="zoom() <= 75"
+      (click)="resize(-25)"
+    >
+      <i class="ri-zoom-out-line" aria-hidden="true"></i></button
+    ><span>{{ zoom() }}%</span
+    ><button
+      type="button"
+      aria-label="Zoom lesson in"
+      [disabled]="zoom() >= 150"
+      (click)="resize(25)"
+    >
+      <i class="ri-zoom-in-line" aria-hidden="true"></i></button
+    ><button
+      type="button"
+      aria-label="Expand lesson board"
+      (click)="fullscreen()"
+    >
+      <i class="ri-fullscreen-line" aria-hidden="true"></i>
+    </button>
+  </nav>
+</section>

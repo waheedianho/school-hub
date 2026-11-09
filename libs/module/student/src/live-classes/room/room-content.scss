@@ -1,0 +1,219 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+.room-learning-cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+.learning-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 16px 13px;
+  border: 1px solid #e8dff6;
+  border-radius: 8px;
+  background: #fcfaff;
+}
+.learning-card h2 {
+  display: flex;
+  align-items: start;
+  gap: 7px;
+  margin: 0 0 14px;
+  color: #8755bd;
+  font-size: typography.$body;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.learning-card h2 i {
+  color: #9a6bd4;
+  font-size: 22px;
+}
+.learning-card p,
+.learning-card li {
+  color: #79849c;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.learning-card p {
+  margin: 0 0 12px;
+}
+.learning-card ul {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 20px;
+  padding-left: 18px;
+}
+.learning-card .objective-list {
+  padding: 0;
+  list-style: none;
+}
+.vocabulary-card ul {
+  list-style: disc;
+}
+.objective-list li {
+  display: flex;
+  align-items: start;
+  gap: 5px;
+}
+.objective-list i {
+  color: #45aa7e;
+  font-size: 14px;
+}
+.learning-card .outline-button {
+  margin-top: auto;
+  padding: 7px;
+  font-size: typography.$body;
+}
+.activity-card {
+  background: #f7fcf9;
+  border-color: #d6eade;
+}
+.activity-card h2,
+.activity-card h2 i {
+  color: #4b9d79;
+}
+.activity-form school-hub-written-answer {
+  margin-bottom: 10px;
+}
+.activity-result {
+  color: #448c68;
+  font-size: typography.$body;
+  font-weight: 600;
+}
+.materials-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #e2d4f7;
+  border-radius: 7px;
+  color: #9c7dbb;
+  background: #fcf9ff;
+  font-size: typography.$body;
+  line-height: 1.8;
+  text-align: center;
+}
+.dialog-copy {
+  margin: 0 0 20px;
+  color: #7c889d;
+  font-size: typography.$body;
+  line-height: 1.9;
+}
+.dialog-copy p {
+  margin: 0 0 18px;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: end;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+.participant-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.participant-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eeeaf5;
+  color: #71819a;
+  font-size: typography.$body;
+}
+.participant-list span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: #9775bd;
+  background: #f5eefe;
+}
+.participant-list strong {
+  flex: 1;
+  font-weight: 600;
+}
+.participant-list small {
+  color: #a19aac;
+  font-size: typography.$body;
+}
+.reaction-picker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.reaction-picker button {
+  width: 65px;
+  height: 65px;
+  border: 1px solid #e4d7f5;
+  border-radius: 10px;
+  background: #fcfaff;
+  font-size: 35px;
+  cursor: pointer;
+}
+.vocabulary-list {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+}
+.vocabulary-list > div {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ece9f3;
+}
+.vocabulary-list dt {
+  margin-bottom: 7px;
+  color: #9070b3;
+  font-size: typography.$section;
+  font-weight: 600;
+}
+.vocabulary-list dd {
+  margin: 0;
+  color: #9095a7;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.room-options {
+  display: grid;
+  gap: 14px;
+}
+.room-options p {
+  color: #9994a8;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+@media (max-width: 1500px) {
+  .room-learning-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 650px) {
+  .room-learning-cards {
+    grid-template-columns: 1fr;
+  }
+  .participant-list li {
+    flex-wrap: wrap;
+  }
+  .participant-list small {
+    margin-left: 50px;
+  }
+}
+
+.activity-questions {
+  margin: 0 0 20px;
+  padding-left: 18px;
+  list-style: decimal;
+}
+.activity-questions li + li {
+  margin-top: 8px;
+}
+.activity-form {
+  display: grid;
+  gap: 12px;
+}

@@ -1,0 +1,119 @@
+@use '../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+}
+
+.teacher-dashboard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.dashboard-subtitle {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dashboard-section {
+  width: 100%;
+}
+
+.dashboard-main-grid {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+
+  @media (max-width: 1199px) {
+    flex-direction: column;
+  }
+}
+
+.main-left-column {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.main-right-column {
+  width: 270px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  @media (max-width: 1199px) {
+    width: 100%;
+  }
+}
+
+.middle-cards-row {
+  display: grid;
+  grid-template-columns: minmax(330px, 1fr) minmax(0, 1.85fr);
+  gap: 20px;
+  align-items: stretch;
+  min-width: 0;
+
+  @media (max-width: 1279px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.lower-cards-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr);
+  gap: 20px;
+  align-items: stretch;
+  min-width: 0;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.schedule-card-wrap,
+.reviews-card-wrap,
+.topics-card-wrap,
+.performance-card-wrap {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+
+  > * {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.workflow-section {
+  margin-top: 4px;
+}
+
+:host-context(.dark) {
+  .dashboard-title {
+    color: #f8fafc;
+  }
+
+  .dashboard-subtitle {
+    color: #94a3b8;
+  }
+}

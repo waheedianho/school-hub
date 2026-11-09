@@ -1,0 +1,46 @@
+<div class="player">
+  <video
+    #video
+    controls
+    playsinline
+    preload="metadata"
+    [src]="src()"
+    [poster]="poster()"
+    [attr.aria-label]="title()"
+    (loadedmetadata)="metadata()"
+    (timeupdate)="progress()"
+    (seeked)="progress()"
+    (ended)="progress()"
+    (error)="failed.set(true)"
+  >
+    <track
+      kind="captions"
+      [id]="captionId()"
+      [src]="captions()"
+      srclang="en"
+      label="English"
+    />
+    Your browser does not support this video.</video
+  >@if(failed()){
+  <p role="alert">
+    The video could not be loaded. Retry the page or read the transcript below.
+  </p>
+  }
+  <div class="controls">
+    <span>Silent revision video · pause to read · captions available</span
+    ><label
+      >Speed<select
+        aria-label="Playback speed"
+        [value]="rate()"
+        [disabled]="!loaded()"
+        (change)="speed($event)"
+      >
+        <option value="0.75">0.75×</option>
+        <option value="1">1×</option>
+        <option value="1.25">1.25×</option>
+        <option value="1.5">1.5×</option>
+        <option value="2">2×</option>
+      </select></label
+    >
+  </div>
+</div>

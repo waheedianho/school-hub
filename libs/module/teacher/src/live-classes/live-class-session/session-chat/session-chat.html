@@ -1,0 +1,76 @@
+<div class="session-chat-card">
+  <!-- Chat Header -->
+  <div class="chat-header">
+    <h3 class="chat-title">Class Chat</h3>
+    <div class="header-actions">
+      <div class="channel-select-wrapper">
+        <select class="channel-select" aria-label="Chat channel filter">
+          <option value="all">All</option>
+          <option value="tutors">Tutors only</option>
+          <option value="questions">Questions</option>
+        </select>
+        <span class="material-symbols-outlined select-arrow">expand_more</span>
+      </div>
+      <button
+        type="button"
+        class="header-more-btn"
+        aria-label="More chat options"
+      >
+        <span class="material-symbols-outlined">more_vert</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages List -->
+  <div class="messages-container">
+    @for (msg of messages(); track msg.id) {
+    <div class="chat-message-row" [class.self-message]="msg.isSelf">
+      <div class="sender-avatar" [style.background-color]="msg.avatarColor">
+        {{ msg.avatarText }}
+      </div>
+      <div class="message-content-group">
+        <div class="message-meta">
+          <span class="sender-name">{{ msg.senderName }}</span>
+          <span class="message-time">{{ msg.time }}</span>
+        </div>
+        <div class="message-bubble">
+          <p class="bubble-text">{{ msg.message }}</p>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Chat Input Footer -->
+  <div class="chat-footer">
+    <div class="input-box-wrapper">
+      <input
+        type="text"
+        class="chat-input"
+        placeholder="Type a message..."
+        [ngModel]="newMessageText()"
+        (ngModelChange)="newMessageText.set($event)"
+        (keydown.enter)="sendMessage()"
+        aria-label="Type a chat message"
+      />
+      <div class="input-actions">
+        <button
+          type="button"
+          class="attach-btn"
+          aria-label="Attach file to chat"
+        >
+          <span class="material-symbols-outlined">attach_file</span>
+        </button>
+        <button
+          type="button"
+          class="send-btn"
+          (click)="sendMessage()"
+          [disabled]="!newMessageText().trim()"
+          aria-label="Send message"
+        >
+          <span class="material-symbols-outlined">send</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,174 @@
+<div class="setup-card profile-card">
+  <div class="card-header">
+    <div class="title-wrap">
+      <span class="material-symbols-outlined card-icon">assignment</span>
+      <h2 class="card-title">1. School Profile</h2>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="form-grid">
+      <!-- Left Column: School Details Form -->
+      <div class="fields-column">
+        <div class="form-row">
+          <label for="school-name" class="field-label">School Name</label>
+          <input
+            id="school-name"
+            type="text"
+            class="form-input"
+            [value]="profile().name"
+            (change)="onFieldChange('name', $any($event.target).value)"
+            placeholder="e.g. Greenfield Secondary School"
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="school-type" class="field-label">School Type</label>
+          <div class="select-wrapper">
+            <select
+              id="school-type"
+              class="form-select"
+              [value]="profile().schoolType"
+              (change)="onFieldChange('schoolType', $any($event.target).value)"
+            >
+              @for (type of schoolTypes; track type) {
+              <option [value]="type">{{ type }}</option>
+              }
+            </select>
+            <span class="material-symbols-outlined select-arrow"
+              >expand_more</span
+            >
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label for="school-address" class="field-label">Address</label>
+          <input
+            id="school-address"
+            type="text"
+            class="form-input"
+            [value]="profile().address"
+            (change)="onFieldChange('address', $any($event.target).value)"
+            placeholder="e.g. 12 Knowledge Avenue, Lagos"
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="school-phone" class="field-label">Phone</label>
+          <input
+            id="school-phone"
+            type="tel"
+            class="form-input"
+            [value]="profile().phone"
+            (change)="onFieldChange('phone', $any($event.target).value)"
+            placeholder="+234..."
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="school-email" class="field-label">Official Email</label>
+          <input
+            id="school-email"
+            type="email"
+            class="form-input"
+            [value]="profile().email"
+            (change)="onFieldChange('email', $any($event.target).value)"
+            placeholder="info@school.edu.ng"
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="school-principal" class="field-label"
+            >Principal Name</label
+          >
+          <input
+            id="school-principal"
+            type="text"
+            class="form-input"
+            [value]="profile().principalName"
+            (change)="onFieldChange('principalName', $any($event.target).value)"
+            placeholder="Mr./Mrs. Principal"
+          />
+        </div>
+      </div>
+
+      <!-- Right Column: Logo & Branding -->
+      <div class="branding-column">
+        <div class="logo-section">
+          <span class="section-label">School Logo</span>
+          <div class="logo-box">
+            <div class="logo-preview">
+              <svg
+                class="crest-svg"
+                viewBox="0 0 80 96"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <!-- Shield Base -->
+                <path
+                  d="M40 2L76 14V46C76 68 40 92 40 92C40 92 4 68 4 46V14L40 2Z"
+                  fill="#1e293b"
+                  stroke="#eab308"
+                  stroke-width="3"
+                />
+                <path
+                  d="M40 8L70 18V44C70 63 40 84 40 84C40 84 10 63 10 44V18L40 8Z"
+                  fill="#0f172a"
+                />
+                <!-- Open Book -->
+                <path
+                  d="M24 38C30 36 37 38 40 41C43 38 50 36 56 38V54C50 52 43 54 40 57C37 54 30 52 24 54V38Z"
+                  fill="#f8fafc"
+                  stroke="#eab308"
+                  stroke-width="1.5"
+                />
+                <line
+                  x1="40"
+                  y1="41"
+                  x2="40"
+                  y2="57"
+                  stroke="#eab308"
+                  stroke-width="1.5"
+                />
+                <!-- Laurel Wreath -->
+                <path
+                  d="M22 66C24 70 30 73 40 73C50 73 56 70 58 66"
+                  stroke="#eab308"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+                <circle cx="28" cy="68" r="2" fill="#eab308" />
+                <circle cx="52" cy="68" r="2" fill="#eab308" />
+              </svg>
+            </div>
+            <button type="button" class="change-logo-btn">
+              <span class="material-symbols-outlined btn-icon">upload</span>
+              <span>Change Logo</span>
+            </button>
+            <span class="logo-hint">PNG, JPG up to 2MB</span>
+          </div>
+        </div>
+
+        <div class="color-section">
+          <span class="section-label">School Color</span>
+          <div class="swatches-grid">
+            @for (color of colorOptions; track color) {
+            <button
+              type="button"
+              class="color-swatch"
+              [style.background-color]="color"
+              [class.selected]="profile().primaryColor === color"
+              [attr.aria-label]="'Select brand color ' + color"
+              (click)="selectColor(color)"
+            >
+              @if (profile().primaryColor === color) {
+              <span class="material-symbols-outlined check-icon">check</span>
+              }
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,68 @@
+<div
+  class="table-scroll"
+  role="region"
+  [attr.aria-label]="label() + ' table'"
+  tabindex="0"
+>
+  <table [class.with-mastery]="showMastery()">
+    <caption>
+      {{ label() }}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">{{ itemHeading() }}</th>
+        <th scope="col">{{ progressHeading() }}</th>
+        @if (showMastery()) {
+        <th scope="col">Mastery</th>
+        }
+      </tr>
+    </thead>
+    <tbody>
+      @for (item of items(); track item.id) {
+      <tr>
+        <th scope="row">
+          @if (item.route) {
+          <a [routerLink]="item.route" [queryParams]="item.queryParams"
+            >{{ item.label }}</a
+          >
+          } @else { {{ item.label }} }
+        </th>
+        <td>
+          <div class="score" [class.bar-first]="!showMastery()">
+            <strong
+              >{{ item.value === undefined ? '—' : item.value + '%' }}</strong
+            >@if (item.value !== undefined) {
+            <school-hub-progress-bar
+              [value]="item.value"
+              [label]="item.label + ' score'"
+              [tone]="item.tone"
+            />
+            } @else {
+            <span
+              class="empty-track"
+              title="No score yet"
+              aria-hidden="true"
+            ></span>
+            }
+          </div>
+        </td>
+        @if (showMastery()) {
+        <td>
+          <school-hub-status-badge
+            [label]="item.badge ?? 'No Score Yet'"
+            [tone]="item.tone"
+            [icon]="item.value === undefined ? 'ri-shield-line' : 'ri-shield-check-line'"
+          />
+        </td>
+        }
+      </tr>
+      } @empty {
+      <tr>
+        <td [attr.colspan]="showMastery() ? 3 : 2" class="empty-state">
+          {{ emptyMessage() }}
+        </td>
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>

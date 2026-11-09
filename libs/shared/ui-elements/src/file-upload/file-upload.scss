@@ -1,0 +1,124 @@
+@use '../styles/typography' as typography;
+:host {
+  display: block;
+  min-width: 0;
+}
+.upload-zone {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 9px;
+  padding: 28px 16px;
+  border: 1px dashed #b9a5de;
+  border-radius: 11px;
+  background: #fcfaff;
+  color: #725394;
+  text-align: center;
+  cursor: pointer;
+}
+.upload-zone input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.upload-zone:focus-within {
+  outline: 2px solid #9b76dd;
+  outline-offset: 3px;
+}
+.upload-zone > i {
+  font-size: 32px;
+  color: #8454ca;
+}
+.upload-zone strong {
+  font-size: typography.$body;
+}
+.upload-zone > span {
+  max-width: 440px;
+  color: #6d7c94;
+  font-size: typography.$caption;
+  line-height: 1.7;
+}
+.file-list {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.file-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px;
+  border: 1px solid #e1e7f2;
+  border-radius: 8px;
+  color: #4f6686;
+}
+.file-list li > i {
+  color: #885bb9;
+  font-size: 23px;
+}
+.file-list li > span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.file-list strong,
+.file-list small {
+  display: block;
+  font-size: typography.$body;
+}
+.file-list small {
+  margin-top: 4px;
+  color: #6b7c97;
+  font-size: typography.$caption;
+}
+.file-list li > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+button {
+  display: grid;
+  place-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid #e3daf3;
+  border-radius: 7px;
+  background: white;
+  color: #835bb6;
+  font-size: 18px;
+}
+button:focus-visible {
+  outline: 2px solid #9b76dd;
+  outline-offset: 2px;
+}
+.file-list .no-files {
+  border-style: dashed;
+  color: #71829a;
+  font-size: typography.$body;
+  line-height: 1.7;
+}
+.upload-errors {
+  margin-top: 14px;
+  padding: 13px;
+  border-radius: 8px;
+  background: #fff2f4;
+  color: #ad405c;
+  font-size: typography.$body;
+  line-height: 1.8;
+}
+.upload-errors ul {
+  margin: 0;
+  padding-left: 18px;
+  list-style: disc;
+}
+@media (max-width: 540px) {
+  .file-list li {
+    flex-wrap: wrap;
+  }
+  .file-list li > div {
+    margin-left: auto;
+  }
+}

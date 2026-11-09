@@ -1,0 +1,103 @@
+.gradebook-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.page-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.metrics-section {
+  width: 100%;
+}
+
+.main-layout-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 20px;
+  align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.bottom-subgrid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1.1fr;
+  gap: 20px;
+}
+
+.info-notice-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  color: #1e40af;
+}
+
+.info-icon {
+  font-size: 20px;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.info-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #1e3a8a;
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .main-layout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-subgrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .bottom-subgrid {
+    grid-template-columns: 1fr;
+  }
+}

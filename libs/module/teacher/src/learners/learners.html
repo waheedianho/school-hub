@@ -1,0 +1,105 @@
+<div class="learners-page-container">
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+    <ol class="breadcrumb-list">
+      <li class="breadcrumb-item">
+        <a routerLink="/teacher/dashboard" class="breadcrumb-link">Home</a>
+      </li>
+      <li class="breadcrumb-separator" aria-hidden="true">&gt;</li>
+      <li class="breadcrumb-item active" aria-current="page">Learners</li>
+    </ol>
+  </nav>
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-text-group">
+      <h1 class="page-title">Learners</h1>
+      <p class="page-subtitle">
+        Manage your learners, track progress, and provide the support they need
+        to succeed.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn-header-primary"
+        (click)="onMessageClass()"
+      >
+        <span class="material-symbols-outlined btn-icon">chat</span>
+        <span>Message Class</span>
+      </button>
+
+      <button type="button" class="btn-header-secondary" (click)="onExport()">
+        <span class="material-symbols-outlined btn-icon">download</span>
+        <span>Export</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-header-secondary"
+        (click)="onViewGroups()"
+      >
+        <span class="material-symbols-outlined btn-icon">groups</span>
+        <span>View Groups</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main 2-Column Area -->
+  <div class="main-layout-grid">
+    <!-- Left Column (~72%) -->
+    <div class="left-column">
+      <!-- Top Metrics Row -->
+      <section class="metrics-section" aria-label="Learner metrics">
+        <school-hub-learners-metrics [metrics]="metrics()" />
+      </section>
+
+      <!-- Filters Bar -->
+      <section class="filters-section" aria-label="Learners filters">
+        <school-hub-learners-filters
+          (filtersChanged)="onFiltersChanged($event)"
+        />
+      </section>
+
+      <!-- Learners Table -->
+      <section class="table-section" aria-label="Learners list">
+        <school-hub-learners-list-table
+          [learners]="filteredLearners()"
+          (viewLearner)="onViewLearner($event)"
+          (openMenu)="onOpenMenu()"
+        />
+      </section>
+    </div>
+
+    <!-- Right Column (~28%) -->
+    <aside
+      class="right-column"
+      aria-label="Learners insights and quick actions"
+    >
+      <!-- Learners Needing Attention -->
+      <school-hub-learners-directory-attention
+        [learners]="attentionLearners()"
+        (viewAll)="onViewAllAttention()"
+      />
+
+      <!-- Recent Submissions Pending Review -->
+      <school-hub-recent-pending-submissions
+        [submissions]="pendingSubmissions()"
+        (viewAll)="onViewAllSubmissions()"
+      />
+
+      <!-- Top Performers This Week -->
+      <school-hub-top-performers
+        [performers]="topPerformers()"
+        (viewAll)="onViewAllPerformers()"
+      />
+
+      <!-- Quick Actions -->
+      <school-hub-learners-quick-actions
+        [actions]="quickActions()"
+        (actionTriggered)="onQuickAction($event)"
+      />
+    </aside>
+  </div>
+</div>

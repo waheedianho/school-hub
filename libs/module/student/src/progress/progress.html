@@ -1,0 +1,470 @@
+<div class="progress-page">
+  <header class="page-heading">
+    <div>
+      <h1>Progress</h1>
+      <p>
+        Track your academic growth, skills development, and next learning goals.
+      </p>
+    </div>
+    <div class="scope-controls">
+      <label
+        ><select
+          [disabled]="!store.ready()"
+          aria-label="Subject"
+          [value]="subject()"
+          (change)="change('subjectId', $event)"
+        >
+          <option value="" [selected]="!subject()">All Subjects</option>
+          @for (item of subjects; track item.id) {
+          <option [value]="item.id" [selected]="subject() === item.id">
+            {{ item.name }}
+          </option>
+          }
+        </select></label
+      ><label
+        ><i class="ri-calendar-line" aria-hidden="true"></i
+        ><select
+          [disabled]="!store.ready()"
+          aria-label="Term"
+          [value]="term()"
+          (change)="change('term', $event)"
+        >
+          <option value="all" [selected]="term() === 'all'">All Terms</option>
+          @for (item of terms; track item.id) {
+          <option [value]="item.id" [selected]="term() === item.id">
+            {{ item.label }}
+          </option>
+          }
+        </select></label
+      >
+    </div>
+  </header>
+  @if (store.ready() && !scoped().lessons.length && !scoped().portfolios.length)
+  {
+  <p class="empty-notice" role="status">
+    No learning records in this selection.<button
+      type="button"
+      (click)="clear()"
+    >
+      Clear filters
+    </button>
+  </p>
+  } @if (!store.ready()) {
+  <p class="loading-note" role="status">
+    Loading your saved learning progress…
+  </p>
+  }
+  <div class="progress-layout">
+    <div class="progress-primary">
+      <section class="progress-summary" aria-label="Progress totals">
+        @for (metric of metrics(); track metric.id) {
+        <div class="metric-card" [class.active]="area() === metric.id">
+          <school-hub-progress-stat
+            [prominent]="true"
+            [title]="metric.title"
+            [value]="metric.value"
+            [percentage]="metric.percentage"
+            [detail]="metric.detail"
+            [icon]="metric.icon"
+            [tone]="metric.tone"
+            route="/student/progress"
+            [queryParams]="metricQuery(metric.id)"
+          />
+        </div>
+        }
+      </section>
+      <school-hub-dashboard-card
+        title="Performance Overview"
+        icon="ri-line-chart-line"
+        tone="purple"
+        [compact]="true"
+        [showIcon]="false"
+        [subtitle]="historySubtitle()"
+      >
+        <div card-action class="performance-actions">
+          <button
+            type="button"
+            class="chart-help"
+            aria-label="How is my progress calculated?"
+            title="How is my progress calculated?"
+            (click)="openView('calculation')"
+          >
+            <i class="ri-information-line" aria-hidden="true"></i></button
+          ><label class="range-select"
+            ><select
+              [disabled]="!store.ready()"
+              aria-label="Performance period"
+              [value]="range()"
+              (change)="change('range', $event)"
+            >
+              <option value="8" [selected]="range() === '8'">
+                Last 8 Weeks
+              </option>
+              <option value="4" [selected]="range() === '4'">
+                Last 4 Weeks
+              </option>
+              <option value="all" [selected]="range() === 'all'">
+                All Recorded Weeks
+              </option>
+            </select></label
+          >
+        </div>
+        <school-hub-performance-chart
+          [points]="history()"
+          label="Weekly quiz performance"
+          appearance="area"
+          [showPointValues]="true"
+          emptyMessage="No recorded quiz results for this period."
+        />
+        @if (history().length) {
+        <p class="chart-legend">
+          Weekly quiz averages <span>— No recorded result</span>
+        </p>
+        }
+      </school-hub-dashboard-card>
+      <school-hub-dashboard-card
+        title="Subject Progress"
+        icon="ri-book-open-line"
+        tone="purple"
+        ><school-hub-progress-subject-table
+          [rows]="subjectRows()"
+          [returnUrl]="returnUrl()"
+          [term]="term()" />
+        <p class="small-copy">
+          Lesson progress includes partially completed lessons. Mastery bands
+          reflect average quiz scores.
+        </p>
+        <a
+          class="card-link"
+          routerLink="/student/subjects"
+          [queryParams]="{ term: term() === 'all' ? null : term(), progressReturn: returnUrl() }"
+          >View All Subjects<i
+            class="ri-arrow-right-line"
+            aria-hidden="true"
+          ></i></a
+      ></school-hub-dashboard-card>
+      <div class="evidence-grid">
+        <school-hub-dashboard-card
+          title="Topic Mastery"
+          icon="ri-focus-3-line"
+          tone="purple"
+          [compact]="true"
+          ><school-hub-score-table
+            [items]="topics().slice(0, 5)"
+            label="Topic mastery" /><button
+            type="button"
+            class="card-link evidence-link"
+            (click)="openView('topics')"
+          >
+            View All Topics<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i></button
+        ></school-hub-dashboard-card>
+        <school-hub-dashboard-card
+          title="Skills You Are Building"
+          icon="ri-lightbulb-line"
+          tone="purple"
+          [compact]="true"
+          ><school-hub-score-table
+            [items]="skills()"
+            label="Portfolio skills"
+            itemHeading="Skill"
+            progressHeading="Level"
+            [showMastery]="false" /><button
+            type="button"
+            class="card-link evidence-link"
+            (click)="openView('skills')"
+          >
+            View Skill Evidence<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i></button
+        ></school-hub-dashboard-card>
+      </div>
+    </div>
+    <aside class="progress-aside" aria-label="Progress insights">
+      <school-hub-dashboard-card
+        title="Your Progress Snapshot"
+        icon="ri-donut-chart-line"
+        tone="purple"
+        ><div class="snapshot-ring">
+          <school-hub-progress-ring
+            [value]="summary().academic"
+            label="Overall academic progress"
+            caption="Academic"
+            tone="purple"
+          />
+          <p>
+            {{ summary().lessonCount ? 'Every completed lesson helps you move
+            forward.' : 'Choose a subject or term with learning records.' }}
+          </p>
+        </div>
+        <div class="snapshot-metrics">
+          <div>
+            <school-hub-icon-badge
+              icon="ri-pulse-line"
+              tone="green"
+              [soft]="true"
+            /><span
+              ><strong>Learning Engagement</strong
+              ><small
+                >{{ summary().started }} / {{ summary().total }} activities
+                started</small
+              ></span
+            ><b>{{ summary().engagement }}%</b>
+          </div>
+          <div>
+            <school-hub-icon-badge
+              icon="ri-book-open-line"
+              [soft]="true"
+            /><span
+              ><strong>Lessons Completed</strong
+              ><small>In this selection</small></span
+            ><b>{{ summary().completedLessons }}</b>
+          </div>
+          <div>
+            <school-hub-icon-badge
+              icon="ri-chat-1-line"
+              tone="purple"
+              [soft]="true"
+            /><span
+              ><strong>Feedback Received</strong
+              ><small
+                >{{ summary().needsReview }} still need review</small
+              ></span
+            ><b>{{ summary().feedbackCount }}</b>
+          </div>
+        </div>
+        <section
+          class="academic-skills"
+          aria-label="Academic and skills evidence"
+        >
+          <div>
+            <span>Academic learning</span
+            ><strong>{{ summary().academic }}%</strong>
+          </div>
+          <school-hub-progress-bar
+            [value]="summary().academic"
+            label="Academic learning coverage"
+            tone="purple"
+          />
+          <div>
+            <span>Portfolio skills evidence</span
+            ><strong
+              >{{ summary().skills === undefined ? '—' : summary().skills + '%'
+              }}</strong
+            >
+          </div>
+          @if (summary().skills !== undefined) {
+          <school-hub-progress-bar
+            [value]="summary().skills ?? 0"
+            label="Portfolio skills evidence"
+            tone="blue"
+          />
+          }
+          <p>
+            Learning coverage and assessed portfolio scores are separate
+            measures.
+          </p>
+        </section></school-hub-dashboard-card
+      >
+      <school-hub-dashboard-card
+        title="Strengths & Focus Areas"
+        icon="ri-thumb-up-line"
+        tone="green"
+        ><div class="insight-notes">
+          <school-hub-feedback-note
+            title="What You’re Doing Well"
+            icon="ri-shield-check-line"
+            tone="green"
+            [items]="strengths()"
+            [body]="strengths().length ? '' : 'Complete a lesson or activity to start building your progress.'"
+          /><school-hub-feedback-note
+            title="What Needs More Work"
+            icon="ri-error-warning-line"
+            tone="red"
+            [items]="focus()"
+            [body]="focus().length ? '' : 'There are no outstanding review or revision items in this selection. Keep practising your next learning goal.'"
+          />
+        </div>
+        <a
+          class="card-link"
+          routerLink="/student/feedback"
+          [queryParams]="feedbackQuery()"
+          >View Personalized Feedback<i
+            class="ri-arrow-right-line"
+            aria-hidden="true"
+          ></i></a
+      ></school-hub-dashboard-card>
+    </aside>
+  </div>
+  <section class="activity-focus" aria-label="Activity focus">
+    <school-hub-filter-tabs
+      [tabs]="areas"
+      [active]="area()"
+      panelId="progress-activities"
+      label="Progress activity focus"
+      (changed)="setArea($event)"
+    />
+    <p class="small-copy">
+      Choose an activity to focus your achievements and next steps. The overview
+      above covers your selected term and subject.
+    </p>
+  </section>
+  <div
+    class="progress-bottom"
+    id="progress-activities"
+    role="tabpanel"
+    [attr.aria-labelledby]="'progress-activities-' + area()"
+  >
+    <school-hub-dashboard-card
+      title="Recent Achievements"
+      icon="ri-trophy-line"
+      tone="orange"
+      ><school-hub-activity-list
+        [items]="activities().slice(0, 4)"
+        label="Recent achievements"
+        emptyMessage="No completed activities in this selection yet." /><button
+        type="button"
+        class="card-link"
+        (click)="openView('achievements')"
+      >
+        View All Achievements<i
+          class="ri-arrow-right-line"
+          aria-hidden="true"
+        ></i></button></school-hub-dashboard-card
+    ><school-hub-dashboard-card
+      title="Next Steps"
+      icon="ri-rocket-line"
+      tone="blue"
+      ><school-hub-activity-list
+        [items]="recommendations().slice(0, 4)"
+        label="Recommended next steps"
+        emptyMessage="You’re up to date here. Review your feedback or explore another subject." /><button
+        type="button"
+        class="card-link"
+        (click)="openView('recommendations')"
+      >
+        View All Recommendations<i
+          class="ri-arrow-right-line"
+          aria-hidden="true"
+        ></i></button
+    ></school-hub-dashboard-card>
+    <section class="encouragement">
+      <div class="learning-art" aria-hidden="true">
+        <i class="ri-graduation-cap-line"></i><i class="ri-sparkling-line"></i
+        ><i class="ri-book-open-line"></i>
+      </div>
+      <h2>Keep Going, {{ learner.firstName }}!</h2>
+      <p>
+        Consistency is key to mastery. Stay focused, use your feedback, and keep
+        learning every day.
+      </p>
+      <a routerLink="/student/ask-tutor" [queryParams]="tutorQuery()"
+        >Message Your Tutor<i class="ri-arrow-right-line" aria-hidden="true"></i
+      ></a>
+    </section>
+  </div>
+</div>
+<school-hub-dialog-panel
+  [title]="titles[view()] ?? 'Progress'"
+  [open]="!!view()"
+  (dismissed)="closeView()"
+>
+  @switch (view()) { @case ('topics') {
+  <p class="dialog-copy">
+    Topic scores average the latest quiz result, completed worksheet, and
+    available portfolio rubric. Unassessed topics show no score.
+  </p>
+  <school-hub-score-table
+    [items]="topics()"
+    label="All topic scores"
+    emptyMessage="No topics in this selection."
+  />
+  } @case ('skills') {
+  <p class="dialog-copy">
+    These portfolio assessments supply your skill evidence. Select a task to
+    review its rubric and tutor comments. A revised submission keeps its earlier
+    feedback until a new review is available.
+  </p>
+  <school-hub-activity-list
+    [items]="evidence()"
+    label="Assessed portfolio tasks"
+    emptyMessage="No reviewed portfolio tasks in this selection yet."
+  />
+  } @case ('achievements') {
+  <p class="dialog-copy">
+    Recorded completions, submissions, and portfolio reviews for the selected
+    activity, subject, and term.
+  </p>
+  <school-hub-activity-list
+    [items]="visibleActivities()"
+    label="All achievements"
+    emptyMessage="No achievements in this selection yet."
+  /><school-hub-pagination
+    [total]="activities().length"
+    [page]="activityPage()"
+    [pageSize]="10"
+    itemLabel="achievements"
+    label="Achievement pages"
+    (pageChanged)="changePage($event)"
+  />
+  } @case ('recommendations') {
+  <p class="dialog-copy">
+    Available activities and feedback that can help you move forward. Quiz
+    recommendations respect remaining attempts; submitted work is awaiting
+    review.
+  </p>
+  <school-hub-activity-list
+    [items]="recommendations()"
+    label="All recommended next steps"
+    emptyMessage="No outstanding next steps in this selection. Keep exploring your lessons and resources."
+  />
+  } @case ('calculation') {
+  <div class="calculation-guide">
+    <p>
+      <strong>Academic progress:</strong> the average lesson progress, including
+      partially completed lessons. Completing practice does not automatically
+      finish a lesson.
+    </p>
+    <p>
+      <strong>Quiz score:</strong> the average of all recorded quiz attempts in
+      this selection. The chart groups these results into school-calendar weeks
+      and leaves weeks without a recorded score blank.
+    </p>
+    <p>
+      <strong>Worksheet completion:</strong> completed worksheets divided by all
+      worksheets in the selection.
+    </p>
+    <p>
+      <strong>Portfolio completion:</strong> submitted and completed tasks
+      divided by all portfolio tasks. A task needing revision counts again after
+      resubmission.
+    </p>
+    <p>
+      <strong>Topic mastery:</strong> the average of the latest quiz score,
+      completed worksheet score, and available portfolio rubric for the topic.
+    </p>
+    <p>
+      <strong>Skill evidence:</strong> average tutor rubric marks relative to
+      each criterion’s maximum. It describes assessed portfolio work, including
+      earlier feedback retained after revision.
+    </p>
+    <p>
+      <strong>Mastery bands:</strong> Strong: 85–100%; Good: 70–84%; Developing:
+      60–69%; Needs Support: below 60%. No Score Yet means no assessed evidence
+      is available.
+    </p>
+    <p>
+      <strong>Learning engagement:</strong> lessons, quizzes, worksheets, and
+      portfolio tasks with recorded progress or results, divided by the total
+      learning activities.
+    </p>
+    <p>
+      The page uses the current sample learner records and saved practice on
+      this device. Attendance and learning streaks are not tracked yet.
+    </p>
+  </div>
+  } }
+</school-hub-dialog-panel>

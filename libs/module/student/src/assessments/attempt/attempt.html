@@ -1,0 +1,304 @@
+<div class="attempt-page">
+  @if (progressReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Progress" /> }
+  @if (feedbackReturn(); as destination) {
+  <school-hub-return-link [route]="destination" label="Back to Feedback" /> }
+  <a
+    class="back-link"
+    routerLink="/student/assessments"
+    [queryParams]="backQuery()"
+    ><i class="ri-arrow-left-line" aria-hidden="true"></i>Back to Quizzes &amp;
+    Assessments</a
+  >
+  @if (assessment(); as assessment) { @if (attempt(); as attempt) {
+  <header class="attempt-heading">
+    <div>
+      <span class="eyebrow"
+        >{{ assessment.subject }} {{ kinds[assessment.kind].label }}</span
+      >
+      <h1>Quiz in Progress</h1>
+      <h2>{{ assessment.title }}</h2>
+      <div class="attempt-meta">
+        <span
+          ><i class="ri-calendar-line" aria-hidden="true"></i>Week {{
+          assessment.week }}</span
+        ><span>{{ assessment.questionCount }} Questions</span
+        ><span>{{ assessment.totalMarks }} Marks</span
+        ><span>{{ assessment.durationMinutes }} Minutes</span
+        ><school-hub-status-badge label="Practice mode" tone="purple" />
+      </div>
+    </div>
+    <div class="attempt-controls">
+      <button class="outline-button" type="button" (click)="togglePause()">
+        <i
+          [class]="attempt.status === 'paused' ? 'ri-play-line' : 'ri-pause-line'"
+          aria-hidden="true"
+        ></i
+        >{{ attempt.status === 'paused' ? 'Resume Quiz' : 'Pause Quiz' }}
+      </button>
+      <div class="timer" [class.urgent]="seconds() < 60">
+        <span>Time Left</span
+        ><strong role="timer" aria-label="Time left">{{ time() }}</strong>
+      </div>
+    </div>
+  </header>
+  <div class="attempt-progress">
+    <span>Your Progress</span
+    ><school-hub-progress-bar
+      [value]="answered().length / assessment.questionCount * 100"
+      label="Questions answered"
+      tone="purple"
+    /><strong
+      >{{ answered().length }} of {{ assessment.questionCount }}
+      answered</strong
+    >
+  </div>
+  @if (seconds() < 60 && attempt.status === 'active') {
+  <p class="time-warning" role="status">
+    Less than a minute remains. Your attempt will submit when time runs out.
+  </p>
+  }
+  <div class="attempt-layout">
+    <div class="question-primary">
+      @if (attempt.status === 'paused') {
+      <section class="paused-state">
+        <i class="ri-pause-circle-line" aria-hidden="true"></i>
+        <h2>Quiz paused</h2>
+        <p>
+          Your remaining time and answers are saved. Resume when you’re ready.
+        </p>
+        <button class="assessment-button" type="button" (click)="togglePause()">
+          Resume Quiz
+        </button>
+      </section>
+      } @else if (question(); as question) {
+      <section class="question-card" aria-labelledby="question-heading">
+        <div class="question-meta">
+          <span
+            >Question {{ attempt.currentIndex + 1 }} of {{
+            assessment.questionCount }}</span
+          >
+          <div>
+            <school-hub-status-badge
+              [label]="assessment.totalMarks / assessment.questionCount + ' Marks'"
+              tone="purple"
+            /><button
+              type="button"
+              class="bookmark-button"
+              [attr.aria-pressed]="attempt.marked.includes(attempt.currentIndex)"
+              aria-label="Mark current question for review"
+              (click)="mark()"
+            >
+              <i
+                [class]="attempt.marked.includes(attempt.currentIndex) ? 'ri-bookmark-fill' : 'ri-bookmark-line'"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+        </div>
+        <h2 id="question-heading">{{ question.prompt }}</h2>
+        <div class="question-instructions">
+          <strong>Instructions:</strong>
+          <ul>
+            <li>Read the question carefully.</li>
+            <li>Choose the correct answer from the options below.</li>
+          </ul>
+        </div>
+        <school-hub-choice-list
+          [options]="question.options"
+          [name]="question.id"
+          [label]="question.prompt"
+          [value]="attempt.answers[attempt.currentIndex]"
+          (changed)="choose($event)"
+        />
+        <div class="question-actions">
+          <button
+            class="outline-button"
+            type="button"
+            [disabled]="attempt.currentIndex === 0"
+            (click)="selectQuestion(attempt.currentIndex - 1)"
+          >
+            <i class="ri-arrow-left-line" aria-hidden="true"></i
+            >Previous</button
+          ><button class="assessment-button" type="button" (click)="next()">
+            {{ attempt.currentIndex === assessment.questionCount - 1 ? 'Review &
+            Submit' : 'Next' }}<i
+              class="ri-arrow-right-line"
+              aria-hidden="true"
+            ></i>
+          </button>
+        </div>
+      </section>
+      }
+      <details class="learning-objectives" open>
+        <summary>What you will learn in this quiz</summary>
+        <ul>
+          @for (objective of assessment.objectives; track objective) {
+          <li>
+            <i class="ri-checkbox-circle-fill" aria-hidden="true"></i>{{
+            objective }}
+          </li>
+          }
+        </ul>
+        @if (assessment.subjectId === 'mathematics') {
+        <div class="place-values" aria-label="Place value example">
+          <span>Hundred thousands<strong>6</strong></span
+          ><span>Ten thousands<strong>8</strong></span
+          ><span>Thousands<strong>2</strong></span
+          ><span>Hundreds<strong>7</strong></span
+          ><span>Tens<strong>4</strong></span
+          ><span>Ones<strong>3</strong></span>
+        </div>
+        }
+      </details>
+      <p class="save-note">
+        <i class="ri-checkbox-circle-line" aria-hidden="true"></i>{{
+        store.persistent() ? 'Your practice answers are saved in this browser
+        tab.' : 'Your answers are kept while this page remains open.' }} Leaving
+        the quiz pauses your practice.
+      </p>
+    </div>
+    <aside class="question-aside" aria-label="Quiz tools">
+      <school-hub-dashboard-card
+        title="Question Navigator"
+        icon="ri-layout-grid-line"
+        tone="purple"
+        ><school-hub-question-navigator
+          [total]="assessment.questionCount"
+          [current]="attempt.currentIndex"
+          [answered]="answered()"
+          [marked]="attempt.marked"
+          [disabled]="attempt.status === 'paused'"
+          (selected)="selectQuestion($event)" /></school-hub-dashboard-card
+      ><school-hub-dashboard-card
+        title="Quiz Information"
+        icon="ri-information-line"
+        tone="purple"
+        ><dl class="quiz-information">
+          <div>
+            <dt>Total Questions</dt>
+            <dd>{{ assessment.questionCount }}</dd>
+          </div>
+          <div>
+            <dt>Total Marks</dt>
+            <dd>{{ assessment.totalMarks }}</dd>
+          </div>
+          <div>
+            <dt>Passing Score</dt>
+            <dd>{{ assessment.passingPercentage }}%</dd>
+          </div>
+          <div>
+            <dt>Attempts Allowed</dt>
+            <dd>{{ assessment.maxAttempts }}</dd>
+          </div>
+          <div>
+            <dt>This is Attempt</dt>
+            <dd>
+              {{ store.usedAttempts(assessment.id) }} of {{
+              assessment.maxAttempts }}
+            </dd>
+          </div>
+        </dl></school-hub-dashboard-card
+      ><school-hub-dashboard-card
+        title="Quick Actions"
+        icon="ri-flashlight-line"
+        tone="orange"
+        ><div class="quick-actions">
+          <button
+            type="button"
+            [disabled]="attempt.status === 'paused'"
+            (click)="mark()"
+          >
+            <i class="ri-bookmark-line" aria-hidden="true"></i>{{
+            attempt.marked.includes(attempt.currentIndex) ? 'Remove Review Mark'
+            : 'Mark for Review' }}</button
+          ><button
+            type="button"
+            [disabled]="attempt.status === 'paused' || attempt.answers[attempt.currentIndex] === null"
+            (click)="choose(null)"
+          >
+            <i class="ri-delete-bin-line" aria-hidden="true"></i>Clear Answer</button
+          ><button type="button" (click)="dialog.set('calculator')">
+            <i class="ri-calculator-line" aria-hidden="true"></i>Show Calculator
+          </button>
+        </div></school-hub-dashboard-card
+      ><button
+        class="assessment-button submit-button"
+        type="button"
+        [disabled]="attempt.status === 'paused'"
+        (click)="dialog.set('submit')"
+      >
+        Submit assessment<i class="ri-check-line" aria-hidden="true"></i>
+      </button>
+    </aside>
+  </div>
+  <div class="exam-tip">
+    <i class="ri-lightbulb-line" aria-hidden="true"></i>
+    <div>
+      <strong>Practice Tip</strong>
+      <p>
+        Read every option carefully, check your work, and return to questions
+        you marked for review.
+      </p>
+    </div>
+  </div>
+  } @else if (!store.ready()) {
+  <div class="ready-card" role="status">Loading your practice attempt…</div>
+  } @else {
+  <section class="ready-card">
+    <h1>Ready to practise?</h1>
+    <h2>{{ assessment.title }}</h2>
+    <p>
+      {{ assessment.questionCount }} questions · {{ assessment.durationMinutes
+      }} minutes · {{ assessment.totalMarks }} marks
+    </p>
+    <school-hub-status-badge label="Practice mode" tone="purple" />@if
+    (canStart()) {
+    <button class="assessment-button" type="button" (click)="start()">
+      Start practice
+    </button>
+    } @else {
+    <p>
+      {{ assessment.available ? 'You have used all available practice attempts.'
+      : assessment.lockedReason }}
+    </p>
+    }@if (store.latestResult(assessment.id); as result) {
+    <a
+      class="subtle-button"
+      [routerLink]="['/student/assessments', assessment.id, 'results', result.id]"
+      [queryParams]="backQuery()"
+      >View latest result</a
+    >
+    }
+  </section>
+  } } @else {
+  <section class="ready-card">
+    <h1>Assessment not found</h1>
+    <p>Return to your assessments and choose an available practice.</p>
+  </section>
+  }
+  <school-hub-dialog-panel
+    [open]="dialog() !== null"
+    [title]="dialog() === 'calculator' ? 'Practice Calculator' : 'Submit assessment?'"
+    (dismissed)="dialog.set(null)"
+    >@if (dialog() === 'calculator') { <school-hub-calculator /> } @else if
+    (dialog() === 'submit' && assessment(); as assessment) {
+    <p class="dialog-copy">
+      You have answered {{ answered().length }} of {{ assessment.questionCount
+      }} questions. Unanswered questions receive no marks.
+    </p>
+    @if (attempt()?.marked?.length) {
+    <p class="dialog-copy">
+      You have {{ attempt()?.marked?.length }} questions marked for review.
+    </p>
+    }
+    <div class="confirm-actions">
+      <button class="outline-button" type="button" (click)="dialog.set(null)">
+        Keep reviewing</button
+      ><button class="assessment-button" type="button" (click)="submit()">
+        Submit and view results
+      </button>
+    </div>
+    }</school-hub-dialog-panel
+  >
+</div>

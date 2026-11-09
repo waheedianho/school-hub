@@ -1,0 +1,29 @@
+<div class="quick-actions-grid">
+  @for (act of actions(); track act.id) {
+  <div
+    class="quick-action-card"
+    role="button"
+    tabindex="0"
+    (click)="onActionClick(act.id)"
+    (keydown.enter)="onActionClick(act.id)"
+    (keydown.space)="onActionClick(act.id)"
+    [attr.aria-label]="act.title + ': ' + act.description"
+  >
+    <div class="action-left">
+      <div class="icon-circle">
+        <span class="material-symbols-outlined action-icon"
+          >{{ act.icon }}</span
+        >
+      </div>
+      <div class="action-text">
+        <h3 class="action-title">{{ act.title }}</h3>
+        <p class="action-desc">{{ act.description }}</p>
+      </div>
+    </div>
+
+    <div class="action-arrow">
+      <span class="material-symbols-outlined chevron">chevron_right</span>
+    </div>
+  </div>
+  }
+</div>

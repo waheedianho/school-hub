@@ -1,0 +1,188 @@
+<div
+  class="sidebar-area fixed overflow-hidden z-[7] top-0 h-screen transition-all rounded-r-md"
+  [ngClass]="{
+    'bg-white dark:bg-[#0c1427]': theme === 'light',
+    'bg-gray-900 dark:bg-[#0c1427]': theme === 'dark'
+  }"
+>
+  <!-- Logo -->
+  <div
+    class="logo border-b px-[25px] pt-[19px] pb-[15px] absolute z-[2] right-0 top-0 left-0"
+    [ngClass]="{
+      'bg-white dark:bg-[#0c1427] border-gray-100 dark:border-[#172036]': theme === 'light',
+      'bg-gray-900 dark:bg-[#0c1427] border-gray-800 dark:border-[#172036]': theme === 'dark'
+    }"
+  >
+    <a routerLink="/" class="transition-none relative flex items-center">
+      <img [src]="logoIcon" alt="logo-icon" class="w-[26px] h-[26px]" />
+      <span
+        class="font-bold relative ltr:ml-[8px] rtl:mr-[8px] top-px text-xl"
+        [ngClass]="{
+          'text-black dark:text-white': theme === 'light',
+          'text-white': theme === 'dark'
+        }"
+      >
+        {{ logoText }}
+      </span>
+    </a>
+    <button
+      aria-label="Close navigation"
+      (click)="closeSidebar.emit()"
+      type="button"
+      class="burger-menu inline-block absolute z-[3] top-[24px] ltr:right-[25px] rtl:left-[25px] transition-all hover:text-primary-500"
+    >
+      <i class="material-symbols-outlined">close</i>
+    </button>
+  </div>
+
+  <!-- Menu -->
+  <div
+    class="pt-[89px] px-[25px] pb-[20px] overflow-y-auto overflow-x-hidden h-full"
+  >
+    <nav class="accordion" aria-label="Portal navigation">
+      @for (section of sections; track section.heading) {
+      <span
+        class="block relative font-medium uppercase mb-[10px] text-xs [&:not(:first-child)]:mt-[22px]"
+        [ngClass]="{
+            'text-gray-400': theme === 'light',
+            'text-gray-500': theme === 'dark'
+          }"
+      >
+        {{ section.heading }}
+      </span>
+
+      @for (item of section.items; track item.label; let i = $index) {
+      <div
+        class="accordion-item rounded-md mb-[5px]"
+        [ngClass]="{
+              'text-black dark:text-white': theme === 'light',
+              'text-gray-200': theme === 'dark'
+            }"
+      >
+        <!-- Leaf item (no children) -->
+        @if (!item.children || item.children.length === 0) {
+        <a
+          [routerLink]="item.route"
+          (click)="closeSidebar.emit()"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{
+            paths: item.exact === false ? 'subset' : 'exact',
+            queryParams: 'ignored',
+            matrixParams: 'ignored',
+            fragment: 'ignored'
+          }"
+          ariaCurrentWhenActive="page"
+          class="accordion-button flex items-center transition-all py-[9px] ltr:pl-[12px] ltr:pr-[10px] rtl:pr-[12px] rtl:pl-[10px] rounded-md font-medium w-full relative text-left"
+          [ngClass]="{
+                  'hover:bg-gray-50 dark:hover:bg-[#15203c]': theme === 'light',
+                  'hover:bg-gray-800 dark:hover:bg-[#15203c]': theme === 'dark'
+                }"
+        >
+          <i
+            aria-hidden="true"
+            class="material-symbols-outlined transition-all ltr:mr-[8px] rtl:ml-[8px] !text-[20px] leading-none shrink-0 relative -top-px"
+            [ngClass]="{
+                    'text-gray-500 dark:text-gray-400': theme === 'light',
+                    'text-gray-400': theme === 'dark'
+                  }"
+          >
+            {{ item.icon }}
+          </i>
+          <span class="title leading-snug">{{ item.label }}</span>
+          @if (item.badge) {
+          <span
+            class="text-[10px] font-medium py-[1px] px-[8px] ltr:ml-[8px] rtl:mr-[8px] inline-block rounded-sm"
+            [ngClass]="item.badgeClass || 'text-orange-500 bg-orange-100 dark:bg-[#ffffff14]'"
+          >
+            {{ item.badge }}
+          </span>
+          }
+        </a>
+        }
+
+        <!-- Parent item (has children) -->
+        @if (item.children && item.children.length > 0) {
+        <button
+          class="accordion-button toggle flex items-center transition-all py-[9px] ltr:pl-[12px] ltr:pr-[26px] rtl:pr-[12px] rtl:pl-[26px] rounded-md font-medium w-full relative text-left"
+          [ngClass]="{
+                  'open': isSectionOpen(i),
+                  'hover:bg-gray-50 dark:hover:bg-[#15203c]': theme === 'light',
+                  'hover:bg-gray-800 dark:hover:bg-[#15203c]': theme === 'dark'
+                }"
+          type="button"
+          (click)="toggleSection(i)"
+        >
+          <i
+            aria-hidden="true"
+            class="material-symbols-outlined transition-all ltr:mr-[8px] rtl:ml-[8px] !text-[20px] leading-none shrink-0 relative -top-px"
+            [ngClass]="{
+                    'text-gray-500 dark:text-gray-400': theme === 'light',
+                    'text-gray-400': theme === 'dark'
+                  }"
+          >
+            {{ item.icon }}
+          </i>
+          <span class="title leading-snug">{{ item.label }}</span>
+          @if (item.badge) {
+          <span
+            class="rounded-full font-medium inline-block text-center w-[20px] h-[20px] text-[11px] leading-[20px] ltr:ml-auto rtl:mr-auto rtl:ml-0"
+            [ngClass]="item.badgeClass || 'text-orange-500 bg-orange-50 dark:bg-[#ffffff14]'"
+          >
+            {{ item.badge }}
+          </span>
+          }
+        </button>
+        <div
+          class="accordion-collapse"
+          [ngClass]="{ 'open': isSectionOpen(i) }"
+        >
+          <div class="pt-[4px]">
+            <ul class="sidebar-sub-menu">
+              @for (child of item.children; track child.label) {
+              <li class="sidemenu-item mb-[4px] last:mb-0">
+                <a
+                  [routerLink]="child.route"
+                  (click)="closeSidebar.emit()"
+                  routerLinkActive="active"
+                  [routerLinkActiveOptions]="{
+                    paths: child.exact === false ? 'subset' : 'exact',
+                    queryParams: 'ignored',
+                    matrixParams: 'ignored',
+                    fragment: 'ignored'
+                  }"
+                  ariaCurrentWhenActive="page"
+                  class="sidemenu-link rounded-md flex items-center relative transition-all font-medium py-[9px] ltr:pl-[38px] ltr:pr-[12px] rtl:pr-[38px] rtl:pl-[12px] hover:text-primary-500 w-full text-left"
+                  [ngClass]="{
+                            'text-gray-500 dark:text-gray-400 hover:bg-primary-50 dark:hover:bg-[#15203c]': theme === 'light',
+                            'text-gray-400 hover:bg-gray-800 dark:hover:bg-[#15203c]': theme === 'dark'
+                          }"
+                >
+                  {{ child.label }} @if (child.badge) {
+                  <span
+                    class="text-[10px] font-medium py-[1px] px-[8px] ltr:ml-[8px] rtl:mr-[8px] inline-block rounded-sm"
+                    [ngClass]="child.badgeClass || 'text-orange-500 bg-orange-100 dark:bg-[#ffffff14]'"
+                  >
+                    {{ child.badge }}
+                  </span>
+                  }
+                </a>
+              </li>
+              }
+            </ul>
+          </div>
+        </div>
+        }
+      </div>
+      } }
+    </nav>
+    @if (encouragement) {
+    <div class="sidebar-encouragement">
+      <i class="ri-shield-star-line" aria-hidden="true"></i>
+      <div>
+        <strong>Keep learning!</strong>
+        <p>You’re doing great. <span aria-hidden="true">🎉</span></p>
+      </div>
+    </div>
+    }
+  </div>
+</div>
