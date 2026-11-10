@@ -1,0 +1,287 @@
+<div class="subjects-curriculum-container">
+  <!-- Notification / Feedback Toast -->
+  @if (store.setupSaveStatus(); as message) {
+  <div class="status-banner">
+    <div class="status-content">
+      <i class="ri-checkbox-circle-line status-icon"></i>
+      <span>{{ message }}</span>
+    </div>
+    <button
+      type="button"
+      class="dismiss-btn"
+      (click)="dismissNotification()"
+      aria-label="Dismiss notification"
+    >
+      <i class="ri-close-line"></i>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Subjects & Curriculum</h1>
+      <p class="page-subtitle">
+        Manage academic subjects, term curriculum maps, schemes of work, topic
+        delivery packs, and teaching resources.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onBulkImport()"
+        aria-label="Bulk import curriculum"
+      >
+        <i class="ri-upload-2-line btn-icon"></i>
+        <span>Bulk Import</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onCreateScheme()"
+        aria-label="Create scheme of work"
+      >
+        <i class="ri-calendar-event-line btn-icon"></i>
+        <span>Create Scheme</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onAddSubject()"
+        aria-label="Add new subject"
+      >
+        <i class="ri-add-line btn-icon"></i>
+        <span>+ Add Subject</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. Top Dynamic KPI Summary Metrics -->
+  <school-hub-curriculum-summary-metrics></school-hub-curriculum-summary-metrics>
+
+  <!-- 2. Navigation Tabs (Underline style) -->
+  <div class="tabs-nav" role="tablist">
+    @for (tab of tabs; track tab.id) {
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeCurriculumTab() === tab.id || (tab.id === 'scheme-of-work' && store.activeCurriculumTab() === 'scheme-detail')"
+      [attr.aria-selected]="store.activeCurriculumTab() === tab.id"
+      (click)="setTab(tab.id)"
+    >
+      <span>{{ tab.label }}</span>
+      <span class="tab-badge">{{ tab.count }}</span>
+    </button>
+    }
+  </div>
+
+  <!-- 3. Tab Content Area -->
+  <div class="tab-content-area">
+    @if (store.activeCurriculumTab() === 'subjects') {
+    <school-hub-subject-directory></school-hub-subject-directory>
+    } @if (store.activeCurriculumTab() === 'curriculum-map') {
+    <school-hub-curriculum-map></school-hub-curriculum-map>
+    } @if (store.activeCurriculumTab() === 'scheme-of-work') {
+    <school-hub-scheme-of-work></school-hub-scheme-of-work>
+    } @if (store.activeCurriculumTab() === 'scheme-detail') {
+    <school-hub-scheme-detail></school-hub-scheme-detail>
+    } @if (store.activeCurriculumTab() === 'topic-delivery-packs') {
+    <school-hub-topic-delivery-pack></school-hub-topic-delivery-pack>
+    } @if (store.activeCurriculumTab() === 'approval-queue') {
+    <div class="approval-queue-card">
+      <div class="queue-header">
+        <div class="queue-title-wrap">
+          <i class="ri-shield-check-line queue-icon"></i>
+          <div>
+            <h3 class="queue-heading">Curriculum Approval Queue (5 Items)</h3>
+            <p class="queue-sub">
+              Schemes and lesson delivery packs pending Academic Committee or
+              HOD review.
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="store.setupSaveStatus.set('Batch approved all 5 pending curriculum items.')"
+        >
+          <i class="ri-check-double-line"></i>
+          <span>Approve All (5)</span>
+        </button>
+      </div>
+
+      <div class="queue-list">
+        <div class="queue-item">
+          <div class="q-item-info">
+            <span class="q-badge orange">Scheme of Work</span>
+            <strong class="q-title"
+              >Basic Science – Week 6 (Living Organisms & Nutrition)</strong
+            >
+            <span class="q-meta"
+              >Submitted by Mrs. Nkechi Okoro • JSS 2 • 2 days ago</span
+            >
+          </div>
+          <div class="q-item-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="store.viewSchemeWeekDetail(6)"
+            >
+              Review Week
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="store.setupSaveStatus.set('Approved Week 6 Basic Science scheme.')"
+            >
+              Approve
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <div class="q-item-info">
+            <span class="q-badge purple">Delivery Pack</span>
+            <strong class="q-title"
+              >English Language – Week 3 (Essay Writing & Argumentation)</strong
+            >
+            <span class="q-meta"
+              >Submitted by Mrs. Fatima Yusuf • JSS 1 • 3 days ago</span
+            >
+          </div>
+          <div class="q-item-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="store.viewTopicDeliveryPack()"
+            >
+              Inspect Pack
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="store.setupSaveStatus.set('Approved Week 3 English delivery pack.')"
+            >
+              Approve
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <div class="q-item-info">
+            <span class="q-badge blue">Worksheet Review</span>
+            <strong class="q-title"
+              >Mathematics – Week 4 Worksheet 2 (Simplifying Fractions)</strong
+            >
+            <span class="q-meta"
+              >Submitted by Mrs. Funke Yusuf • JSS 1 • 1 day ago</span
+            >
+          </div>
+          <div class="q-item-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="store.viewSchemeWeekDetail(4)"
+            >
+              Review Worksheet
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="store.setupSaveStatus.set('Approved Mathematics Worksheet 2.')"
+            >
+              Approve
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <div class="q-item-info">
+            <span class="q-badge amber">Assessment Paper</span>
+            <strong class="q-title"
+              >Social Studies – Mid-term Assessment & Rubric</strong
+            >
+            <span class="q-meta"
+              >Submitted by Mr. Joseph Anayo • JSS 2 • 4 days ago</span
+            >
+          </div>
+          <div class="q-item-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="store.setupSaveStatus.set('Reviewing Social Studies Assessment Paper.')"
+            >
+              Preview Paper
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="store.setupSaveStatus.set('Approved Social Studies Assessment Paper.')"
+            >
+              Approve
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <div class="q-item-info">
+            <span class="q-badge green">Curriculum Map</span>
+            <strong class="q-title"
+              >Computer Studies – Third Term Full Map Alignment</strong
+            >
+            <span class="q-meta"
+              >Submitted by Mr. David Adeyemi • JSS 1-3 • 5 days ago</span
+            >
+          </div>
+          <div class="q-item-actions">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="store.setActiveCurriculumTab('curriculum-map')"
+            >
+              View Map
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="store.setupSaveStatus.set('Approved Computer Studies Curriculum Map.')"
+            >
+              Approve
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- 4. Quick Actions Grid -->
+  <school-hub-curriculum-quick-actions></school-hub-curriculum-quick-actions>
+
+  <!-- 5. Footer Curriculum Standards Callout -->
+  <div class="standards-callout-card">
+    <div class="callout-content">
+      <i class="ri-book-read-line callout-icon"></i>
+      <div>
+        <h4 class="callout-title">
+          National Curriculum Standards & Frameworks
+        </h4>
+        <p class="callout-desc">
+          SchoolHub includes pre-configured national standards for NERDC
+          (Nigeria Universal Basic Education), WAEC, Cambridge Lower Secondary,
+          and British National Curriculum. You can map custom school learning
+          objectives directly against statutory standards.
+        </p>
+      </div>
+    </div>
+    <button type="button" class="callout-btn" (click)="onBulkImport()">
+      <span>Import Framework</span>
+      <i class="ri-arrow-right-line"></i>
+    </button>
+  </div>
+</div>

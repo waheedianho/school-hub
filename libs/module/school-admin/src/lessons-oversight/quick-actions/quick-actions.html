@@ -1,0 +1,24 @@
+<div class="quick-actions-grid">
+  @for (action of actions; track action.id) {
+  <div
+    class="action-card"
+    (click)="triggerAction(action.id)"
+    tabindex="0"
+    (keydown.enter)="triggerAction(action.id)"
+    [attr.aria-label]="action.title"
+  >
+    <div class="action-icon-wrap" [class]="action.tone">
+      <i [class]="action.icon"></i>
+    </div>
+
+    <div class="action-info">
+      <h3 class="action-title">{{ action.title }}</h3>
+      <p class="action-desc">{{ action.description }}</p>
+    </div>
+
+    <div class="action-arrow">
+      <i class="ri-arrow-right-s-line"></i>
+    </div>
+  </div>
+  }
+</div>

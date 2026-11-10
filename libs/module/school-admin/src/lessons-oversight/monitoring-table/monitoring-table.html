@@ -1,0 +1,266 @@
+<div class="monitoring-table-card">
+  <!-- Header & Filters Bar -->
+  <div class="table-card-header">
+    <h3 class="card-heading">School Lesson Monitoring</h3>
+
+    <div class="filter-controls-row">
+      <div class="filter-group">
+        <label for="classFilter" class="filter-label">Class Level</label>
+        <select
+          id="classFilter"
+          class="filter-select"
+          [ngModel]="store.lessonClassFilter()"
+          (ngModelChange)="onClassChange($event)"
+        >
+          @for (c of classLevels; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="subjectFilter" class="filter-label">Subject</label>
+        <select
+          id="subjectFilter"
+          class="filter-select"
+          [ngModel]="store.lessonSubjectFilter()"
+          (ngModelChange)="onSubjectChange($event)"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="teacherFilter" class="filter-label">Teacher</label>
+        <select
+          id="teacherFilter"
+          class="filter-select"
+          [ngModel]="store.lessonTeacherFilter()"
+          (ngModelChange)="onTeacherChange($event)"
+        >
+          @for (t of teachers; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="statusFilter" class="filter-label">
+          @if (store.activeLessonsTab() === 'delivery-oversight') {
+          <span>Delivery Status</span>
+          } @else {
+          <span>Status</span>
+          }
+        </label>
+        <select
+          id="statusFilter"
+          class="filter-select"
+          [ngModel]="store.lessonStatusFilter()"
+          (ngModelChange)="onStatusChange($event)"
+        >
+          @for (st of statuses; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="search-box">
+        <i class="ri-search-line search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search lessons..."
+          [ngModel]="store.lessonSearchQuery()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Search lessons"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Body -->
+  <div class="table-responsive">
+    <table class="monitoring-table" role="grid">
+      <thead>
+        <tr>
+          <th class="th-class">Class</th>
+          <th class="th-subject">Subject</th>
+          <th class="th-week">Week</th>
+          <th class="th-topic">Current Topic</th>
+          <th class="th-teacher">Assigned Teacher</th>
+          <th class="th-pack">Delivery Pack</th>
+          @if (store.activeLessonsTab() === 'delivery-oversight') {
+          <th class="th-readiness">Lesson Readiness</th>
+          <th class="th-progress">Delivery Progress</th>
+          } @else {
+          <th class="th-status">Lesson Status</th>
+          }
+          <th class="th-attendance">Attendance</th>
+          <th class="th-date">
+            @if (store.activeLessonsTab() === 'delivery-oversight') {
+            <span>Last Update</span>
+            } @else {
+            <span>Last Updated</span>
+            }
+          </th>
+          <th class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rec of store.filteredLessonRecords(); track rec.id) {
+        <tr
+          [class.selected]="store.selectedLessonRecord().id === rec.id"
+          (click)="onSelectRow(rec)"
+          tabindex="0"
+          (keydown.enter)="onSelectRow(rec)"
+        >
+          <td class="td-class">
+            <strong class="class-text">{{ rec.className }}</strong>
+          </td>
+          <td class="td-subject">{{ rec.subject }}</td>
+          <td class="td-week">
+            <span class="week-pill">{{ rec.week }}</span>
+          </td>
+          <td class="td-topic">
+            <span class="topic-title">{{ rec.currentTopic }}</span>
+          </td>
+          <td class="td-teacher">
+            <div class="teacher-inline">
+              <span class="teacher-avatar">
+                {{ rec.assignedTeacher.initials || 'TA' }}
+              </span>
+              <span class="teacher-name">{{ rec.assignedTeacher.name }}</span>
+            </div>
+          </td>
+          <td class="td-pack">
+            <span
+              class="badge pack-badge"
+              [class.ready]="rec.deliveryPackStatus === 'Ready'"
+              [class.review]="rec.deliveryPackStatus === 'Needs Review'"
+              [class.missing]="rec.deliveryPackStatus === 'Missing Pack'"
+              [class.draft]="rec.deliveryPackStatus === 'Draft'"
+            >
+              {{ rec.deliveryPackStatus }}
+            </span>
+          </td>
+
+          @if (store.activeLessonsTab() === 'delivery-oversight') {
+          <td class="td-readiness">
+            <span
+              class="badge readiness-badge"
+              [class.ready]="rec.lessonReadiness === 'Ready'"
+              [class.review]="rec.lessonReadiness === 'Needs Review'"
+              [class.missing]="rec.lessonReadiness === 'Missing Pack'"
+              [class.draft]="rec.lessonReadiness === 'Draft'"
+            >
+              {{ rec.lessonReadiness }}
+            </span>
+          </td>
+          <td class="td-progress">
+            <span
+              class="badge progress-badge"
+              [class.in-progress]="rec.deliveryProgress === 'In Progress'"
+              [class.completed]="rec.deliveryProgress === 'Completed'"
+              [class.delayed]="rec.deliveryProgress === 'Delayed'"
+              [class.pending]="rec.deliveryProgress === 'Pending'"
+            >
+              {{ rec.deliveryProgress }}
+            </span>
+          </td>
+          } @else {
+          <td class="td-status">
+            <span
+              class="badge status-badge"
+              [class.in-progress]="rec.lessonStatus === 'In Progress'"
+              [class.completed]="rec.lessonStatus === 'Completed'"
+              [class.delayed]="rec.lessonStatus === 'Delayed'"
+              [class.pending]="rec.lessonStatus === 'Pending'"
+            >
+              {{ rec.lessonStatus }}
+            </span>
+          </td>
+          }
+
+          <td class="td-attendance">
+            <span
+              class="attendance-rate"
+              [class.high]="rec.attendance >= 80"
+              [class.mid]="rec.attendance >= 70 && rec.attendance < 80"
+              [class.low]="rec.attendance < 70"
+            >
+              {{ rec.attendance }}%
+            </span>
+          </td>
+          <td class="td-date">{{ rec.lastUpdated }}</td>
+          <td class="td-actions" (click)="$event.stopPropagation()">
+            <div class="action-menu-wrap">
+              <button
+                type="button"
+                class="action-btn"
+                (click)="toggleActionMenu(rec.id, $event)"
+                aria-label="Actions for lesson"
+              >
+                <i class="ri-more-2-fill"></i>
+              </button>
+
+              @if (activeActionId() === rec.id) {
+              <div class="action-dropdown">
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onViewDetails(rec)"
+                >
+                  <i class="ri-eye-line"></i>
+                  <span>View Lesson Details</span>
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onInspectDeliveryPack(rec)"
+                >
+                  <i class="ri-folder-open-line"></i>
+                  <span>Inspect Delivery Pack</span>
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onMessageTeacher(rec)"
+                >
+                  <i class="ri-chat-3-line"></i>
+                  <span>Message Teacher</span>
+                </button>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Footer Pagination -->
+  <div class="table-card-footer">
+    <span class="footer-count">
+      Showing 1 to {{ store.filteredLessonRecords().length }} of {{
+      store.lessonMonitoringRecords().length }} lessons
+    </span>
+
+    <div class="pagination-buttons">
+      <button
+        type="button"
+        class="page-arrow"
+        disabled
+        aria-label="Previous page"
+      >
+        <i class="ri-arrow-left-s-line"></i>
+      </button>
+      <button type="button" class="page-num active">1</button>
+      <button type="button" class="page-arrow" disabled aria-label="Next page">
+        <i class="ri-arrow-right-s-line"></i>
+      </button>
+    </div>
+  </div>
+</div>

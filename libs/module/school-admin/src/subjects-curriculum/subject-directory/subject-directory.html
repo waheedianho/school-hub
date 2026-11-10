@@ -1,0 +1,401 @@
+<div class="directory-layout">
+  <!-- Left Column: Subject Directory Table -->
+  <div class="directory-main-card">
+    <!-- Header with controls -->
+    <div class="directory-header">
+      <h2 class="directory-title">Subject Directory</h2>
+
+      <div class="header-controls">
+        <!-- Search Input -->
+        <div class="search-box">
+          <i class="ri-search-line search-icon"></i>
+          <input
+            type="text"
+            class="search-input"
+            placeholder="Search subjects..."
+            [ngModel]="store.subjectSearchQuery()"
+            (ngModelChange)="onSearch($event)"
+            aria-label="Search subjects"
+          />
+        </div>
+
+        <!-- Status Filter Select -->
+        <div class="status-select-wrap">
+          <select
+            class="filter-select"
+            [ngModel]="store.subjectStatusFilter()"
+            (ngModelChange)="onStatusChange($event)"
+            aria-label="Filter by status"
+          >
+            @for (opt of statusOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- More Filters Button -->
+        <button type="button" class="btn btn-outline" aria-label="More filters">
+          <span>More Filters</span>
+        </button>
+
+        <!-- + Add Subject Button -->
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onAddSubject()"
+          aria-label="Add Subject"
+        >
+          <i class="ri-add-line btn-icon"></i>
+          <span>+ Add Subject</span>
+        </button>
+
+        <!-- Bulk Import Button -->
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="onBulkImport()"
+          aria-label="Bulk Import"
+        >
+          <i class="ri-upload-2-line btn-icon"></i>
+          <span>Bulk Import</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table of Subjects -->
+    <div class="table-responsive">
+      <table class="subjects-table" role="grid">
+        <thead>
+          <tr>
+            <th class="th-name">Subject Name</th>
+            <th class="th-levels">Class Levels</th>
+            <th class="th-teachers">Assigned Teachers</th>
+            <th class="th-topics">Weekly Topics</th>
+            <th class="th-coverage">Coverage</th>
+            <th class="th-status">Status</th>
+            <th class="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (subj of store.filteredSubjects(); track subj.id) {
+          <tr
+            [class.selected-row]="store.selectedSubjectId() === subj.id"
+            (click)="onSelectSubject(subj)"
+            tabindex="0"
+            (keydown.enter)="onSelectSubject(subj)"
+          >
+            <!-- Subject Name with Icon -->
+            <td class="td-name">
+              <div class="name-cell">
+                <div
+                  class="subject-icon-box"
+                  [style.background-color]="subj.color"
+                >
+                  <i [class]="subj.icon"></i>
+                </div>
+                <span class="subject-name-text">{{ subj.name }}</span>
+              </div>
+            </td>
+
+            <!-- Class Levels -->
+            <td class="td-levels">
+              <span class="levels-text">{{ subj.classLevels }}</span>
+            </td>
+
+            <!-- Assigned Teachers Avatar Stack -->
+            <td class="td-teachers">
+              <div class="avatar-stack">
+                @for (t of subj.assignedTeachers.slice(0, 3); track t.name) {
+                <div
+                  class="teacher-avatar"
+                  [style.background-color]="t.color || '#7c3aed'"
+                  [title]="t.name"
+                >
+                  <span>{{ t.initials }}</span>
+                </div>
+                } @if (subj.assignedTeachers.length > 3) {
+                <div class="avatar-more">
+                  +{{ subj.assignedTeachers.length - 3 }}
+                </div>
+                }
+              </div>
+            </td>
+
+            <!-- Weekly Topics -->
+            <td class="td-topics">
+              <span class="topics-val">{{ subj.weeklyTopics }}</span>
+            </td>
+
+            <!-- Coverage Progress Bar -->
+            <td class="td-coverage">
+              <div class="coverage-cell">
+                <span class="coverage-pct">{{ subj.coverage }}%</span>
+                <div class="coverage-track">
+                  <div
+                    class="coverage-fill"
+                    [style.width.%]="subj.coverage"
+                  ></div>
+                </div>
+              </div>
+            </td>
+
+            <!-- Status Badge -->
+            <td class="td-status">
+              <span
+                class="status-badge"
+                [class.badge-active]="subj.status === 'Active'"
+                [class.badge-review]="subj.status === 'Needs Review'"
+                [class.badge-draft]="subj.status === 'Draft'"
+              >
+                {{ subj.status }}
+              </span>
+            </td>
+
+            <!-- Actions Dropdown -->
+            <td class="td-actions" (click)="$event.stopPropagation()">
+              <div class="actions-dropdown-wrap">
+                <button
+                  type="button"
+                  class="action-menu-btn"
+                  (click)="toggleActionMenu(subj.id, $event)"
+                  [attr.aria-label]="'Actions for ' + subj.name"
+                >
+                  <i class="ri-more-2-fill"></i>
+                </button>
+
+                @if (activeActionSubjectId() === subj.id) {
+                <div class="action-menu">
+                  <button
+                    type="button"
+                    class="action-item"
+                    (click)="onSelectSubject(subj); closeActionMenu()"
+                  >
+                    <i class="ri-eye-line"></i>
+                    <span>View Overview</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="action-item"
+                    (click)="store.setActiveCurriculumTab('curriculum-map'); closeActionMenu()"
+                  >
+                    <i class="ri-map-2-line"></i>
+                    <span>Curriculum Map</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="action-item"
+                    (click)="store.setActiveCurriculumTab('scheme-of-work'); closeActionMenu()"
+                  >
+                    <i class="ri-file-text-line"></i>
+                    <span>Scheme of Work</span>
+                  </button>
+                </div>
+                }
+              </div>
+            </td>
+          </tr>
+          } @if (store.filteredSubjects().length === 0) {
+          <tr>
+            <td colspan="7" class="empty-cell">
+              <div class="empty-state">
+                <i class="ri-book-read-line empty-icon"></i>
+                <p class="empty-text">
+                  No subjects found matching your search.
+                </p>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer Info -->
+    <div class="directory-footer">
+      <span class="footer-count">
+        Showing 1 to {{ store.filteredSubjects().length }} of {{
+        store.subjects().length }} subjects
+      </span>
+      <div class="pagination-buttons">
+        <button type="button" class="page-arrow" disabled aria-label="Previous">
+          <i class="ri-arrow-left-s-line"></i>
+        </button>
+        <button type="button" class="page-num active">1</button>
+        <button type="button" class="page-arrow" disabled aria-label="Next">
+          <i class="ri-arrow-right-s-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Sidebar Panels -->
+  <div class="directory-sidebar">
+    <!-- Card 1: Curriculum Overview for Selected Subject -->
+    @if (store.selectedSubject(); as s) {
+    <div class="sidebar-card">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Curriculum Overview</h3>
+        <span class="subject-badge">{{ s.name }}</span>
+      </div>
+
+      <div class="sidebar-body">
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-shield-user-line info-icon"></i>
+            <span>Assigned Classes</span>
+          </span>
+          <span class="info-value">{{ s.assignedClasses.join(', ') }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-user-star-line info-icon"></i>
+            <span>Lead Teacher</span>
+          </span>
+          <span class="info-value">{{ s.leadTeacher }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-file-list-3-line info-icon"></i>
+            <span>Term Topics Planned</span>
+          </span>
+          <span class="info-value">{{ s.termTopicsPlanned }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-checkbox-circle-line info-icon"></i>
+            <span>Topics Completed</span>
+          </span>
+          <span class="info-value">{{ s.topicsCompleted }}</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-time-line info-icon"></i>
+            <span>Current Week / Topic</span>
+          </span>
+          <span class="info-value topic-current">
+            {{ s.currentWeek }} / {{ s.currentTopic }}
+          </span>
+        </div>
+
+        <!-- Progress Bars -->
+        <div class="progress-section">
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Coverage</span>
+              <span class="p-pct">{{ s.coverage }}%</span>
+            </div>
+            <div class="progress-track">
+              <div
+                class="progress-fill purple"
+                [style.width.%]="s.coverage"
+              ></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Delivery Pack Readiness</span>
+              <span class="p-pct">{{ s.deliveryPackReadiness }}%</span>
+            </div>
+            <div class="progress-track">
+              <div
+                class="progress-fill blue"
+                [style.width.%]="s.deliveryPackReadiness"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Approval Status -->
+        <div class="approval-status-row">
+          <span class="approval-label">
+            <i class="ri-shield-check-line info-icon"></i>
+            <span>Approval Status</span>
+          </span>
+          <span class="approval-badge">{{ s.approvalStatus }}</span>
+        </div>
+      </div>
+    </div>
+    }
+
+    <!-- Card 2: Operational Alerts -->
+    <div class="sidebar-card alerts-panel">
+      <button
+        type="button"
+        class="alert-item"
+        (click)="onAlertClick('approval')"
+      >
+        <div class="alert-icon-box orange">
+          <i class="ri-file-shield-line"></i>
+        </div>
+        <div class="alert-label">Subjects pending curriculum approval</div>
+        <div class="alert-badge orange">2</div>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </button>
+
+      <button type="button" class="alert-item" (click)="onAlertClick('packs')">
+        <div class="alert-icon-box purple">
+          <i class="ri-folder-warning-line"></i>
+        </div>
+        <div class="alert-label">Topics without delivery packs</div>
+        <div class="alert-badge purple">18</div>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </button>
+
+      <button type="button" class="alert-item" (click)="onAlertClick('behind')">
+        <div class="alert-icon-box blue">
+          <i class="ri-line-chart-line"></i>
+        </div>
+        <div class="alert-label">Classes behind scheme of work</div>
+        <div class="alert-badge blue">4</div>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </button>
+    </div>
+
+    <!-- Card 3: Quick Action Buttons -->
+    <div class="sidebar-card quick-links-card">
+      <h4 class="quick-title">Quick Actions</h4>
+      <div class="quick-links-list">
+        <button
+          type="button"
+          class="quick-link-btn"
+          (click)="onQuickAction('create-subject')"
+        >
+          <i class="ri-add-circle-line q-icon purple"></i>
+          <span>Create Subject</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-link-btn"
+          (click)="onQuickAction('map-curriculum')"
+        >
+          <i class="ri-map-2-line q-icon green"></i>
+          <span>Map Curriculum</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-link-btn"
+          (click)="onQuickAction('upload-scheme')"
+        >
+          <i class="ri-upload-2-line q-icon blue"></i>
+          <span>Upload Scheme</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-link-btn"
+          (click)="onQuickAction('review-packs')"
+        >
+          <i class="ri-folder-open-line q-icon orange"></i>
+          <span>Review Packs</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

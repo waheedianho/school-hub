@@ -45,6 +45,38 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.AddLearnerComponent,
           ),
       },
+      {
+        path: 'teachers-staff',
+        title: 'Teachers & Staff | SchoolHub Admin',
+        loadComponent: () =>
+          import('./teachers-staff/teachers-staff').then(
+            (m) => m.TeachersStaffComponent,
+          ),
+      },
+      {
+        path: 'teachers-staff/add',
+        title: 'Add Staff | SchoolHub Admin',
+        loadComponent: () =>
+          import('./teachers-staff/add-staff/add-staff').then(
+            (m) => m.AddStaffComponent,
+          ),
+      },
+      {
+        path: 'subjects-curriculum',
+        title: 'Subjects & Curriculum | SchoolHub Admin',
+        loadComponent: () =>
+          import('./subjects-curriculum/subjects-curriculum').then(
+            (m) => m.SubjectsCurriculumComponent,
+          ),
+      },
+      {
+        path: 'lessons-oversight',
+        title: 'Lessons & Delivery Oversight | SchoolHub Admin',
+        loadComponent: () =>
+          import('./lessons-oversight/lessons-oversight').then(
+            (m) => m.LessonsOversightComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -85,7 +117,10 @@ export const schoolAdminRoutes: Routes = [
         (page) =>
           page.path !== 'dashboard' &&
           page.path !== 'school-setup' &&
-          page.path !== 'classes-learners',
+          page.path !== 'classes-learners' &&
+          page.path !== 'teachers-staff' &&
+          page.path !== 'subjects-curriculum' &&
+          page.path !== 'lessons-oversight',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,

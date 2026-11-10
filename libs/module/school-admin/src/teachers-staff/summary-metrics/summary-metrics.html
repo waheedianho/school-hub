@@ -1,0 +1,77 @@
+@if (store.staffOverviewMetrics(); as metrics) {
+<div class="metrics-grid">
+  <!-- Total Teachers -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-user-star-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Total Teachers</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics.totalTeachers }}</span>
+      </div>
+      <span class="metric-badge up">{{ metrics.totalTeachersChange }}</span>
+    </div>
+  </div>
+
+  <!-- Support Staff -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-briefcase-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Support Staff</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics.supportStaff }}</span>
+      </div>
+      <span class="metric-badge up">{{ metrics.supportStaffChange }}</span>
+    </div>
+  </div>
+
+  <!-- Active Staff -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-user-follow-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Active Staff</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics.activeStaff }}</span>
+      </div>
+      <span class="metric-badge up">{{ metrics.activeStaffChange }}</span>
+    </div>
+  </div>
+
+  <!-- Unassigned Teachers -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <i class="ri-user-unfollow-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Unassigned Teachers</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics.unassignedTeachers }}</span>
+      </div>
+      <span class="metric-badge down"
+        >{{ metrics.unassignedTeachersChange }}</span
+      >
+    </div>
+  </div>
+
+  <!-- Avg. Feedback Completion -->
+  <div class="metric-card">
+    <div class="metric-icon-wrap violet">
+      <i class="ri-line-chart-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Avg. Feedback Completion</span>
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metrics.avgFeedbackCompletion }}%</span>
+      </div>
+      <span class="metric-badge up"
+        >{{ metrics.avgFeedbackCompletionChange }}</span
+      >
+    </div>
+  </div>
+</div>
+}

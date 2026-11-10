@@ -1,0 +1,161 @@
+<div class="sidebar-stack">
+  <!-- Card 1: Selected Staff Overview -->
+  @if (store.selectedStaff(); as staff) {
+  <div class="overview-card">
+    <div class="card-header">
+      <h3 class="card-title">Staff Overview</h3>
+    </div>
+
+    <div class="profile-summary">
+      <div class="avatar-row">
+        <div
+          class="avatar-large"
+          [style.background-color]="staff.avatarColor || '#7c3aed'"
+        >
+          @if (staff.avatarUrl) {
+          <img
+            [src]="staff.avatarUrl"
+            [alt]="staff.name"
+            class="avatar-img"
+            (error)="staff.avatarUrl = undefined"
+          />
+          } @else {
+          <span class="avatar-initials"> {{ staff.initials || 'ST' }} </span>
+          }
+        </div>
+
+        <div class="profile-titles">
+          <div class="name-status-row">
+            <h4 class="staff-name">{{ staff.name }}</h4>
+            <span
+              class="status-pill"
+              [class.active]="staff.status === 'Active'"
+              [class.leave]="staff.status === 'On Leave'"
+              [class.pending]="staff.status === 'Pending Assignment'"
+            >
+              {{ staff.status }}
+            </span>
+          </div>
+          <p class="role-department">
+            {{ staff.role }} • {{ staff.department }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Assigned Details -->
+      <div class="assigned-details">
+        <div class="detail-row">
+          <span class="detail-label-wrap">
+            <i class="ri-shield-user-line detail-icon"></i>
+            <span class="detail-label">Assigned Classes</span>
+          </span>
+          <span class="detail-value">
+            {{ staff.assignedClasses.length > 0 ? staff.assignedClasses.join(',
+            ') : 'None' }}
+          </span>
+        </div>
+
+        <div class="detail-row">
+          <span class="detail-label-wrap">
+            <i class="ri-book-read-line detail-icon"></i>
+            <span class="detail-label">Assigned Subjects</span>
+          </span>
+          <span class="detail-value">
+            {{ staff.assignedSubjects.length > 0 ?
+            staff.assignedSubjects.join(', ') : 'None' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Workload & Performance Metrics -->
+      <div class="metrics-block">
+        <div class="metric-line">
+          <span class="metric-line-label">
+            <i class="ri-file-list-3-line line-icon"></i>
+            <span>Active Lessons (This Week)</span>
+          </span>
+          <span class="metric-line-val">{{ staff.activeLessonsCount }}</span>
+        </div>
+
+        <div class="metric-line">
+          <span class="metric-line-label">
+            <i class="ri-time-line line-icon"></i>
+            <span>Pending Submissions to Review</span>
+          </span>
+          <span class="metric-line-val">{{ staff.pendingReviewsCount }}</span>
+        </div>
+
+        <!-- Feedback Completion Rate -->
+        <div class="progress-item">
+          <div class="progress-labels">
+            <span class="progress-title">
+              <i class="ri-checkbox-circle-line line-icon"></i>
+              <span>Feedback Completion Rate</span>
+            </span>
+            <span class="progress-pct"
+              >{{ staff.feedbackCompletionRate }}%</span
+            >
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill green"
+              [style.width.%]="staff.feedbackCompletionRate"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Avg. Learner Performance -->
+        <div class="progress-item">
+          <div class="progress-labels">
+            <span class="progress-title">
+              <i class="ri-line-chart-line line-icon"></i>
+              <span>Avg. Learner Performance</span>
+            </span>
+            <span class="progress-pct"
+              >{{ staff.avgLearnerPerformance || 75 }}%</span
+            >
+          </div>
+          <div class="progress-track">
+            <div
+              class="progress-fill blue"
+              [style.width.%]="staff.avgLearnerPerformance || 75"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Card 2: Operational Alerts -->
+  <div class="alerts-card">
+    <div class="alert-list">
+      @for (alert of store.staffAlerts(); track alert.id) {
+      <div
+        class="alert-item"
+        [class.amber]="alert.tone === 'amber'"
+        [class.red]="alert.tone === 'red'"
+        [class.blue]="alert.tone === 'blue'"
+      >
+        <div class="alert-icon-wrap">
+          <i [class]="alert.icon"></i>
+        </div>
+
+        <div class="alert-content">
+          <div class="alert-title-row">
+            <span class="alert-title">{{ alert.title }}</span>
+            <span class="alert-count">{{ alert.count }}</span>
+          </div>
+          <button
+            type="button"
+            class="alert-action-link"
+            (click)="onAlertAction(alert)"
+          >
+            {{ alert.actionLabel }}
+          </button>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

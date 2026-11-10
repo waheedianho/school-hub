@@ -1,0 +1,273 @@
+<div class="metrics-grid">
+  <!-- 1. Default Subjects View Metrics -->
+  @if (store.activeCurriculumTab() === 'subjects') { @if
+  (store.curriculumMetrics(); as m) {
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-book-open-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">{{ m.totalSubjects }}</span>
+      </div>
+      <span class="metric-label">Total Subjects</span>
+      <span class="metric-subtext">All subjects in the school</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-map-2-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">{{ m.activeCurriculumMaps }}</span>
+      </div>
+      <span class="metric-label">Active Curriculum Maps</span>
+      <span class="metric-subtext">Mapped across classes</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <i class="ri-list-check-2 metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">{{ m.topicsThisTerm }}</span>
+      </div>
+      <span class="metric-label">Topics This Term</span>
+      <span class="metric-subtext">Planned across all subjects</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-line-chart-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">{{ m.coverageRate }}%</span>
+        <span class="metric-badge up">{{ m.coverageRateChange }}</span>
+      </div>
+      <span class="metric-label">Coverage Rate</span>
+      <span class="metric-subtext">Average topic coverage</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap pink">
+      <i class="ri-time-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">{{ m.subjectsAwaitingReview }}</span>
+      </div>
+      <span class="metric-label">Subjects Awaiting Review</span>
+      <span class="metric-subtext">Require admin attention</span>
+    </div>
+  </div>
+  } }
+
+  <!-- 2. Curriculum Map View Metrics -->
+  @if (store.activeCurriculumTab() === 'curriculum-map') {
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-map-pin-2-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">248</span>
+      </div>
+      <span class="metric-label">Total Curriculum Maps</span>
+      <span class="metric-subtext">Across all classes & subjects</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-team-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">36</span>
+      </div>
+      <span class="metric-label">Total Classes Mapped</span>
+      <span class="metric-subtext">100% of active classes</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <i class="ri-file-list-3-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">1,326</span>
+      </div>
+      <span class="metric-label">Topics This Term</span>
+      <span class="metric-subtext">Planned across all maps</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-line-chart-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">76%</span>
+        <span class="metric-badge up">↑ 6%</span>
+      </div>
+      <span class="metric-label">Coverage Rate</span>
+      <span class="metric-subtext">Average topic coverage</span>
+    </div>
+  </div>
+  }
+
+  <!-- 3. Scheme of Work View Metrics -->
+  @if (store.activeCurriculumTab() === 'scheme-of-work') {
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-file-text-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">124</span>
+      </div>
+      <span class="metric-label">Total Schemes of Work</span>
+      <span class="metric-subtext">Across all classes & subjects</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-community-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">36</span>
+      </div>
+      <span class="metric-label">Classes Covered</span>
+      <span class="metric-subtext">Across all levels</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <i class="ri-calendar-check-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">642</span>
+      </div>
+      <span class="metric-label">Topics Planned This Term</span>
+      <span class="metric-subtext">Across all schemes</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-line-chart-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <div class="metric-value-row">
+        <span class="metric-value">78%</span>
+        <span class="metric-badge up">↑ 6%</span>
+      </div>
+      <span class="metric-label">Coverage Progress</span>
+      <span class="metric-subtext">Across all schemes</span>
+    </div>
+  </div>
+  }
+
+  <!-- 4. Scheme Detail View Metrics -->
+  @if (store.activeCurriculumTab() === 'scheme-detail') { @if
+  (store.weekSchemeDetail(); as d) {
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-calendar-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Week Number</span>
+      <span class="metric-value">{{ d.weekNumber }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-book-open-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Subject</span>
+      <span class="metric-value">{{ d.subject }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-group-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Class</span>
+      <span class="metric-value">{{ d.classLevel }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap orange">
+      <i class="ri-medal-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Status</span>
+      <span class="metric-value status-text">{{ d.status }}</span>
+    </div>
+  </div>
+  } }
+
+  <!-- 5. Topic Delivery Packs View Metrics -->
+  @if (store.activeCurriculumTab() === 'topic-delivery-packs') { @if
+  (store.topicDeliveryPack(); as p) {
+  <div class="metric-card">
+    <div class="metric-icon-wrap purple">
+      <i class="ri-file-list-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Topic</span>
+      <span class="metric-value">{{ p.topic }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green">
+      <i class="ri-group-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Class</span>
+      <span class="metric-value">{{ p.classLevel }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap blue">
+      <i class="ri-book-2-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Subject</span>
+      <span class="metric-value">{{ p.subject }}</span>
+    </div>
+  </div>
+
+  <div class="metric-card">
+    <div class="metric-icon-wrap green-light">
+      <i class="ri-checkbox-circle-line metric-icon"></i>
+    </div>
+    <div class="metric-details">
+      <span class="metric-label">Delivery Status</span>
+      <span class="metric-value delivery-status-text"
+        >{{ p.deliveryStatus }}</span
+      >
+    </div>
+  </div>
+  } }
+</div>

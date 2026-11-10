@@ -1,0 +1,207 @@
+<div class="sidebar-stack">
+  <!-- Card 1: Oversight Summary (adapts depending on active tab) -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <i class="ri-bar-chart-2-line header-icon"></i>
+      <h4 class="card-title">
+        @if (store.activeLessonsTab() === 'delivery-oversight') {
+        <span>Delivery Oversight Summary</span>
+        } @else {
+        <span>Oversight Summary</span>
+        }
+      </h4>
+    </div>
+
+    <div class="card-body">
+      @if (store.activeLessonsTab() === 'delivery-oversight') {
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-book-2-line row-icon"></i>
+          <span>Total Classes Monitored</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().totalClassesMonitored }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-user-follow-line row-icon"></i>
+          <span>Teachers Active</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().totalActiveTeachers + 10 }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-time-line row-icon"></i>
+          <span>Lessons On Schedule</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().lessonsOnSchedule }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-history-line row-icon"></i>
+          <span>Lessons Delayed</span>
+        </span>
+        <strong class="row-val text-red"
+          >{{ store.oversightSidebarData().lessonsDelayed }}</strong
+        >
+      </div>
+
+      <div class="divider-line"></div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-group-line row-icon"></i>
+          <span>Average Attendance</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().attendanceAvg }}%</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-shield-check-line row-icon"></i>
+          <span>Average Readiness Score</span>
+        </span>
+        <strong class="row-val text-purple"
+          >{{ store.oversightSidebarData().averageReadinessScore }}%</strong
+        >
+      </div>
+      } @else {
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-global-line row-icon"></i>
+          <span>Selected Scope</span>
+        </span>
+        <span class="scope-pill"
+          >{{ store.oversightSidebarData().selectedScope }}</span
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-user-line row-icon"></i>
+          <span>Total Active Teachers</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().totalActiveTeachers }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-file-list-3-line row-icon"></i>
+          <span>Lessons Published</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().lessonsPublished }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-error-warning-line row-icon"></i>
+          <span>Lessons Awaiting Review</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().lessonsAwaitingReview }}</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-pie-chart-line row-icon"></i>
+          <span>Coverage Rate</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().coverageRate }}%</strong
+        >
+      </div>
+
+      <div class="summary-row">
+        <span class="row-label">
+          <i class="ri-group-line row-icon"></i>
+          <span>Attendance Avg</span>
+        </span>
+        <strong class="row-val"
+          >{{ store.oversightSidebarData().attendanceAvg }}%</strong
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Card 2: Attention Needed -->
+  <div class="sidebar-card attention-card">
+    <div class="card-header">
+      <i class="ri-alert-line header-icon red"></i>
+      <h4 class="card-title">Attention Needed</h4>
+    </div>
+
+    <div class="attention-list">
+      @for (item of store.oversightSidebarData().attentionItems; track
+      item.text) {
+      <button
+        type="button"
+        class="attention-btn"
+        (click)="onAttentionClick(item.text)"
+      >
+        <span class="count-circle" [class]="item.tone">{{ item.count }}</span>
+        <span class="item-text">{{ item.text }}</span>
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Card 3: Quick Actions -->
+  <div class="sidebar-card actions-card">
+    <div class="card-header">
+      <i class="ri-flashlight-line header-icon purple"></i>
+      <h4 class="card-title">Quick Actions</h4>
+    </div>
+
+    <div class="actions-list">
+      <button type="button" class="action-pill-btn" (click)="onReviewLessons()">
+        <i class="ri-file-list-2-line"></i>
+        <span>
+          @if (store.activeLessonsTab() === 'delivery-oversight') { Review
+          Delivery Status } @else { Review Lessons }
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="action-pill-btn"
+        (click)="onCheckDeliveryPacks()"
+      >
+        <i class="ri-book-open-line"></i>
+        <span>
+          @if (store.activeLessonsTab() === 'delivery-oversight') { Check
+          Readiness } @else { Check Delivery Packs }
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="action-pill-btn"
+        (click)="onAssignFollowUp()"
+      >
+        <i class="ri-user-shared-line"></i>
+        <span>Assign Follow-up</span>
+      </button>
+
+      <button type="button" class="action-pill-btn" (click)="onExportReport()">
+        <i class="ri-download-2-line"></i>
+        <span>Export Oversight Report</span>
+      </button>
+    </div>
+  </div>
+</div>

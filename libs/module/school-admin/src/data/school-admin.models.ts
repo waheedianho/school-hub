@@ -187,16 +187,97 @@ export interface StaffMember {
   name: string;
   staffId: string;
   avatarUrl?: string;
+  initials?: string;
+  avatarColor?: string;
   role: string;
   department: string;
   assignedSubjects: string[];
   assignedClasses: string[];
   attendanceRate: number;
-  attendanceRating: 'Excellent' | 'Good' | 'Average' | 'Needs Attention';
+  attendanceRating:
+    | 'Excellent'
+    | 'Good'
+    | 'Average'
+    | 'Fair'
+    | 'Needs Attention';
   feedbackCompletionRate: number;
-  status: 'Active' | 'On Leave' | 'Suspended';
+  status: 'Active' | 'On Leave' | 'Pending Assignment' | 'Suspended';
   activeLessonsCount: number;
   pendingReviewsCount: number;
+  avgLearnerPerformance?: number;
+  email?: string;
+  phone?: string;
+  staffType?: 'Academic' | 'Support' | 'Leadership' | 'Specialist';
+  qualification?: string;
+  employmentType?: 'Full-time' | 'Part-time' | 'Contract' | 'Probationary';
+  dateJoined?: string;
+  yearsOfExperience?: string;
+  isClassTeacher?: boolean;
+  academicLevel?: string;
+  reportingLine?: string;
+}
+
+export interface TeachersStaffOverviewMetrics {
+  totalTeachers: number;
+  totalTeachersChange: string;
+  supportStaff: number;
+  supportStaffChange: string;
+  activeStaff: number;
+  activeStaffChange: string;
+  unassignedTeachers: number;
+  unassignedTeachersChange: string;
+  avgFeedbackCompletion: number;
+  avgFeedbackCompletionChange: string;
+}
+
+export interface StaffOperationalAlert {
+  id: string;
+  title: string;
+  count: number;
+  actionLabel: string;
+  tone: 'amber' | 'red' | 'blue';
+  icon: string;
+}
+
+export interface NewStaffFormData {
+  firstName: string;
+  middleName?: string;
+  lastName: string;
+  gender: 'Male' | 'Female' | 'Other';
+  dateOfBirth: string;
+  staffId: string;
+  phoneCode: string;
+  phoneNumber: string;
+  email: string;
+  avatarUrl?: string;
+  staffType: string;
+  department: string;
+  qualification: string;
+  employmentType: string;
+  dateJoined: string;
+  yearsOfExperience: string;
+  role: string;
+  isClassTeacher: boolean;
+  assignedClasses: string[];
+  assignedSubjects: string[];
+  academicLevel: string;
+  reportingLine: string;
+  username: string;
+  temporaryPassword?: string;
+  loginMethod: string;
+  accountActive: boolean;
+  contentApproval: boolean;
+  gradeApproval: boolean;
+  communicationVisibility: boolean;
+  auditLogVisibility: boolean;
+  parentCommunication: boolean;
+  learnerMessageAccess: boolean;
+  identityVerified: boolean;
+  childSafeguardingTraining: boolean;
+  conductPolicyAcknowledged: boolean;
+  emergencyContact: string;
+  address: string;
+  remarks?: string;
 }
 
 export interface InterventionCase {
@@ -286,4 +367,241 @@ export interface SetupQuickAction {
   icon: string;
   actionText: string;
   route?: string;
+}
+
+/**
+ * Subjects & Curriculum Domain Models
+ * Aligned with .design/SCHOOL ADMIN/Subjects & Curriculum (I - VI)
+ */
+
+export interface AssignedTeacherSummary {
+  name: string;
+  avatarUrl?: string;
+  initials?: string;
+  color?: string;
+}
+
+export interface SubjectRecord {
+  id: string;
+  name: string;
+  code: string;
+  classLevels: string;
+  assignedTeachers: AssignedTeacherSummary[];
+  weeklyTopics: number;
+  coverage: number;
+  status: 'Active' | 'Needs Review' | 'Draft';
+  assignedClasses: string[];
+  leadTeacher: string;
+  termTopicsPlanned: number;
+  topicsCompleted: number;
+  currentWeek: string;
+  currentTopic: string;
+  deliveryPackReadiness: number;
+  approvalStatus: 'Approved' | 'In Review' | 'Draft';
+  icon: string;
+  color: string;
+}
+
+export interface CurriculumOverviewMetrics {
+  totalSubjects: number;
+  activeCurriculumMaps: number;
+  topicsThisTerm: number;
+  coverageRate: number;
+  coverageRateChange: string;
+  subjectsAwaitingReview: number;
+}
+
+export interface CurriculumMapEntry {
+  id: string;
+  classLevel: string;
+  subject: string;
+  term: string;
+  week: string;
+  topic: string;
+  curriculumObjective: string;
+  assignedTeacher: AssignedTeacherSummary;
+  deliveryPack: 'Ready' | 'In Review' | 'Draft' | 'Missing Pack';
+  assessment: string;
+  portfolioTask: string;
+  status: 'Active' | 'Needs Review' | 'Draft' | 'Missing Pack';
+}
+
+export interface SchemeOfWorkEntry {
+  id: string;
+  week: number;
+  weekLabel: string;
+  topic: string;
+  learningObjective: string;
+  assignedTeacher: AssignedTeacherSummary;
+  resourcesReady: 'Yes' | 'Partial' | 'No';
+  assessment: string;
+  portfolioTask: string;
+  status: 'Approved' | 'Needs Review' | 'In Progress' | 'Draft';
+}
+
+export interface SchemeLessonItem {
+  id: string;
+  lessonNumber: number;
+  title: string;
+  learningObjective: string;
+  teachingMethod: string;
+  worksheetName: string;
+  readinessStatus: 'Ready' | 'Needs Review' | 'In Progress';
+}
+
+export interface WeekSchemeDetail {
+  weekNumber: number;
+  subject: string;
+  classLevel: string;
+  status: 'In Progress' | 'Approved' | 'Draft' | 'Needs Review';
+  approvalStatus: 'Approved' | 'In Review' | 'Draft';
+  topic: string;
+  learningObjective: string;
+  leadTeacher: string;
+  leadTeacherAvatar?: string;
+  lessonPeriods: string;
+  deliveryPackStatus: 'Ready' | 'In Progress' | 'Draft';
+  resourcesStatus: 'Ready' | 'Needs Review' | 'In Progress';
+  assessmentPlan: string;
+  portfolioTask: string;
+  commonMisconceptions: string;
+  tutorNotes: string;
+  deliveryReadiness: number;
+  lessonsCompleted: string;
+  assessmentsReady: boolean;
+  portfolioTaskReady: boolean;
+  lessons: SchemeLessonItem[];
+}
+
+export interface WeekResourceItem {
+  id: string;
+  name: string;
+  type:
+    | 'Slides'
+    | 'Worksheet'
+    | 'Tutor Guide'
+    | 'Teaching Aid'
+    | 'Answer Key'
+    | 'Assessment Sheet'
+    | 'Portfolio Task'
+    | 'Parent Handout'
+    | 'Video';
+  linkedLesson: string;
+  audience: 'Teacher' | 'Learner' | 'Teacher/Learner' | 'Parent';
+  format: string;
+  status: 'Ready' | 'Needs Review' | 'Draft' | 'Missing';
+  lastUpdated: string;
+  action: string;
+}
+
+export interface TopicDeliveryMaterial {
+  material: string;
+  description: string;
+  status: 'Ready' | 'In Review' | 'Draft' | 'Missing';
+}
+
+export interface TopicDeliverySequenceItem {
+  lessonNumber: number;
+  title: string;
+  teachingMethod: string;
+  worksheet: string;
+  readiness: 'Ready' | 'In Progress' | 'Needs Review';
+}
+
+export interface TopicDeliveryPack {
+  id: string;
+  topic: string;
+  classLevel: string;
+  subject: string;
+  week: string;
+  deliveryStatus: string;
+  approvalStatus: 'Approved' | 'In Review' | 'Draft';
+  curriculumObjective: string;
+  learningObjective: string;
+  estimatedDuration: string;
+  leadTeacher: string;
+  readiness: number;
+  assessmentReady: boolean;
+  portfolioTaskReady: boolean;
+  parentSupportSheet: 'Pending' | 'In Review' | 'Ready';
+  includedMaterials: TopicDeliveryMaterial[];
+  lessonSequence: TopicDeliverySequenceItem[];
+}
+
+export interface LessonOversightMetrics {
+  activeLessonsThisWeek: number;
+  lessonsCompleted: number;
+  classesOnTrack: number;
+  deliveryPacksReady: number;
+  lessonsNeedingReview: number;
+}
+
+export interface LessonMonitoringRecord {
+  id: string;
+  className: string;
+  subject: string;
+  week: string;
+  currentTopic: string;
+  assignedTeacher: {
+    name: string;
+    avatarUrl?: string;
+    initials?: string;
+  };
+  deliveryPackStatus: 'Ready' | 'Needs Review' | 'Missing Pack' | 'Draft';
+  lessonReadiness: 'Ready' | 'Needs Review' | 'Missing Pack' | 'Draft';
+  deliveryProgress: 'In Progress' | 'Completed' | 'Delayed' | 'Pending';
+  lessonStatus: 'In Progress' | 'Completed' | 'Delayed' | 'Pending';
+  attendance: number;
+  lastUpdated: string;
+  notes?: string;
+}
+
+export interface LessonReviewRecord {
+  id: string;
+  className: string;
+  subject: string;
+  topic: string;
+  teacherName: string;
+  teacherInitials: string;
+  week: string;
+  submittedDate: string;
+  lessonPeriods: string;
+  materialsCount: number;
+  reviewStatus:
+    | 'Pending Review'
+    | 'Under Review'
+    | 'Approved'
+    | 'Revision Requested';
+  teachingMethod: string;
+  learningObjectives: string;
+}
+
+export interface LessonReadinessAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  title: string;
+  description: string;
+  affectedClass: string;
+  affectedSubject: string;
+  teacherName: string;
+  dateLogged: string;
+  actionLabel: string;
+}
+
+export interface OversightSidebarSummary {
+  selectedScope: string;
+  totalActiveTeachers: number;
+  lessonsPublished: number;
+  lessonsAwaitingReview: number;
+  coverageRate: number;
+  attendanceAvg: number;
+  totalClassesMonitored: number;
+  lessonsOnSchedule: number;
+  lessonsDelayed: number;
+  averageReadinessScore: number;
+  attentionItems: Array<{
+    count: number;
+    text: string;
+    tone: 'red' | 'orange' | 'amber';
+  }>;
 }
