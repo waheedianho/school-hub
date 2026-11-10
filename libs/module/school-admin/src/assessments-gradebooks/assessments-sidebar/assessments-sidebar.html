@@ -1,0 +1,180 @@
+<aside class="sidebar-container" aria-label="Assessments Sidebar">
+  <!-- Assessment Summary Card -->
+  <section class="sidebar-card">
+    <h3 class="card-heading">Assessment Summary</h3>
+    <div class="summary-list">
+      <div class="summary-row">
+        <span class="row-label">Total Scheduled</span>
+        <span class="row-value font-semibold"
+          >{{ summary().totalScheduled }}</span
+        >
+      </div>
+      <div class="summary-row">
+        <span class="row-label">Auto-Graded (Quizzes)</span>
+        <div class="value-with-rate">
+          <span class="row-value">{{ summary().autoGraded }}</span>
+          <span class="row-rate">({{ summary().autoGradedRate }}%)</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="row-label">Manually Graded</span>
+        <div class="value-with-rate">
+          <span class="row-value">{{ summary().manuallyGraded }}</span>
+          <span class="row-rate">({{ summary().manuallyGradedRate }}%)</span>
+        </div>
+      </div>
+      <div class="summary-row">
+        <span class="row-label">Awaiting Moderation</span>
+        <div class="value-with-rate">
+          <span class="row-value">{{ summary().awaitingModeration }}</span>
+          <span class="row-rate"
+            >({{ summary().awaitingModerationRate }}%)</span
+          >
+        </div>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row highlight-row">
+        <span class="row-label">Average Completion</span>
+        <span class="row-value text-green"
+          >{{ summary().averageCompletionRate }}%</span
+        >
+      </div>
+    </div>
+  </section>
+
+  <!-- Attention Needed Card -->
+  <section class="sidebar-card">
+    <div class="card-header-with-badge">
+      <h3 class="card-heading">Attention Needed</h3>
+      @if (activeAttentionKey()) {
+      <button
+        type="button"
+        class="clear-filter-btn"
+        (click)="store.clearAssessmentAttentionFilter()"
+        aria-label="Clear active attention filter"
+      >
+        Clear
+      </button>
+      }
+    </div>
+    <div class="attention-list">
+      @for (item of attentionItems(); track item.id) {
+      <button
+        type="button"
+        class="attention-item"
+        [class.active]="activeAttentionKey() === item.filterKey"
+        (click)="toggleAttention(item)"
+        [attr.aria-pressed]="activeAttentionKey() === item.filterKey"
+      >
+        <span class="attention-label">{{ item.label }}</span>
+        <span class="badge" [ngClass]="'badge-' + item.tone">
+          {{ item.count }}
+        </span>
+      </button>
+      }
+    </div>
+  </section>
+
+  <!-- Quick Actions Card -->
+  <section class="sidebar-card">
+    <h3 class="card-heading">Quick Actions</h3>
+    <div class="actions-stack">
+      <button
+        type="button"
+        class="action-btn btn-primary"
+        (click)="onCreateAssessment()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Create Assessment</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn btn-secondary"
+        (click)="onReviewGradebooks()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path
+            d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+          ></path>
+        </svg>
+        <span>Review Gradebooks</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn btn-secondary"
+        (click)="onModerateScores()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M12 20h9"></path>
+          <path
+            d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+          ></path>
+        </svg>
+        <span>Moderate Scores</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn btn-secondary"
+        (click)="onExportReport()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export Report</span>
+      </button>
+    </div>
+  </section>
+</aside>

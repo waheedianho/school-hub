@@ -1,0 +1,313 @@
+<div class="table-container-card">
+  <!-- Top Navigation Tabs -->
+  <nav class="tabs-nav" aria-label="Assessment Views">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'schedule'"
+      (click)="onTabChange('schedule')"
+    >
+      <span>All Assessments</span>
+      <span class="tab-count">128</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'submissions'"
+      (click)="onTabChange('submissions')"
+    >
+      <span>C.A. Quizzes</span>
+      <span class="tab-count">46</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'gradebooks'"
+      (click)="onTabChange('gradebooks')"
+    >
+      <span>Assignments</span>
+      <span class="tab-count">38</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'moderation'"
+      (click)="onTabChange('moderation')"
+    >
+      <span>Moderation</span>
+      <span class="tab-count highlight-count">18</span>
+    </button>
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="activeTab() === 'exam-records'"
+      (click)="onTabChange('exam-records')"
+    >
+      <span>Exam Records</span>
+      <span class="tab-count">26</span>
+    </button>
+  </nav>
+
+  <!-- Filter & Search Bar -->
+  <div class="filters-bar">
+    <div class="filters-group">
+      <!-- Class Level Filter -->
+      <div class="select-wrapper">
+        <label for="class-select" class="sr-only">Filter by Class</label>
+        <select
+          id="class-select"
+          class="filter-select"
+          [ngModel]="classFilter()"
+          (ngModelChange)="onClassFilterChange($event)"
+        >
+          @for (option of classOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Subject Filter -->
+      <div class="select-wrapper">
+        <label for="subject-select" class="sr-only">Filter by Subject</label>
+        <select
+          id="subject-select"
+          class="filter-select"
+          [ngModel]="subjectFilter()"
+          (ngModelChange)="onSubjectFilterChange($event)"
+        >
+          @for (option of subjectOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Teacher Filter -->
+      <div class="select-wrapper">
+        <label for="teacher-select" class="sr-only">Filter by Teacher</label>
+        <select
+          id="teacher-select"
+          class="filter-select"
+          [ngModel]="teacherFilter()"
+          (ngModelChange)="onTeacherFilterChange($event)"
+        >
+          @for (option of teacherOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Type Filter -->
+      <div class="select-wrapper">
+        <label for="type-select" class="sr-only">Filter by Type</label>
+        <select
+          id="type-select"
+          class="filter-select"
+          [ngModel]="typeFilter()"
+          (ngModelChange)="onTypeFilterChange($event)"
+        >
+          @for (option of typeOptions; track option) {
+          <option [value]="option">{{ option }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-wrapper">
+      <svg
+        class="search-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="search"
+        class="search-input"
+        placeholder="Search assessments, classes, subjects..."
+        [ngModel]="searchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+        aria-label="Search assessments"
+      />
+    </div>
+  </div>
+
+  <!-- Assessments Table -->
+  <div class="table-responsive">
+    <table
+      class="assessments-table"
+      aria-label="Assessments and Gradebooks Oversight"
+    >
+      <thead>
+        <tr>
+          <th class="th-checkbox">
+            <input
+              type="checkbox"
+              [checked]="areAllSelected()"
+              (change)="toggleSelectAll()"
+              aria-label="Select all assessments on page"
+            />
+          </th>
+          <th class="th-class">CLASS &amp; LEVEL</th>
+          <th class="th-subject">SUBJECT</th>
+          <th class="th-name">ASSESSMENT NAME</th>
+          <th class="th-week">WEEK / TERM</th>
+          <th class="th-teacher">TEACHER</th>
+          <th class="th-type">TYPE</th>
+          <th class="th-submissions">SUBMISSIONS</th>
+          <th class="th-rate">SUBMISSION RATE</th>
+          <th class="th-grading">GRADING STATUS</th>
+          <th class="th-avg">AVG SCORE</th>
+          <th class="th-gradebook">GRADEBOOK STATUS</th>
+          <th class="th-actions">ACTIONS</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of assessments(); track item.id) {
+        <tr [class.row-selected]="isRowSelected(item.id)">
+          <td class="td-checkbox">
+            <input
+              type="checkbox"
+              [checked]="isRowSelected(item.id)"
+              (change)="toggleRowSelection(item.id)"
+              [attr.aria-label]="'Select ' + item.assessmentName"
+            />
+          </td>
+          <td class="td-class font-medium">{{ item.className }}</td>
+          <td class="td-subject">{{ item.subject }}</td>
+          <td class="td-name">
+            <button
+              type="button"
+              class="assessment-link-btn"
+              (click)="onRowSelect(item)"
+            >
+              {{ item.assessmentName }}
+            </button>
+          </td>
+          <td class="td-week text-muted">{{ item.week }}</td>
+          <td class="td-teacher">{{ item.teacherName }}</td>
+          <td class="td-type">
+            <span
+              class="pill pill-type"
+              [ngClass]="'pill-' + item.assessmentType.toLowerCase()"
+            >
+              {{ item.assessmentType }}
+            </span>
+          </td>
+          <td class="td-submissions">
+            <span class="font-medium">{{ item.submissionsCount }}</span>
+            <span class="text-muted">/{{ item.totalLearners }}</span>
+          </td>
+          <td class="td-rate">
+            <div class="progress-container">
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  [style.width.%]="item.submissionRate"
+                  [class.fill-green]="item.submissionRate >= 80"
+                  [class.fill-amber]="item.submissionRate < 80 && item.submissionRate >= 50"
+                  [class.fill-red]="item.submissionRate < 50"
+                ></div>
+              </div>
+              <span class="progress-text">{{ item.submissionRate }}%</span>
+            </div>
+          </td>
+          <td class="td-grading">
+            <span
+              class="pill pill-grading"
+              [ngClass]="{
+                  'pill-grading-grading': item.gradingStatus === 'Grading',
+                  'pill-grading-needs-review': item.gradingStatus === 'Needs Review',
+                  'pill-grading-finalized': item.gradingStatus === 'Finalized',
+                  'pill-grading-missing-scores': item.gradingStatus === 'Missing Scores',
+                  'pill-grading-pending': item.gradingStatus === 'Pending'
+                }"
+            >
+              {{ item.gradingStatus }}
+            </span>
+          </td>
+          <td class="td-avg">
+            @if (item.averageScore !== undefined) {
+            <span class="font-semibold">{{ item.averageScore }}%</span>
+            } @else {
+            <span class="text-muted">—</span>
+            }
+          </td>
+          <td class="td-gradebook">
+            <span
+              class="pill pill-gradebook"
+              [ngClass]="{
+                  'pill-gradebook-progress': item.gradebookStatus === 'In Progress',
+                  'pill-gradebook-finalized': item.gradebookStatus === 'Finalized',
+                  'pill-gradebook-pending': item.gradebookStatus === 'Pending Approval',
+                  'pill-gradebook-not-started': item.gradebookStatus === 'Not Started'
+                }"
+            >
+              {{ item.gradebookStatus }}
+            </span>
+          </td>
+          <td class="td-actions">
+            <button
+              type="button"
+              class="action-link-btn"
+              (click)="onRowSelect(item)"
+            >
+              View / Review
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="13" class="empty-cell">
+            <div class="empty-state">
+              <p>No assessments found matching the selected filters.</p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="pagination-footer">
+    <div class="pagination-info">
+      Showing 1 to {{ assessments().length }} of {{ totalAssessments() }}
+      assessments
+    </div>
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-btn"
+        [disabled]="currentPage() === 1"
+        (click)="onPreviousPage()"
+        aria-label="Previous Page"
+      >
+        Previous
+      </button>
+
+      <span class="page-current"
+        >Page {{ currentPage() }} of {{ totalPages() }}</span
+      >
+
+      <button
+        type="button"
+        class="page-btn"
+        [disabled]="currentPage() >= totalPages()"
+        (click)="onNextPage()"
+        aria-label="Next Page"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>

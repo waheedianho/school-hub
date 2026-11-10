@@ -545,4 +545,187 @@ describe('SchoolAdminStore', () => {
     store.exportLiveClassesReport();
     expect(store.setupSaveStatus()).toContain('report generated');
   });
+
+  it('should manage assessments and gradebooks state and mutations correctly', () => {
+    // Initial metrics matching design Screen 1
+    expect(store.assessmentsSummaryMetrics().totalAssessments).toBe(128);
+    expect(store.assessmentsSummaryMetrics().assessmentsCompleted).toBe(72);
+    expect(store.assessmentsSummaryMetrics().pendingGrading).toBe(28);
+    expect(store.assessmentsSummaryMetrics().gradebooksFinalized).toBe(46);
+    expect(store.assessmentsSummaryMetrics().averageScoreAcrossAll).toBe(72.4);
+
+    // Initial sidebar summary
+    expect(store.assessmentSidebarSummary().totalScheduled).toBe(128);
+    expect(store.assessmentSidebarSummary().autoGraded).toBe(46);
+    expect(store.assessmentSidebarSummary().manuallyGraded).toBe(54);
+    expect(store.assessmentSidebarSummary().awaitingModeration).toBe(18);
+    expect(store.assessmentSidebarSummary().averageCompletionRate).toBe(84.7);
+    expect(store.assessmentAttentionItems().length).toBe(4);
+
+    // Initial tab is 'schedule'
+    expect(store.activeAssessmentTab()).toBe('schedule');
+    expect(store.paginatedAssessments().length).toBe(8);
+    expect(store.paginatedAssessments()[0].className).toBe('JSS 1A');
+    expect(store.paginatedAssessments()[0].assessmentName).toBe(
+      'Algebra Basics Quiz',
+    );
+
+    // Switch tab to 'submissions'
+    store.setActiveAssessmentTab('submissions');
+    expect(store.activeAssessmentTab()).toBe('submissions');
+    expect(
+      store.filteredAssessments().every((a) => a.submissionsCount > 0),
+    ).toBe(true);
+
+    // Switch tab to 'gradebooks'
+    store.setActiveAssessmentTab('gradebooks');
+    expect(
+      store
+        .filteredAssessments()
+        .every((a) => a.gradebookStatus !== 'Not Started'),
+    ).toBe(true);
+
+    // Switch tab to 'moderation'
+    store.setActiveAssessmentTab('moderation');
+    expect(
+      store
+        .filteredAssessments()
+        .every(
+          (a) =>
+            a.gradingStatus === 'Needs Review' ||
+            a.gradingStatus === 'Missing Scores',
+        ),
+    ).toBe(true);
+
+    // Switch back to 'schedule'
+    store.setActiveAssessmentTab('schedule');
+
+    // Search query
+    store.setAssessmentSearchQuery('Narrative');
+    expect(store.filteredAssessments().length).toBe(1);
+    expect(store.filteredAssessments()[0].assessmentName).toBe(
+      'Narrative Writing Test',
+    );
+    store.setAssessmentSearchQuery('');
+
+    // Dropdown filters
+    store.setAssessmentClassFilter('JSS 1');
+    expect(store.filteredAssessments().length).toBe(3);
+    store.setAssessmentClassFilter('All Classes');
+
+    store.setAssessmentSubjectFilter('English Language');
+    expect(store.filteredAssessments().length).toBe(2);
+    store.setAssessmentSubjectFilter('All Subjects');
+
+    store.setAssessmentTeacherFilter('Mrs. Funmi Yusuf');
+    expect(store.filteredAssessments().length).toBe(1);
+    store.setAssessmentTeacherFilter('All Teachers');
+
+    store.setAssessmentTypeFilter('Test');
+    expect(
+      store.filteredAssessments().every((a) => a.assessmentType === 'Test'),
+    ).toBe(true);
+    expect(store.filteredAssessments().length).toBe(8);
+    store.setAssessmentTypeFilter('All Types');
+
+    // Attention filter toggle
+    store.toggleAssessmentAttentionFilter('awaiting-finalization');
+    expect(store.assessmentAttentionFilterKey()).toBe('awaiting-finalization');
+    expect(
+      store
+        .filteredAssessments()
+        .every((a) => a.gradebookStatus === 'In Progress'),
+    ).toBe(true);
+    store.clearAssessmentAttentionFilter();
+    expect(store.assessmentAttentionFilterKey()).toBeNull();
+
+    // Review flow (Screen 2)
+    const targetAssessment = store.assessmentRecords()[0];
+    expect(store.selectedAssessmentForReview()).toBeNull();
+    store.openAssessmentReview(targetAssessment);
+    expect(store.selectedAssessmentForReview()?.id).toBe(targetAssessment.id);
+    expect(store.activeReviewSubTab()).toBe('submission-review');
+
+    // Sub-tab switching
+    store.setActiveReviewSubTab('overview');
+    expect(store.activeReviewSubTab()).toBe('overview');
+    store.setActiveReviewSubTab('gradebook-entries');
+    expect(store.activeReviewSubTab()).toBe('gradebook-entries');
+    store.setActiveReviewSubTab('moderation-notes');
+    expect(store.activeReviewSubTab()).toBe('moderation-notes');
+
+    // Review summary stats computed
+    const stats = store.reviewSummaryStats();
+    expect(stats.submittedCount).toBe(7);
+    expect(stats.reviewedCount).toBeGreaterThan(0);
+
+    // Moderation modal and score saving
+    const sampleSubmission = store.learnerSubmissions()[0];
+    expect(store.isModerationModalOpen()).toBe(false);
+    store.openModerationModal(sampleSubmission);
+    expect(store.isModerationModalOpen()).toBe(true);
+    expect(store.selectedSubmissionForModeration()?.id).toBe(
+      sampleSubmission.id,
+    );
+
+    store.saveModeratedScore(
+      sampleSubmission.id,
+      26,
+      'Excellent vocabulary adjustment',
+    );
+    expect(store.isModerationModalOpen()).toBe(false);
+    expect(store.selectedSubmissionForModeration()).toBeNull();
+    const updatedSub = store
+      .learnerSubmissions()
+      .find((s) => s.id === sampleSubmission.id);
+    expect(updatedSub?.moderatedScore).toBe(26);
+    expect(updatedSub?.reviewStatus).toBe('Reviewed');
+
+    // Approve gradebook
+    const initialFinalized =
+      store.assessmentsSummaryMetrics().gradebooksFinalized;
+    store.approveAssessmentGradebook(targetAssessment.id);
+    expect(store.assessmentsSummaryMetrics().gradebooksFinalized).toBe(
+      initialFinalized + 1,
+    );
+    expect(store.selectedAssessmentForReview()?.gradebookStatus).toBe(
+      'Finalized',
+    );
+
+    // Return to teacher
+    store.returnGradebookToTeacher(targetAssessment.id);
+    expect(store.setupSaveStatus()).toContain('Gradebook returned');
+
+    // Close review drill-down
+    store.closeAssessmentReview();
+    expect(store.selectedAssessmentForReview()).toBeNull();
+
+    // Create assessment modal
+    expect(store.isCreateAssessmentModalOpen()).toBe(false);
+    store.openCreateAssessmentModal();
+    expect(store.isCreateAssessmentModalOpen()).toBe(true);
+
+    const initialTotal = store.assessmentsSummaryMetrics().totalAssessments;
+    store.createAssessment({
+      className: 'SSS 2A',
+      subject: 'Chemistry',
+      assessmentName: 'Organic Chemistry Practical Test',
+      week: 'Week 7',
+      teacherName: 'Dr. Kelechi Nwosu',
+      assessmentType: 'Test',
+      totalLearners: 32,
+      maxScore: 30,
+    });
+    expect(store.isCreateAssessmentModalOpen()).toBe(false);
+    expect(store.assessmentsSummaryMetrics().totalAssessments).toBe(
+      initialTotal + 1,
+    );
+    expect(store.setupSaveStatus()).toContain('Assessment created');
+
+    // Export report
+    store.exportAssessmentReport();
+    expect(store.setupSaveStatus()).toContain(
+      'assessment and continuous evaluation report',
+    );
+  });
 });

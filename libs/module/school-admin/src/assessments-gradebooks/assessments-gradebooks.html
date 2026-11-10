@@ -1,0 +1,60 @@
+<div class="assessments-page-container">
+  @if (!selectedAssessment()) {
+  <!-- Screen 1: Master Schedule & Oversight -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Assessments &amp; Gradebooks</h1>
+      <p class="page-subtitle">
+        Continuous assessment tracking, score moderation, and academic gradebook
+        oversight
+      </p>
+    </div>
+
+    @if (statusMessage()) {
+    <div class="status-banner" role="status">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <span>{{ statusMessage() }}</span>
+    </div>
+    }
+  </header>
+
+  <!-- 5 Top KPI Cards -->
+  <school-hub-assessments-summary-metrics />
+
+  <!-- Two-Column Main Layout -->
+  <div class="page-layout-grid">
+    <!-- Main Content Area: Table -->
+    <main class="main-content-column">
+      <school-hub-assessments-table />
+    </main>
+
+    <!-- Sidebar Area -->
+    <aside class="sidebar-column">
+      <school-hub-assessments-sidebar />
+    </aside>
+  </div>
+
+  <!-- 4 Bottom Action Cards -->
+  <school-hub-assessments-quick-actions />
+  } @else {
+  <!-- Screen 2: Assessment Review Drill-Down -->
+  <school-hub-submission-review />
+  }
+
+  <!-- Modals -->
+  <school-hub-create-assessment-modal />
+  <school-hub-moderation-modal />
+</div>

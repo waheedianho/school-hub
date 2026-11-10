@@ -85,6 +85,14 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.LiveClassesComponent,
           ),
       },
+      {
+        path: 'assessments-gradebooks',
+        title: 'Assessments & Gradebooks | SchoolHub Admin',
+        loadComponent: () =>
+          import('./assessments-gradebooks/assessments-gradebooks').then(
+            (m) => m.AssessmentsGradebooksComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -135,7 +143,8 @@ export const schoolAdminRoutes: Routes = [
           page.path !== 'teachers-staff' &&
           page.path !== 'subjects-curriculum' &&
           page.path !== 'lessons-oversight' &&
-          page.path !== 'live-classes',
+          page.path !== 'live-classes' &&
+          page.path !== 'assessments-gradebooks',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,
