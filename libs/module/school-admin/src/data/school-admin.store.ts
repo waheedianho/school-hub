@@ -18,8 +18,13 @@ import {
   CurriculumOverviewMetrics,
   InterventionCase,
   LearnerRecord,
+  LessonMonitoringRecord,
+  LessonOversightMetrics,
+  LessonReadinessAlert,
+  LessonReviewRecord,
   NewLearnerFormData,
   NewStaffFormData,
+  OversightSidebarSummary,
   RolePermissionRow,
   SafeguardingNotice,
   SchemeOfWorkEntry,
@@ -71,6 +76,14 @@ import {
   WEEK_4_RESOURCES_DATA,
   WEEK_4_SCHEME_DETAIL_DATA,
 } from './school-admin-curriculum.data';
+import {
+  ACTIVE_LESSONS_METRICS,
+  DELIVERY_OVERSIGHT_METRICS,
+  LESSON_MONITORING_RECORDS_DATA,
+  LESSON_READINESS_ALERTS_DATA,
+  LESSON_REVIEWS_DATA,
+  OVERSIGHT_SIDEBAR_DATA,
+} from './school-admin-lessons.data';
 import {
   ACADEMIC_STRUCTURE_DATA,
   ASSESSMENT_SETTINGS_DATA,
@@ -386,6 +399,103 @@ export class SchoolAdminStore {
 
       return matchesStatus && matchesQuery;
     });
+  });
+
+  // Lessons & Delivery Oversight State
+  readonly activeLessonsTab = signal<
+    | 'active-lessons'
+    | 'delivery-oversight'
+    | 'lesson-reviews'
+    | 'readiness-alerts'
+  >('active-lessons');
+  readonly lessonMonitoringRecords = signal<LessonMonitoringRecord[]>(
+    LESSON_MONITORING_RECORDS_DATA,
+  );
+  readonly lessonReviews = signal<LessonReviewRecord[]>(LESSON_REVIEWS_DATA);
+  readonly lessonReadinessAlerts = signal<LessonReadinessAlert[]>(
+    LESSON_READINESS_ALERTS_DATA,
+  );
+  readonly oversightSidebarData = signal<OversightSidebarSummary>(
+    OVERSIGHT_SIDEBAR_DATA,
+  );
+  readonly lessonClassFilter = signal<string>('All Classes');
+  readonly lessonSubjectFilter = signal<string>('All Subjects');
+  readonly lessonTeacherFilter = signal<string>('All Teachers');
+  readonly lessonStatusFilter = signal<string>('All Status');
+  readonly lessonSearchQuery = signal<string>('');
+  readonly selectedLessonRecord = signal<LessonMonitoringRecord>(
+    LESSON_MONITORING_RECORDS_DATA[0],
+  );
+
+  readonly lessonOversightMetrics = computed<LessonOversightMetrics>(() => {
+    return this.activeLessonsTab() === 'delivery-oversight'
+      ? DELIVERY_OVERSIGHT_METRICS
+      : ACTIVE_LESSONS_METRICS;
+  });
+
+  readonly filteredLessonRecords = computed<LessonMonitoringRecord[]>(() => {
+    const classFilter = this.lessonClassFilter();
+    const subjectFilter = this.lessonSubjectFilter();
+    const teacherFilter = this.lessonTeacherFilter();
+    const statusFilter = this.lessonStatusFilter();
+    const query = this.lessonSearchQuery().toLowerCase().trim();
+
+    return this.lessonMonitoringRecords().filter((rec) => {
+      const matchesClass =
+        classFilter === 'All Classes' || rec.className.startsWith(classFilter);
+      const matchesSubject =
+        subjectFilter === 'All Subjects' || rec.subject === subjectFilter;
+      const matchesTeacher =
+        teacherFilter === 'All Teachers' ||
+        rec.assignedTeacher.name === teacherFilter;
+      const matchesStatus =
+        statusFilter === 'All Status' ||
+        rec.lessonStatus === statusFilter ||
+        rec.deliveryPackStatus === statusFilter ||
+        rec.lessonReadiness === statusFilter ||
+        rec.deliveryProgress === statusFilter;
+      const matchesQuery =
+        !query ||
+        rec.className.toLowerCase().includes(query) ||
+        rec.subject.toLowerCase().includes(query) ||
+        rec.currentTopic.toLowerCase().includes(query) ||
+        rec.assignedTeacher.name.toLowerCase().includes(query);
+
+      return (
+        matchesClass &&
+        matchesSubject &&
+        matchesTeacher &&
+        matchesStatus &&
+        matchesQuery
+      );
+    });
+  });
+
+  readonly filteredLessonReviews = computed<LessonReviewRecord[]>(() => {
+    const query = this.lessonSearchQuery().toLowerCase().trim();
+    if (!query) return this.lessonReviews();
+
+    return this.lessonReviews().filter(
+      (r) =>
+        r.className.toLowerCase().includes(query) ||
+        r.subject.toLowerCase().includes(query) ||
+        r.topic.toLowerCase().includes(query) ||
+        r.teacherName.toLowerCase().includes(query) ||
+        r.reviewStatus.toLowerCase().includes(query),
+    );
+  });
+
+  readonly filteredLessonAlerts = computed<LessonReadinessAlert[]>(() => {
+    const query = this.lessonSearchQuery().toLowerCase().trim();
+    if (!query) return this.lessonReadinessAlerts();
+
+    return this.lessonReadinessAlerts().filter(
+      (a) =>
+        a.title.toLowerCase().includes(query) ||
+        a.description.toLowerCase().includes(query) ||
+        a.affectedClass.toLowerCase().includes(query) ||
+        a.affectedSubject.toLowerCase().includes(query),
+    );
   });
 
   // Setup Signals
@@ -774,6 +884,74 @@ export class SchoolAdminStore {
       this.topicDeliveryPack.update((pack) => ({ ...pack, id: topicId }));
     }
     this.activeCurriculumTab.set('topic-delivery-packs');
+  }
+
+  /**
+   * Lessons & Delivery Oversight Mutations
+   */
+  setActiveLessonsTab(
+    tab:
+      | 'active-lessons'
+      | 'delivery-oversight'
+      | 'lesson-reviews'
+      | 'readiness-alerts',
+  ): void {
+    this.activeLessonsTab.set(tab);
+  }
+
+  setLessonClassFilter(filter: string): void {
+    this.lessonClassFilter.set(filter);
+  }
+
+  setLessonSubjectFilter(filter: string): void {
+    this.lessonSubjectFilter.set(filter);
+  }
+
+  setLessonTeacherFilter(filter: string): void {
+    this.lessonTeacherFilter.set(filter);
+  }
+
+  setLessonStatusFilter(filter: string): void {
+    this.lessonStatusFilter.set(filter);
+  }
+
+  setLessonSearchQuery(query: string): void {
+    this.lessonSearchQuery.set(query);
+  }
+
+  selectLessonRecord(record: LessonMonitoringRecord): void {
+    this.selectedLessonRecord.set(record);
+  }
+
+  approveLessonPlan(id: string): void {
+    this.lessonReviews.update((reviews) =>
+      reviews.map((r) =>
+        r.id === id ? { ...r, reviewStatus: 'Approved' as const } : r,
+      ),
+    );
+    this.setupSaveStatus.set(
+      'Lesson plan approved and published to classroom delivery portal.',
+    );
+  }
+
+  requestLessonRevision(id: string): void {
+    this.lessonReviews.update((reviews) =>
+      reviews.map((r) =>
+        r.id === id ? { ...r, reviewStatus: 'Revision Requested' as const } : r,
+      ),
+    );
+    this.setupSaveStatus.set(
+      'Revision requested. Teacher notified with specific curriculum feedback.',
+    );
+  }
+
+  resolveReadinessAlert(id: string): void {
+    this.lessonReadinessAlerts.update((alerts) =>
+      alerts.filter((a) => a.id !== id),
+    );
+    this.setupSaveStatus.set(
+      'Readiness alert marked as resolved and logged in governance audit.',
+    );
   }
 
   /**

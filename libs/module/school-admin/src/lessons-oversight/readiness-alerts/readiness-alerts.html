@@ -1,0 +1,109 @@
+<div class="alerts-container">
+  <!-- Header & Filters -->
+  <div class="alerts-header-card">
+    <div class="header-info">
+      <h3 class="alerts-heading">Lesson Delivery Readiness Alerts</h3>
+      <p class="alerts-sub">
+        Automated diagnostics flagging missing packs, curriculum lag, overdue
+        updates, and attendance anomalies.
+      </p>
+    </div>
+
+    <div class="filter-pills">
+      <button
+        type="button"
+        class="pill-btn"
+        [class.active]="severityFilter() === 'All'"
+        (click)="setFilter('All')"
+      >
+        All Alerts ({{ store.lessonReadinessAlerts().length }})
+      </button>
+      <button
+        type="button"
+        class="pill-btn critical"
+        [class.active]="severityFilter() === 'Critical'"
+        (click)="setFilter('Critical')"
+      >
+        Critical
+      </button>
+      <button
+        type="button"
+        class="pill-btn warning"
+        [class.active]="severityFilter() === 'Warning'"
+        (click)="setFilter('Warning')"
+      >
+        Warnings
+      </button>
+      <button
+        type="button"
+        class="pill-btn info"
+        [class.active]="severityFilter() === 'Info'"
+        (click)="setFilter('Info')"
+      >
+        Info
+      </button>
+    </div>
+  </div>
+
+  <!-- Alerts List -->
+  <div class="alerts-list">
+    @for (alert of filteredAlerts(); track alert.id) {
+    <div class="alert-card" [class]="alert.severity">
+      <div class="alert-icon-wrap" [class]="alert.severity">
+        @if (alert.severity === 'critical') {
+        <i class="ri-error-warning-fill"></i>
+        } @if (alert.severity === 'warning') {
+        <i class="ri-alert-fill"></i>
+        } @if (alert.severity === 'info') {
+        <i class="ri-information-fill"></i>
+        }
+      </div>
+
+      <div class="alert-content">
+        <div class="alert-top">
+          <h4 class="alert-title">{{ alert.title }}</h4>
+          <span class="severity-badge" [class]="alert.severity">
+            {{ alert.severity }}
+          </span>
+        </div>
+
+        <p class="alert-desc">{{ alert.description }}</p>
+
+        <div class="alert-meta">
+          <span class="meta-item">
+            <i class="ri-building-line"></i>
+            <strong>Classes:</strong> {{ alert.affectedClass }}
+          </span>
+          <span class="meta-item">
+            <i class="ri-book-open-line"></i>
+            <strong>Subject:</strong> {{ alert.affectedSubject }}
+          </span>
+          <span class="meta-item">
+            <i class="ri-user-line"></i>
+            <strong>Lead:</strong> {{ alert.teacherName }}
+          </span>
+          <span class="meta-item">
+            <i class="ri-calendar-line"></i>
+            {{ alert.dateLogged }}
+          </span>
+        </div>
+      </div>
+
+      <div class="alert-actions">
+        <button type="button" class="btn btn-primary" (click)="onAction(alert)">
+          {{ alert.actionLabel }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="onResolve(alert)"
+        >
+          <i class="ri-check-line"></i>
+          <span>Mark Resolved</span>
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</div>

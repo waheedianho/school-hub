@@ -1,0 +1,71 @@
+<div class="metrics-grid">
+  <!-- Card 1: Active Lessons This Week -->
+  <div class="metric-card">
+    <div class="icon-wrap purple">
+      <i class="ri-book-open-line"></i>
+    </div>
+    <div class="metric-body">
+      <span class="metric-val"
+        >{{ store.lessonOversightMetrics().activeLessonsThisWeek }}</span
+      >
+      <h4 class="metric-title">Active Lessons This Week</h4>
+      <span class="metric-sub">Currently in progress</span>
+    </div>
+  </div>
+
+  <!-- Card 2: Lessons Completed -->
+  <div class="metric-card">
+    <div class="icon-wrap green">
+      <i class="ri-checkbox-circle-line"></i>
+    </div>
+    <div class="metric-body">
+      <span class="metric-val"
+        >{{ store.lessonOversightMetrics().lessonsCompleted }}</span
+      >
+      <h4 class="metric-title">Lessons Completed</h4>
+      <span class="metric-sub">Completed this week</span>
+    </div>
+  </div>
+
+  <!-- Card 3: Classes On Track -->
+  <div class="metric-card">
+    <div class="icon-wrap blue">
+      <i class="ri-group-line"></i>
+    </div>
+    <div class="metric-body">
+      <span class="metric-val"
+        >{{ store.lessonOversightMetrics().classesOnTrack }}</span
+      >
+      <h4 class="metric-title">Classes On Track</h4>
+      <span class="metric-sub">Meeting weekly targets</span>
+    </div>
+  </div>
+
+  <!-- Card 4: Delivery Packs Ready -->
+  <div class="metric-card">
+    <div class="icon-wrap orange">
+      <i class="ri-pie-chart-line"></i>
+    </div>
+    <div class="metric-body">
+      <span class="metric-val"
+        >{{ store.lessonOversightMetrics().deliveryPacksReady }}%</span
+      >
+      <h4 class="metric-title">Delivery Packs Ready</h4>
+      <span class="metric-sub">Ready for delivery</span>
+    </div>
+  </div>
+
+  <!-- Card 5: Lessons Needing Review -->
+  <div class="metric-card">
+    <div class="icon-wrap red">
+      <i class="ri-error-warning-line"></i>
+    </div>
+    <div class="metric-body">
+      <span class="metric-val"
+        >{{ store.lessonOversightMetrics().lessonsNeedingReview }}</span
+      >
+      <h4 class="metric-title">Lessons Needing Review</h4>
+      <span class="metric-sub">Require admin attention</span>
+    </div>
+  </div>
+</div>

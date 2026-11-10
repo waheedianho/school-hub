@@ -1,0 +1,96 @@
+<div class="reviews-container">
+  <div class="reviews-header">
+    <div class="header-info">
+      <h3 class="reviews-heading">Lesson Reviews & Approvals</h3>
+      <p class="reviews-sub">
+        Review submitted weekly lesson plans, instructional objectives,
+        worksheets, and teaching aids prior to classroom delivery.
+      </p>
+    </div>
+
+    <div class="reviews-count-badge">
+      <span>{{ store.filteredLessonReviews().length }} Plans in Queue</span>
+    </div>
+  </div>
+
+  <div class="reviews-grid">
+    @for (rev of store.filteredLessonReviews(); track rev.id) {
+    <div class="review-card">
+      <div class="card-top-row">
+        <div class="meta-tags">
+          <span class="class-tag">{{ rev.className }}</span>
+          <span class="subject-tag">{{ rev.subject }}</span>
+          <span class="week-tag">{{ rev.week }}</span>
+        </div>
+
+        <span
+          class="status-pill"
+          [class.pending]="rev.reviewStatus === 'Pending Review'"
+          [class.under-review]="rev.reviewStatus === 'Under Review'"
+          [class.approved]="rev.reviewStatus === 'Approved'"
+          [class.revision]="rev.reviewStatus === 'Revision Requested'"
+        >
+          {{ rev.reviewStatus }}
+        </span>
+      </div>
+
+      <div class="card-main">
+        <h4 class="topic-title">{{ rev.topic }}</h4>
+        <p class="objectives-text">
+          <strong>Objectives:</strong> {{ rev.learningObjectives }}
+        </p>
+        <div class="method-box">
+          <i class="ri-presentation-line"></i>
+          <span
+            ><strong>Teaching Method:</strong> {{ rev.teachingMethod }}</span
+          >
+        </div>
+      </div>
+
+      <div class="card-footer-row">
+        <div class="teacher-info">
+          <span class="avatar-circle">{{ rev.teacherInitials }}</span>
+          <div class="teacher-meta">
+            <span class="t-name">{{ rev.teacherName }}</span>
+            <span class="t-date"
+              >Submitted {{ rev.submittedDate }} • {{ rev.materialsCount }}
+              materials</span
+            >
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button
+            type="button"
+            class="btn btn-outline"
+            (click)="onPreviewMaterials(rev)"
+          >
+            <i class="ri-eye-line"></i>
+            <span>Preview</span>
+          </button>
+
+          @if (rev.reviewStatus !== 'Approved') {
+          <button
+            type="button"
+            class="btn btn-warning"
+            (click)="onRequestRevision(rev)"
+          >
+            <i class="ri-edit-2-line"></i>
+            <span>Revision</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-primary"
+            (click)="onApprove(rev)"
+          >
+            <i class="ri-check-line"></i>
+            <span>Approve</span>
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>

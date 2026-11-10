@@ -527,3 +527,81 @@ export interface TopicDeliveryPack {
   includedMaterials: TopicDeliveryMaterial[];
   lessonSequence: TopicDeliverySequenceItem[];
 }
+
+export interface LessonOversightMetrics {
+  activeLessonsThisWeek: number;
+  lessonsCompleted: number;
+  classesOnTrack: number;
+  deliveryPacksReady: number;
+  lessonsNeedingReview: number;
+}
+
+export interface LessonMonitoringRecord {
+  id: string;
+  className: string;
+  subject: string;
+  week: string;
+  currentTopic: string;
+  assignedTeacher: {
+    name: string;
+    avatarUrl?: string;
+    initials?: string;
+  };
+  deliveryPackStatus: 'Ready' | 'Needs Review' | 'Missing Pack' | 'Draft';
+  lessonReadiness: 'Ready' | 'Needs Review' | 'Missing Pack' | 'Draft';
+  deliveryProgress: 'In Progress' | 'Completed' | 'Delayed' | 'Pending';
+  lessonStatus: 'In Progress' | 'Completed' | 'Delayed' | 'Pending';
+  attendance: number;
+  lastUpdated: string;
+  notes?: string;
+}
+
+export interface LessonReviewRecord {
+  id: string;
+  className: string;
+  subject: string;
+  topic: string;
+  teacherName: string;
+  teacherInitials: string;
+  week: string;
+  submittedDate: string;
+  lessonPeriods: string;
+  materialsCount: number;
+  reviewStatus:
+    | 'Pending Review'
+    | 'Under Review'
+    | 'Approved'
+    | 'Revision Requested';
+  teachingMethod: string;
+  learningObjectives: string;
+}
+
+export interface LessonReadinessAlert {
+  id: string;
+  severity: 'critical' | 'warning' | 'info';
+  title: string;
+  description: string;
+  affectedClass: string;
+  affectedSubject: string;
+  teacherName: string;
+  dateLogged: string;
+  actionLabel: string;
+}
+
+export interface OversightSidebarSummary {
+  selectedScope: string;
+  totalActiveTeachers: number;
+  lessonsPublished: number;
+  lessonsAwaitingReview: number;
+  coverageRate: number;
+  attendanceAvg: number;
+  totalClassesMonitored: number;
+  lessonsOnSchedule: number;
+  lessonsDelayed: number;
+  averageReadinessScore: number;
+  attentionItems: Array<{
+    count: number;
+    text: string;
+    tone: 'red' | 'orange' | 'amber';
+  }>;
+}

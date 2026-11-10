@@ -1,0 +1,113 @@
+<div class="lessons-oversight-container">
+  <!-- Notification / Feedback Toast -->
+  @if (store.setupSaveStatus(); as message) {
+  <div class="status-banner">
+    <div class="status-content">
+      <i class="ri-checkbox-circle-line status-icon"></i>
+      <span>{{ message }}</span>
+    </div>
+    <button
+      type="button"
+      class="dismiss-btn"
+      (click)="dismissNotification()"
+      aria-label="Dismiss notification"
+    >
+      <i class="ri-close-line"></i>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Lessons & Delivery Oversight</h1>
+      <p class="page-subtitle">
+        Monitor lesson delivery across classes, track readiness, review
+        completion status, and identify teaching gaps.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onCheckDeliveryPacks()"
+        aria-label="Check delivery packs"
+      >
+        <i class="ri-box-3-line btn-icon"></i>
+        <span>Check Delivery Packs</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onScheduleObservation()"
+        aria-label="Schedule observation"
+      >
+        <i class="ri-add-line btn-icon"></i>
+        <span>+ Schedule Observation</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. Top 5 Adaptive KPI Metrics -->
+  <school-hub-lessons-summary-metrics></school-hub-lessons-summary-metrics>
+
+  <!-- 2. Navigation Tabs (Underline style) -->
+  <div class="tabs-nav" role="tablist">
+    @for (tab of tabs; track tab.id) {
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeLessonsTab() === tab.id"
+      [attr.aria-selected]="store.activeLessonsTab() === tab.id"
+      (click)="setTab(tab.id)"
+    >
+      <i [class]="tab.icon"></i>
+      <span>{{ tab.label }}</span>
+      @if (tab.badge) {
+      <span class="tab-badge">{{ tab.badge }}</span>
+      }
+    </button>
+    }
+  </div>
+
+  <!-- 3. Main Split View: Left Content vs Right Sidebar -->
+  <div class="oversight-split-layout">
+    <!-- Left Column -->
+    <div class="main-content-column">
+      @if (store.activeLessonsTab() === 'active-lessons' ||
+      store.activeLessonsTab() === 'delivery-oversight') {
+      <school-hub-lesson-monitoring-table></school-hub-lesson-monitoring-table>
+      } @if (store.activeLessonsTab() === 'lesson-reviews') {
+      <school-hub-lesson-reviews></school-hub-lesson-reviews>
+      } @if (store.activeLessonsTab() === 'readiness-alerts') {
+      <school-hub-readiness-alerts></school-hub-readiness-alerts>
+      }
+    </div>
+
+    <!-- Right Sidebar Column -->
+    <div class="sidebar-column">
+      <school-hub-oversight-sidebar></school-hub-oversight-sidebar>
+    </div>
+  </div>
+
+  <!-- 4. Quick Actions Grid -->
+  <school-hub-lessons-quick-actions></school-hub-lessons-quick-actions>
+
+  <!-- 5. Footer Governance Notice -->
+  <div class="governance-footer-banner">
+    <div class="gov-content">
+      <i class="ri-shield-check-line gov-icon"></i>
+      <span class="gov-text">
+        Effective lesson oversight helps maintain instructional quality,
+        curriculum alignment, and accountability across the school.
+      </span>
+    </div>
+    <div class="gov-framework">
+      <i class="ri-shield-line"></i>
+      <span>Learno Governance Framework</span>
+    </div>
+  </div>
+</div>

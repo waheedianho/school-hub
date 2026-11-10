@@ -368,4 +368,70 @@ describe('SchoolAdminStore', () => {
     expect(store.activeCurriculumTab()).toBe('topic-delivery-packs');
     expect(store.topicDeliveryPack().topic).toBe('Whole Numbers');
   });
+
+  it('should manage lessons and delivery oversight state correctly', () => {
+    // Initial active lessons metrics
+    expect(store.lessonOversightMetrics().activeLessonsThisWeek).toBe(42);
+    expect(store.lessonOversightMetrics().lessonsCompleted).toBe(31);
+    expect(store.lessonOversightMetrics().classesOnTrack).toBe(18);
+
+    // Switch to delivery oversight tab updates metrics
+    store.setActiveLessonsTab('delivery-oversight');
+    expect(store.activeLessonsTab()).toBe('delivery-oversight');
+    expect(store.lessonOversightMetrics().activeLessonsThisWeek).toBe(48);
+    expect(store.lessonOversightMetrics().deliveryPacksReady).toBe(92);
+
+    // Switch back
+    store.setActiveLessonsTab('active-lessons');
+    expect(store.lessonOversightMetrics().activeLessonsThisWeek).toBe(42);
+
+    // Filter lessons by query
+    store.setLessonSearchQuery('Fractions');
+    expect(store.filteredLessonRecords().length).toBe(1);
+    expect(store.filteredLessonRecords()[0].className).toBe('JSS 3A');
+    store.setLessonSearchQuery('');
+
+    // Filter by class
+    store.setLessonClassFilter('JSS 1');
+    expect(store.filteredLessonRecords().length).toBe(2);
+    store.setLessonClassFilter('All Classes');
+
+    // Filter by subject
+    store.setLessonSubjectFilter('Mathematics');
+    expect(store.filteredLessonRecords().length).toBe(2);
+    store.setLessonSubjectFilter('All Subjects');
+
+    // Filter by status
+    store.setLessonStatusFilter('Delayed');
+    expect(store.filteredLessonRecords().length).toBe(1);
+    expect(store.filteredLessonRecords()[0].currentTopic).toBe(
+      'Our Government',
+    );
+    store.setLessonStatusFilter('All Status');
+
+    // Select lesson record
+    const targetRec = store.lessonMonitoringRecords()[2];
+    store.selectLessonRecord(targetRec);
+    expect(store.selectedLessonRecord().id).toBe(targetRec.id);
+
+    // Review lesson plan
+    expect(store.lessonReviews().length).toBeGreaterThan(0);
+    store.approveLessonPlan('rev-1');
+    const updatedReview = store.lessonReviews().find((r) => r.id === 'rev-1');
+    expect(updatedReview?.reviewStatus).toBe('Approved');
+    expect(store.setupSaveStatus()).toContain('Lesson plan approved');
+
+    store.requestLessonRevision('rev-3');
+    const revisedReview = store.lessonReviews().find((r) => r.id === 'rev-3');
+    expect(revisedReview?.reviewStatus).toBe('Revision Requested');
+    expect(store.setupSaveStatus()).toContain('Revision requested');
+
+    // Readiness alerts
+    const initialAlertsCount = store.lessonReadinessAlerts().length;
+    store.resolveReadinessAlert('alt-1');
+    expect(store.lessonReadinessAlerts().length).toBe(initialAlertsCount - 1);
+    expect(store.setupSaveStatus()).toContain(
+      'Readiness alert marked as resolved',
+    );
+  });
 });
