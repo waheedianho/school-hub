@@ -1,0 +1,333 @@
+<div class="table-container-card">
+  <!-- Filters Bar -->
+  <div class="filters-bar">
+    <div class="filter-group">
+      <label class="filter-label" for="classLevelSelect">Class Level</label>
+      <select
+        id="classLevelSelect"
+        class="filter-select"
+        [ngModel]="store.liveClassLevelFilter()"
+        (ngModelChange)="onClassFilterChange($event)"
+      >
+        @for (opt of classLevelOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label" for="subjectSelect">Subject</label>
+      <select
+        id="subjectSelect"
+        class="filter-select"
+        [ngModel]="store.liveClassSubjectFilter()"
+        (ngModelChange)="onSubjectFilterChange($event)"
+      >
+        @for (opt of subjectOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label" for="teacherSelect">Teacher</label>
+      <select
+        id="teacherSelect"
+        class="filter-select"
+        [ngModel]="store.liveClassTeacherFilter()"
+        (ngModelChange)="onTeacherFilterChange($event)"
+      >
+        @for (opt of teacherOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label" for="statusSelect">Status</label>
+      <select
+        id="statusSelect"
+        class="filter-select"
+        [ngModel]="store.liveClassStatusFilter()"
+        (ngModelChange)="onStatusFilterChange($event)"
+      >
+        @for (opt of statusOptions; track opt) {
+        <option [value]="opt">{{ opt }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-search-group">
+      <span class="material-symbols-outlined search-icon">search</span>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search classes, topics, teachers..."
+        [ngModel]="store.liveClassSearchQuery()"
+        (ngModelChange)="onSearchChange($event)"
+        aria-label="Search classes, topics, teachers"
+      />
+    </div>
+  </div>
+
+  <!-- Attention active filter alert banner if clicked from Attention Needed card -->
+  @if (store.activeAttentionFilterKey()) {
+  <div class="attention-active-banner">
+    <span class="material-symbols-outlined banner-icon">filter_alt</span>
+    <span class="banner-text">
+      Filtering by attention criterion:
+      <strong>{{ store.activeAttentionFilterKey() }}</strong>
+    </span>
+    <button
+      type="button"
+      class="clear-filter-btn"
+      (click)="store.clearAttentionFilter()"
+    >
+      Clear Filter
+    </button>
+  </div>
+  }
+
+  <!-- Table Responsive Wrapper -->
+  <div class="table-responsive">
+    <table class="live-classes-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-class">Class</th>
+          <th scope="col" class="th-subject">Subject</th>
+          <th scope="col" class="th-topic">Topic</th>
+          <th scope="col" class="th-teacher">Teacher</th>
+          <th scope="col" class="th-time">
+            <span class="header-with-icon">
+              Start Time
+              <span class="material-symbols-outlined sort-icon"
+                >arrow_downward</span
+              >
+            </span>
+          </th>
+          <th scope="col" class="th-duration">Duration</th>
+          <th scope="col" class="th-attendance">Attendance Status</th>
+          <th scope="col" class="th-status">Live Status</th>
+          <th scope="col" class="th-recording">Recording</th>
+          <th scope="col" class="th-actions text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cls of store.paginatedLiveClasses(); track cls.id) {
+        <tr [class.selected-row]="store.selectedLiveClass()?.id === cls.id">
+          <!-- Class -->
+          <td class="td-class font-semibold">{{ cls.className }}</td>
+
+          <!-- Subject -->
+          <td class="td-subject">{{ cls.subject }}</td>
+
+          <!-- Topic -->
+          <td class="td-topic">{{ cls.topic }}</td>
+
+          <!-- Teacher -->
+          <td class="td-teacher">
+            <span class="teacher-name">{{ cls.teacherName }}</span>
+          </td>
+
+          <!-- Start Time -->
+          <td class="td-time">
+            <span class="time-container">
+              <span class="material-symbols-outlined cal-icon"
+                >calendar_today</span
+              >
+              <span>{{ cls.startTime }}</span>
+            </span>
+          </td>
+
+          <!-- Duration -->
+          <td class="td-duration">{{ cls.duration }}</td>
+
+          <!-- Attendance Status -->
+          <td class="td-attendance">
+            <span
+              class="attendance-badge"
+              [ngClass]="{
+                  'good': cls.attendance.rating === 'Good',
+                  'fair': cls.attendance.rating === 'Fair',
+                  'poor': cls.attendance.rating === 'Poor',
+                  'pending': cls.attendance.rating === 'Pending'
+                }"
+            >
+              {{ cls.attendance.rating }} ({{ cls.attendance.rate }}%)
+            </span>
+          </td>
+
+          <!-- Live Status -->
+          <td class="td-status">
+            <span
+              class="status-pill"
+              [ngClass]="{
+                  'upcoming': cls.liveStatus === 'Upcoming',
+                  'live-now': cls.liveStatus === 'Live Now',
+                  'completed': cls.liveStatus === 'Completed',
+                  'missed': cls.liveStatus === 'Missed'
+                }"
+            >
+              @if (cls.liveStatus === 'Upcoming') {
+              <span class="material-symbols-outlined status-icon"
+                >schedule</span
+              >
+              } @if (cls.liveStatus === 'Live Now') {
+              <span class="pulsing-dot"></span>
+              } @if (cls.liveStatus === 'Completed') {
+              <span class="material-symbols-outlined status-icon">check</span>
+              } @if (cls.liveStatus === 'Missed') {
+              <span class="material-symbols-outlined status-icon">warning</span>
+              }
+              <span>{{ cls.liveStatus }}</span>
+            </span>
+          </td>
+
+          <!-- Recording -->
+          <td class="td-recording">
+            <span
+              class="recording-indicator"
+              [ngClass]="{
+                  'not-avail': cls.recording.status === 'Not Available',
+                  'avail': cls.recording.status === 'Available',
+                  'processing': cls.recording.status === 'Processing'
+                }"
+            >
+              @if (cls.recording.status === 'Not Available') {
+              <span class="material-symbols-outlined rec-icon"
+                >do_not_disturb_on</span
+              >
+              } @if (cls.recording.status === 'Available') {
+              <span class="material-symbols-outlined rec-icon"
+                >play_circle</span
+              >
+              } @if (cls.recording.status === 'Processing') {
+              <span class="material-symbols-outlined rec-icon">sync</span>
+              }
+              <span>{{ cls.recording.status }}</span>
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="td-actions text-right">
+            <div class="actions-wrapper">
+              <button
+                type="button"
+                class="action-menu-trigger"
+                (click)="toggleActionMenu($event, cls.id)"
+                aria-label="Actions menu"
+              >
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+
+              @if (openActionMenuId() === cls.id) {
+              <div class="action-dropdown">
+                @if (cls.liveStatus === 'Live Now') {
+                <button
+                  type="button"
+                  class="dropdown-item live-highlight"
+                  (click)="onObserveClass(cls)"
+                >
+                  <span class="material-symbols-outlined">visibility</span>
+                  Observe Live Class
+                </button>
+                }
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onViewDetails(cls)"
+                >
+                  <span class="material-symbols-outlined">info</span>
+                  View Class Details
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">group</span>
+                  View Attendance Roster
+                </button>
+                @if (cls.recording.status === 'Available') {
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">download</span>
+                  Download Recording
+                </button>
+                } @if (cls.liveStatus === 'Upcoming') {
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">edit_calendar</span>
+                  Reschedule Session
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="empty-state-cell">
+            <div class="empty-state">
+              <span class="material-symbols-outlined empty-icon"
+                >videocam_off</span
+              >
+              <p class="empty-text">
+                No live classes found matching your current filter criteria.
+              </p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Pagination Footer -->
+  <div class="table-pagination-footer">
+    <div class="pagination-info">
+      Showing {{ getShowingStart() }} to {{ getShowingEnd() }} of {{
+      store.totalFilteredLiveClasses() }} classes
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="store.liveClassCurrentPage() <= 1"
+        (click)="onSelectPage(store.liveClassCurrentPage() - 1)"
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+
+      @for (page of getPageNumbers(); track page) {
+      <button
+        type="button"
+        class="pagination-btn page-num"
+        [class.active]="store.liveClassCurrentPage() === page"
+        (click)="onSelectPage(page)"
+      >
+        {{ page }}
+      </button>
+      }
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="store.liveClassCurrentPage() >= store.liveClassTotalPages()"
+        (click)="onSelectPage(store.liveClassCurrentPage() + 1)"
+        aria-label="Next page"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

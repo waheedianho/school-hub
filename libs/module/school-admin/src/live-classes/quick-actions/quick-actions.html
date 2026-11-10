@@ -1,0 +1,71 @@
+<div class="quick-actions-row">
+  <!-- 1. Schedule New Class -->
+  <button
+    type="button"
+    class="action-card"
+    (click)="onScheduleNewClass()"
+    aria-label="Schedule new live class session"
+  >
+    <div class="action-icon purple">
+      <span class="material-symbols-outlined">event_available</span>
+    </div>
+    <div class="action-content">
+      <h4 class="action-title">Schedule New Class</h4>
+      <p class="action-desc">Create and schedule new live class sessions</p>
+    </div>
+    <span class="material-symbols-outlined chevron-icon">chevron_right</span>
+  </button>
+
+  <!-- 2. Review Recordings -->
+  <button
+    type="button"
+    class="action-card"
+    (click)="onReviewRecordings()"
+    aria-label="Review and manage class recordings"
+  >
+    <div class="action-icon green">
+      <span class="material-symbols-outlined">videocam</span>
+    </div>
+    <div class="action-content">
+      <h4 class="action-title">Review Recordings</h4>
+      <p class="action-desc">View and manage class recordings</p>
+    </div>
+    <span class="material-symbols-outlined chevron-icon">chevron_right</span>
+  </button>
+
+  <!-- 3. Monitor Attendance -->
+  <button
+    type="button"
+    class="action-card"
+    (click)="onMonitorAttendance()"
+    aria-label="Track and analyze live class attendance"
+  >
+    <div class="action-icon blue">
+      <span class="material-symbols-outlined">group</span>
+    </div>
+    <div class="action-content">
+      <h4 class="action-title">Monitor Attendance</h4>
+      <p class="action-desc">Track and analyze live class attendance</p>
+    </div>
+    <span class="material-symbols-outlined chevron-icon">chevron_right</span>
+  </button>
+
+  <!-- 4. Generate Live Class Report -->
+  <button
+    type="button"
+    class="action-card"
+    (click)="onGenerateReport()"
+    aria-label="Create comprehensive reports on live classes and attendance"
+  >
+    <div class="action-icon orange">
+      <span class="material-symbols-outlined">description</span>
+    </div>
+    <div class="action-content">
+      <h4 class="action-title">Generate Live Class Report</h4>
+      <p class="action-desc">
+        Create comprehensive reports on live classes and attendance
+      </p>
+    </div>
+    <span class="material-symbols-outlined chevron-icon">chevron_right</span>
+  </button>
+</div>

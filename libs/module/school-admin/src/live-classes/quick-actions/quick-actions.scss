@@ -1,0 +1,148 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+}
+
+.quick-actions-row {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.action-card {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 1.125rem 1.25rem;
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
+
+    .chevron-icon {
+      transform: translateX(3px);
+      color: #7e22ce;
+    }
+  }
+}
+
+.action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 1.5rem;
+  }
+
+  &.purple {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+  }
+
+  &.green {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  &.blue {
+    background-color: #e0f2fe;
+    color: #0369a1;
+  }
+
+  &.orange {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+}
+
+.action-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.action-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #0f172a);
+}
+
+.action-desc {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted, #64748b);
+  line-height: 1.3;
+}
+
+.chevron-icon {
+  font-size: 1.25rem;
+  color: #94a3b8;
+  transition:
+    transform 0.15s ease,
+    color 0.15s ease;
+  flex-shrink: 0;
+}
+
+/* Dark Mode */
+:host-context(.dark) {
+  .action-card {
+    background-color: var(--color-surface, #1e293b);
+    border-color: var(--color-border, #334155);
+
+    &:hover {
+      border-color: #475569;
+    }
+  }
+
+  .action-title {
+    color: #f8fafc;
+  }
+
+  .action-desc {
+    color: #94a3b8;
+  }
+
+  .action-icon {
+    &.purple {
+      background-color: rgba(126, 34, 206, 0.2);
+      color: #c084fc;
+    }
+    &.green {
+      background-color: rgba(21, 128, 61, 0.2);
+      color: #4ade80;
+    }
+    &.blue {
+      background-color: rgba(3, 105, 161, 0.2);
+      color: #38bdf8;
+    }
+    &.orange {
+      background-color: rgba(194, 65, 12, 0.2);
+      color: #fb923c;
+    }
+  }
+}

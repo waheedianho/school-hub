@@ -1,0 +1,178 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalScheduleTitle"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="header-title-wrap">
+        <span class="material-symbols-outlined header-icon"
+          >calendar_add_on</span
+        >
+        <div>
+          <h3 id="modalScheduleTitle" class="modal-title">
+            Schedule New Live Class
+          </h3>
+          <p class="modal-subtitle">
+            Configure virtual classroom session details and teacher assignment
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form class="modal-form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Class -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleClass">Class Stream</label>
+          <select
+            id="scheduleClass"
+            class="field-input"
+            [ngModel]="className()"
+            (ngModelChange)="className.set($event)"
+            name="className"
+          >
+            @for (opt of classOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Subject -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleSubject">Subject</label>
+          <select
+            id="scheduleSubject"
+            class="field-input"
+            [ngModel]="subject()"
+            (ngModelChange)="subject.set($event)"
+            name="subject"
+          >
+            @for (opt of subjectOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Topic (full width) -->
+        <div class="form-field full-width">
+          <label class="field-label" for="scheduleTopic"
+            >Lesson Topic & Focus *</label
+          >
+          <input
+            id="scheduleTopic"
+            type="text"
+            class="field-input"
+            placeholder="e.g. Introduction to Organic Chemistry"
+            [ngModel]="topic()"
+            (ngModelChange)="topic.set($event)"
+            name="topic"
+            required
+          />
+        </div>
+
+        <!-- Assigned Teacher -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleTeacher"
+            >Assigned Teacher</label
+          >
+          <select
+            id="scheduleTeacher"
+            class="field-input"
+            [ngModel]="teacherName()"
+            (ngModelChange)="teacherName.set($event)"
+            name="teacherName"
+          >
+            @for (opt of teacherOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Start Date -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleDate">Date</label>
+          <input
+            id="scheduleDate"
+            type="date"
+            class="field-input"
+            [ngModel]="startDate()"
+            (ngModelChange)="startDate.set($event)"
+            name="startDate"
+          />
+        </div>
+
+        <!-- Start Time -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleTime">Start Time</label>
+          <select
+            id="scheduleTime"
+            class="field-input"
+            [ngModel]="startTime()"
+            (ngModelChange)="startTime.set($event)"
+            name="startTime"
+          >
+            @for (opt of timeOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-field">
+          <label class="field-label" for="scheduleDuration">Duration</label>
+          <select
+            id="scheduleDuration"
+            class="field-input"
+            [ngModel]="duration()"
+            (ngModelChange)="duration.set($event)"
+            name="duration"
+          >
+            @for (opt of durationOptions; track opt) {
+            <option [value]="opt">{{ opt }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Virtual Platform -->
+        <div class="form-field full-width">
+          <label class="field-label" for="schedulePlatform"
+            >Virtual Classroom Provider</label
+          >
+          <select
+            id="schedulePlatform"
+            class="field-input"
+            [ngModel]="platform()"
+            (ngModelChange)="platform.set($event)"
+            name="platform"
+          >
+            <option value="Learno Native Classroom">
+              Learno Native Classroom (Integrated WebRTC)
+            </option>
+            <option value="Zoom Integration">Zoom Video Integration</option>
+            <option value="Google Meet">Google Meet Integration</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="cancel-btn" (click)="onClose()">
+          Cancel
+        </button>
+        <button type="submit" class="submit-btn" [disabled]="!topic().trim()">
+          <span class="material-symbols-outlined">add_task</span>
+          Schedule Class
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

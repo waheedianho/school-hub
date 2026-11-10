@@ -1,0 +1,229 @@
+<div
+  class="observer-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modalObserverTitle"
+>
+  <div class="observer-dialog">
+    <!-- Observer Header -->
+    <div class="observer-header">
+      <div class="header-left">
+        <div class="live-tag">
+          <span class="pulsing-red-dot"></span>
+          <span>OBSERVING LIVE CLASS</span>
+        </div>
+        <div class="class-titles">
+          <h3 id="modalObserverTitle" class="session-title">
+            {{ store.observingLiveClass()?.className }}: {{
+            store.observingLiveClass()?.subject }}
+          </h3>
+          <p class="session-meta">
+            Topic: <strong>{{ store.observingLiveClass()?.topic }}</strong> •
+            Teacher: {{ store.observingLiveClass()?.teacherName }}
+          </p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="attendance-counter">
+          <span class="material-symbols-outlined">group</span>
+          <span
+            >{{ store.observingLiveClass()?.activeParticipants ?? 38 }}
+            Present</span
+          >
+        </div>
+        <button
+          type="button"
+          class="leave-btn"
+          (click)="onClose()"
+          aria-label="Leave live classroom observation"
+        >
+          <span class="material-symbols-outlined">call_end</span>
+          Leave Observation
+        </button>
+      </div>
+    </div>
+
+    <!-- Observer Body Layout -->
+    <div class="observer-body-layout">
+      <!-- Main Stream Stage -->
+      <div class="stream-stage">
+        <div class="video-feed-main">
+          <div class="video-placeholder">
+            <span class="material-symbols-outlined screen-icon"
+              >desktop_windows</span
+            >
+            <p class="teacher-presenting">
+              Teacher Screen Share: {{ store.observingLiveClass()?.topic }}
+            </p>
+          </div>
+
+          <!-- Teacher PiP Tile -->
+          <div class="teacher-pip">
+            <div class="pip-avatar">
+              <span class="material-symbols-outlined">face</span>
+            </div>
+            <span class="pip-name"
+              >{{ store.observingLiveClass()?.teacherName }}</span
+            >
+          </div>
+
+          <!-- Live Session Watermark -->
+          <div class="security-watermark">
+            Learno School Admin Observation Mode • Read-Only
+          </div>
+        </div>
+
+        <!-- Notification Banner if admin broadcast notice sent -->
+        @if (broadcastMessageSent()) {
+        <div class="broadcast-banner">
+          <span class="material-symbols-outlined">campaign</span>
+          <span
+            >Administrative note delivered to teacher classroom console.</span
+          >
+        </div>
+        }
+
+        <!-- Controls Toolbar -->
+        <div class="stream-toolbar">
+          <div class="toolbar-left">
+            <span class="live-timer"
+              >Elapsed: 24:18 / {{ store.observingLiveClass()?.duration }}</span
+            >
+            <span class="quality-badge">1080p HD • WebRTC Secure</span>
+          </div>
+
+          <div class="toolbar-right">
+            <button
+              type="button"
+              class="admin-tool-btn"
+              (click)="sendAdminNotice()"
+              aria-label="Send broadcast reminder to teacher"
+            >
+              <span class="material-symbols-outlined">notifications</span>
+              Send Broadcast Note
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Panel: Participants & Chat tabs -->
+      <div class="observer-side-panel">
+        <div class="panel-nav">
+          <button
+            type="button"
+            class="panel-tab"
+            [class.active]="activeView() === 'stream'"
+            (click)="activeView.set('stream')"
+          >
+            Session Info
+          </button>
+          <button
+            type="button"
+            class="panel-tab"
+            [class.active]="activeView() === 'participants'"
+            (click)="activeView.set('participants')"
+          >
+            Learners ({{ sampleParticipants.length }})
+          </button>
+          <button
+            type="button"
+            class="panel-tab"
+            [class.active]="activeView() === 'chat'"
+            (click)="activeView.set('chat')"
+          >
+            Chat & Questions
+          </button>
+        </div>
+
+        <!-- View 1: Session Info -->
+        @if (activeView() === 'stream') {
+        <div class="panel-content">
+          <div class="info-group">
+            <span class="info-label">Room ID</span>
+            <span class="info-value font-mono"
+              >{{ store.observingLiveClass()?.classroomRoomId ?? 'ROOM-101'
+              }}</span
+            >
+          </div>
+          <div class="info-group">
+            <span class="info-label">Start Time</span>
+            <span class="info-value"
+              >{{ store.observingLiveClass()?.startTime }}</span
+            >
+          </div>
+          <div class="info-group">
+            <span class="info-label">Attendance Rate</span>
+            <span class="info-value text-green-600 font-semibold"
+              >{{ store.observingLiveClass()?.attendance?.rate }}%</span
+            >
+          </div>
+          <div class="info-group">
+            <span class="info-label">Recording Status</span>
+            <span class="info-value text-amber-600 font-semibold"
+              >Live Recording Active (Cloud Archive)</span
+            >
+          </div>
+          <div class="info-group">
+            <span class="info-label">Meeting Link</span>
+            <span class="info-value text-purple-600 font-mono text-xs"
+              >{{ store.observingLiveClass()?.meetingLink }}</span
+            >
+          </div>
+        </div>
+        }
+
+        <!-- View 2: Participants -->
+        @if (activeView() === 'participants') {
+        <div class="panel-content participants-list">
+          @for (p of sampleParticipants; track p.name) {
+          <div class="participant-item">
+            <div class="p-info">
+              <span class="material-symbols-outlined p-avatar"
+                >account_circle</span
+              >
+              <span class="p-name">{{ p.name }}</span>
+            </div>
+            <div class="p-icons">
+              <span
+                class="material-symbols-outlined device-icon"
+                [class.active-mic]="p.mic"
+              >
+                {{ p.mic ? 'mic' : 'mic_off' }}
+              </span>
+              <span
+                class="material-symbols-outlined device-icon"
+                [class.active-cam]="p.cam"
+              >
+                {{ p.cam ? 'videocam' : 'videocam_off' }}
+              </span>
+            </div>
+          </div>
+          }
+        </div>
+        }
+
+        <!-- View 3: Chat -->
+        @if (activeView() === 'chat') {
+        <div class="panel-content chat-panel">
+          <div class="chat-feed">
+            @for (msg of chatLog; track msg.time + msg.sender) {
+            <div class="chat-bubble">
+              <div class="chat-sender-row">
+                <span class="sender-name">{{ msg.sender }}</span>
+                <span class="chat-time">{{ msg.time }}</span>
+              </div>
+              <p class="chat-msg">{{ msg.text }}</p>
+            </div>
+            }
+          </div>
+          <div class="chat-moderation-footer">
+            <span class="material-symbols-outlined">shield</span>
+            <span>School admin silent moderation mode</span>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

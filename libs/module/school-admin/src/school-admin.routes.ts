@@ -77,6 +77,14 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.LessonsOversightComponent,
           ),
       },
+      {
+        path: 'live-classes',
+        title: 'Live Classes | SchoolHub Admin',
+        loadComponent: () =>
+          import('./live-classes/live-classes').then(
+            (m) => m.LiveClassesComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -96,6 +104,12 @@ export const schoolAdminRoutes: Routes = [
       },
       { path: 'lessons', redirectTo: 'lessons-oversight', pathMatch: 'full' },
       { path: 'delivery', redirectTo: 'lessons-oversight', pathMatch: 'full' },
+      { path: 'live', redirectTo: 'live-classes', pathMatch: 'full' },
+      {
+        path: 'virtual-classes',
+        redirectTo: 'live-classes',
+        pathMatch: 'full',
+      },
       {
         path: 'gradebook',
         redirectTo: 'assessments-gradebooks',
@@ -120,7 +134,8 @@ export const schoolAdminRoutes: Routes = [
           page.path !== 'classes-learners' &&
           page.path !== 'teachers-staff' &&
           page.path !== 'subjects-curriculum' &&
-          page.path !== 'lessons-oversight',
+          page.path !== 'lessons-oversight' &&
+          page.path !== 'live-classes',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,

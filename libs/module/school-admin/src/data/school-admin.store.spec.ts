@@ -434,4 +434,115 @@ describe('SchoolAdminStore', () => {
       'Readiness alert marked as resolved',
     );
   });
+
+  it('should manage live classes state and mutations correctly', () => {
+    // Initial metric checks matching design
+    expect(store.liveClassesSummaryMetrics().scheduledToday).toBe(28);
+    expect(store.liveClassesSummaryMetrics().ongoingClasses).toBe(6);
+    expect(store.liveClassesSummaryMetrics().completedThisWeek).toBe(94);
+    expect(store.liveClassesSummaryMetrics().averageAttendanceRate).toBe(87);
+    expect(store.liveClassesSummaryMetrics().missedClassesCount).toBe(5);
+
+    // Initial sidebar summary checks
+    expect(store.liveClassSidebarSummary().scheduledToday).toBe(28);
+    expect(store.liveClassAttentionItems().length).toBe(4);
+
+    // Initial tab is 'upcoming'
+    expect(store.activeLiveClassTab()).toBe('upcoming');
+    expect(store.paginatedLiveClasses().length).toBe(8);
+    expect(store.paginatedLiveClasses()[0].className).toBe('JSS 1A');
+    expect(store.paginatedLiveClasses()[0].subject).toBe('Mathematics');
+    expect(store.paginatedLiveClasses()[0].topic).toBe('Whole Numbers');
+
+    // Switch tab to 'ongoing'
+    store.setActiveLiveClassTab('ongoing');
+    expect(store.activeLiveClassTab()).toBe('ongoing');
+    expect(store.filteredLiveClasses().length).toBe(6);
+    expect(store.filteredLiveClasses()[0].liveStatus).toBe('Live Now');
+
+    // Switch tab to 'completed'
+    store.setActiveLiveClassTab('completed');
+    expect(
+      store.filteredLiveClasses().every((c) => c.liveStatus === 'Completed'),
+    ).toBe(true);
+
+    // Switch tab to 'recordings'
+    store.setActiveLiveClassTab('recordings');
+    expect(
+      store
+        .filteredLiveClasses()
+        .every((c) => c.recording.status === 'Available'),
+    ).toBe(true);
+
+    // Switch back to upcoming
+    store.setActiveLiveClassTab('upcoming');
+
+    // Search query
+    store.setLiveClassSearchQuery('Living Things');
+    expect(store.filteredLiveClasses().length).toBe(1);
+    expect(store.filteredLiveClasses()[0].className).toBe('JSS 2A');
+    store.setLiveClassSearchQuery('');
+
+    // Filter by class level
+    store.setLiveClassLevelFilter('JSS 1');
+    expect(store.filteredLiveClasses().length).toBe(3);
+    store.setLiveClassLevelFilter('All Classes');
+
+    // Filter by subject
+    store.setLiveClassSubjectFilter('Mathematics');
+    expect(store.filteredLiveClasses().length).toBe(2);
+    store.setLiveClassSubjectFilter('All Subjects');
+
+    // Filter by teacher
+    store.setLiveClassTeacherFilter('Mr. Tunde Adewale');
+    expect(store.filteredLiveClasses().length).toBe(1);
+    store.setLiveClassTeacherFilter('All Teachers');
+
+    // Filter by attention key
+    store.toggleAttentionFilter('low-attendance');
+    expect(store.activeAttentionFilterKey()).toBe('low-attendance');
+    // Toggle off
+    store.toggleAttentionFilter('low-attendance');
+    expect(store.activeAttentionFilterKey()).toBeNull();
+
+    // Select live class
+    const sampleClass = store.liveClassRecords()[0];
+    store.selectLiveClass(sampleClass);
+    expect(store.selectedLiveClass()?.id).toBe(sampleClass.id);
+
+    // Schedule modal and new class creation
+    expect(store.isScheduleModalOpen()).toBe(false);
+    store.openScheduleModal();
+    expect(store.isScheduleModalOpen()).toBe(true);
+
+    const initialScheduled = store.liveClassesSummaryMetrics().scheduledToday;
+    store.scheduleNewLiveClass({
+      className: 'SSS 3A',
+      subject: 'Physics',
+      topic: 'Quantum Mechanics',
+      teacherName: 'Dr. Kelechi Nwosu',
+      startTime: '11:00 AM',
+      duration: '45 min',
+    });
+    expect(store.isScheduleModalOpen()).toBe(false);
+    expect(store.liveClassesSummaryMetrics().scheduledToday).toBe(
+      initialScheduled + 1,
+    );
+    expect(store.setupSaveStatus()).toContain(
+      'Live class scheduled successfully',
+    );
+
+    // Live observer modal
+    expect(store.isObserverModalOpen()).toBe(false);
+    store.openLiveClassObserver(sampleClass);
+    expect(store.isObserverModalOpen()).toBe(true);
+    expect(store.observingLiveClass()?.id).toBe(sampleClass.id);
+    store.closeLiveClassObserver();
+    expect(store.isObserverModalOpen()).toBe(false);
+    expect(store.observingLiveClass()).toBeNull();
+
+    // Export report
+    store.exportLiveClassesReport();
+    expect(store.setupSaveStatus()).toContain('report generated');
+  });
 });

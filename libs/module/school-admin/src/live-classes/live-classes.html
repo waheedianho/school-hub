@@ -1,0 +1,136 @@
+<div class="live-classes-page-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Live Classes</h1>
+      <p class="page-subtitle">
+        Monitor scheduled, ongoing, and completed live classes across the
+        school.
+      </p>
+    </div>
+  </header>
+
+  <!-- Notification Banner for save/action status -->
+  @if (store.setupSaveStatus()) {
+  <div class="status-alert-banner">
+    <span class="material-symbols-outlined status-icon">info</span>
+    <span class="status-text">{{ store.setupSaveStatus() }}</span>
+    <button
+      type="button"
+      class="dismiss-btn"
+      (click)="store.setupSaveStatus.set(null)"
+      aria-label="Dismiss status notification"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  }
+
+  <!-- 1. KPI Summary Metrics (5 Cards across) -->
+  <section
+    class="metrics-section"
+    aria-label="Live classes key performance metrics"
+  >
+    <school-hub-live-classes-summary-metrics></school-hub-live-classes-summary-metrics>
+  </section>
+
+  <!-- 2. Navigation Tab Bar -->
+  <nav class="tabs-nav" aria-label="Live classes tabs">
+    <div class="tabs-list">
+      <!-- Tab 1: Upcoming Classes -->
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="store.activeLiveClassTab() === 'upcoming'"
+        (click)="onTabChange('upcoming')"
+      >
+        <span class="material-symbols-outlined tab-icon">calendar_today</span>
+        <span class="tab-label">Upcoming Classes</span>
+      </button>
+
+      <!-- Tab 2: Ongoing Classes -->
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="store.activeLiveClassTab() === 'ongoing'"
+        (click)="onTabChange('ongoing')"
+      >
+        <span class="material-symbols-outlined tab-icon">videocam</span>
+        <span class="tab-label">Ongoing Classes</span>
+        <span class="tab-badge green"
+          >{{ store.liveClassesSummaryMetrics().ongoingClasses }}</span
+        >
+      </button>
+
+      <!-- Tab 3: Completed Classes -->
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="store.activeLiveClassTab() === 'completed'"
+        (click)="onTabChange('completed')"
+      >
+        <span class="material-symbols-outlined tab-icon">check_circle</span>
+        <span class="tab-label">Completed Classes</span>
+      </button>
+
+      <!-- Tab 4: Attendance & Recordings -->
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="store.activeLiveClassTab() === 'recordings'"
+        (click)="onTabChange('recordings')"
+      >
+        <span class="material-symbols-outlined tab-icon">fact_check</span>
+        <span class="tab-label">Attendance & Recordings</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 3. Main Two-Column Layout -->
+  <div class="main-content-layout">
+    <!-- Left Column: Table or Attendance & Recordings View -->
+    <div class="left-main-column">
+      @if (store.activeLiveClassTab() !== 'recordings') {
+      <school-hub-live-classes-table></school-hub-live-classes-table>
+      } @if (store.activeLiveClassTab() === 'recordings') {
+      <school-hub-attendance-recordings></school-hub-attendance-recordings>
+      }
+    </div>
+
+    <!-- Right Column: Sidebar (Summary, Attention Needed, Quick Actions) -->
+    <aside
+      class="right-sidebar-column"
+      aria-label="Live class summary and alerts"
+    >
+      <school-hub-live-classes-sidebar></school-hub-live-classes-sidebar>
+    </aside>
+  </div>
+
+  <!-- 4. Bottom Quick Actions Row (4 Cards across) -->
+  <section class="bottom-actions-section" aria-label="Live class quick actions">
+    <school-hub-live-classes-quick-actions></school-hub-live-classes-quick-actions>
+  </section>
+
+  <!-- 5. Learno Quality & Compliance Footer Note -->
+  <footer class="governance-footer">
+    <div class="footer-left">
+      <span class="material-symbols-outlined footer-icon">verified_user</span>
+      <span class="footer-text">
+        Learno Live Classroom Delivery & Attendance Auditing conforms with
+        National Quality Assurance & Child Protection Standards.
+      </span>
+    </div>
+    <div class="footer-right">
+      <span class="footer-timestamp"
+        >WebRTC v2.4 • End-to-End Encrypted Broadcasts</span
+      >
+    </div>
+  </footer>
+
+  <!-- 6. Modals -->
+  @if (store.isScheduleModalOpen()) {
+  <school-hub-schedule-modal></school-hub-schedule-modal>
+  } @if (store.isObserverModalOpen()) {
+  <school-hub-class-observer-modal></school-hub-class-observer-modal>
+  }
+</div>
