@@ -1,0 +1,108 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typo;
+
+.quick-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.action-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    transform: translateY(-1px);
+  }
+}
+
+.card-top {
+  display: flex;
+  gap: 0.875rem;
+}
+
+.icon-wrap {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  &.icon-blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  &.icon-orange {
+    background-color: #ffedd5;
+    color: #ea580c;
+  }
+
+  &.icon-purple {
+    background-color: #f3e8ff;
+    color: #9333ea;
+  }
+
+  &.icon-green {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+}
+
+.card-content {
+  flex: 1;
+
+  .card-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #111827);
+    margin-bottom: 0.375rem;
+    line-height: 1.3;
+  }
+
+  .card-desc {
+    font-size: 0.8125rem;
+    color: var(--color-text-secondary, #6b7280);
+    line-height: 1.4;
+  }
+}
+
+.card-bottom {
+  display: flex;
+  justify-content: flex-start;
+
+  .card-action-btn {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-primary, #4f46e5);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

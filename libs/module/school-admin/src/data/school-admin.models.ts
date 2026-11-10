@@ -680,3 +680,130 @@ export interface LiveClassAttentionItem {
     | 'starting-soon'
     | 'no-teacher';
 }
+
+/**
+ * ============================================================================
+ * Assessments & Gradebooks Domain Models
+ * ============================================================================
+ */
+export type AssessmentScheduleTab =
+  | 'schedule'
+  | 'submissions'
+  | 'gradebooks'
+  | 'moderation'
+  | 'exam-records';
+
+export type AssessmentReviewSubTab =
+  | 'overview'
+  | 'submission-review'
+  | 'gradebook-entries'
+  | 'moderation-notes';
+
+export type AssessmentType =
+  | 'Quiz'
+  | 'Test'
+  | 'Assignment'
+  | 'Exam'
+  | 'Project';
+
+export type GradingStatus =
+  | 'Grading'
+  | 'Needs Review'
+  | 'Finalized'
+  | 'Missing Scores'
+  | 'Pending';
+
+export type GradebookStatus =
+  | 'In Progress'
+  | 'Finalized'
+  | 'Pending Approval'
+  | 'Not Started';
+
+export interface AssessmentRecord {
+  id: string;
+  className: string;
+  subject: string;
+  assessmentName: string;
+  week: string;
+  teacherName: string;
+  assessmentType: AssessmentType;
+  submissionsCount: number;
+  totalLearners: number;
+  submissionRate: number;
+  gradingStatus: GradingStatus;
+  averageScore?: number;
+  maxScore: number;
+  gradebookStatus: GradebookStatus;
+  lastUpdated: string;
+  pendingReviewCount?: number;
+  missingScoresCount?: number;
+  autoGradedItemsCount?: number;
+  manualReviewRequired?: boolean;
+  moderationNotes?: string;
+}
+
+export interface LearnerSubmissionReview {
+  id: string;
+  learnerName: string;
+  initials: string;
+  submissionStatus: 'Submitted' | 'Not Submitted' | 'Late';
+  teacherScore?: number;
+  maxScore: number;
+  moderatedScore?: number;
+  reviewStatus: 'Reviewed' | 'Needs Review' | 'Missing Score';
+  flag?: string;
+  flagTone?: 'red' | 'orange' | 'amber';
+  lastUpdated: string;
+  rubricComment?: string;
+  teacherFeedback?: string;
+}
+
+export interface AssessmentsSummaryMetrics {
+  totalAssessments: number;
+  assessmentsCompleted: number;
+  completionRate: number;
+  pendingGrading: number;
+  pendingGradingRate: number;
+  gradebooksFinalized: number;
+  gradebooksFinalizedRate: number;
+  averageScoreAcrossAll: number;
+}
+
+export interface AssessmentSidebarSummary {
+  totalScheduled: number;
+  autoGraded: number;
+  autoGradedRate: number;
+  manuallyGraded: number;
+  manuallyGradedRate: number;
+  awaitingModeration: number;
+  awaitingModerationRate: number;
+  averageCompletionRate: number;
+}
+
+export interface AssessmentAttentionItem {
+  id: string;
+  count: number;
+  label: string;
+  tone: 'red' | 'orange' | 'amber' | 'yellow';
+  filterKey:
+    | 'awaiting-finalization'
+    | 'missing-scores'
+    | 'overdue-grading'
+    | 'low-performance';
+}
+
+export interface AssessmentReviewSummary {
+  submittedCount: number;
+  reviewedCount: number;
+  needsReviewCount: number;
+  missingScoresCount: number;
+  averageScoreText: string;
+}
+
+export interface GradeDistributionBucket {
+  grade: 'A' | 'B' | 'C' | 'D' | 'E' | 'F';
+  range: string;
+  learnersCount: number;
+  percentage: number;
+  tone: 'green' | 'orange' | 'red';
+}

@@ -1,0 +1,129 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typo;
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.metric-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+
+  .card-title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #6b7280);
+    text-transform: capitalize;
+  }
+}
+
+.icon-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.icon-indigo {
+    background-color: #e0e7ff;
+    color: #4f46e5;
+  }
+
+  &.icon-green {
+    background-color: #dcfce7;
+    color: #16a34a;
+  }
+
+  &.icon-orange {
+    background-color: #ffedd5;
+    color: #ea580c;
+  }
+
+  &.icon-blue {
+    background-color: #dbeafe;
+    color: #2563eb;
+  }
+
+  &.icon-purple {
+    background-color: #f3e8ff;
+    color: #9333ea;
+  }
+}
+
+.metric-body {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .metric-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-text-primary, #111827);
+  }
+}
+
+.badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+
+  &.badge-green {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  &.badge-orange {
+    background-color: #ffedd5;
+    color: #c2410c;
+  }
+
+  &.badge-blue {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+  }
+}
+
+.metric-footer {
+  .subtext {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted, #9ca3af);
+  }
+}

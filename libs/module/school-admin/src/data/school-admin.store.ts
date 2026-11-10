@@ -10,14 +10,22 @@ import {
   AcademicPerformanceOverview,
   AcademicSession,
   AcademicStructure,
+  AssessmentAttentionItem,
+  AssessmentRecord,
   AssessmentReportingSettings,
+  AssessmentReviewSubTab,
+  AssessmentScheduleTab,
+  AssessmentSidebarSummary,
+  AssessmentsSummaryMetrics,
   ClassesOverviewMetrics,
   CommunicationSafeguardingSettings,
   CurriculumCoverage,
   CurriculumMapEntry,
   CurriculumOverviewMetrics,
+  GradeDistributionBucket,
   InterventionCase,
   LearnerRecord,
+  LearnerSubmissionReview,
   LessonMonitoringRecord,
   LessonOversightMetrics,
   LessonReadinessAlert,
@@ -95,6 +103,14 @@ import {
   LIVE_CLASS_ATTENTION_ITEMS,
   LIVE_CLASS_RECORDS_DATA,
 } from './school-admin-live-classes.data';
+import {
+  ASSESSMENTS_SUMMARY_METRICS,
+  ASSESSMENT_SIDEBAR_SUMMARY,
+  ASSESSMENT_ATTENTION_ITEMS,
+  ASSESSMENT_RECORDS_DATA,
+  LEARNER_SUBMISSIONS_REVIEW_DATA,
+  GRADE_DISTRIBUTION_BUCKETS,
+} from './school-admin-assessments.data';
 import {
   ACADEMIC_STRUCTURE_DATA,
   ASSESSMENT_SETTINGS_DATA,
@@ -626,6 +642,168 @@ export class SchoolAdminStore {
     const pageSize = this.liveClassPageSize();
     const start = (page - 1) * pageSize;
     return this.filteredLiveClasses().slice(start, start + pageSize);
+  });
+
+  // Assessments & Gradebooks State
+  readonly activeAssessmentTab = signal<AssessmentScheduleTab>('schedule');
+  readonly activeReviewSubTab =
+    signal<AssessmentReviewSubTab>('submission-review');
+  readonly assessmentRecords = signal<AssessmentRecord[]>(
+    ASSESSMENT_RECORDS_DATA,
+  );
+  readonly assessmentsSummaryMetrics = signal<AssessmentsSummaryMetrics>(
+    ASSESSMENTS_SUMMARY_METRICS,
+  );
+  readonly assessmentSidebarSummary = signal<AssessmentSidebarSummary>(
+    ASSESSMENT_SIDEBAR_SUMMARY,
+  );
+  readonly assessmentAttentionItems = signal<AssessmentAttentionItem[]>(
+    ASSESSMENT_ATTENTION_ITEMS,
+  );
+  readonly learnerSubmissions = signal<LearnerSubmissionReview[]>(
+    LEARNER_SUBMISSIONS_REVIEW_DATA,
+  );
+  readonly gradeDistributionBuckets = signal<GradeDistributionBucket[]>(
+    GRADE_DISTRIBUTION_BUCKETS,
+  );
+  readonly selectedAssessmentForReview = signal<AssessmentRecord | null>(null);
+  readonly selectedSubmissionForModeration =
+    signal<LearnerSubmissionReview | null>(null);
+  readonly assessmentClassFilter = signal<string>('All Classes');
+  readonly assessmentSubjectFilter = signal<string>('All Subjects');
+  readonly assessmentTeacherFilter = signal<string>('All Teachers');
+  readonly assessmentTypeFilter = signal<string>('All Types');
+  readonly assessmentSearchQuery = signal<string>('');
+  readonly assessmentAttentionFilterKey = signal<string | null>(null);
+  readonly assessmentCurrentPage = signal<number>(1);
+  readonly assessmentPageSize = signal<number>(8);
+  readonly isCreateAssessmentModalOpen = signal<boolean>(false);
+  readonly isModerationModalOpen = signal<boolean>(false);
+
+  readonly filteredAssessments = computed<AssessmentRecord[]>(() => {
+    const tab = this.activeAssessmentTab();
+    const classFilter = this.assessmentClassFilter();
+    const subjectFilter = this.assessmentSubjectFilter();
+    const teacherFilter = this.assessmentTeacherFilter();
+    const typeFilter = this.assessmentTypeFilter();
+    const query = this.assessmentSearchQuery().toLowerCase().trim();
+    const attentionKey = this.assessmentAttentionFilterKey();
+
+    return this.assessmentRecords().filter((asm) => {
+      // Tab filtering
+      if (tab === 'submissions' && asm.submissionsCount === 0) {
+        return false;
+      }
+      if (tab === 'gradebooks' && asm.gradebookStatus === 'Not Started') {
+        return false;
+      }
+      if (
+        tab === 'moderation' &&
+        asm.gradingStatus !== 'Needs Review' &&
+        asm.gradingStatus !== 'Missing Scores'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'exam-records' &&
+        asm.assessmentType !== 'Exam' &&
+        asm.week !== 'Week 6'
+      ) {
+        return false;
+      }
+
+      // Attention criterion filtering
+      if (
+        attentionKey === 'awaiting-finalization' &&
+        asm.gradebookStatus !== 'In Progress'
+      ) {
+        return false;
+      }
+      if (
+        attentionKey === 'missing-scores' &&
+        asm.gradingStatus !== 'Missing Scores' &&
+        (asm.missingScoresCount ?? 0) === 0
+      ) {
+        return false;
+      }
+      if (
+        attentionKey === 'overdue-grading' &&
+        !(asm.gradingStatus === 'Grading' && asm.week.includes('5'))
+      ) {
+        return false;
+      }
+      if (
+        attentionKey === 'low-performance' &&
+        (asm.averageScore ?? 100) >= 65
+      ) {
+        return false;
+      }
+
+      // Dropdown filters
+      const matchesClass =
+        classFilter === 'All Classes' || asm.className.startsWith(classFilter);
+      const matchesSubject =
+        subjectFilter === 'All Subjects' || asm.subject === subjectFilter;
+      const matchesTeacher =
+        teacherFilter === 'All Teachers' || asm.teacherName === teacherFilter;
+      const matchesType =
+        typeFilter === 'All Types' || asm.assessmentType === typeFilter;
+
+      // Search query
+      const matchesQuery =
+        !query ||
+        asm.assessmentName.toLowerCase().includes(query) ||
+        asm.className.toLowerCase().includes(query) ||
+        asm.subject.toLowerCase().includes(query) ||
+        asm.teacherName.toLowerCase().includes(query);
+
+      return (
+        matchesClass &&
+        matchesSubject &&
+        matchesTeacher &&
+        matchesType &&
+        matchesQuery
+      );
+    });
+  });
+
+  readonly totalFilteredAssessments = computed(
+    () => this.filteredAssessments().length,
+  );
+
+  readonly assessmentTotalPages = computed(() => {
+    return (
+      Math.ceil(this.totalFilteredAssessments() / this.assessmentPageSize()) ||
+      1
+    );
+  });
+
+  readonly paginatedAssessments = computed(() => {
+    const page = this.assessmentCurrentPage();
+    const pageSize = this.assessmentPageSize();
+    const start = (page - 1) * pageSize;
+    return this.filteredAssessments().slice(start, start + pageSize);
+  });
+
+  readonly reviewSummaryStats = computed(() => {
+    const subs = this.learnerSubmissions();
+    const submitted = subs.filter(
+      (s) => s.submissionStatus === 'Submitted',
+    ).length;
+    const reviewed = subs.filter((s) => s.reviewStatus === 'Reviewed').length;
+    const needsReview = subs.filter(
+      (s) => s.reviewStatus === 'Needs Review',
+    ).length;
+    const missing = subs.filter(
+      (s) => s.reviewStatus === 'Missing Score',
+    ).length;
+    return {
+      submittedCount: submitted,
+      reviewedCount: reviewed,
+      needsReviewCount: needsReview,
+      missingScoresCount: missing,
+      averageScoreText: '19.8 / 30 (66.0%)',
+    };
   });
 
   // Setup Signals
@@ -1210,6 +1388,199 @@ export class SchoolAdminStore {
   exportLiveClassesReport(): void {
     this.setupSaveStatus.set(
       'Live classes attendance and session report generated for school administration.',
+    );
+  }
+
+  /**
+   * Assessments & Gradebooks Mutations
+   */
+  setActiveAssessmentTab(tab: AssessmentScheduleTab): void {
+    this.activeAssessmentTab.set(tab);
+    this.assessmentCurrentPage.set(1);
+    this.assessmentAttentionFilterKey.set(null);
+  }
+
+  setActiveReviewSubTab(tab: AssessmentReviewSubTab): void {
+    this.activeReviewSubTab.set(tab);
+  }
+
+  setAssessmentClassFilter(filter: string): void {
+    this.assessmentClassFilter.set(filter);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  setAssessmentSubjectFilter(filter: string): void {
+    this.assessmentSubjectFilter.set(filter);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  setAssessmentTeacherFilter(filter: string): void {
+    this.assessmentTeacherFilter.set(filter);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  setAssessmentTypeFilter(filter: string): void {
+    this.assessmentTypeFilter.set(filter);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  setAssessmentSearchQuery(query: string): void {
+    this.assessmentSearchQuery.set(query);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  setAssessmentCurrentPage(page: number): void {
+    this.assessmentCurrentPage.set(page);
+  }
+
+  toggleAssessmentAttentionFilter(
+    key:
+      | 'awaiting-finalization'
+      | 'missing-scores'
+      | 'overdue-grading'
+      | 'low-performance',
+  ): void {
+    const current = this.assessmentAttentionFilterKey();
+    if (current === key) {
+      this.assessmentAttentionFilterKey.set(null);
+    } else {
+      this.assessmentAttentionFilterKey.set(key);
+    }
+    this.assessmentCurrentPage.set(1);
+  }
+
+  clearAssessmentAttentionFilter(): void {
+    this.assessmentAttentionFilterKey.set(null);
+    this.assessmentCurrentPage.set(1);
+  }
+
+  openAssessmentReview(assessment: AssessmentRecord): void {
+    this.selectedAssessmentForReview.set(assessment);
+    this.activeReviewSubTab.set('submission-review');
+  }
+
+  closeAssessmentReview(): void {
+    this.selectedAssessmentForReview.set(null);
+  }
+
+  openCreateAssessmentModal(): void {
+    this.isCreateAssessmentModalOpen.set(true);
+  }
+
+  closeCreateAssessmentModal(): void {
+    this.isCreateAssessmentModalOpen.set(false);
+  }
+
+  createAssessment(data: Partial<AssessmentRecord>): void {
+    const created: AssessmentRecord = {
+      id: `asm-${Date.now()}`,
+      className: data.className ?? 'JSS 1A',
+      subject: data.subject ?? 'Mathematics',
+      assessmentName: data.assessmentName ?? 'Continuous Assessment Quiz',
+      week: data.week ?? 'Week 6',
+      teacherName: data.teacherName ?? 'Mr. Tunde Adewale',
+      assessmentType: data.assessmentType ?? 'Quiz',
+      submissionsCount: 0,
+      totalLearners: data.totalLearners ?? 30,
+      submissionRate: 0,
+      gradingStatus: 'Pending',
+      averageScore: undefined,
+      maxScore: data.maxScore ?? 30,
+      gradebookStatus: 'Not Started',
+      lastUpdated: 'Just now',
+      ...data,
+    };
+
+    this.assessmentRecords.update((records) => [created, ...records]);
+    this.assessmentsSummaryMetrics.update((m) => ({
+      ...m,
+      totalAssessments: m.totalAssessments + 1,
+    }));
+    this.assessmentSidebarSummary.update((s) => ({
+      ...s,
+      totalScheduled: s.totalScheduled + 1,
+    }));
+    this.isCreateAssessmentModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Assessment created: ${created.assessmentName} (${created.className} - ${created.subject})`,
+    );
+  }
+
+  openModerationModal(submission: LearnerSubmissionReview): void {
+    this.selectedSubmissionForModeration.set(submission);
+    this.isModerationModalOpen.set(true);
+  }
+
+  closeModerationModal(): void {
+    this.isModerationModalOpen.set(false);
+    this.selectedSubmissionForModeration.set(null);
+  }
+
+  saveModeratedScore(id: string, score: number, comment: string): void {
+    this.learnerSubmissions.update((subs) =>
+      subs.map((s) =>
+        s.id === id
+          ? {
+              ...s,
+              moderatedScore: score,
+              reviewStatus: 'Reviewed' as const,
+              flag: '—',
+              rubricComment: comment,
+            }
+          : s,
+      ),
+    );
+    this.isModerationModalOpen.set(false);
+    this.selectedSubmissionForModeration.set(null);
+    this.setupSaveStatus.set(
+      `Score moderated and saved. Rubric comments recorded for moderation log.`,
+    );
+  }
+
+  approveAssessmentGradebook(assessmentId: string): void {
+    this.assessmentRecords.update((records) =>
+      records.map((r) =>
+        r.id === assessmentId
+          ? {
+              ...r,
+              gradingStatus: 'Finalized' as const,
+              gradebookStatus: 'Finalized' as const,
+              pendingReviewCount: 0,
+            }
+          : r,
+      ),
+    );
+    if (this.selectedAssessmentForReview()?.id === assessmentId) {
+      this.selectedAssessmentForReview.update((cur) =>
+        cur
+          ? {
+              ...cur,
+              gradingStatus: 'Finalized' as const,
+              gradebookStatus: 'Finalized' as const,
+              pendingReviewCount: 0,
+            }
+          : null,
+      );
+    }
+    this.assessmentsSummaryMetrics.update((m) => ({
+      ...m,
+      gradebooksFinalized: m.gradebooksFinalized + 1,
+      assessmentsCompleted: m.assessmentsCompleted + 1,
+    }));
+    this.setupSaveStatus.set(
+      `Gradebook finalized and approved for official school record.`,
+    );
+  }
+
+  returnGradebookToTeacher(assessmentId: string): void {
+    this.setupSaveStatus.set(
+      `Gradebook (${assessmentId}) returned to subject teacher with specific rubric and moderation instructions.`,
+    );
+  }
+
+  exportAssessmentReport(): void {
+    this.setupSaveStatus.set(
+      `Official assessment and continuous evaluation report generated for administration.`,
     );
   }
 

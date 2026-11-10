@@ -1,0 +1,158 @@
+<section class="quick-actions-grid" aria-label="Assessment Quick Actions">
+  <!-- Card 1: Review Gradebook Completion -->
+  <article class="action-card">
+    <div class="card-top">
+      <div class="icon-wrap icon-blue" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path
+            d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+          ></path>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">Review Gradebook Completion</h3>
+        <p class="card-desc">
+          Detailed status of all class gradebooks before term-end cutoff.
+        </p>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <button
+        type="button"
+        class="card-action-btn"
+        (click)="onReviewGradebooks()"
+      >
+        Review Gradebooks
+      </button>
+    </div>
+  </article>
+
+  <!-- Card 2: Check Submission Queue -->
+  <article class="action-card">
+    <div class="card-top">
+      <div class="icon-wrap icon-orange" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">Check Submission Queue</h3>
+        <p class="card-desc">
+          View unsubmitted or late learner assessments requiring follow-up.
+        </p>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <button
+        type="button"
+        class="card-action-btn"
+        (click)="onCheckSubmissions()"
+      >
+        Check Submissions
+      </button>
+    </div>
+  </article>
+
+  <!-- Card 3: View Moderation Log -->
+  <article class="action-card">
+    <div class="card-top">
+      <div class="icon-wrap icon-purple" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">View Moderation Log</h3>
+        <p class="card-desc">
+          Audit score adjustments, teacher disputes, and administrative
+          overrides.
+        </p>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <button
+        type="button"
+        class="card-action-btn"
+        (click)="onViewModerationLog()"
+      >
+        View Log
+      </button>
+    </div>
+  </article>
+
+  <!-- Card 4: Generate Assessment Report -->
+  <article class="action-card">
+    <div class="card-top">
+      <div class="icon-wrap icon-green" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </div>
+      <div class="card-content">
+        <h3 class="card-title">Generate Assessment Report</h3>
+        <p class="card-desc">
+          Download comprehensive school-wide assessment and continuous
+          evaluation reports.
+        </p>
+      </div>
+    </div>
+    <div class="card-bottom">
+      <button
+        type="button"
+        class="card-action-btn"
+        (click)="onGenerateReport()"
+      >
+        Generate Report
+      </button>
+    </div>
+  </article>
+</section>

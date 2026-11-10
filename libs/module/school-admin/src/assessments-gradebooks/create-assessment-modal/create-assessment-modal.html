@@ -1,0 +1,169 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="create-assessment-title"
+>
+  <div class="modal-panel">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h2 id="create-assessment-title" class="modal-title">
+        Create / Schedule Assessment
+      </h2>
+      <button
+        type="button"
+        class="modal-close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body Form -->
+    <form class="modal-form" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <!-- Class Selection -->
+        <div class="form-group">
+          <label for="create-class" class="form-label">Class Level</label>
+          <select
+            id="create-class"
+            class="form-select"
+            [ngModel]="className()"
+            (ngModelChange)="className.set($event)"
+            name="className"
+          >
+            @for (c of classOptions; track c) {
+            <option [value]="c">{{ c }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Subject Selection -->
+        <div class="form-group">
+          <label for="create-subject" class="form-label">Subject</label>
+          <select
+            id="create-subject"
+            class="form-select"
+            [ngModel]="subject()"
+            (ngModelChange)="subject.set($event)"
+            name="subject"
+          >
+            @for (s of subjectOptions; track s) {
+            <option [value]="s">{{ s }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Assessment Name -->
+        <div class="form-group col-span-2">
+          <label for="create-name" class="form-label">Assessment Name *</label>
+          <input
+            id="create-name"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Mid-Term Geometry Test, Narrative Writing Assessment"
+            [ngModel]="assessmentName()"
+            (ngModelChange)="assessmentName.set($event)"
+            name="assessmentName"
+            required
+          />
+        </div>
+
+        <!-- Assessment Type -->
+        <div class="form-group">
+          <label for="create-type" class="form-label">Assessment Type</label>
+          <select
+            id="create-type"
+            class="form-select"
+            [ngModel]="assessmentType()"
+            (ngModelChange)="assessmentType.set($event)"
+            name="assessmentType"
+          >
+            @for (t of typeOptions; track t) {
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Week / Period -->
+        <div class="form-group">
+          <label for="create-week" class="form-label">Week / Period</label>
+          <input
+            id="create-week"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Week 7, Mid-Term"
+            [ngModel]="week()"
+            (ngModelChange)="week.set($event)"
+            name="week"
+          />
+        </div>
+
+        <!-- Teacher Assigned -->
+        <div class="form-group">
+          <label for="create-teacher" class="form-label"
+            >Teacher Assigned</label
+          >
+          <select
+            id="create-teacher"
+            class="form-select"
+            [ngModel]="teacherName()"
+            (ngModelChange)="teacherName.set($event)"
+            name="teacherName"
+          >
+            @for (t of teacherOptions; track t) {
+            <option [value]="t">{{ t }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Max Score -->
+        <div class="form-group">
+          <label for="create-max-score" class="form-label"
+            >Max Score (Marks)</label
+          >
+          <input
+            id="create-max-score"
+            type="number"
+            class="form-input"
+            min="5"
+            max="100"
+            [ngModel]="maxScore()"
+            (ngModelChange)="maxScore.set(+$event)"
+            name="maxScore"
+          />
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="!assessmentName().trim()"
+        >
+          Create Assessment
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}

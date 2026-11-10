@@ -1,0 +1,609 @@
+<div class="review-view-container">
+  <!-- Top Navigation & Header Bar -->
+  <header class="review-header">
+    <div class="header-left">
+      <button
+        type="button"
+        class="back-btn"
+        (click)="onBackToAssessments()"
+        aria-label="Back to Assessments Schedule"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to Assessments</span>
+      </button>
+
+      <div class="title-wrap">
+        <h1 class="review-title">
+          {{ assessment()?.className }} — {{ assessment()?.assessmentName }}
+        </h1>
+        <p class="review-subtitle">
+          Continuous Assessment Review, Score Moderation &amp; Gradebook
+          Verification
+        </p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-secondary" (click)="onExportReport()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Download Raw Data</span>
+      </button>
+
+      <button type="button" class="btn-secondary" (click)="onExportReport()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+          ></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>Export PDF Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 4 Top Assessment Info Cards -->
+  <section class="info-cards-grid" aria-label="Assessment Information">
+    <!-- Card 1: Class & Subject -->
+    <article class="info-card">
+      <span class="info-label">Class &amp; Subject</span>
+      <div class="info-main">
+        <span class="info-primary"
+          >{{ assessment()?.className }} • {{ assessment()?.subject }}</span
+        >
+      </div>
+      <span class="info-subtext">Teacher: {{ assessment()?.teacherName }}</span>
+    </article>
+
+    <!-- Card 2: Assessment Details -->
+    <article class="info-card">
+      <span class="info-label">Assessment Details</span>
+      <div class="info-main">
+        <span class="info-primary">{{ assessment()?.assessmentName }}</span>
+      </div>
+      <span class="info-subtext"
+        >{{ assessment()?.week }} • Continuous Assessment</span
+      >
+    </article>
+
+    <!-- Card 3: Max Score & Weight -->
+    <article class="info-card">
+      <span class="info-label">Max Score &amp; Weight</span>
+      <div class="info-main">
+        <span class="info-primary"
+          >{{ assessment()?.maxScore }} Marks • 15% Weight</span
+        >
+      </div>
+      <span class="info-subtext">Contribution to Term Grade</span>
+    </article>
+
+    <!-- Card 4: Review Status -->
+    <article class="info-card">
+      <span class="info-label">Review Status</span>
+      <div class="info-main">
+        <span
+          class="status-pill"
+          [ngClass]="{
+            'pill-finalized': assessment()?.gradebookStatus === 'Finalized',
+            'pill-pending': assessment()?.gradebookStatus !== 'Finalized'
+          }"
+        >
+          {{ assessment()?.gradebookStatus === 'Finalized' ? 'Finalized' :
+          'Pending Moderation' }}
+        </span>
+      </div>
+      <span class="info-subtext">5 Flagged Submissions</span>
+    </article>
+  </section>
+
+  <!-- Details Metrics Strip -->
+  <div class="metrics-strip">
+    <div class="strip-item">
+      <span class="strip-value">{{ assessment()?.totalLearners }}</span>
+      <span class="strip-label">Learners Total</span>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-item">
+      <span class="strip-value text-green"
+        >{{ assessment()?.submissionsCount }} ({{ assessment()?.submissionRate
+        }}%)</span
+      >
+      <span class="strip-label">Submitted</span>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-item">
+      <span class="strip-value text-orange">1</span>
+      <span class="strip-label">Absent / Missing</span>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-item">
+      <span class="strip-value text-blue">22</span>
+      <span class="strip-label">Graded</span>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-item">
+      <span class="strip-value text-amber">5</span>
+      <span class="strip-label">Pending Review</span>
+    </div>
+    <div class="strip-divider"></div>
+    <div class="strip-item">
+      <span class="strip-value font-semibold">19.8 / 30 (66.0%)</span>
+      <span class="strip-label">Average Score</span>
+    </div>
+  </div>
+
+  <!-- Two Column Layout: Main Content + Sidebar -->
+  <div class="review-main-grid">
+    <!-- Main Column: Tabs + Table + Analysis Cards -->
+    <main class="review-content-col">
+      <!-- Sub-Tabs Navigation -->
+      <nav class="subtabs-nav" aria-label="Review Navigation">
+        <button
+          type="button"
+          class="subtab-btn"
+          [class.active]="activeSubTab() === 'overview'"
+          (click)="onSubTabChange('overview')"
+        >
+          Overview
+        </button>
+        <button
+          type="button"
+          class="subtab-btn"
+          [class.active]="activeSubTab() === 'submission-review'"
+          (click)="onSubTabChange('submission-review')"
+        >
+          Submission Review
+          <span class="subtab-badge">27</span>
+        </button>
+        <button
+          type="button"
+          class="subtab-btn"
+          [class.active]="activeSubTab() === 'gradebook-entries'"
+          (click)="onSubTabChange('gradebook-entries')"
+        >
+          Gradebook Entries
+        </button>
+        <button
+          type="button"
+          class="subtab-btn"
+          [class.active]="activeSubTab() === 'moderation-notes'"
+          (click)="onSubTabChange('moderation-notes')"
+        >
+          Moderation Notes
+          <span class="subtab-badge badge-warning">5</span>
+        </button>
+      </nav>
+
+      <!-- Table Filter Bar inside Review -->
+      <div class="table-card">
+        <div class="review-table-filters">
+          <div class="search-box">
+            <svg
+              class="search-icon"
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="search"
+              class="search-input"
+              placeholder="Search learner name or rubric..."
+              [ngModel]="searchQuery()"
+              (ngModelChange)="searchQuery.set($event)"
+              aria-label="Search learner submissions"
+            />
+          </div>
+
+          <div class="filters-wrap">
+            <select
+              class="filter-select"
+              [ngModel]="statusFilter()"
+              (ngModelChange)="statusFilter.set($event)"
+              aria-label="Filter by review status"
+            >
+              <option value="All Status">All Status</option>
+              <option value="Reviewed">Reviewed</option>
+              <option value="Needs Review">Needs Review</option>
+              <option value="Missing Score">Missing Score</option>
+            </select>
+
+            <select
+              class="filter-select"
+              [ngModel]="flagFilter()"
+              (ngModelChange)="flagFilter.set($event)"
+              aria-label="Filter by flags"
+            >
+              <option value="All Flags">All Flags</option>
+              <option value="Has Flags">Flagged Submissions</option>
+              <option value="High Outlier">High Outlier</option>
+              <option value="Teacher Discrepancy">Teacher Discrepancy</option>
+              <option value="Late Submission">Late Submission</option>
+              <option value="Plagiarism Alert">Plagiarism Alert</option>
+              <option value="Missing Rubric">Missing Rubric</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Learner Submissions Table -->
+        <div class="table-responsive">
+          <table
+            class="submissions-table"
+            aria-label="Learner Submissions Review"
+          >
+            <thead>
+              <tr>
+                <th class="th-learner">LEARNER</th>
+                <th class="th-submission">SUBMISSION</th>
+                <th class="th-teacher-score">TEACHER SCORE</th>
+                <th class="th-moderated-score">MODERATED SCORE</th>
+                <th class="th-status">STATUS</th>
+                <th class="th-flags">FLAGS</th>
+                <th class="th-rubric">RUBRIC COMMENTS</th>
+                <th class="th-actions">ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (sub of filteredSubmissions(); track sub.id) {
+              <tr>
+                <td class="td-learner">
+                  <div class="learner-cell">
+                    <div class="learner-avatar" aria-hidden="true">
+                      {{ sub.initials }}
+                    </div>
+                    <div class="learner-meta">
+                      <span class="learner-name">{{ sub.learnerName }}</span>
+                      <span class="learner-id">{{ sub.id.toUpperCase() }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="td-submission">
+                  <div class="submission-meta">
+                    <span class="submission-date">{{ sub.lastUpdated }}</span>
+                    <span
+                      class="submission-status-pill"
+                      [ngClass]="{
+                          'pill-submitted': sub.submissionStatus === 'Submitted',
+                          'pill-late': sub.submissionStatus === 'Late',
+                          'pill-missing': sub.submissionStatus === 'Not Submitted'
+                        }"
+                    >
+                      {{ sub.submissionStatus }}
+                    </span>
+                  </div>
+                </td>
+                <td class="td-teacher-score">
+                  @if (sub.teacherScore !== undefined) {
+                  <span class="score-text"
+                    >{{ sub.teacherScore }} / {{ sub.maxScore }}</span
+                  >
+                  } @else {
+                  <span class="text-muted">—</span>
+                  }
+                </td>
+                <td class="td-moderated-score">
+                  @if (sub.moderatedScore !== undefined) {
+                  <span class="score-text text-green font-semibold"
+                    >{{ sub.moderatedScore }} / {{ sub.maxScore }}</span
+                  >
+                  } @else {
+                  <span class="text-muted">—</span>
+                  }
+                </td>
+                <td class="td-status">
+                  <span
+                    class="pill"
+                    [ngClass]="{
+                        'pill-reviewed': sub.reviewStatus === 'Reviewed',
+                        'pill-needs-review': sub.reviewStatus === 'Needs Review',
+                        'pill-missing-score': sub.reviewStatus === 'Missing Score'
+                      }"
+                  >
+                    {{ sub.reviewStatus }}
+                  </span>
+                </td>
+                <td class="td-flags">
+                  @if (sub.flag && sub.flag !== '—') {
+                  <span
+                    class="pill"
+                    [ngClass]="{
+                          'pill-flag-red': sub.flagTone === 'red',
+                          'pill-flag-orange': sub.flagTone === 'orange',
+                          'pill-flag-amber': sub.flagTone === 'amber'
+                        }"
+                  >
+                    {{ sub.flag }}
+                  </span>
+                  } @else {
+                  <span class="text-muted">—</span>
+                  }
+                </td>
+                <td class="td-rubric">
+                  <span class="rubric-text" [title]="sub.rubricComment ?? ''">
+                    {{ sub.rubricComment ?? '—' }}
+                  </span>
+                </td>
+                <td class="td-actions">
+                  <button
+                    type="button"
+                    class="moderate-btn"
+                    (click)="onModerateSubmission(sub)"
+                  >
+                    Moderate
+                  </button>
+                </td>
+              </tr>
+              } @empty {
+              <tr>
+                <td colspan="8" class="empty-cell">
+                  <p class="text-muted">
+                    No submissions found matching your filters.
+                  </p>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 3 Bottom Analysis Cards Grid -->
+      <section
+        class="analysis-grid"
+        aria-label="Assessment Analytics & Moderation Log"
+      >
+        <!-- Card 1: Moderation Notes -->
+        <article class="analysis-card">
+          <h3 class="analysis-title">Moderation Notes</h3>
+          <div class="moderation-notes-box">
+            <p class="notes-text">
+              {{ assessment()?.moderationNotes ?? 'Narrative writing test
+              requires final moderation due to incomplete rubric usage and a few
+              unverified score entries. Please review flagged submissions and
+              ensure rubric comments are provided before approving the
+              gradebook.' }}
+            </p>
+            <div class="notes-author">
+              <span class="author-name"
+                >Mrs. Funmi Yusuf (Head of Department)</span
+              >
+              <span class="author-time">May 9, 2025 • 09:50 AM</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Card 2: Score Distribution (Histogram) -->
+        <article class="analysis-card">
+          <h3 class="analysis-title">Score Distribution</h3>
+          <div class="distribution-bars">
+            @for (bucket of gradeBuckets(); track bucket.grade) {
+            <div class="dist-row">
+              <span class="dist-label"
+                >Grade {{ bucket.grade }} ({{ bucket.range }})</span
+              >
+              <div class="dist-track">
+                <div
+                  class="dist-fill"
+                  [style.width.%]="bucket.percentage * 2"
+                  [ngClass]="'fill-' + bucket.tone"
+                ></div>
+              </div>
+              <span class="dist-count"
+                >{{ bucket.learnersCount }} ({{ bucket.percentage }}%)</span
+              >
+            </div>
+            }
+          </div>
+        </article>
+
+        <!-- Card 3: Grade Summary -->
+        <article class="analysis-card">
+          <h3 class="analysis-title">Grade Summary</h3>
+          <table class="grade-summary-table" aria-label="Grade Summary Table">
+            <thead>
+              <tr>
+                <th>GRADE</th>
+                <th>RANGE</th>
+                <th>COUNT</th>
+                <th>%</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (b of gradeBuckets(); track b.grade) {
+              <tr>
+                <td class="font-semibold">Grade {{ b.grade }}</td>
+                <td class="text-muted">{{ b.range }}</td>
+                <td class="font-medium">{{ b.learnersCount }}</td>
+                <td>{{ b.percentage }}%</td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </article>
+      </section>
+    </main>
+
+    <!-- Right Sidebar Column: Screen 2 Sidebar -->
+    <aside class="review-sidebar-col" aria-label="Review Actions and Summary">
+      <!-- Card 1: Assessment Review Summary -->
+      <section class="sidebar-card">
+        <h3 class="sidebar-heading">Review Summary</h3>
+        <div class="summary-list">
+          <div class="summary-row">
+            <span class="label">Total Submitted</span>
+            <span class="val font-semibold"
+              >{{ stats().submittedCount }} / 28</span
+            >
+          </div>
+          <div class="summary-row">
+            <span class="label">Reviewed Submissions</span>
+            <span class="val text-green font-semibold"
+              >{{ stats().reviewedCount }}</span
+            >
+          </div>
+          <div class="summary-row">
+            <span class="label">Needs Review</span>
+            <span class="val text-amber font-semibold"
+              >{{ stats().needsReviewCount }}</span
+            >
+          </div>
+          <div class="summary-row">
+            <span class="label">Missing Scores</span>
+            <span class="val text-orange font-semibold"
+              >{{ stats().missingScoresCount }}</span
+            >
+          </div>
+          <div class="divider"></div>
+          <div class="summary-row highlight">
+            <span class="label">Average Score</span>
+            <span class="val font-bold">{{ stats().averageScoreText }}</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 2: Attention Needed in Review -->
+      <section class="sidebar-card">
+        <h3 class="sidebar-heading">Attention Needed</h3>
+        <div class="attention-items-list">
+          <div class="review-attention-badge">
+            <span class="att-text">5 Flagged for Moderation</span>
+            <span class="att-pill pill-amber">5</span>
+          </div>
+          <div class="review-attention-badge">
+            <span class="att-text">1 Late Submission</span>
+            <span class="att-pill pill-orange">1</span>
+          </div>
+          <div class="review-attention-badge">
+            <span class="att-text">2 Score Discrepancies</span>
+            <span class="att-pill pill-red">2</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card 3: Quick Actions for Review -->
+      <section class="sidebar-card">
+        <h3 class="sidebar-heading">Quick Actions</h3>
+        <div class="actions-stack">
+          <button
+            type="button"
+            class="action-btn btn-approve"
+            (click)="onApproveGradebook()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Approve Gradebook</span>
+          </button>
+
+          <button
+            type="button"
+            class="action-btn btn-return"
+            (click)="onReturnToTeacher()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            <span>Return to Teacher</span>
+          </button>
+
+          <button
+            type="button"
+            class="action-btn btn-outline"
+            (click)="onExportReport()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Export Moderated Sheet</span>
+          </button>
+        </div>
+      </section>
+    </aside>
+  </div>
+</div>

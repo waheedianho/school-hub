@@ -1,0 +1,138 @@
+@if (isOpen() && submission()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="moderation-modal-title"
+>
+  <div class="modal-panel">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="header-text">
+        <h2 id="moderation-modal-title" class="modal-title">
+          Score Moderation &amp; Verification
+        </h2>
+        <p class="modal-subtitle">Continuous Assessment Quality Assurance</p>
+      </div>
+      <button
+        type="button"
+        class="modal-close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <form class="modal-form" (ngSubmit)="onSave()">
+      <!-- Learner Info Bar -->
+      <div class="learner-summary-box">
+        <div class="avatar-circle">{{ submission()?.initials }}</div>
+        <div class="learner-details">
+          <span class="learner-name font-semibold"
+            >{{ submission()?.learnerName }}</span
+          >
+          <span class="learner-sub"
+            >{{ submission()?.id?.toUpperCase() }} • Submitted {{
+            submission()?.lastUpdated }}</span
+          >
+        </div>
+        <div class="original-score">
+          <span class="score-label">Teacher Score</span>
+          <span class="score-val"
+            >{{ submission()?.teacherScore ?? '—' }} / {{ submission()?.maxScore
+            }}</span
+          >
+        </div>
+      </div>
+
+      @if (submission()?.flag && submission()?.flag !== '—') {
+      <div class="flag-notice">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path
+            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <span><strong>Moderation Flag:</strong> {{ submission()?.flag }}</span>
+      </div>
+      }
+
+      <!-- Moderated Score Input -->
+      <div class="form-group">
+        <label for="moderated-score-input" class="form-label">
+          Moderated Score (Max: {{ submission()?.maxScore }}) *
+        </label>
+        <input
+          id="moderated-score-input"
+          type="number"
+          class="form-input"
+          min="0"
+          [max]="submission()?.maxScore ?? 30"
+          [ngModel]="moderatedScore()"
+          (ngModelChange)="moderatedScore.set(+$event)"
+          name="moderatedScore"
+          required
+        />
+      </div>
+
+      <!-- Rubric Remarks -->
+      <div class="form-group">
+        <label for="rubric-remarks" class="form-label">
+          Moderation &amp; Rubric Notes *
+        </label>
+        <textarea
+          id="rubric-remarks"
+          class="form-textarea"
+          rows="3"
+          placeholder="Enter rationale for score adjustment, rubric alignment, or specific moderation notes..."
+          [ngModel]="rubricComment()"
+          (ngModelChange)="rubricComment.set($event)"
+          name="rubricComment"
+          required
+        ></textarea>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="moderatedScore() === undefined"
+        >
+          Save &amp; Apply Moderation
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+}
