@@ -17,7 +17,7 @@ describe('SchoolAdminStore', () => {
     expect(store.currentTerm()).toBe('Third Term');
     expect(store.metrics().length).toBe(6);
     expect(store.classes().length).toBe(12);
-    expect(store.staff().length).toBe(8);
+    expect(store.staff().length).toBe(10);
     expect(store.alerts().length).toBe(4);
     expect(store.academicStructure().classArms).toBe(2);
     expect(store.assessmentSettings().gradingScale).toContain('A - F');
@@ -87,7 +87,7 @@ describe('SchoolAdminStore', () => {
 
   it('should compute summary counts correctly', () => {
     expect(store.totalClassesCount()).toBe(12);
-    expect(store.totalStaffCount()).toBe(8);
+    expect(store.totalStaffCount()).toBe(10);
     expect(store.criticalAlertsCount()).toBe(2);
     expect(store.totalLearnersCount()).toBeGreaterThan(200);
   });
@@ -221,5 +221,151 @@ describe('SchoolAdminStore', () => {
     expect(store.learners().length).toBe(initialLearnersCount + 1);
     const updatedClass = store.getClassById('class-jss-1a');
     expect(updatedClass?.learnersCount).toBe(initialJss1aCount + 1);
+  });
+
+  it('should manage teachers and staff state correctly', () => {
+    expect(store.staffOverviewMetrics().totalTeachers).toBe(48);
+    expect(store.staffAlerts().length).toBe(3);
+    expect(store.selectedStaff().name).toBe('Mrs. Fatima Yusuf');
+
+    // Select staff
+    store.selectStaff('staff-002');
+    expect(store.selectedStaff().name).toBe('Mr. Tunde Adewale');
+
+    // Search staff
+    store.setStaffSearchQuery('Nkechi');
+    expect(store.filteredStaff().length).toBe(1);
+    expect(store.filteredStaff()[0].name).toBe('Mrs. Nkechi Okoro');
+
+    store.setStaffSearchQuery('');
+    expect(store.filteredStaff().length).toBe(10);
+
+    // Filter by department
+    store.setStaffDepartmentFilter('Mathematics');
+    expect(store.filteredStaff().length).toBe(1);
+    expect(store.filteredStaff()[0].name).toBe('Mr. Tunde Adewale');
+
+    store.setStaffDepartmentFilter('All Departments');
+
+    // Filter by status
+    store.setStaffStatusFilter('On Leave');
+    expect(store.filteredStaff().length).toBe(1);
+    expect(store.filteredStaff()[0].name).toBe('Mr. Emmanuel John');
+
+    store.setStaffStatusFilter('All Statuses');
+
+    // Switch tab
+    store.setActiveStaffTab('support');
+    expect(store.activeStaffTab()).toBe('support');
+    store.setActiveStaffTab('teachers');
+
+    // Pagination
+    store.setStaffPageSize(4);
+    expect(store.staffTotalPages()).toBe(3);
+    expect(store.paginatedStaff().length).toBe(4);
+    store.setStaffPage(2);
+    expect(store.staffPage()).toBe(2);
+  });
+
+  it('should create new staff member and update metrics', () => {
+    const initialStaffCount = store.staff().length;
+    const initialTotalTeachers = store.staffOverviewMetrics().totalTeachers;
+
+    const created = store.createStaffMember({
+      firstName: 'Dr. Chidi',
+      lastName: 'Okafor',
+      gender: 'Male',
+      dateOfBirth: '1985-04-12',
+      staffId: 'TCH-9999',
+      phoneCode: '+234',
+      phoneNumber: '809 111 2222',
+      email: 'chidi.okafor@schoolhub.org',
+      staffType: 'Academic',
+      department: 'Science Department',
+      qualification: 'Ph.D. Physics',
+      employmentType: 'Full-time',
+      dateJoined: '2024-09-01',
+      yearsOfExperience: '12 years',
+      role: 'Senior Teacher',
+      isClassTeacher: false,
+      assignedClasses: ['SS 3A'],
+      assignedSubjects: ['Physics'],
+      academicLevel: 'Senior Secondary',
+      reportingLine: 'Principal',
+      username: 'chidi.okafor',
+      temporaryPassword: 'TempPassword123!',
+      loginMethod: 'Email & Password',
+      accountActive: true,
+      contentApproval: true,
+      gradeApproval: true,
+      communicationVisibility: true,
+      auditLogVisibility: true,
+      parentCommunication: true,
+      learnerMessageAccess: false,
+      identityVerified: true,
+      childSafeguardingTraining: true,
+      conductPolicyAcknowledged: true,
+      emergencyContact: 'Mrs. Okafor (+234 809 333 4444)',
+      address: '15 Academic Close, Victoria Island, Lagos',
+    });
+
+    expect(created.name).toBe('Dr. Chidi Okafor');
+    expect(store.staff().length).toBe(initialStaffCount + 1);
+    expect(store.staffOverviewMetrics().totalTeachers).toBe(
+      initialTotalTeachers + 1,
+    );
+
+    // Update staff status
+    store.updateStaffStatus(created.id, 'On Leave');
+    const updated = store.getStaffById(created.id);
+    expect(updated?.status).toBe('On Leave');
+  });
+
+  it('should manage subjects and curriculum state correctly', () => {
+    expect(store.curriculumMetrics().totalSubjects).toBe(7);
+    expect(store.subjects().length).toBe(7);
+    expect(store.selectedSubject().name).toBe('Mathematics');
+
+    // Select subject
+    store.selectSubject('subj-eng');
+    expect(store.selectedSubject().name).toBe('English Language');
+
+    // Filter subjects
+    store.setSubjectSearchQuery('Science');
+    expect(store.filteredSubjects().length).toBe(1);
+    expect(store.filteredSubjects()[0].name).toBe('Basic Science');
+
+    store.setSubjectSearchQuery('');
+    expect(store.filteredSubjects().length).toBe(7);
+
+    // Filter by status
+    store.setSubjectStatusFilter('Needs Review');
+    expect(store.filteredSubjects().length).toBe(2);
+    store.setSubjectStatusFilter('All Status');
+
+    // Tab navigation
+    store.setActiveCurriculumTab('curriculum-map');
+    expect(store.activeCurriculumTab()).toBe('curriculum-map');
+    expect(store.filteredCurriculumMaps().length).toBe(8);
+
+    // Curriculum map filters
+    store.setCurriculumClassFilter('JSS 1');
+    expect(store.filteredCurriculumMaps().length).toBe(4);
+    store.setCurriculumClassFilter('All Classes');
+
+    // Scheme of Work
+    store.setActiveCurriculumTab('scheme-of-work');
+    expect(store.activeCurriculumTab()).toBe('scheme-of-work');
+    expect(store.filteredSchemesOfWork().length).toBe(8);
+
+    // Drill down to week detail
+    store.viewSchemeWeekDetail(4);
+    expect(store.activeCurriculumTab()).toBe('scheme-detail');
+    expect(store.weekSchemeDetail().weekNumber).toBe(4);
+
+    // Drill down to topic delivery pack
+    store.viewTopicDeliveryPack('pack-whole-numbers');
+    expect(store.activeCurriculumTab()).toBe('topic-delivery-packs');
+    expect(store.topicDeliveryPack().topic).toBe('Whole Numbers');
   });
 });

@@ -1,0 +1,348 @@
+<div class="directory-card">
+  <!-- Top Bar: Title & Primary Controls -->
+  <div class="directory-header">
+    <h2 class="directory-title">Teacher Directory</h2>
+
+    <div class="header-actions">
+      <!-- Search Input -->
+      <div class="search-box">
+        <i class="ri-search-line search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search teachers..."
+          [ngModel]="store.staffSearchQuery()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Search teachers"
+        />
+      </div>
+
+      <!-- Filters Button -->
+      <button type="button" class="btn btn-outline" aria-label="Filters">
+        <i class="ri-filter-3-line btn-icon"></i>
+        <span>Filters</span>
+      </button>
+
+      <!-- Export Button -->
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="exportStaffList()"
+        aria-label="Export staff list"
+      >
+        <i class="ri-download-2-line btn-icon"></i>
+        <span>Export</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Filter Dropdowns Row -->
+  <div class="filters-row">
+    <div class="filter-item">
+      <select
+        class="filter-select"
+        [ngModel]="store.staffDepartmentFilter()"
+        (ngModelChange)="onDepartmentChange($event)"
+        aria-label="Filter by department"
+      >
+        @for (dept of departments; track dept) {
+        <option [value]="dept">{{ dept }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <select
+        class="filter-select"
+        [ngModel]="store.staffRoleFilter()"
+        (ngModelChange)="onRoleChange($event)"
+        aria-label="Filter by role"
+      >
+        @for (role of roles; track role) {
+        <option [value]="role">{{ role }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="filter-item">
+      <select
+        class="filter-select"
+        [ngModel]="store.staffStatusFilter()"
+        (ngModelChange)="onStatusChange($event)"
+        aria-label="Filter by status"
+      >
+        @for (st of statuses; track st) {
+        <option [value]="st">{{ st }}</option>
+        }
+      </select>
+    </div>
+
+    <button
+      type="button"
+      class="clear-filters-btn"
+      (click)="clearFilters()"
+      aria-label="Clear filters"
+    >
+      <i class="ri-refresh-line"></i>
+      <span>Clear Filters</span>
+    </button>
+  </div>
+
+  <!-- Table View -->
+  <div class="table-responsive">
+    <table class="staff-table" role="grid">
+      <thead>
+        <tr>
+          <th class="th-checkbox">
+            <input
+              type="checkbox"
+              class="checkbox"
+              [checked]="selectedAll()"
+              (change)="toggleSelectAll()"
+              aria-label="Select all teachers"
+            />
+          </th>
+          <th class="th-name">
+            Staff Name <i class="ri-arrow-up-down-line sort-icon"></i>
+          </th>
+          <th class="th-id">Staff ID</th>
+          <th class="th-role">Role</th>
+          <th class="th-subjects">Assigned Subjects</th>
+          <th class="th-classes">Classes</th>
+          <th class="th-attendance">Attendance / Availability</th>
+          <th class="th-feedback">Feedback Completion</th>
+          <th class="th-status">Status</th>
+          <th class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (staff of store.paginatedStaff(); track staff.id) {
+        <tr
+          [class.selected-row]="store.selectedStaffId() === staff.id"
+          (click)="onSelectStaff(staff)"
+          tabindex="0"
+          (keydown.enter)="onSelectStaff(staff)"
+        >
+          <!-- Checkbox -->
+          <td class="td-checkbox" (click)="$event.stopPropagation()">
+            <input
+              type="checkbox"
+              class="checkbox"
+              [checked]="selectedStaffIds().has(staff.id)"
+              (change)="toggleRowSelection(staff.id, $event)"
+              [attr.aria-label]="'Select ' + staff.name"
+            />
+          </td>
+
+          <!-- Staff Name with Avatar -->
+          <td class="td-name">
+            <div class="name-cell">
+              <div
+                class="avatar-wrap"
+                [style.background-color]="staff.avatarColor || '#7c3aed'"
+              >
+                @if (staff.avatarUrl) {
+                <img
+                  [src]="staff.avatarUrl"
+                  [alt]="staff.name"
+                  class="avatar-img"
+                  (error)="staff.avatarUrl = undefined"
+                />
+                } @else {
+                <span class="avatar-initials">
+                  {{ staff.initials || 'ST' }}
+                </span>
+                }
+              </div>
+              <span class="staff-name-text">{{ staff.name }}</span>
+            </div>
+          </td>
+
+          <!-- Staff ID -->
+          <td class="td-id">
+            <span class="id-text">{{ staff.staffId }}</span>
+          </td>
+
+          <!-- Role -->
+          <td class="td-role">
+            <span class="role-text">{{ staff.role }}</span>
+          </td>
+
+          <!-- Assigned Subjects -->
+          <td class="td-subjects">
+            <span class="subjects-text"
+              >{{ staff.assignedSubjects.join(', ') }}</span
+            >
+          </td>
+
+          <!-- Classes -->
+          <td class="td-classes">
+            <span class="classes-text"
+              >{{ staff.assignedClasses.join(', ') }}</span
+            >
+          </td>
+
+          <!-- Attendance / Availability -->
+          <td class="td-attendance">
+            <div class="attendance-cell">
+              <span
+                class="status-dot"
+                [class.dot-green]="staff.attendanceRate >= 90"
+                [class.dot-amber]="staff.attendanceRate < 90"
+              ></span>
+              <span class="attendance-rate">{{ staff.attendanceRate }}%</span>
+              <span class="attendance-rating"
+                >• {{ staff.attendanceRating }}</span
+              >
+            </div>
+          </td>
+
+          <!-- Feedback Completion -->
+          <td class="td-feedback">
+            <span
+              class="feedback-percent"
+              [class.feedback-high]="staff.feedbackCompletionRate >= 80"
+              [class.feedback-med]="staff.feedbackCompletionRate >= 60 && staff.feedbackCompletionRate < 80"
+              [class.feedback-low]="staff.feedbackCompletionRate < 60"
+            >
+              {{ staff.feedbackCompletionRate }}%
+            </span>
+          </td>
+
+          <!-- Status -->
+          <td class="td-status">
+            <span
+              class="status-badge"
+              [class.badge-active]="staff.status === 'Active'"
+              [class.badge-leave]="staff.status === 'On Leave'"
+              [class.badge-pending]="staff.status === 'Pending Assignment'"
+              [class.badge-suspended]="staff.status === 'Suspended'"
+            >
+              {{ staff.status }}
+            </span>
+          </td>
+
+          <!-- Actions -->
+          <td class="td-actions" (click)="$event.stopPropagation()">
+            <div class="actions-dropdown-wrap">
+              <button
+                type="button"
+                class="action-btn"
+                (click)="toggleActionMenu(staff.id, $event)"
+                [attr.aria-label]="'Actions for ' + staff.name"
+              >
+                <i class="ri-more-2-fill"></i>
+              </button>
+
+              @if (activeActionStaffId() === staff.id) {
+              <div class="action-menu">
+                <button
+                  type="button"
+                  class="action-item"
+                  (click)="onSelectStaff(staff); closeActionMenu()"
+                >
+                  <i class="ri-user-line"></i>
+                  <span>View Profile</span>
+                </button>
+                <button
+                  type="button"
+                  class="action-item"
+                  (click)="store.setupSaveStatus.set('Assign subject wizard for ' + staff.name + ' opened.'); closeActionMenu()"
+                >
+                  <i class="ri-book-open-line"></i>
+                  <span>Assign Subjects</span>
+                </button>
+                <button
+                  type="button"
+                  class="action-item"
+                  (click)="store.updateStaffStatus(staff.id, staff.status === 'Active' ? 'On Leave' : 'Active'); closeActionMenu()"
+                >
+                  <i class="ri-toggle-line"></i>
+                  <span>Toggle Active / Leave</span>
+                </button>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        }
+
+        <!-- Empty State -->
+        @if (store.paginatedStaff().length === 0) {
+        <tr>
+          <td colspan="10" class="empty-cell">
+            <div class="empty-state">
+              <i class="ri-user-search-line empty-icon"></i>
+              <p class="empty-text">No teachers found matching your filters.</p>
+              <button
+                type="button"
+                class="btn btn-outline btn-sm"
+                (click)="clearFilters()"
+              >
+                Reset Filters
+              </button>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="directory-footer">
+    <div class="pagination-info">
+      Showing 1 to {{ store.paginatedStaff().length }} of {{
+      store.totalFilteredStaff() }} teachers
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="store.staffPage() <= 1"
+        (click)="onPageChange(store.staffPage() - 1)"
+        aria-label="Previous page"
+      >
+        <i class="ri-arrow-left-s-line"></i>
+      </button>
+
+      <div class="page-numbers">
+        @for (p of [1, 2, 3, 4, 5, 6, 7]; track p) {
+        <button
+          type="button"
+          class="page-btn"
+          [class.active]="store.staffPage() === p"
+          (click)="onPageChange(p)"
+        >
+          {{ p }}
+        </button>
+        }
+      </div>
+
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="store.staffPage() >= store.staffTotalPages()"
+        (click)="onPageChange(store.staffPage() + 1)"
+        aria-label="Next page"
+      >
+        <i class="ri-arrow-right-s-line"></i>
+      </button>
+
+      <!-- Page Size Selector -->
+      <div class="page-size-wrap">
+        <select
+          class="page-size-select"
+          [ngModel]="store.staffPageSize()"
+          (ngModelChange)="onPageSizeChange($event)"
+          aria-label="Items per page"
+        >
+          @for (s of pageSizes; track s) {
+          <option [value]="s">{{ s }} / page</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

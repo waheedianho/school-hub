@@ -1,0 +1,958 @@
+<div class="add-staff-page">
+  <!-- Top Bar / Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Add Staff</h1>
+      <p class="page-subtitle">
+        Create a new teacher or staff record, assign role and subjects, and
+        configure access.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn btn-outline" (click)="onCancel()">
+        Cancel
+      </button>
+
+      <button type="button" class="btn btn-outline" (click)="onSaveDraft()">
+        <i class="ri-upload-2-line btn-icon"></i>
+        <span>Save Draft</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="isSubmitting()"
+        (click)="onCreateStaff()"
+      >
+        <i class="ri-add-line btn-icon"></i>
+        <span>{{ isSubmitting() ? 'Creating...' : '+ Create Staff' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Form Error Alert -->
+  @if (formError()) {
+  <div class="form-error-alert">
+    <i class="ri-error-warning-line error-icon"></i>
+    <span>{{ formError() }}</span>
+  </div>
+  }
+
+  <!-- Main Content: Form + Sidebar -->
+  <div class="content-grid">
+    <!-- Left Form Sections -->
+    <div class="form-column">
+      <!-- Section 1: Staff Profile -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">1</span>
+          <h2 class="section-heading">Staff Profile</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="profile-top-row">
+            <!-- Photo Upload Area -->
+            <div class="photo-upload-box">
+              <i class="ri-camera-line photo-icon"></i>
+              <span class="upload-label">Upload Photo</span>
+              <span class="upload-subtext">JPG, PNG • Max 2MB</span>
+            </div>
+
+            <!-- Profile Name & Gender Grid -->
+            <div class="names-grid">
+              <div class="form-group">
+                <label for="firstName" class="form-label">First Name *</label>
+                <input
+                  id="firstName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter first name"
+                  [(ngModel)]="formData.firstName"
+                  (ngModelChange)="onNameChange()"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="middleName" class="form-label">Middle Name</label>
+                <input
+                  id="middleName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter middle name"
+                  [(ngModel)]="formData.middleName"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="lastName" class="form-label">Last Name *</label>
+                <input
+                  id="lastName"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter last name"
+                  [(ngModel)]="formData.lastName"
+                  (ngModelChange)="onNameChange()"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="gender" class="form-label">Gender *</label>
+                <select
+                  id="gender"
+                  class="form-control form-select"
+                  [(ngModel)]="formData.gender"
+                >
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile Details Row -->
+          <div class="fields-grid four-cols">
+            <div class="form-group">
+              <label for="dateOfBirth" class="form-label"
+                >Date of Birth *</label
+              >
+              <div class="input-icon-wrap">
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  class="form-control"
+                  [(ngModel)]="formData.dateOfBirth"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="staffId" class="form-label">
+                Staff ID *
+                <i
+                  class="ri-information-line info-icon"
+                  title="Unique school staff identification code"
+                ></i>
+              </label>
+              <div class="input-action-wrap">
+                <input
+                  id="staffId"
+                  type="text"
+                  class="form-control"
+                  [(ngModel)]="formData.staffId"
+                  placeholder="Auto-generate"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phoneNumber" class="form-label">Phone Number *</label>
+              <div class="phone-input-wrap">
+                <select
+                  class="phone-code-select"
+                  [(ngModel)]="formData.phoneCode"
+                  aria-label="Country code"
+                >
+                  <option value="+234">🇳🇬 +234</option>
+                  <option value="+1">🇺🇸 +1</option>
+                  <option value="+44">🇬🇧 +44</option>
+                </select>
+                <input
+                  id="phoneNumber"
+                  type="tel"
+                  class="form-control phone-control"
+                  placeholder="(555) 123-4567"
+                  [(ngModel)]="formData.phoneNumber"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email" class="form-label">Email *</label>
+              <input
+                id="email"
+                type="email"
+                class="form-control"
+                placeholder="Enter email address"
+                [(ngModel)]="formData.email"
+                required
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 2: Professional Information -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">2</span>
+          <h2 class="section-heading">Professional Information</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid four-cols">
+            <div class="form-group">
+              <label for="staffType" class="form-label">Staff Type *</label>
+              <select
+                id="staffType"
+                class="form-control form-select"
+                [(ngModel)]="formData.staffType"
+              >
+                <option value="" disabled>Select staff type</option>
+                @for (t of staffTypes; track t) {
+                <option [value]="t">{{ t }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="department" class="form-label">Department *</label>
+              <select
+                id="department"
+                class="form-control form-select"
+                [(ngModel)]="formData.department"
+              >
+                <option value="" disabled>Select department</option>
+                @for (d of departments; track d) {
+                <option [value]="d">{{ d }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="qualification" class="form-label"
+                >Qualification *</label
+              >
+              <select
+                id="qualification"
+                class="form-control form-select"
+                [(ngModel)]="formData.qualification"
+              >
+                <option value="" disabled>Select qualification</option>
+                @for (q of qualifications; track q) {
+                <option [value]="q">{{ q }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="employmentType" class="form-label"
+                >Employment Type *</label
+              >
+              <select
+                id="employmentType"
+                class="form-control form-select"
+                [(ngModel)]="formData.employmentType"
+              >
+                @for (e of employmentTypes; track e) {
+                <option [value]="e">{{ e }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="fields-grid two-cols">
+            <div class="form-group">
+              <label for="dateJoined" class="form-label">Date Joined *</label>
+              <input
+                id="dateJoined"
+                type="date"
+                class="form-control"
+                [(ngModel)]="formData.dateJoined"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="yearsOfExperience" class="form-label"
+                >Years of Experience *</label
+              >
+              <select
+                id="yearsOfExperience"
+                class="form-control form-select"
+                [(ngModel)]="formData.yearsOfExperience"
+              >
+                <option value="" disabled>Select years</option>
+                @for (exp of experienceLevels; track exp) {
+                <option [value]="exp">{{ exp }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 3: Role & Assignment -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">3</span>
+          <h2 class="section-heading">Role & Assignment</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid three-cols-unequal">
+            <div class="form-group flex-2">
+              <label for="role" class="form-label">Role *</label>
+              <select
+                id="role"
+                class="form-control form-select"
+                [(ngModel)]="formData.role"
+              >
+                <option value="" disabled>Select role</option>
+                @for (r of rolesList; track r) {
+                <option [value]="r">{{ r }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group toggle-group flex-1">
+              <label for="classTeacherToggle" class="form-label"
+                >Class Teacher</label
+              >
+              <div class="toggle-control-row">
+                <label class="switch" for="classTeacherToggle">
+                  <input
+                    id="classTeacherToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.isClassTeacher"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.isClassTeacher ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Assigned Classes & Subjects Multi-select Chips -->
+          <div class="fields-grid two-cols">
+            <div class="form-group">
+              <span class="form-label">Assigned Classes *</span>
+              <div
+                class="chips-container"
+                role="group"
+                aria-label="Assigned Classes"
+              >
+                @for (cls of availableClasses; track cls) {
+                <button
+                  type="button"
+                  class="chip"
+                  [class.selected]="formData.assignedClasses.includes(cls)"
+                  (click)="toggleClass(cls)"
+                >
+                  {{ cls }}
+                </button>
+                }
+              </div>
+            </div>
+
+            <div class="form-group">
+              <span class="form-label">Assigned Subjects *</span>
+              <div
+                class="chips-container"
+                role="group"
+                aria-label="Assigned Subjects"
+              >
+                @for (subj of availableSubjects; track subj) {
+                <button
+                  type="button"
+                  class="chip"
+                  [class.selected]="formData.assignedSubjects.includes(subj)"
+                  (click)="toggleSubject(subj)"
+                >
+                  {{ subj }}
+                </button>
+                }
+              </div>
+            </div>
+          </div>
+
+          <div class="fields-grid two-cols">
+            <div class="form-group">
+              <label for="academicLevel" class="form-label"
+                >Academic Level / Department *</label
+              >
+              <select
+                id="academicLevel"
+                class="form-control form-select"
+                [(ngModel)]="formData.academicLevel"
+              >
+                <option value="" disabled>Select level or department</option>
+                @for (lvl of academicLevels; track lvl) {
+                <option [value]="lvl">{{ lvl }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="reportingLine" class="form-label"
+                >Reporting Line *</label
+              >
+              <select
+                id="reportingLine"
+                class="form-control form-select"
+                [(ngModel)]="formData.reportingLine"
+              >
+                <option value="" disabled>Select reporting manager</option>
+                @for (mgr of reportingManagers; track mgr) {
+                <option [value]="mgr">{{ mgr }}</option>
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 4: Login & Account Access -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">4</span>
+          <h2 class="section-heading">Login & Account Access</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid four-cols">
+            <div class="form-group">
+              <label for="username" class="form-label"
+                >Username / Email *</label
+              >
+              <input
+                id="username"
+                type="text"
+                class="form-control"
+                placeholder="Enter username or email"
+                [(ngModel)]="formData.username"
+                (input)="onUsernameInput()"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="tempPassword" class="form-label"
+                >Temporary Password *</label
+              >
+              <div class="password-input-wrap">
+                <input
+                  id="tempPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-control"
+                  [(ngModel)]="formData.temporaryPassword"
+                />
+                <button
+                  type="button"
+                  class="pwd-action-btn"
+                  (click)="toggleShowPassword()"
+                  aria-label="Toggle password visibility"
+                >
+                  {{ showPassword() ? 'Hide' : 'Show' }}
+                </button>
+                <button
+                  type="button"
+                  class="pwd-action-btn icon-only"
+                  (click)="refreshPassword()"
+                  aria-label="Generate new password"
+                >
+                  <i class="ri-refresh-line"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="loginMethod" class="form-label">Login Method *</label>
+              <select
+                id="loginMethod"
+                class="form-control form-select"
+                [(ngModel)]="formData.loginMethod"
+              >
+                <option value="Email & Password">Email & Password</option>
+                <option value="Google SSO">Google SSO</option>
+                <option value="Single Sign-On">Single Sign-On</option>
+              </select>
+            </div>
+
+            <div class="form-group toggle-group">
+              <label for="accountActiveToggle" class="form-label"
+                >Account Active</label
+              >
+              <div class="toggle-control-row">
+                <label class="switch" for="accountActiveToggle">
+                  <input
+                    id="accountActiveToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.accountActive"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.accountActive ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 5: Permissions & Visibility -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">5</span>
+          <h2 class="section-heading">Permissions & Visibility</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="permissions-toggles-grid">
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="contentApprovalToggle" class="perm-label"
+                  >Content Approval</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Authorizes reviewing and publishing learner assignments"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="contentApprovalToggle">
+                  <input
+                    id="contentApprovalToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.contentApproval"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.contentApproval ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="gradeApprovalToggle" class="perm-label"
+                  >Grade Approval</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Can sign off on official term reports and exam grades"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="gradeApprovalToggle">
+                  <input
+                    id="gradeApprovalToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.gradeApproval"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.gradeApproval ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="commVisibilityToggle" class="perm-label"
+                  >Communication Visibility</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Access school-wide circulars and announcements"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="commVisibilityToggle">
+                  <input
+                    id="commVisibilityToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.communicationVisibility"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.communicationVisibility ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="auditLogToggle" class="perm-label"
+                  >Audit Log Visibility</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="View activity logs and accountability records"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="auditLogToggle">
+                  <input
+                    id="auditLogToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.auditLogVisibility"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.auditLogVisibility ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="parentCommToggle" class="perm-label"
+                  >Parent Communication</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Direct messaging and feedback to parents"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="parentCommToggle">
+                  <input
+                    id="parentCommToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.parentCommunication"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.parentCommunication ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="permission-toggle-item">
+              <div class="perm-info">
+                <label for="learnerMsgToggle" class="perm-label"
+                  >Learner Message Access</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Supervised direct student messaging"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="learnerMsgToggle">
+                  <input
+                    id="learnerMsgToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.learnerMessageAccess"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.learnerMessageAccess ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 6: Safeguarding & Compliance -->
+      <div class="form-section-card">
+        <div class="section-title-row">
+          <span class="section-badge">6</span>
+          <h2 class="section-heading">Safeguarding & Compliance</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="fields-grid three-cols">
+            <div class="form-group toggle-group">
+              <div class="perm-info">
+                <label for="identityVerifiedToggle" class="form-label"
+                  >Identity Verified *</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Government-issued identity documents confirmed"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="identityVerifiedToggle">
+                  <input
+                    id="identityVerifiedToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.identityVerified"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.identityVerified ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group toggle-group">
+              <div class="perm-info">
+                <label for="safeguardingTrainingToggle" class="form-label"
+                  >Child-safeguarding Training *</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Mandatory child protection training certification"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="safeguardingTrainingToggle">
+                  <input
+                    id="safeguardingTrainingToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.childSafeguardingTraining"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.childSafeguardingTraining ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+
+            <div class="form-group toggle-group">
+              <div class="perm-info">
+                <label for="conductPolicyToggle" class="form-label"
+                  >Conduct Policy Acknowledged *</label
+                >
+                <i
+                  class="ri-information-line perm-icon"
+                  title="Signed staff code of conduct and ethics form"
+                ></i>
+              </div>
+              <div class="toggle-control-row">
+                <label class="switch" for="conductPolicyToggle">
+                  <input
+                    id="conductPolicyToggle"
+                    type="checkbox"
+                    [(ngModel)]="formData.conductPolicyAcknowledged"
+                  />
+                  <span class="slider round"></span>
+                </label>
+                <span class="toggle-label-text"
+                  >{{ formData.conductPolicyAcknowledged ? 'Yes' : 'No' }}</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="fields-grid two-cols">
+            <div class="form-group">
+              <label for="emergencyContact" class="form-label"
+                >Emergency Contact *</label
+              >
+              <div class="input-with-icon">
+                <i class="ri-user-line input-lead-icon"></i>
+                <input
+                  id="emergencyContact"
+                  type="text"
+                  class="form-control"
+                  placeholder="Name and phone number"
+                  [(ngModel)]="formData.emergencyContact"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="address" class="form-label">Address *</label>
+              <div class="input-with-icon">
+                <i class="ri-map-pin-line input-lead-icon"></i>
+                <input
+                  id="address"
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter full address"
+                  [(ngModel)]="formData.address"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group full-width">
+            <label for="remarks" class="form-label">Remarks</label>
+            <div class="input-with-icon">
+              <i class="ri-file-text-line input-lead-icon"></i>
+              <input
+                id="remarks"
+                type="text"
+                class="form-control"
+                placeholder="Add any additional notes (optional)"
+                [(ngModel)]="formData.remarks"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar Column -->
+    <div class="sidebar-column">
+      <!-- Card 1: Staff Onboarding Summary -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-card-title">Staff Onboarding Summary</h3>
+
+        <div class="radial-progress-wrap">
+          <div class="progress-ring-circle">
+            <span class="pct-number">{{ overallCompletion() }}%</span>
+            <span class="pct-text">Complete</span>
+          </div>
+        </div>
+
+        <div class="summary-meta-list">
+          <div class="meta-row">
+            <span class="meta-label">School</span>
+            <span class="meta-value">Greenfield International School</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Session</span>
+            <span class="meta-value">2024/2025</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Term</span>
+            <span class="meta-value">Third Term</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Staff Role</span>
+            <span class="meta-value">{{ formData.role || '—' }}</span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Assignment Status</span>
+            <span
+              class="status-pill"
+              [class.not-assigned]="formData.assignedSubjects.length === 0"
+              [class.assigned]="formData.assignedSubjects.length > 0"
+            >
+              {{ formData.assignedSubjects.length > 0 ? 'Assigned' : 'Not
+              Assigned' }}
+            </span>
+          </div>
+          <div class="meta-row">
+            <span class="meta-label">Account Status</span>
+            <span
+              class="status-pill"
+              [class.inactive]="!formData.accountActive"
+              [class.active]="formData.accountActive"
+            >
+              {{ formData.accountActive ? 'Active' : 'Inactive' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Completion Checklist -->
+      <div class="sidebar-card">
+        <h3 class="sidebar-card-title">Completion Checklist</h3>
+
+        <div class="checklist-items">
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="profileScore() >= 6"
+            ></span>
+            <span class="check-label">Profile</span>
+            <span class="check-count">{{ profileScore() }}/8</span>
+          </div>
+
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="professionalScore() >= 5"
+            ></span>
+            <span class="check-label">Professional Info</span>
+            <span class="check-count">{{ professionalScore() }}/7</span>
+          </div>
+
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="assignmentScore() >= 4"
+            ></span>
+            <span class="check-label">Assignment</span>
+            <span class="check-count">{{ assignmentScore() }}/6</span>
+          </div>
+
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="loginScore() >= 3"
+            ></span>
+            <span class="check-label">Login & Access</span>
+            <span class="check-count">{{ loginScore() }}/4</span>
+          </div>
+
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="permissionsScore() >= 5"
+            ></span>
+            <span class="check-label">Permissions</span>
+            <span class="check-count">{{ permissionsScore() }}/6</span>
+          </div>
+
+          <div class="check-item">
+            <span
+              class="check-circle"
+              [class.complete]="safeguardingScore() >= 5"
+            ></span>
+            <span class="check-label">Safeguarding</span>
+            <span class="check-count">{{ safeguardingScore() }}/6</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Tips for a smooth onboarding -->
+      <div class="tips-card">
+        <div class="tips-header">
+          <div class="tips-icon-wrap">
+            <i class="ri-lightbulb-line"></i>
+          </div>
+          <h4 class="tips-title">Tips for a smooth onboarding</h4>
+        </div>
+
+        <ul class="tips-list">
+          <li>
+            <i class="ri-check-line tip-check"></i>
+            <span>Ensure accurate subject and class assignment.</span>
+          </li>
+          <li>
+            <i class="ri-check-line tip-check"></i>
+            <span>Verify staff qualifications and certifications.</span>
+          </li>
+          <li>
+            <i class="ri-check-line tip-check"></i>
+            <span>Confirm safeguarding training and compliance.</span>
+          </li>
+          <li>
+            <i class="ri-check-line tip-check"></i>
+            <span>Review permissions based on role and needs.</span>
+          </li>
+          <li>
+            <i class="ri-check-line tip-check"></i>
+            <span>You can edit details anytime after creation.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Footer Notice -->
+  <div class="page-footer-notice">
+    <div class="footer-left">
+      <i class="ri-checkbox-circle-line footer-icon"></i>
+      <span>
+        All staff data is confidential and used only for school operations.
+        Ensure accuracy and compliance with data protection and safeguarding
+        policies.
+      </span>
+    </div>
+    <div class="footer-right">
+      <i class="ri-lock-line footer-lock"></i>
+      <span>Last updated: May 12, 2025 10:30 AM</span>
+    </div>
+  </div>
+</div>

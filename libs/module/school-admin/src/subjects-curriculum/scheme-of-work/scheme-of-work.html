@@ -1,0 +1,405 @@
+<div class="scheme-layout">
+  <!-- Left Main Column: Scheme of Work Table -->
+  <div class="scheme-main-card">
+    <!-- Filter bar -->
+    <div class="scheme-filters-bar">
+      <div class="filter-group">
+        <label for="schemeClass" class="filter-label">Class Level</label>
+        <select
+          id="schemeClass"
+          class="filter-select"
+          [(ngModel)]="selectedClass"
+        >
+          @for (c of classLevels; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="schemeSubject" class="filter-label">Subject</label>
+        <select
+          id="schemeSubject"
+          class="filter-select"
+          [(ngModel)]="selectedSubject"
+        >
+          @for (s of subjects; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="schemeTerm" class="filter-label">Term</label>
+        <select
+          id="schemeTerm"
+          class="filter-select"
+          [(ngModel)]="selectedTerm"
+        >
+          @for (t of terms; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="schemeStatus" class="filter-label">Status</label>
+        <select
+          id="schemeStatus"
+          class="filter-select"
+          [ngModel]="store.curriculumStatusFilter()"
+          (ngModelChange)="onStatusChange($event)"
+        >
+          @for (st of statuses; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="search-box">
+        <i class="ri-search-line search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search topics, objectives..."
+          [ngModel]="store.subjectSearchQuery()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Search topics and objectives"
+        />
+      </div>
+
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onAddScheme()"
+          aria-label="Add Scheme"
+        >
+          <i class="ri-add-line btn-icon"></i>
+          <span>+ Add Scheme</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="onBulkImport()"
+          aria-label="Bulk Import"
+        >
+          <i class="ri-upload-2-line btn-icon"></i>
+          <span>Bulk Import</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="onExport()"
+          aria-label="Export"
+        >
+          <i class="ri-download-2-line btn-icon"></i>
+          <span>Export</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Table of Schemes -->
+    <div class="table-responsive">
+      <table class="scheme-table" role="grid">
+        <thead>
+          <tr>
+            <th class="th-week">Week</th>
+            <th class="th-topic">Topic</th>
+            <th class="th-obj">Learning Objective</th>
+            <th class="th-teacher">Assigned Teacher</th>
+            <th class="th-resources">Resources Ready</th>
+            <th class="th-assessment">Assessment</th>
+            <th class="th-portfolio">Portfolio Task</th>
+            <th class="th-status">Status</th>
+            <th class="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of store.filteredSchemesOfWork(); track item.id) {
+          <tr
+            (click)="onSelectWeek(item)"
+            tabindex="0"
+            (keydown.enter)="onSelectWeek(item)"
+            title="Click to view Week {{ item.week }} Scheme details"
+          >
+            <td class="td-week">
+              <span class="week-text">{{ item.weekLabel }}</span>
+            </td>
+            <td class="td-topic">
+              <div class="topic-cell">
+                <span class="topic-number-circle">{{ item.week }}</span>
+                <strong class="topic-name">{{ item.topic }}</strong>
+              </div>
+            </td>
+            <td class="td-obj">{{ item.learningObjective }}</td>
+            <td class="td-teacher">
+              <div class="teacher-cell">
+                <div class="teacher-avatar">
+                  <span>{{ item.assignedTeacher.initials || 'TA' }}</span>
+                </div>
+                <span class="teacher-name"
+                  >{{ item.assignedTeacher.name }}</span
+                >
+              </div>
+            </td>
+            <td class="td-resources">
+              <div class="resource-indicator">
+                @if (item.resourcesReady === 'Yes') {
+                <span class="res-badge ready">
+                  <i class="ri-checkbox-circle-fill"></i>
+                  <span>Yes</span>
+                </span>
+                } @if (item.resourcesReady === 'Partial') {
+                <span class="res-badge partial">
+                  <i class="ri-alert-fill"></i>
+                  <span>Partial</span>
+                </span>
+                } @if (item.resourcesReady === 'No') {
+                <span class="res-badge none">
+                  <i class="ri-close-circle-fill"></i>
+                  <span>No</span>
+                </span>
+                }
+              </div>
+            </td>
+            <td class="td-assessment">{{ item.assessment }}</td>
+            <td class="td-portfolio">{{ item.portfolioTask }}</td>
+            <td class="td-status">
+              <span
+                class="scheme-status-pill"
+                [class.approved]="item.status === 'Approved'"
+                [class.review]="item.status === 'Needs Review'"
+                [class.progress]="item.status === 'In Progress'"
+                [class.draft]="item.status === 'Draft'"
+              >
+                {{ item.status }}
+              </span>
+            </td>
+            <td class="td-actions" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="action-menu-btn"
+                (click)="onSelectWeek(item)"
+                title="View Week {{ item.week }} details"
+                aria-label="View Week details"
+              >
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer Pagination -->
+    <div class="scheme-footer">
+      <span class="footer-count">
+        Showing 1 to {{ store.filteredSchemesOfWork().length }} of 16 weeks
+      </span>
+      <div class="pagination-buttons">
+        <button type="button" class="page-arrow" disabled aria-label="Previous">
+          <i class="ri-arrow-left-s-line"></i>
+        </button>
+        <button type="button" class="page-num active">1</button>
+        <button type="button" class="page-num">2</button>
+        <button type="button" class="page-num">3</button>
+        <button type="button" class="page-arrow" aria-label="Next">
+          <i class="ri-arrow-right-s-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar Column -->
+  <div class="scheme-sidebar">
+    <!-- Card 1: Scheme Overview -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Scheme Overview</h3>
+        <span class="subject-badge">Mathematics – JSS 1</span>
+      </div>
+
+      <div class="sidebar-body">
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-calendar-line info-icon"></i>
+            <span>Total Weeks</span>
+          </span>
+          <span class="info-value">16</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-checkbox-circle-line info-icon"></i>
+            <span>Completed Weeks</span>
+          </span>
+          <span class="info-value">6</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-time-line info-icon"></i>
+            <span>Current Week</span>
+          </span>
+          <span class="info-value highlight">Week 4</span>
+        </div>
+
+        <!-- Progress Bars -->
+        <div class="progress-section">
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Overall Coverage</span>
+              <span class="p-pct">78%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill purple" style="width: 78%"></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Delivery Pack Readiness</span>
+              <span class="p-pct">82%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill blue" style="width: 82%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="approval-status-row">
+          <span class="approval-label">
+            <i class="ri-shield-check-line info-icon"></i>
+            <span>Approval Status</span>
+          </span>
+          <span class="approval-badge">Approved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Weekly Flow Preview -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Weekly Flow Preview</h3>
+      </div>
+
+      <div class="flow-preview-list">
+        <div class="flow-step done">
+          <span class="step-num">Week 1</span>
+          <span class="step-dot check"><i class="ri-check-line"></i></span>
+          <span class="step-topic">Whole Numbers</span>
+        </div>
+
+        <div class="flow-step done">
+          <span class="step-num">Week 2</span>
+          <span class="step-dot check"><i class="ri-check-line"></i></span>
+          <span class="step-topic">LCM</span>
+        </div>
+
+        <div class="flow-step review">
+          <span class="step-num">Week 3</span>
+          <span class="step-dot alert"><i class="ri-alert-line"></i></span>
+          <span class="step-topic">HCF</span>
+        </div>
+
+        <div class="flow-step current">
+          <span class="step-num">Week 4</span>
+          <span class="step-dot active"></span>
+          <span class="step-topic">Fractions</span>
+        </div>
+
+        <div class="flow-step upcoming">
+          <span class="step-num">Week 5</span>
+          <span class="step-dot circle"></span>
+          <span class="step-topic">Decimals</span>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="view-all-link"
+        (click)="store.viewSchemeWeekDetail(4)"
+      >
+        <span>View all 16 weeks</span>
+        <i class="ri-arrow-right-s-line"></i>
+      </button>
+    </div>
+
+    <!-- Card 3: Attention Needed -->
+    <div class="sidebar-card alerts-panel">
+      <div class="alerts-header">
+        <h4 class="alerts-title">Attention Needed</h4>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-file-shield-line alert-icon orange"></i>
+        <span class="alert-text">Schemes awaiting approval</span>
+        <span class="alert-count orange">5</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-folder-warning-line alert-icon purple"></i>
+        <span class="alert-text">Weeks missing resources</span>
+        <span class="alert-count purple">8</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-file-warning-line alert-icon blue"></i>
+        <span class="alert-text">Weeks missing assessments</span>
+        <span class="alert-count blue">6</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-user-unfollow-line alert-icon amber"></i>
+        <span class="alert-text">Teachers not mapped</span>
+        <span class="alert-count amber">3</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+    </div>
+
+    <!-- Card 4: Quick Actions -->
+    <div class="sidebar-card quick-links-card">
+      <h4 class="quick-title">Quick Actions</h4>
+      <div class="quick-grid">
+        <button type="button" class="quick-action-pill" (click)="onAddScheme()">
+          <i class="ri-add-circle-line q-icon purple"></i>
+          <span>Create Scheme</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="store.viewSchemeWeekDetail(4)"
+        >
+          <i class="ri-list-check-2 q-icon green"></i>
+          <span>Review Weeks</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="store.setupSaveStatus.set('Assign teacher to scheme opened.')"
+        >
+          <i class="ri-user-shared-line q-icon blue"></i>
+          <span>Assign Teacher</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="onBulkImport()"
+        >
+          <i class="ri-upload-2-line q-icon orange"></i>
+          <span>Upload Template</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

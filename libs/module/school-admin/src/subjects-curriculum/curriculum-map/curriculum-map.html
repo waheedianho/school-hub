@@ -1,0 +1,380 @@
+<div class="map-layout">
+  <!-- Left Main Column: Curriculum Map Table -->
+  <div class="map-main-card">
+    <!-- Filter bar -->
+    <div class="filter-controls-row">
+      <div class="filter-select-group">
+        <label for="classSelect" class="filter-label">Class Level</label>
+        <select
+          id="classSelect"
+          class="filter-select"
+          [ngModel]="store.curriculumClassFilter()"
+          (ngModelChange)="onClassChange($event)"
+        >
+          @for (c of classLevels; track c) {
+          <option [value]="c">{{ c }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-select-group">
+        <label for="subjectSelect" class="filter-label">Subject</label>
+        <select
+          id="subjectSelect"
+          class="filter-select"
+          [ngModel]="store.curriculumSubjectFilter()"
+          (ngModelChange)="onSubjectChange($event)"
+        >
+          @for (s of subjectsList; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-select-group">
+        <label for="termSelect" class="filter-label">Term</label>
+        <select
+          id="termSelect"
+          class="filter-select"
+          [ngModel]="store.curriculumTermFilter()"
+          (ngModelChange)="onTermChange($event)"
+        >
+          @for (t of terms; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-select-group">
+        <label for="statusSelect" class="filter-label">Status</label>
+        <select
+          id="statusSelect"
+          class="filter-select"
+          [ngModel]="store.curriculumStatusFilter()"
+          (ngModelChange)="onStatusChange($event)"
+        >
+          @for (st of statusOptions; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="search-box">
+        <i class="ri-search-line search-icon"></i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search topics, objectives..."
+          [ngModel]="store.subjectSearchQuery()"
+          (ngModelChange)="onSearch($event)"
+          aria-label="Search topics and objectives"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-outline filters-btn"
+        aria-label="Filters"
+      >
+        <i class="ri-filter-3-line"></i>
+        <span>Filters</span>
+      </button>
+    </div>
+
+    <!-- Table of Curriculum Map Entries -->
+    <div class="table-responsive">
+      <table class="curriculum-table" role="grid">
+        <thead>
+          <tr>
+            <th class="th-class">Class</th>
+            <th class="th-subject">Subject</th>
+            <th class="th-term">Term</th>
+            <th class="th-week">Week</th>
+            <th class="th-topic">Topic</th>
+            <th class="th-obj">Curriculum Objective</th>
+            <th class="th-teacher">Assigned Teacher</th>
+            <th class="th-pack">Delivery Pack</th>
+            <th class="th-assessment">Assessment</th>
+            <th class="th-portfolio">Portfolio Task</th>
+            <th class="th-status">Status</th>
+            <th class="th-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of store.filteredCurriculumMaps(); track entry.id) {
+          <tr
+            [class.selected-row]="selectedMapId() === entry.id"
+            (click)="selectMapEntry(entry)"
+            tabindex="0"
+            (keydown.enter)="selectMapEntry(entry)"
+          >
+            <td class="td-class">{{ entry.classLevel }}</td>
+            <td class="td-subject">
+              <span class="subject-tag">{{ entry.subject }}</span>
+            </td>
+            <td class="td-term">{{ entry.term }}</td>
+            <td class="td-week">{{ entry.week }}</td>
+            <td class="td-topic">
+              <strong>{{ entry.topic }}</strong>
+            </td>
+            <td class="td-obj">{{ entry.curriculumObjective }}</td>
+            <td class="td-teacher">
+              <div class="teacher-inline">
+                <div class="teacher-avatar">
+                  <span>{{ entry.assignedTeacher.initials || 'TA' }}</span>
+                </div>
+                <span class="teacher-name"
+                  >{{ entry.assignedTeacher.name }}</span
+                >
+              </div>
+            </td>
+            <td class="td-pack">
+              <span
+                class="pack-pill"
+                [class.ready]="entry.deliveryPack === 'Ready'"
+                [class.review]="entry.deliveryPack === 'In Review'"
+                [class.draft]="entry.deliveryPack === 'Draft'"
+                [class.missing]="entry.deliveryPack === 'Missing Pack'"
+              >
+                {{ entry.deliveryPack }}
+              </span>
+            </td>
+            <td class="td-assessment">{{ entry.assessment }}</td>
+            <td class="td-portfolio">{{ entry.portfolioTask }}</td>
+            <td class="td-status">
+              <div class="status-cell">
+                <span
+                  class="status-dot"
+                  [class.dot-green]="entry.status === 'Active'"
+                  [class.dot-orange]="entry.status === 'Needs Review'"
+                  [class.dot-blue]="entry.status === 'Draft'"
+                  [class.dot-red]="entry.status === 'Missing Pack'"
+                ></span>
+                <span>{{ entry.status }}</span>
+              </div>
+            </td>
+            <td class="td-actions" (click)="$event.stopPropagation()">
+              <button
+                type="button"
+                class="action-icon-btn"
+                (click)="store.viewSchemeWeekDetail(4)"
+                title="View Scheme Detail"
+                aria-label="View Scheme Detail"
+              >
+                <i class="ri-more-2-fill"></i>
+              </button>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer Pagination -->
+    <div class="map-footer">
+      <span class="footer-count">
+        Showing 1 to {{ store.filteredCurriculumMaps().length }} of 48 entries
+      </span>
+      <div class="pagination-buttons">
+        <button type="button" class="page-arrow" disabled aria-label="Previous">
+          <i class="ri-arrow-left-s-line"></i>
+        </button>
+        <button type="button" class="page-num active">1</button>
+        <button type="button" class="page-num">2</button>
+        <button type="button" class="page-num">3</button>
+        <button type="button" class="page-arrow" aria-label="Next">
+          <i class="ri-arrow-right-s-line"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Sidebar Column -->
+  <div class="map-sidebar">
+    <!-- Card 1: Map Overview -->
+    <div class="sidebar-card">
+      <div class="sidebar-header">
+        <h3 class="sidebar-title">Map Overview</h3>
+        <span class="subject-badge">Mathematics – JSS 1</span>
+      </div>
+
+      <div class="sidebar-body">
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-team-line info-icon"></i>
+            <span>Assigned Classes</span>
+          </span>
+          <span class="info-value">JSS 1A, JSS 1B</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-user-star-line info-icon"></i>
+            <span>Lead Teacher</span>
+          </span>
+          <span class="info-value">Mr. Tunde Adewale</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-calendar-line info-icon"></i>
+            <span>Weeks Planned</span>
+          </span>
+          <span class="info-value">12</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-checkbox-circle-line info-icon"></i>
+            <span>Topics Completed</span>
+          </span>
+          <span class="info-value">18 / 24</span>
+        </div>
+
+        <div class="info-row">
+          <span class="info-label">
+            <i class="ri-time-line info-icon"></i>
+            <span>Current Week</span>
+          </span>
+          <span class="info-value">Week 2</span>
+        </div>
+
+        <!-- Progress Bars -->
+        <div class="progress-section">
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Coverage</span>
+              <span class="p-pct">75%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill purple" style="width: 75%"></div>
+            </div>
+          </div>
+
+          <div class="progress-item">
+            <div class="progress-labels">
+              <span class="p-title">Delivery Pack Readiness</span>
+              <span class="p-pct">83%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill blue" style="width: 83%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="approval-status-row">
+          <span class="approval-label">
+            <i class="ri-shield-check-line info-icon"></i>
+            <span>Approval Status</span>
+          </span>
+          <span class="approval-badge">Approved</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2: Curriculum Flow Preview -->
+    <div class="sidebar-card">
+      <h3 class="sidebar-title">Curriculum Flow Preview</h3>
+
+      <div class="flow-preview-list">
+        <div class="flow-step done">
+          <span class="step-num">Week 1</span>
+          <span class="step-dot check"><i class="ri-check-line"></i></span>
+          <span class="step-topic">Whole Numbers</span>
+        </div>
+
+        <div class="flow-step current">
+          <span class="step-num">Week 2</span>
+          <span class="step-dot active"></span>
+          <span class="step-topic">LCM</span>
+        </div>
+
+        <div class="flow-step upcoming">
+          <span class="step-num">Week 3</span>
+          <span class="step-dot circle"></span>
+          <span class="step-topic">HCF</span>
+        </div>
+
+        <div class="flow-step upcoming">
+          <span class="step-num">Week 4</span>
+          <span class="step-dot circle"></span>
+          <span class="step-topic">Fractions</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3: Attention Needed -->
+    <div class="sidebar-card alerts-panel">
+      <div class="alerts-header">
+        <h4 class="alerts-title">Attention Needed</h4>
+        <span class="total-alert-badge">18</span>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-folder-warning-line alert-icon orange"></i>
+        <span class="alert-text">Topics without delivery packs</span>
+        <span class="alert-count orange">6</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-user-unfollow-line alert-icon blue"></i>
+        <span class="alert-text">Unassigned teachers</span>
+        <span class="alert-count blue">3</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-file-warning-line alert-icon orange"></i>
+        <span class="alert-text">Assessments missing</span>
+        <span class="alert-count orange">5</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+
+      <div class="alert-item">
+        <i class="ri-task-line alert-icon amber"></i>
+        <span class="alert-text">Portfolio tasks pending review</span>
+        <span class="alert-count amber">4</span>
+        <i class="ri-arrow-right-s-line alert-chevron"></i>
+      </div>
+    </div>
+
+    <!-- Card 4: Quick Actions -->
+    <div class="sidebar-card quick-links-card">
+      <h4 class="quick-title">Quick Actions</h4>
+      <div class="quick-grid">
+        <button type="button" class="quick-action-pill" (click)="onCreateMap()">
+          <i class="ri-add-circle-line q-icon purple"></i>
+          <span>Create Map</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="onAssignTeacher()"
+        >
+          <i class="ri-user-shared-line q-icon green"></i>
+          <span>Assign Teacher</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="onUploadScheme()"
+        >
+          <i class="ri-upload-2-line q-icon blue"></i>
+          <span>Upload Scheme</span>
+        </button>
+
+        <button
+          type="button"
+          class="quick-action-pill"
+          (click)="onReviewPacks()"
+        >
+          <i class="ri-folder-open-line q-icon orange"></i>
+          <span>Review Packs</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

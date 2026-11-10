@@ -1,0 +1,454 @@
+<div class="scheme-detail-container">
+  <!-- Top Breadcrumb & Header Bar -->
+  <div class="detail-header-card">
+    <div class="breadcrumb-row">
+      <button
+        type="button"
+        class="back-btn"
+        (click)="onBackToScheme()"
+        aria-label="Back to Scheme of Work"
+      >
+        <i class="ri-arrow-left-line"></i>
+        <span>Back to Scheme of Work</span>
+      </button>
+      <div class="header-badges">
+        <span class="subject-tag">
+          {{ store.weekSchemeDetail().subject }} – {{
+          store.weekSchemeDetail().classLevel }}
+        </span>
+        <span
+          class="status-pill"
+          [class.progress]="store.weekSchemeDetail().status === 'In Progress'"
+        >
+          {{ store.weekSchemeDetail().status }}
+        </span>
+        <span class="approval-pill">
+          <i class="ri-checkbox-circle-fill"></i>
+          {{ store.weekSchemeDetail().approvalStatus }}
+        </span>
+      </div>
+    </div>
+
+    <div class="title-row">
+      <div class="title-meta">
+        <h2 class="week-heading">
+          Week {{ store.weekSchemeDetail().weekNumber }} Scheme of Work
+        </h2>
+        <span class="topic-sub"
+          >Topic: <strong>{{ store.weekSchemeDetail().topic }}</strong></span
+        >
+      </div>
+
+      <div class="sub-tabs-nav" role="tablist">
+        <button
+          type="button"
+          class="sub-tab-btn"
+          [class.active]="activeSubTab() === 'lessons'"
+          (click)="setSubTab('lessons')"
+          role="tab"
+          [attr.aria-selected]="activeSubTab() === 'lessons'"
+        >
+          <i class="ri-book-open-line"></i>
+          <span>Lesson Breakdown</span>
+          <span class="tab-count"
+            >{{ store.weekSchemeDetail().lessons.length }}</span
+          >
+        </button>
+
+        <button
+          type="button"
+          class="sub-tab-btn"
+          [class.active]="activeSubTab() === 'resources'"
+          (click)="setSubTab('resources')"
+          role="tab"
+          [attr.aria-selected]="activeSubTab() === 'resources'"
+        >
+          <i class="ri-folder-shared-line"></i>
+          <span>Resources</span>
+          <span class="tab-count">{{ store.weekResources().length }}</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Topic & Curriculum Overview Banner -->
+    <div class="overview-banner">
+      <div class="overview-grid">
+        <div class="overview-item full-width">
+          <span class="item-label">Learning Objective</span>
+          <p class="item-text">
+            {{ store.weekSchemeDetail().learningObjective }}
+          </p>
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Lead Teacher</span>
+          <div class="teacher-inline">
+            <span class="avatar-circle">FY</span>
+            <span class="teacher-name"
+              >{{ store.weekSchemeDetail().leadTeacher }}</span
+            >
+          </div>
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Lesson Periods</span>
+          <span class="item-val highlight"
+            >{{ store.weekSchemeDetail().lessonPeriods }}</span
+          >
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Delivery Pack</span>
+          <span class="badge-status ready">
+            <i class="ri-checkbox-circle-fill"></i>
+            {{ store.weekSchemeDetail().deliveryPackStatus }}
+          </span>
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Resources Status</span>
+          <span class="badge-status ready">
+            <i class="ri-checkbox-circle-fill"></i>
+            {{ store.weekSchemeDetail().resourcesStatus }}
+          </span>
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Assessment Plan</span>
+          <span class="item-val"
+            >{{ store.weekSchemeDetail().assessmentPlan }}</span
+          >
+        </div>
+
+        <div class="overview-item">
+          <span class="item-label">Portfolio Task</span>
+          <span class="item-val"
+            >{{ store.weekSchemeDetail().portfolioTask }}</span
+          >
+        </div>
+
+        <div class="overview-item full-width misconceptions">
+          <span class="item-label">
+            <i class="ri-alert-line warning-icon"></i>
+            Common Misconceptions
+          </span>
+          <p class="item-text-sm">
+            {{ store.weekSchemeDetail().commonMisconceptions }}
+          </p>
+        </div>
+
+        <div class="overview-item full-width notes">
+          <span class="item-label">
+            <i class="ri-information-line info-icon"></i>
+            Tutor Notes
+          </span>
+          <p class="item-text-sm">{{ store.weekSchemeDetail().tutorNotes }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two Column Layout: Main Content vs Sidebar -->
+  <div class="detail-columns">
+    <!-- Main Column: Lesson Breakdown OR Resources -->
+    <div class="main-column-card">
+      @if (activeSubTab() === 'lessons') {
+      <div class="lessons-header-bar">
+        <h3 class="section-title">Lesson Breakdown (3 Lessons)</h3>
+        <span class="section-subtitle">
+          Curriculum sequence for Week {{ store.weekSchemeDetail().weekNumber }}
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="detail-table" role="grid">
+          <thead>
+            <tr>
+              <th class="th-num">#</th>
+              <th class="th-title">Lesson Title</th>
+              <th class="th-obj">Learning Objective</th>
+              <th class="th-method">Teaching Method</th>
+              <th class="th-sheet">Worksheet</th>
+              <th class="th-ready">Readiness</th>
+              <th class="th-act">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (les of store.weekSchemeDetail().lessons; track les.id) {
+            <tr>
+              <td class="td-num">
+                <span class="num-badge">{{ les.lessonNumber }}</span>
+              </td>
+              <td class="td-title">
+                <strong class="lesson-name">{{ les.title }}</strong>
+              </td>
+              <td class="td-obj">{{ les.learningObjective }}</td>
+              <td class="td-method">
+                <span class="method-tag">{{ les.teachingMethod }}</span>
+              </td>
+              <td class="td-sheet">
+                <span class="worksheet-link">
+                  <i class="ri-file-text-line"></i>
+                  {{ les.worksheetName }}
+                </span>
+              </td>
+              <td class="td-ready">
+                <span
+                  class="readiness-pill"
+                  [class.ready]="les.readinessStatus === 'Ready'"
+                  [class.review]="les.readinessStatus === 'Needs Review'"
+                >
+                  {{ les.readinessStatus }}
+                </span>
+              </td>
+              <td class="td-act">
+                <button
+                  type="button"
+                  class="row-action-btn"
+                  (click)="onLessonAction(les)"
+                  title="View Lesson Details"
+                  aria-label="View Lesson Details"
+                >
+                  <i class="ri-more-2-fill"></i>
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      } @if (activeSubTab() === 'resources') {
+      <div class="resources-toolbar">
+        <div class="filter-pills">
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="resourceFilter() === 'All'"
+            (click)="setResourceFilter('All')"
+          >
+            All Resources (12)
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="resourceFilter() === 'Teacher'"
+            (click)="setResourceFilter('Teacher')"
+          >
+            Teacher Resources (6)
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="resourceFilter() === 'Learner'"
+            (click)="setResourceFilter('Learner')"
+          >
+            Learner Worksheets (4)
+          </button>
+          <button
+            type="button"
+            class="pill-btn"
+            [class.active]="resourceFilter() === 'Assessments'"
+            (click)="setResourceFilter('Assessments')"
+          >
+            Assessments (2)
+          </button>
+        </div>
+
+        <div class="toolbar-actions">
+          <div class="search-wrap">
+            <i class="ri-search-line search-icon"></i>
+            <input
+              type="text"
+              class="search-input"
+              placeholder="Search resources..."
+              [ngModel]="resourceSearch()"
+              (ngModelChange)="resourceSearch.set($event)"
+              aria-label="Search resources"
+            />
+          </div>
+
+          <button type="button" class="btn-upload" (click)="onUploadResource()">
+            <i class="ri-upload-cloud-line"></i>
+            <span>+ Upload Resource</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="detail-table" role="grid">
+          <thead>
+            <tr>
+              <th class="th-res-name">Resource Name</th>
+              <th class="th-res-type">Type</th>
+              <th class="th-res-lesson">Linked Lesson</th>
+              <th class="th-res-aud">Audience</th>
+              <th class="th-res-fmt">Format</th>
+              <th class="th-res-stat">Status</th>
+              <th class="th-res-date">Last Updated</th>
+              <th class="th-res-act">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (res of filteredResources(); track res.id) {
+            <tr>
+              <td class="td-res-name">
+                <div class="res-item-row">
+                  <i class="ri-file-line file-icon"></i>
+                  <strong class="res-title">{{ res.name }}</strong>
+                </div>
+              </td>
+              <td class="td-res-type">
+                <span class="type-badge">{{ res.type }}</span>
+              </td>
+              <td class="td-res-lesson">{{ res.linkedLesson }}</td>
+              <td class="td-res-aud">
+                <span
+                  class="aud-badge"
+                  [class.teacher]="res.audience.includes('Teacher')"
+                >
+                  {{ res.audience }}
+                </span>
+              </td>
+              <td class="td-res-fmt">{{ res.format }}</td>
+              <td class="td-res-stat">
+                <span
+                  class="stat-pill"
+                  [class.ready]="res.status === 'Ready'"
+                  [class.review]="res.status === 'Needs Review'"
+                  [class.draft]="res.status === 'Draft'"
+                  [class.missing]="res.status === 'Missing'"
+                >
+                  {{ res.status }}
+                </span>
+              </td>
+              <td class="td-res-date">{{ res.lastUpdated }}</td>
+              <td class="td-res-act">
+                <button
+                  type="button"
+                  class="btn-act-action"
+                  (click)="onResourceAction(res)"
+                >
+                  {{ res.action }}
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+      }
+    </div>
+
+    <!-- Right Sidebar Column -->
+    <div class="detail-sidebar">
+      <!-- Card 1: Delivery Readiness -->
+      <div class="sidebar-card readiness-card">
+        <h4 class="card-title">Delivery Readiness</h4>
+
+        <div class="readiness-gauge">
+          <div class="gauge-value">
+            <span class="pct"
+              >{{ store.weekSchemeDetail().deliveryReadiness }}%</span
+            >
+            <span class="pct-sub">Ready</span>
+          </div>
+          <div class="gauge-bar">
+            <div
+              class="gauge-fill"
+              [style.width.%]="store.weekSchemeDetail().deliveryReadiness"
+            ></div>
+          </div>
+        </div>
+
+        <div class="readiness-checklist">
+          <div class="check-item">
+            <span class="check-label">Lessons Completed</span>
+            <span class="check-val"
+              >{{ store.weekSchemeDetail().lessonsCompleted }}</span
+            >
+          </div>
+          <div class="check-item">
+            <span class="check-label">Assessments Ready</span>
+            <span class="check-status yes">
+              <i class="ri-checkbox-circle-fill"></i>
+              Yes
+            </span>
+          </div>
+          <div class="check-item">
+            <span class="check-label">Portfolio Task Ready</span>
+            <span class="check-status yes">
+              <i class="ri-checkbox-circle-fill"></i>
+              Yes
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2: Attention Needed -->
+      <div class="sidebar-card attention-card">
+        <h4 class="card-title">Attention Needed</h4>
+
+        <div class="warning-items">
+          <div class="warning-box">
+            <i class="ri-alert-line warn-icon amber"></i>
+            <div class="warn-content">
+              <strong>Worksheet 2 needs review</strong>
+              <p>Needs HOD approval before publishing to learners</p>
+            </div>
+          </div>
+
+          <div class="warning-box">
+            <i class="ri-error-warning-line warn-icon red"></i>
+            <div class="warn-content">
+              <strong>Remedial sheet missing</strong>
+              <p>Support material for struggling students is not uploaded</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3: Week Actions -->
+      <div class="sidebar-card actions-card">
+        <h4 class="card-title">Week Actions</h4>
+
+        <div class="action-buttons-list">
+          <button
+            type="button"
+            class="action-btn primary"
+            (click)="onEditScheme()"
+          >
+            <i class="ri-edit-line"></i>
+            <span>Edit Week Scheme</span>
+          </button>
+
+          <button
+            type="button"
+            class="action-btn outline"
+            (click)="onViewDeliveryPack()"
+          >
+            <i class="ri-folder-zip-line"></i>
+            <span>View Delivery Pack</span>
+          </button>
+
+          <button
+            type="button"
+            class="action-btn outline"
+            (click)="onUploadResource()"
+          >
+            <i class="ri-upload-2-line"></i>
+            <span>Upload Resource</span>
+          </button>
+
+          <button
+            type="button"
+            class="action-btn outline"
+            (click)="onSubmitForReview()"
+          >
+            <i class="ri-send-plane-line"></i>
+            <span>Submit for Review</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

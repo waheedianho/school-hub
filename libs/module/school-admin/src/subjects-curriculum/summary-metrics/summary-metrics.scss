@@ -1,0 +1,131 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+.metric-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.metric-icon-wrap {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .metric-icon {
+    font-size: 24px;
+  }
+
+  &.purple {
+    background-color: #f5f3ff;
+    color: #7c3aed;
+  }
+
+  &.green {
+    background-color: #ecfdf5;
+    color: #10b981;
+  }
+
+  &.orange {
+    background-color: #fff7ed;
+    color: #f97316;
+  }
+
+  &.blue {
+    background-color: #eff6ff;
+    color: #3b82f6;
+  }
+
+  &.pink {
+    background-color: #fdf2f8;
+    color: #ec4899;
+  }
+
+  &.green-light {
+    background-color: #f0fdf4;
+    color: #16a34a;
+  }
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  line-height: 1.2;
+
+  &.status-text {
+    font-size: 18px;
+    color: #2563eb;
+  }
+
+  &.delivery-status-text {
+    font-size: 16px;
+    color: #16a34a;
+  }
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary, #1e293b);
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.metric-subtext {
+  font-size: 11px;
+  color: var(--text-muted, #64748b);
+  margin-top: 2px;
+}
+
+.metric-badge {
+  font-size: 11px;
+  font-weight: 600;
+
+  &.up {
+    color: #10b981;
+  }
+}

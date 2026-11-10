@@ -1,0 +1,136 @@
+<div class="teachers-staff-container">
+  <!-- Notification / Feedback Toast -->
+  @if (store.setupSaveStatus(); as message) {
+  <div class="status-banner">
+    <div class="status-content">
+      <i class="ri-checkbox-circle-line status-icon"></i>
+      <span>{{ message }}</span>
+    </div>
+    <button
+      type="button"
+      class="dismiss-btn"
+      (click)="dismissNotification()"
+      aria-label="Dismiss notification"
+    >
+      <i class="ri-close-line"></i>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Teachers & Staff</h1>
+      <p class="page-subtitle">
+        Manage teachers, support staff, subject assignments, and academic
+        accountability.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onBulkImport()"
+        aria-label="Bulk import staff records"
+      >
+        <i class="ri-upload-2-line btn-icon"></i>
+        <span>Bulk Import</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="navigateToAddStaff()"
+        aria-label="Add new staff member"
+      >
+        <i class="ri-add-line btn-icon"></i>
+        <span>+ Add Staff</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 1. Top KPI Summary Metrics -->
+  <school-hub-teachers-summary-metrics></school-hub-teachers-summary-metrics>
+
+  <!-- 2. Navigation Tabs (Underline style) -->
+  <div class="tabs-nav" role="tablist">
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeStaffTab() === 'teachers'"
+      [attr.aria-selected]="store.activeStaffTab() === 'teachers'"
+      (click)="setTab('teachers')"
+    >
+      Teachers
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeStaffTab() === 'support'"
+      [attr.aria-selected]="store.activeStaffTab() === 'support'"
+      (click)="setTab('support')"
+    >
+      Support Staff
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeStaffTab() === 'assignments'"
+      [attr.aria-selected]="store.activeStaffTab() === 'assignments'"
+      (click)="setTab('assignments')"
+    >
+      Subject Assignments
+    </button>
+
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="store.activeStaffTab() === 'permissions'"
+      [attr.aria-selected]="store.activeStaffTab() === 'permissions'"
+      (click)="setTab('permissions')"
+    >
+      Permissions
+    </button>
+  </div>
+
+  <!-- 3. Main Workspace: Two-Column Layout -->
+  <div class="workspace-grid">
+    <div class="directory-column">
+      <school-hub-teacher-directory></school-hub-teacher-directory>
+    </div>
+
+    <div class="sidebar-column">
+      <school-hub-staff-overview-sidebar></school-hub-staff-overview-sidebar>
+    </div>
+  </div>
+
+  <!-- 4. Quick Action Cards -->
+  <school-hub-staff-quick-actions></school-hub-staff-quick-actions>
+
+  <!-- 5. Bottom Confidentiality Banner -->
+  <div class="footer-banner">
+    <div class="footer-left">
+      <i class="ri-information-line footer-info-icon"></i>
+      <span>
+        Staff records are confidential and used to ensure accountability,
+        instructional quality, and compliance with school policies.
+      </span>
+    </div>
+
+    <div class="footer-right">
+      <span class="update-time">Last updated: May 12, 2025 10:30 AM</span>
+      <span class="divider">|</span>
+      <div class="security-lock">
+        <i class="ri-lock-line"></i>
+        <span>Only authorized personnel can access and modify staff data.</span>
+      </div>
+    </div>
+  </div>
+</div>

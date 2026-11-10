@@ -1,0 +1,116 @@
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.metric-card {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+}
+
+.metric-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .metric-icon {
+    font-size: 26px;
+  }
+
+  &.purple {
+    background-color: #f5f3ff;
+    color: #7c3aed;
+  }
+
+  &.blue {
+    background-color: #eff6ff;
+    color: #2563eb;
+  }
+
+  &.green {
+    background-color: #ecfdf5;
+    color: #10b981;
+  }
+
+  &.orange {
+    background-color: #fff7ed;
+    color: #f97316;
+  }
+
+  &.violet {
+    background-color: #faf5ff;
+    color: #8b5cf6;
+  }
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.metric-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted, #64748b);
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.metric-value-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.metric-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+  line-height: 1.2;
+}
+
+.metric-badge {
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 2px;
+  display: inline-block;
+
+  &.up {
+    color: #10b981;
+  }
+
+  &.down {
+    color: #10b981; // In this design, "↓ 1 this term" for unassigned is good/green!
+  }
+}

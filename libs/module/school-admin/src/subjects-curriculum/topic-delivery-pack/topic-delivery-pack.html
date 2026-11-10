@@ -1,0 +1,282 @@
+<div class="delivery-pack-container">
+  <!-- Header Card -->
+  <div class="pack-header-card">
+    <div class="header-top-row">
+      <button
+        type="button"
+        class="back-btn"
+        (click)="onBack()"
+        aria-label="Back to Curriculum Map"
+      >
+        <i class="ri-arrow-left-line"></i>
+        <span>Back to Curriculum Map</span>
+      </button>
+
+      <div class="header-status-group">
+        <span class="delivery-pill ready">
+          <i class="ri-checkbox-circle-fill"></i>
+          {{ store.topicDeliveryPack().deliveryStatus }}
+        </span>
+        <span class="approval-pill approved">
+          <i class="ri-shield-check-fill"></i>
+          {{ store.topicDeliveryPack().approvalStatus }}
+        </span>
+      </div>
+    </div>
+
+    <div class="header-main-row">
+      <div class="title-wrap">
+        <h2 class="pack-title">{{ store.topicDeliveryPack().topic }}</h2>
+        <span class="pack-meta">
+          {{ store.topicDeliveryPack().classLevel }} • {{
+          store.topicDeliveryPack().subject }} • {{
+          store.topicDeliveryPack().week }}
+        </span>
+      </div>
+
+      <div class="pack-actions-group">
+        <button type="button" class="btn btn-outline" (click)="onEditPack()">
+          <i class="ri-edit-line"></i>
+          <span>Edit Pack</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="onShareWithTeacher()"
+        >
+          <i class="ri-share-line"></i>
+          <span>Share with Teacher</span>
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onDownloadPack()"
+        >
+          <i class="ri-download-2-line"></i>
+          <span>Download Delivery Pack</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Overview Details Grid -->
+    <div class="pack-overview-grid">
+      <div class="overview-cell">
+        <span class="cell-label">Subject</span>
+        <strong class="cell-value"
+          >{{ store.topicDeliveryPack().subject }}</strong
+        >
+      </div>
+
+      <div class="overview-cell">
+        <span class="cell-label">Class Level</span>
+        <strong class="cell-value"
+          >{{ store.topicDeliveryPack().classLevel }}</strong
+        >
+      </div>
+
+      <div class="overview-cell">
+        <span class="cell-label">Week</span>
+        <strong class="cell-value">{{ store.topicDeliveryPack().week }}</strong>
+      </div>
+
+      <div class="overview-cell">
+        <span class="cell-label">Estimated Duration</span>
+        <strong class="cell-value highlight"
+          >{{ store.topicDeliveryPack().estimatedDuration }}</strong
+        >
+      </div>
+
+      <div class="overview-cell">
+        <span class="cell-label">Lead Teacher</span>
+        <strong class="cell-value"
+          >{{ store.topicDeliveryPack().leadTeacher }}</strong
+        >
+      </div>
+
+      <div class="overview-cell full-span">
+        <span class="cell-label">Curriculum Objective</span>
+        <p class="cell-desc">
+          {{ store.topicDeliveryPack().curriculumObjective }}
+        </p>
+      </div>
+
+      <div class="overview-cell full-span">
+        <span class="cell-label">Learning Objective</span>
+        <p class="cell-desc">
+          {{ store.topicDeliveryPack().learningObjective }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content Columns: Included Materials vs Sidebar -->
+  <div class="pack-content-columns">
+    <!-- Left Column: Included Materials Table -->
+    <div class="materials-card">
+      <div class="card-header">
+        <h3 class="card-title">Included Materials (10 Items)</h3>
+        <span class="card-subtitle">
+          All resources, guides, and worksheets bundled for this topic
+        </span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="materials-table" role="grid">
+          <thead>
+            <tr>
+              <th class="th-mat">Material</th>
+              <th class="th-desc">Description</th>
+              <th class="th-status">Status</th>
+              <th class="th-act">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of store.topicDeliveryPack().includedMaterials; track
+            item.material) {
+            <tr>
+              <td class="td-mat">
+                <div class="mat-cell">
+                  <i class="ri-file-text-line mat-icon"></i>
+                  <strong class="mat-name">{{ item.material }}</strong>
+                </div>
+              </td>
+              <td class="td-desc">{{ item.description }}</td>
+              <td class="td-status">
+                <span
+                  class="status-badge"
+                  [class.ready]="item.status === 'Ready'"
+                  [class.review]="item.status === 'In Review'"
+                  [class.draft]="item.status === 'Draft'"
+                  [class.missing]="item.status === 'Missing'"
+                >
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="td-act">
+                <button
+                  type="button"
+                  class="action-pill-btn"
+                  (click)="onMaterialAction(item)"
+                >
+                  @if (item.status === 'Ready') {
+                  <span>View</span>
+                  } @if (item.status === 'In Review') {
+                  <span>Review</span>
+                  } @if (item.status === 'Draft') {
+                  <span>Edit</span>
+                  } @if (item.status === 'Missing') {
+                  <span>Upload</span>
+                  }
+                </button>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Column: Lesson Sequence & Quality Check -->
+    <div class="pack-sidebar">
+      <!-- Lesson Sequence -->
+      <div class="sidebar-box">
+        <div class="sidebar-box-header">
+          <h4 class="box-title">Lesson Sequence (3 Lessons)</h4>
+        </div>
+
+        <div class="sequence-list">
+          @for (seq of store.topicDeliveryPack().lessonSequence; track
+          seq.lessonNumber) {
+          <div class="sequence-item">
+            <div class="seq-num-circle">{{ seq.lessonNumber }}</div>
+            <div class="seq-info">
+              <strong class="seq-title">{{ seq.title }}</strong>
+              <span class="seq-method">{{ seq.teachingMethod }}</span>
+              <div class="seq-tags">
+                <span class="seq-sheet">
+                  <i class="ri-file-line"></i>
+                  {{ seq.worksheet }}
+                </span>
+                <span class="seq-badge ready">
+                  <i class="ri-checkbox-circle-fill"></i>
+                  {{ seq.readiness }}
+                </span>
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Quality Check & Readiness -->
+      <div class="sidebar-box quality-box">
+        <div class="sidebar-box-header">
+          <h4 class="box-title">Pack Readiness & Quality Check</h4>
+        </div>
+
+        <div class="quality-gauge">
+          <div class="gauge-header">
+            <span class="gauge-pct"
+              >{{ store.topicDeliveryPack().readiness }}%</span
+            >
+            <span class="gauge-label">Complete</span>
+          </div>
+          <div class="gauge-track">
+            <div
+              class="gauge-fill"
+              [style.width.%]="store.topicDeliveryPack().readiness"
+            ></div>
+          </div>
+        </div>
+
+        <div class="quality-checks-list">
+          <div class="q-item">
+            <span class="q-label">Assessment Ready</span>
+            <span class="q-val green">
+              <i class="ri-checkbox-circle-fill"></i>
+              Yes
+            </span>
+          </div>
+
+          <div class="q-item">
+            <span class="q-label">Portfolio Task Ready</span>
+            <span class="q-val green">
+              <i class="ri-checkbox-circle-fill"></i>
+              Yes
+            </span>
+          </div>
+
+          <div class="q-item">
+            <span class="q-label">Parent Support Sheet</span>
+            <span class="q-val amber">
+              <i class="ri-alert-fill"></i>
+              Pending
+            </span>
+          </div>
+        </div>
+
+        <div class="quality-buttons">
+          <button
+            type="button"
+            class="btn btn-primary full-width"
+            (click)="onApprovePack()"
+          >
+            <i class="ri-checkbox-circle-line"></i>
+            <span>Approve Delivery Pack</span>
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-outline full-width"
+            (click)="onDownloadPack()"
+          >
+            <i class="ri-folder-zip-line"></i>
+            <span>Export as ZIP Archive</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
