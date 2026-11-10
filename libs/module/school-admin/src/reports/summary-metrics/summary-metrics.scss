@@ -1,0 +1,142 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typo;
+
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1280px) {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.metric-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 0.75rem;
+  padding: 1.125rem;
+  display: flex;
+  flex-direction: column;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+
+  .card-title {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary, #6b7280);
+  }
+}
+
+.icon-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.icon-indigo {
+    background-color: #e0e7ff;
+    color: #4338ca;
+  }
+
+  &.icon-teal {
+    background-color: #ccfbf1;
+    color: #0f766e;
+  }
+
+  &.icon-purple {
+    background-color: #f3e8ff;
+    color: #7e22ce;
+  }
+
+  &.icon-green {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  &.icon-amber {
+    background-color: #fef3c7;
+    color: #b45309;
+  }
+}
+
+.metric-body {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+
+  .metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-text-primary, #111827);
+    line-height: 1.2;
+  }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &.badge-green {
+    background-color: #dcfce7;
+    color: #166534;
+  }
+
+  &.badge-teal {
+    background-color: #ccfbf1;
+    color: #115e59;
+  }
+
+  &.badge-purple {
+    background-color: #f3e8ff;
+    color: #6b21a8;
+  }
+
+  &.badge-indigo {
+    background-color: #e0e7ff;
+    color: #3730a3;
+  }
+
+  &.badge-amber {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+}
+
+.metric-footer {
+  margin-top: auto;
+
+  .subtext {
+    font-size: 0.75rem;
+    color: var(--color-text-tertiary, #9ca3af);
+  }
+}

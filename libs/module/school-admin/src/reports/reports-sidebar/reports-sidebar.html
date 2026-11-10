@@ -1,0 +1,227 @@
+<aside
+  class="reports-sidebar"
+  aria-label="School Report Summary and Quick Actions"
+>
+  <!-- School Report Summary Card -->
+  <div class="sidebar-card summary-card" data-testid="sidebar-summary-card">
+    <div class="card-header">
+      <h4 class="card-title">School Report Summary</h4>
+      <span
+        class="status-badge"
+        [ngClass]="{
+          'status-approved': summary().approvalStatus === 'Approved',
+          'status-progress': summary().approvalStatus === 'In Progress'
+        }"
+      >
+        {{ summary().approvalStatus }}
+      </span>
+    </div>
+
+    <div class="stats-list">
+      <div class="stat-row">
+        <span class="stat-label">Total Learners</span>
+        <span class="stat-value">{{ summary().totalLearners }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Total Teachers</span>
+        <span class="stat-value">{{ summary().totalTeachers }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Subjects Tracked</span>
+        <span class="stat-value">{{ summary().subjectsTracked }}</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Parent Reports Shared</span>
+        <span class="stat-value font-semibold text-emerald-600">
+          {{ summary().parentReportsShared }} / {{ summary().totalLearners }}
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Attention Areas -->
+  <div class="sidebar-card attention-card" data-testid="sidebar-attention-card">
+    <div class="card-header">
+      <h4 class="card-title">Priority Attention Areas</h4>
+      <span class="attention-badge">{{ attentionAreas().length }} Items</span>
+    </div>
+
+    <p class="attention-subtitle">
+      Critical anomalies requiring administrative review or intervention:
+    </p>
+
+    <div class="attention-list">
+      @for (item of attentionAreas(); track item.id) {
+      <button
+        type="button"
+        class="attention-item"
+        [class.active]="selectedArea()?.id === item.id"
+        (click)="onSelectArea(item)"
+        [attr.aria-pressed]="selectedArea()?.id === item.id"
+      >
+        <div class="rank-circle">{{ item.rank }}</div>
+        <div class="attention-body">
+          <span class="attention-title">{{ item.title }}</span>
+          <span class="attention-category">{{ item.category }}</span>
+        </div>
+        <svg
+          class="arrow-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="sidebar-card actions-card" data-testid="sidebar-actions-card">
+    <div class="card-header">
+      <h4 class="card-title">Quick Actions</h4>
+    </div>
+
+    <div class="action-buttons">
+      <!-- Export School Report -->
+      <button
+        type="button"
+        class="btn-action btn-primary"
+        (click)="onExportReport()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export School Report</span>
+      </button>
+
+      <!-- Approve All Reports -->
+      <button
+        type="button"
+        class="btn-action btn-secondary"
+        (click)="onApproveAll()"
+        [disabled]="summary().approvalStatus === 'Approved'"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>
+          {{ summary().approvalStatus === 'Approved' ? 'All Reports Approved' :
+          'Approve All Reports' }}
+        </span>
+      </button>
+
+      <!-- View Class Breakdown -->
+      <button
+        type="button"
+        class="btn-action btn-outline"
+        (click)="onViewClassBreakdown()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+        <span>View Class Breakdown</span>
+      </button>
+
+      <!-- Share with Leadership -->
+      <button
+        type="button"
+        class="btn-action btn-outline"
+        (click)="onShareLeadership()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+        <span>Share with Leadership</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Timestamp & Refresh Footer -->
+  <div class="sidebar-footer">
+    <div class="timestamp-group">
+      <span class="timestamp-text">Last updated: {{ lastUpdated() }}</span>
+    </div>
+    <button
+      type="button"
+      class="btn-refresh"
+      (click)="refreshData()"
+      aria-label="Refresh report metrics"
+      title="Refresh metrics"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="23 4 23 10 17 10"></polyline>
+        <polyline points="1 20 1 14 7 14"></polyline>
+        <path
+          d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+        ></path>
+      </svg>
+    </button>
+  </div>
+</aside>

@@ -17,6 +17,8 @@ import {
   AssessmentScheduleTab,
   AssessmentSidebarSummary,
   AssessmentsSummaryMetrics,
+  ClassReportCardSummary,
+  ClassSubjectPerformance,
   ClassesOverviewMetrics,
   CommunicationSafeguardingSettings,
   CurriculumCoverage,
@@ -38,6 +40,11 @@ import {
   NewLearnerFormData,
   NewStaffFormData,
   OversightSidebarSummary,
+  PriorityAttentionArea,
+  ReportsHighlightInsights,
+  ReportsSidebarSummary,
+  ReportsSummaryMetrics,
+  ReportTab,
   RolePermissionRow,
   SafeguardingNotice,
   SchemeOfWorkEntry,
@@ -49,9 +56,12 @@ import {
   SetupQuickAction,
   StaffMember,
   StaffOperationalAlert,
+  StudentReportCard,
+  SubjectPerformanceRow,
   SubjectRecord,
   TeacherActivityMetric,
   TeachersStaffOverviewMetrics,
+  TermPerformanceTrendPoint,
   TopicDeliveryPack,
   TopPerformingSubject,
   UpcomingSchoolEvent,
@@ -111,6 +121,17 @@ import {
   LEARNER_SUBMISSIONS_REVIEW_DATA,
   GRADE_DISTRIBUTION_BUCKETS,
 } from './school-admin-assessments.data';
+import {
+  CLASS_PERFORMANCE_OVERVIEW_DATA,
+  CLASS_REPORT_CARDS_DATA,
+  PRIORITY_ATTENTION_AREAS,
+  REPORTS_HIGHLIGHT_INSIGHTS,
+  REPORTS_SIDEBAR_SUMMARY,
+  REPORTS_SUMMARY_METRICS,
+  SAMPLE_STUDENT_REPORT_CARD,
+  SUBJECT_PERFORMANCE_SUMMARY_DATA,
+  TERM_PERFORMANCE_TREND,
+} from './school-admin-reports.data';
 import {
   ACADEMIC_STRUCTURE_DATA,
   ASSESSMENT_SETTINGS_DATA,
@@ -804,6 +825,81 @@ export class SchoolAdminStore {
       missingScoresCount: missing,
       averageScoreText: '19.8 / 30 (66.0%)',
     };
+  });
+
+  // Reports & Report Cards State
+  readonly activeReportTab = signal<ReportTab>('overview');
+  readonly reportsSummaryMetrics = signal<ReportsSummaryMetrics>(
+    REPORTS_SUMMARY_METRICS,
+  );
+  readonly termPerformanceTrend = signal<TermPerformanceTrendPoint[]>(
+    TERM_PERFORMANCE_TREND,
+  );
+  readonly classPerformanceOverview = signal<ClassSubjectPerformance[]>(
+    CLASS_PERFORMANCE_OVERVIEW_DATA,
+  );
+  readonly subjectPerformanceRows = signal<SubjectPerformanceRow[]>(
+    SUBJECT_PERFORMANCE_SUMMARY_DATA,
+  );
+  readonly reportsHighlightInsights = signal<ReportsHighlightInsights>(
+    REPORTS_HIGHLIGHT_INSIGHTS,
+  );
+  readonly reportsSidebarSummary = signal<ReportsSidebarSummary>(
+    REPORTS_SIDEBAR_SUMMARY,
+  );
+  readonly priorityAttentionAreas = signal<PriorityAttentionArea[]>(
+    PRIORITY_ATTENTION_AREAS,
+  );
+  readonly classReportCards = signal<ClassReportCardSummary[]>(
+    CLASS_REPORT_CARDS_DATA,
+  );
+  readonly selectedStudentReportCard = signal<StudentReportCard | null>(
+    SAMPLE_STUDENT_REPORT_CARD,
+  );
+  readonly isStudentReportModalOpen = signal<boolean>(false);
+  readonly isExportReportModalOpen = signal<boolean>(false);
+  readonly isShareLeadershipModalOpen = signal<boolean>(false);
+  readonly selectedReportAttentionArea = signal<PriorityAttentionArea | null>(
+    null,
+  );
+  readonly reportClassFilter = signal<string>('All Classes');
+  readonly reportSubjectFilter = signal<string>('All Subjects');
+  readonly reportSearchQuery = signal<string>('');
+
+  readonly filteredSubjectPerformance = computed(() => {
+    const query = this.reportSearchQuery().toLowerCase().trim();
+    const subjectFilter = this.reportSubjectFilter();
+
+    return this.subjectPerformanceRows().filter((row) => {
+      const matchesSubject =
+        subjectFilter === 'All Subjects' || row.subject === subjectFilter;
+      const matchesQuery = !query || row.subject.toLowerCase().includes(query);
+      return matchesSubject && matchesQuery;
+    });
+  });
+
+  readonly filteredClassReportCards = computed(() => {
+    const classFilter = this.reportClassFilter();
+    const query = this.reportSearchQuery().toLowerCase().trim();
+
+    return this.classReportCards().filter((card) => {
+      const matchesClass =
+        classFilter === 'All Classes' ||
+        card.classLevel === classFilter ||
+        card.className === classFilter;
+      const matchesQuery =
+        !query ||
+        card.className.toLowerCase().includes(query) ||
+        card.classTeacher.toLowerCase().includes(query);
+      return matchesClass && matchesQuery;
+    });
+  });
+
+  readonly overallReportsApprovalRate = computed(() => {
+    const list = this.classReportCards();
+    if (list.length === 0) return 100;
+    const approved = list.filter((c) => c.status === 'Approved').length;
+    return Math.round((approved / list.length) * 100);
   });
 
   // Setup Signals
@@ -1581,6 +1677,113 @@ export class SchoolAdminStore {
   exportAssessmentReport(): void {
     this.setupSaveStatus.set(
       `Official assessment and continuous evaluation report generated for administration.`,
+    );
+  }
+
+  /**
+   * Reports & Report Cards Mutations
+   */
+  setActiveReportTab(tab: ReportTab): void {
+    this.activeReportTab.set(tab);
+  }
+
+  setReportClassFilter(filter: string): void {
+    this.reportClassFilter.set(filter);
+  }
+
+  setReportSubjectFilter(filter: string): void {
+    this.reportSubjectFilter.set(filter);
+  }
+
+  setReportSearchQuery(query: string): void {
+    this.reportSearchQuery.set(query);
+  }
+
+  selectReportAttentionArea(item: PriorityAttentionArea): void {
+    const current = this.selectedReportAttentionArea();
+    if (current?.id === item.id) {
+      this.selectedReportAttentionArea.set(null);
+    } else {
+      this.selectedReportAttentionArea.set(item);
+    }
+  }
+
+  clearReportAttentionArea(): void {
+    this.selectedReportAttentionArea.set(null);
+  }
+
+  openStudentReportCard(report?: StudentReportCard): void {
+    if (report) {
+      this.selectedStudentReportCard.set(report);
+    }
+    this.isStudentReportModalOpen.set(true);
+  }
+
+  closeStudentReportCard(): void {
+    this.isStudentReportModalOpen.set(false);
+  }
+
+  openExportReportModal(): void {
+    this.isExportReportModalOpen.set(true);
+  }
+
+  closeExportReportModal(): void {
+    this.isExportReportModalOpen.set(false);
+  }
+
+  openShareLeadershipModal(): void {
+    this.isShareLeadershipModalOpen.set(true);
+  }
+
+  closeShareLeadershipModal(): void {
+    this.isShareLeadershipModalOpen.set(false);
+  }
+
+  approveAllSchoolReports(): void {
+    this.reportsSidebarSummary.update((s) => ({
+      ...s,
+      approvalStatus: 'Approved',
+    }));
+    this.classReportCards.update((list) =>
+      list.map((c) => ({
+        ...c,
+        status: 'Approved' as const,
+        reportsApproved: c.reportsGenerated,
+      })),
+    );
+    this.setupSaveStatus.set(
+      'All school term report cards approved and signed for official release.',
+    );
+  }
+
+  approveClassReportCards(classId: string): void {
+    this.classReportCards.update((list) =>
+      list.map((c) =>
+        c.id === classId
+          ? {
+              ...c,
+              status: 'Approved' as const,
+              reportsApproved: c.reportsGenerated,
+            }
+          : c,
+      ),
+    );
+    this.setupSaveStatus.set(`Class report cards approved successfully.`);
+  }
+
+  exportSchoolReport(format = 'PDF'): void {
+    this.isExportReportModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Official School Performance Report exported successfully (${format} format).`,
+    );
+  }
+
+  shareReportWithLeadership(
+    recipients: string[] = ['Principal', 'School Board'],
+  ): void {
+    this.isShareLeadershipModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Performance Report securely shared with ${recipients.join(', ')}.`,
     );
   }
 

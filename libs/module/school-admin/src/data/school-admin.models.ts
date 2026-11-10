@@ -807,3 +807,130 @@ export interface GradeDistributionBucket {
   percentage: number;
   tone: 'green' | 'orange' | 'red';
 }
+
+/**
+ * ============================================================================
+ * Reports & Report Cards Domain Models
+ * ============================================================================
+ */
+export type ReportTab =
+  | 'overview'
+  | 'academic-performance'
+  | 'attendance-engagement'
+  | 'subject-analysis'
+  | 'teacher-performance'
+  | 'interventions'
+  | 'export';
+
+export interface ReportsSummaryMetrics {
+  schoolAverage: number;
+  schoolAverageChange: number;
+  totalLearnersReported: number;
+  classesAnalysed: number;
+  subjectsAnalysed: number;
+  attendanceAverage: number;
+  attendanceAverageChange: number;
+  reportCompletionRate: number;
+  reportCompletionRateChange: number;
+}
+
+export interface TermPerformanceTrendPoint {
+  termName: string;
+  averageScore: number;
+}
+
+export interface ClassSubjectPerformance {
+  subject: string;
+  jss1Avg: number;
+  jss2Avg: number;
+  jss3Avg: number;
+}
+
+export interface SubjectPerformanceRow {
+  id: string;
+  subject: string;
+  schoolAverage: number;
+  highestClass: string;
+  highestScore: number;
+  lowestClass: string;
+  lowestScore: number;
+  improvementTrend: number;
+  completionRate: number;
+  status: 'Good' | 'Needs Attention' | 'Monitor';
+}
+
+export interface ReportsHighlightInsights {
+  topPerformingClass: {
+    className: string;
+    averageScore: number;
+    change: number;
+  };
+  mostImprovedSubject: {
+    subject: string;
+    improvement: number;
+  };
+  lowestAttendanceClass: {
+    className: string;
+    attendanceAverage: number;
+    change: number;
+  };
+  interventionSuccess: {
+    successRate: number;
+    studentsShowingImprovement: number;
+    change: number;
+  };
+}
+
+export interface ReportsSidebarSummary {
+  totalLearners: number;
+  totalTeachers: number;
+  subjectsTracked: number;
+  parentReportsShared: number;
+  approvalStatus: 'In Progress' | 'Approved' | 'Finalized' | 'Pending Review';
+}
+
+export interface PriorityAttentionArea {
+  id: string;
+  rank: number;
+  title: string;
+  category: 'academic' | 'completion' | 'attendance' | 'intervention';
+}
+
+export interface StudentSubjectScore {
+  subject: string;
+  caScore: number;
+  examScore: number;
+  totalScore: number;
+  grade: string;
+  teacherRemark: string;
+}
+
+export interface StudentReportCard {
+  id: string;
+  learnerName: string;
+  rollNo: string;
+  className: string;
+  term: string;
+  session: string;
+  overallScore: number;
+  overallGrade: string;
+  rankInClass: number;
+  totalInClass: number;
+  attendancePercentage: number;
+  conductRemark: string;
+  principalRemark: string;
+  subjectScores: StudentSubjectScore[];
+}
+
+export interface ClassReportCardSummary {
+  id: string;
+  className: string;
+  classLevel: string;
+  classTeacher: string;
+  totalLearners: number;
+  averageScore: number;
+  reportsGenerated: number;
+  reportsApproved: number;
+  parentDeliveryRate: number;
+  status: 'Approved' | 'In Progress' | 'Pending Approval' | 'Not Started';
+}

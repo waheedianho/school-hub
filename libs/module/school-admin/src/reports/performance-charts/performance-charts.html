@@ -1,0 +1,234 @@
+<section class="charts-grid" aria-label="Performance Charts">
+  <!-- School Performance Trend Chart -->
+  <article class="chart-card" data-testid="chart-performance-trend">
+    <div class="chart-card-header">
+      <div class="header-titles">
+        <h3 class="chart-title">School Performance Trend</h3>
+        <p class="chart-subtitle">
+          Term-over-term overall school average progression
+        </p>
+      </div>
+      <div class="header-badges">
+        <span class="badge-target">Target: 75.0%</span>
+        <span class="badge-growth">+10.7% from Term 1</span>
+      </div>
+    </div>
+
+    <div class="chart-container trend-container">
+      <svg
+        class="trend-svg"
+        viewBox="0 0 500 200"
+        preserveAspectRatio="none"
+        aria-label="School Performance Trend Line Chart"
+      >
+        <defs>
+          <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.25" />
+            <stop offset="100%" stop-color="#4f46e5" stop-opacity="0.0" />
+          </linearGradient>
+        </defs>
+
+        <!-- Grid Lines -->
+        <line
+          x1="40"
+          y1="35"
+          x2="460"
+          y2="35"
+          stroke="#e5e7eb"
+          stroke-dasharray="4 4"
+        />
+        <text x="30" y="38" text-anchor="end" class="grid-label">85%</text>
+
+        <line
+          x1="40"
+          y1="75"
+          x2="460"
+          y2="75"
+          stroke="#cbd5e1"
+          stroke-dasharray="4 4"
+        />
+        <text x="30" y="78" text-anchor="end" class="grid-label">
+          75% (Target)
+        </text>
+
+        <line
+          x1="40"
+          y1="115"
+          x2="460"
+          y2="115"
+          stroke="#e5e7eb"
+          stroke-dasharray="4 4"
+        />
+        <text x="30" y="118" text-anchor="end" class="grid-label">65%</text>
+
+        <line
+          x1="40"
+          y1="155"
+          x2="460"
+          y2="155"
+          stroke="#e5e7eb"
+          stroke-dasharray="4 4"
+        />
+        <text x="30" y="158" text-anchor="end" class="grid-label">55%</text>
+
+        <!-- Area fill -->
+        @if (getTrendCoordinates().areaStr) {
+        <path
+          [attr.d]="getTrendCoordinates().areaStr"
+          fill="url(#trendGradient)"
+        />
+        }
+
+        <!-- Trend Line -->
+        @if (getTrendCoordinates().pointsStr) {
+        <polyline
+          fill="none"
+          stroke="#4f46e5"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          [attr.points]="getTrendCoordinates().pointsStr"
+        />
+        }
+
+        <!-- Data Points -->
+        @for (item of trend(); track item.termName; let idx = $index) {
+        <g
+          class="point-group"
+          (mouseenter)="setHoveredTrend(item)"
+          (mouseleave)="setHoveredTrend(null)"
+        >
+          <circle
+            [attr.cx]="getPointPosition(idx).x"
+            [attr.cy]="getPointPosition(idx).y"
+            r="6"
+            fill="#ffffff"
+            stroke="#4f46e5"
+            stroke-width="3"
+            class="trend-circle"
+          />
+          <text
+            [attr.x]="getPointPosition(idx).x"
+            [attr.y]="getPointPosition(idx).y - 12"
+            text-anchor="middle"
+            class="point-label"
+          >
+            {{ item.averageScore }}%
+          </text>
+          <text
+            [attr.x]="getPointPosition(idx).x"
+            y="195"
+            text-anchor="middle"
+            class="axis-label"
+          >
+            {{ item.termName }}
+          </text>
+        </g>
+        }
+      </svg>
+    </div>
+
+    <div class="chart-footer">
+      <div class="legend-item">
+        <span class="legend-dot dot-trend"></span>
+        <span class="legend-text">Current Academic Year (2024/2025)</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dash"></span>
+        <span class="legend-text">Ministry Target (75.0%)</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- Class Performance Overview (Grouped Bars) -->
+  <article class="chart-card" data-testid="chart-class-overview">
+    <div class="chart-card-header">
+      <div class="header-titles">
+        <h3 class="chart-title">Class Performance Overview</h3>
+        <p class="chart-subtitle">
+          Comparative subject averages across JSS 1, JSS 2, and JSS 3
+        </p>
+      </div>
+      <div class="grade-legend">
+        <span class="legend-pill pill-jss1">
+          <span class="dot dot-jss1"></span> JSS 1
+        </span>
+        <span class="legend-pill pill-jss2">
+          <span class="dot dot-jss2"></span> JSS 2
+        </span>
+        <span class="legend-pill pill-jss3">
+          <span class="dot dot-jss3"></span> JSS 3
+        </span>
+      </div>
+    </div>
+
+    <div class="chart-container bars-container">
+      <div
+        class="bars-chart-wrapper"
+        role="region"
+        aria-label="Subject Averages Bar Chart"
+      >
+        @for (item of classPerformance(); track item.subject) {
+        <div class="subject-bar-group">
+          <div class="bars-column">
+            <!-- JSS 1 Bar -->
+            <div
+              class="bar-wrapper"
+              (mouseenter)="setHoveredBar(item.subject, 'JSS 1', item.jss1Avg)"
+              (mouseleave)="clearHoveredBar()"
+            >
+              <div
+                class="bar bar-jss1"
+                [style.height.%]="getBarHeight(item.jss1Avg)"
+                [title]="item.subject + ' JSS 1: ' + item.jss1Avg + '%'"
+              >
+                <span class="bar-value">{{ item.jss1Avg }}%</span>
+              </div>
+            </div>
+
+            <!-- JSS 2 Bar -->
+            <div
+              class="bar-wrapper"
+              (mouseenter)="setHoveredBar(item.subject, 'JSS 2', item.jss2Avg)"
+              (mouseleave)="clearHoveredBar()"
+            >
+              <div
+                class="bar bar-jss2"
+                [style.height.%]="getBarHeight(item.jss2Avg)"
+                [title]="item.subject + ' JSS 2: ' + item.jss2Avg + '%'"
+              >
+                <span class="bar-value">{{ item.jss2Avg }}%</span>
+              </div>
+            </div>
+
+            <!-- JSS 3 Bar -->
+            <div
+              class="bar-wrapper"
+              (mouseenter)="setHoveredBar(item.subject, 'JSS 3', item.jss3Avg)"
+              (mouseleave)="clearHoveredBar()"
+            >
+              <div
+                class="bar bar-jss3"
+                [style.height.%]="getBarHeight(item.jss3Avg)"
+                [title]="item.subject + ' JSS 3: ' + item.jss3Avg + '%'"
+              >
+                <span class="bar-value">{{ item.jss3Avg }}%</span>
+              </div>
+            </div>
+          </div>
+          <span class="subject-label" [title]="item.subject"
+            >{{ item.subject }}</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="chart-footer">
+      <div class="footnote">
+        <span class="highlight-text">Top Class: JSS 3</span> leads overall with
+        an average of 80.7% across core subjects.
+      </div>
+    </div>
+  </article>
+</section>

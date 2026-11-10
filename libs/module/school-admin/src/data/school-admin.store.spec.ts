@@ -694,7 +694,7 @@ describe('SchoolAdminStore', () => {
 
     // Return to teacher
     store.returnGradebookToTeacher(targetAssessment.id);
-    expect(store.setupSaveStatus()).toContain('Gradebook returned');
+    expect(store.setupSaveStatus()).toContain('returned to subject teacher');
 
     // Close review drill-down
     store.closeAssessmentReview();
@@ -727,5 +727,95 @@ describe('SchoolAdminStore', () => {
     expect(store.setupSaveStatus()).toContain(
       'assessment and continuous evaluation report',
     );
+  });
+
+  it('should manage reports and report cards state and mutations correctly', () => {
+    // Initial state
+    expect(store.activeReportTab()).toBe('overview');
+    expect(store.reportsSummaryMetrics().schoolAverage).toBe(74.8);
+    expect(store.reportsSummaryMetrics().totalLearnersReported).toBe(386);
+    expect(store.reportsSummaryMetrics().classesAnalysed).toBe(12);
+    expect(store.reportsSummaryMetrics().subjectsAnalysed).toBe(10);
+    expect(store.reportsSummaryMetrics().attendanceAverage).toBe(91.6);
+    expect(store.reportsSummaryMetrics().reportCompletionRate).toBe(89);
+
+    expect(store.termPerformanceTrend().length).toBe(3);
+    expect(store.classPerformanceOverview().length).toBe(7);
+    expect(store.subjectPerformanceRows().length).toBe(7);
+    expect(store.reportsHighlightInsights().topPerformingClass.className).toBe(
+      'JSS 3B',
+    );
+    expect(store.reportsSidebarSummary().totalLearners).toBe(386);
+    expect(store.priorityAttentionAreas().length).toBe(4);
+    expect(store.classReportCards().length).toBe(12);
+    expect(store.selectedStudentReportCard()?.learnerName).toBe(
+      'Maryam Ibrahim',
+    );
+
+    // Filter computeds
+    expect(store.filteredSubjectPerformance().length).toBe(7);
+    store.setReportSubjectFilter('Mathematics');
+    expect(store.filteredSubjectPerformance().length).toBe(1);
+    store.setReportSubjectFilter('All Subjects');
+
+    store.setReportSearchQuery('Basic');
+    expect(store.filteredSubjectPerformance().length).toBe(1);
+    expect(store.filteredSubjectPerformance()[0].subject).toBe('Basic Science');
+    store.setReportSearchQuery('');
+
+    // Class report cards filtering
+    expect(store.filteredClassReportCards().length).toBe(12);
+    store.setReportClassFilter('JSS 1');
+    expect(store.filteredClassReportCards().length).toBe(2);
+    store.setReportClassFilter('All Classes');
+
+    // Attention area toggle
+    const area = store.priorityAttentionAreas()[0];
+    store.selectReportAttentionArea(area);
+    expect(store.selectedReportAttentionArea()?.id).toBe(area.id);
+    store.selectReportAttentionArea(area);
+    expect(store.selectedReportAttentionArea()).toBeNull();
+    store.selectReportAttentionArea(area);
+    store.clearReportAttentionArea();
+    expect(store.selectedReportAttentionArea()).toBeNull();
+
+    // Tab switching
+    store.setActiveReportTab('academic-performance');
+    expect(store.activeReportTab()).toBe('academic-performance');
+    store.setActiveReportTab('overview');
+
+    // Modals
+    expect(store.isStudentReportModalOpen()).toBe(false);
+    store.openStudentReportCard();
+    expect(store.isStudentReportModalOpen()).toBe(true);
+    store.closeStudentReportCard();
+    expect(store.isStudentReportModalOpen()).toBe(false);
+
+    expect(store.isExportReportModalOpen()).toBe(false);
+    store.openExportReportModal();
+    expect(store.isExportReportModalOpen()).toBe(true);
+    store.exportSchoolReport('Excel');
+    expect(store.isExportReportModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('exported successfully');
+
+    expect(store.isShareLeadershipModalOpen()).toBe(false);
+    store.openShareLeadershipModal();
+    expect(store.isShareLeadershipModalOpen()).toBe(true);
+    store.shareReportWithLeadership(['Board of Directors']);
+    expect(store.isShareLeadershipModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('Board of Directors');
+
+    // Class approval & All approval
+    const targetClass = store.classReportCards()[1]; // e.g. JSS 1B
+    store.approveClassReportCards(targetClass.id);
+    const updatedClass = store
+      .classReportCards()
+      .find((c) => c.id === targetClass.id);
+    expect(updatedClass?.status).toBe('Approved');
+
+    store.approveAllSchoolReports();
+    expect(store.reportsSidebarSummary().approvalStatus).toBe('Approved');
+    expect(store.overallReportsApprovalRate()).toBe(100);
+    expect(store.setupSaveStatus()).toContain('approved and signed');
   });
 });

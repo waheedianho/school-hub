@@ -1,0 +1,139 @@
+<div class="reports-page-container">
+  <!-- Header with Title, Term Badge, and Action Buttons -->
+  <header class="page-header">
+    <div class="header-titles">
+      <div class="title-row">
+        <h1 class="page-title">Reports &amp; Report Cards</h1>
+        <span class="term-badge">Third Term (2024/2025)</span>
+      </div>
+      <p class="page-subtitle">
+        School-wide academic evaluation, performance analytics, and official
+        report card generation
+      </p>
+    </div>
+
+    <div class="header-right-actions">
+      @if (statusMessage()) {
+      <div class="status-banner" role="status">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>{{ statusMessage() }}</span>
+      </div>
+      }
+
+      <div class="btn-group">
+        <button
+          type="button"
+          class="btn-header btn-export"
+          (click)="onExport()"
+          aria-label="Export school report"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export Report
+        </button>
+
+        <button
+          type="button"
+          class="btn-header btn-approve-all"
+          (click)="onApproveAll()"
+          aria-label="Approve all report cards"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Approve All
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs (7 tabs) -->
+  <nav class="report-tabs-nav" aria-label="Report Views Navigation">
+    <div class="tabs-list" role="tablist">
+      @for (tab of tabs; track tab.id) {
+      <button
+        type="button"
+        role="tab"
+        class="tab-btn"
+        [class.active]="activeTab() === tab.id"
+        [attr.aria-selected]="activeTab() === tab.id"
+        (click)="selectTab(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+      }
+    </div>
+  </nav>
+
+  <!-- 6 Top Summary KPI Cards (Shown on Overview & Academic Performance) -->
+  <school-hub-reports-summary-metrics />
+
+  <!-- Tab Views -->
+  @if (activeTab() === 'overview') {
+  <!-- Overview Two-Column Main Layout (Matches Reports_SA.png) -->
+  <div class="page-layout-grid">
+    <!-- Main Content Column: Charts + Summary Table + Key Highlights -->
+    <main class="main-content-column">
+      <!-- Performance Charts (Trend + Class Overview Bars) -->
+      <school-hub-reports-performance-charts />
+
+      <!-- Subject Performance Summary Table -->
+      <school-hub-reports-subject-summary-table />
+
+      <!-- 4 Highlight / Key Insight Cards + Data Accuracy Notice -->
+      <school-hub-reports-highlight-cards />
+    </main>
+
+    <!-- Right Sidebar Column: Summary, Attention Areas, Actions, Footer -->
+    <aside class="sidebar-column">
+      <school-hub-reports-sidebar />
+    </aside>
+  </div>
+  } @else {
+  <!-- Academic Performance & Other Sub-Tabs: Class Streams Report Cards Grid -->
+  <main class="class-streams-main">
+    <school-hub-reports-class-report-cards />
+  </main>
+  }
+
+  <!-- Modal Overlays -->
+  <school-hub-reports-student-report-modal />
+  <school-hub-reports-export-modal />
+  <school-hub-reports-share-modal />
+</div>

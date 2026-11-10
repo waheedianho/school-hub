@@ -1,0 +1,167 @@
+@if (isOpen() && report(); as rep) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="report-modal-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="header-titles">
+        <span class="ministry-title"
+          >Federal Ministry of Education Official Terminal Report</span
+        >
+        <h3 id="report-modal-title" class="student-name">
+          {{ rep.learnerName }}
+        </h3>
+        <span class="student-meta">
+          Roll No: {{ rep.rollNo }} • Class: {{ rep.className }} • Session: {{
+          rep.session }} ({{ rep.term }})
+        </span>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close report card"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- Summary KPI Grid -->
+      <div class="summary-kpis">
+        <div class="kpi-card">
+          <span class="kpi-label">Overall Average</span>
+          <span class="kpi-value text-indigo-600">{{ rep.overallScore }}%</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Overall Grade</span>
+          <span class="kpi-value text-emerald-600">{{ rep.overallGrade }}</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Class Position</span>
+          <span class="kpi-value"
+            >{{ rep.rankInClass }} / {{ rep.totalInClass }}</span
+          >
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-label">Term Attendance</span>
+          <span class="kpi-value text-teal-600"
+            >{{ rep.attendancePercentage }}%</span
+          >
+        </div>
+      </div>
+
+      <!-- Subject Scores Table -->
+      <div class="scores-table-wrapper">
+        <table class="scores-table">
+          <thead>
+            <tr>
+              <th scope="col">Subject</th>
+              <th scope="col" class="text-center">CA (40)</th>
+              <th scope="col" class="text-center">Exam (60)</th>
+              <th scope="col" class="text-center">Total (100)</th>
+              <th scope="col" class="text-center">Grade</th>
+              <th scope="col">Teacher's Remark</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (sub of rep.subjectScores; track sub.subject) {
+            <tr>
+              <td class="font-medium text-gray-900">{{ sub.subject }}</td>
+              <td class="text-center">{{ sub.caScore }}</td>
+              <td class="text-center">{{ sub.examScore }}</td>
+              <td class="text-center font-bold text-indigo-600">
+                {{ sub.totalScore }}%
+              </td>
+              <td class="text-center">
+                <span class="grade-badge" [ngClass]="getGradeClass(sub.grade)">
+                  {{ sub.grade }}
+                </span>
+              </td>
+              <td class="text-gray-600 text-xs">{{ sub.teacherRemark }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Remarks Section -->
+      <div class="remarks-grid">
+        <div class="remark-box">
+          <span class="remark-label">Class Teacher's Remark:</span>
+          <p class="remark-text">"{{ rep.conductRemark }}"</p>
+        </div>
+        <div class="remark-box principal-box">
+          <span class="remark-label">Principal's Endorsement & Remark:</span>
+          <p class="remark-text">"{{ rep.principalRemark }}"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Close
+      </button>
+      <div class="action-group">
+        <button type="button" class="btn-print" (click)="onPrint()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="6 9 6 2 18 2 18 9"></polyline>
+            <path
+              d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"
+            ></path>
+            <rect x="6" y="14" width="12" height="8"></rect>
+          </svg>
+          Print
+        </button>
+        <button type="button" class="btn-download" (click)="onDownload()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Download PDF
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

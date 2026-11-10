@@ -1,0 +1,187 @@
+<section
+  class="class-report-cards-section"
+  aria-label="Class Streams Report Cards"
+>
+  <!-- Top Bar Controls -->
+  <div class="section-header">
+    <div class="header-titles">
+      <h3 class="section-title">Academic Stream Report Cards</h3>
+      <p class="section-subtitle">
+        Overview of report card generation, moderation, and approval status
+        across all 12 class streams
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Search -->
+      <div class="search-box">
+        <svg
+          class="search-icon"
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search class or teacher..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          aria-label="Search classes"
+        />
+      </div>
+
+      <!-- Class Filter -->
+      <select
+        class="filter-select"
+        [value]="classFilter()"
+        (change)="onFilterClass($event)"
+        aria-label="Filter by class level"
+      >
+        <option value="All Classes">All Classes</option>
+        <option value="JSS 1">JSS 1</option>
+        <option value="JSS 2">JSS 2</option>
+        <option value="JSS 3">JSS 3</option>
+        <option value="SSS 1">SSS 1</option>
+        <option value="SSS 2">SSS 2</option>
+        <option value="SSS 3">SSS 3</option>
+      </select>
+
+      <!-- Overall Approval Progress Badge -->
+      <div class="approval-progress-badge">
+        <span class="badge-label">Approval Rate:</span>
+        <span class="badge-percentage">{{ approvalRate() }}%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cards Grid -->
+  <div class="classes-grid">
+    @for (cls of classes(); track cls.id) {
+    <article class="class-card" [attr.data-testid]="'card-class-' + cls.id">
+      <div class="card-top">
+        <div class="class-info">
+          <h4 class="class-name">{{ cls.className }}</h4>
+          <span class="class-level">{{ cls.classLevel }}</span>
+        </div>
+        <span class="status-badge" [ngClass]="getStatusClass(cls.status)">
+          {{ cls.status }}
+        </span>
+      </div>
+
+      <div class="card-body">
+        <div class="teacher-info">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span class="teacher-name">{{ cls.classTeacher }}</span>
+        </div>
+
+        <div class="metrics-row">
+          <div class="metric-item">
+            <span class="m-label">Learners</span>
+            <span class="m-value">{{ cls.totalLearners }}</span>
+          </div>
+          <div class="metric-item">
+            <span class="m-label">Class Avg</span>
+            <span class="m-value text-indigo-600 font-bold"
+              >{{ cls.averageScore }}%</span
+            >
+          </div>
+          <div class="metric-item">
+            <span class="m-label">Parent Delivery</span>
+            <span class="m-value font-semibold text-emerald-600"
+              >{{ cls.parentDeliveryRate }}%</span
+            >
+          </div>
+        </div>
+
+        <div class="progress-box">
+          <div class="progress-labels">
+            <span class="p-text">Reports Generated</span>
+            <span class="p-count"
+              >{{ cls.reportsGenerated }} / {{ cls.totalLearners }}</span
+            >
+          </div>
+          <div class="progress-bar">
+            <div
+              class="progress-fill"
+              [style.width.%]="(cls.reportsGenerated / cls.totalLearners) * 100"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button
+          type="button"
+          class="btn-preview"
+          (click)="onPreviewSampleReport()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Preview Sample
+        </button>
+
+        <button
+          type="button"
+          class="btn-approve"
+          [disabled]="cls.status === 'Approved'"
+          (click)="onApproveClass(cls.id, $event)"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          {{ cls.status === 'Approved' ? 'Approved' : 'Approve Reports' }}
+        </button>
+      </div>
+    </article>
+    } @empty {
+    <div class="empty-state">
+      <p>No class streams match your filter.</p>
+    </div>
+    }
+  </div>
+</section>
