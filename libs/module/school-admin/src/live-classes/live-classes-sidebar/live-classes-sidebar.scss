@@ -1,0 +1,252 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typography;
+
+:host {
+  display: block;
+}
+
+.sidebar-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sidebar-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+
+  .header-icon {
+    font-size: 1.25rem;
+
+    &.summary-icon {
+      color: #6366f1;
+    }
+
+    &.attention-icon {
+      color: #ef4444;
+    }
+
+    &.actions-icon {
+      color: #7e22ce;
+    }
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--color-text-primary, #0f172a);
+  }
+}
+
+/* Summary List */
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.625rem;
+  border-bottom: 1px solid var(--color-border, #f1f5f9);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .item-left {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+
+    .item-icon {
+      font-size: 1.125rem;
+      color: #64748b;
+    }
+
+    .item-label {
+      font-size: 0.8125rem;
+      color: var(--color-text-primary, #334155);
+    }
+  }
+
+  .item-value {
+    font-size: 0.875rem;
+    color: var(--color-text-primary, #0f172a);
+  }
+}
+
+/* Attention List */
+.attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.attention-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.5rem 0.625rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  background-color: #f8fafc;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+  }
+
+  &.active-filter {
+    background-color: #fdf4ff;
+    border-color: #d8b4fe;
+  }
+
+  .count-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.375rem;
+    height: 1.375rem;
+    border-radius: 9999px;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+
+    &.badge-red {
+      background-color: #ef4444;
+    }
+
+    &.badge-orange {
+      background-color: #f97316;
+    }
+
+    &.badge-amber {
+      background-color: #f59e0b;
+    }
+  }
+
+  .attention-label {
+    flex: 1;
+    font-size: 0.8125rem;
+    color: var(--color-text-primary, #334155);
+  }
+
+  .arrow-icon {
+    font-size: 1rem;
+    color: #94a3b8;
+  }
+}
+
+/* Quick Actions Stack */
+.actions-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.sidebar-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #7e22ce;
+  border-radius: 0.5rem;
+  background-color: #ffffff;
+  color: #7e22ce;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  .btn-icon {
+    font-size: 1.125rem;
+    color: #7e22ce;
+  }
+
+  &:hover {
+    background-color: #fdf4ff;
+    box-shadow: 0 1px 2px 0 rgba(126, 34, 206, 0.1);
+  }
+}
+
+/* Dark Mode */
+:host-context(.dark) {
+  .sidebar-card {
+    background-color: var(--color-surface, #1e293b);
+    border-color: var(--color-border, #334155);
+  }
+
+  .card-title {
+    color: #f8fafc;
+  }
+
+  .summary-item {
+    border-color: #334155;
+
+    .item-left {
+      .item-icon {
+        color: #94a3b8;
+      }
+
+      .item-label {
+        color: #cbd5e1;
+      }
+    }
+
+    .item-value {
+      color: #f8fafc;
+    }
+  }
+
+  .attention-item-btn {
+    background-color: #0f172a;
+
+    &:hover {
+      background-color: #334155;
+      border-color: #475569;
+    }
+
+    &.active-filter {
+      background-color: rgba(126, 34, 206, 0.2);
+      border-color: #7e22ce;
+    }
+
+    .attention-label {
+      color: #e2e8f0;
+    }
+  }
+
+  .sidebar-action-btn {
+    background-color: #0f172a;
+    border-color: #a855f7;
+    color: #c084fc;
+
+    .btn-icon {
+      color: #c084fc;
+    }
+
+    &:hover {
+      background-color: rgba(126, 34, 206, 0.2);
+    }
+  }
+}

@@ -22,6 +22,11 @@ import {
   LessonOversightMetrics,
   LessonReadinessAlert,
   LessonReviewRecord,
+  LiveClassAttentionItem,
+  LiveClassRecord,
+  LiveClassSidebarSummary,
+  LiveClassTab,
+  LiveClassesSummaryMetrics,
   NewLearnerFormData,
   NewStaffFormData,
   OversightSidebarSummary,
@@ -84,6 +89,12 @@ import {
   LESSON_REVIEWS_DATA,
   OVERSIGHT_SIDEBAR_DATA,
 } from './school-admin-lessons.data';
+import {
+  LIVE_CLASSES_SUMMARY_METRICS,
+  LIVE_CLASS_SIDEBAR_SUMMARY,
+  LIVE_CLASS_ATTENTION_ITEMS,
+  LIVE_CLASS_RECORDS_DATA,
+} from './school-admin-live-classes.data';
 import {
   ACADEMIC_STRUCTURE_DATA,
   ASSESSMENT_SETTINGS_DATA,
@@ -496,6 +507,125 @@ export class SchoolAdminStore {
         a.affectedClass.toLowerCase().includes(query) ||
         a.affectedSubject.toLowerCase().includes(query),
     );
+  });
+
+  // Live Classes State
+  readonly activeLiveClassTab = signal<LiveClassTab>('upcoming');
+  readonly liveClassRecords = signal<LiveClassRecord[]>(
+    LIVE_CLASS_RECORDS_DATA,
+  );
+  readonly liveClassesSummaryMetrics = signal<LiveClassesSummaryMetrics>(
+    LIVE_CLASSES_SUMMARY_METRICS,
+  );
+  readonly liveClassSidebarSummary = signal<LiveClassSidebarSummary>(
+    LIVE_CLASS_SIDEBAR_SUMMARY,
+  );
+  readonly liveClassAttentionItems = signal<LiveClassAttentionItem[]>(
+    LIVE_CLASS_ATTENTION_ITEMS,
+  );
+  readonly liveClassLevelFilter = signal<string>('All Classes');
+  readonly liveClassSubjectFilter = signal<string>('All Subjects');
+  readonly liveClassTeacherFilter = signal<string>('All Teachers');
+  readonly liveClassStatusFilter = signal<string>('All Status');
+  readonly liveClassSearchQuery = signal<string>('');
+  readonly selectedLiveClass = signal<LiveClassRecord | null>(null);
+  readonly activeAttentionFilterKey = signal<string | null>(null);
+  readonly liveClassCurrentPage = signal<number>(1);
+  readonly liveClassPageSize = signal<number>(8);
+  readonly isScheduleModalOpen = signal<boolean>(false);
+  readonly isObserverModalOpen = signal<boolean>(false);
+  readonly observingLiveClass = signal<LiveClassRecord | null>(null);
+
+  readonly filteredLiveClasses = computed<LiveClassRecord[]>(() => {
+    const tab = this.activeLiveClassTab();
+    const classFilter = this.liveClassLevelFilter();
+    const subjectFilter = this.liveClassSubjectFilter();
+    const teacherFilter = this.liveClassTeacherFilter();
+    const statusFilter = this.liveClassStatusFilter();
+    const query = this.liveClassSearchQuery().toLowerCase().trim();
+    const attentionKey = this.activeAttentionFilterKey();
+
+    return this.liveClassRecords().filter((cls) => {
+      // Tab filtering
+      if (tab === 'upcoming' && cls.liveStatus !== 'Upcoming') {
+        return false;
+      }
+      if (tab === 'ongoing' && cls.liveStatus !== 'Live Now') {
+        return false;
+      }
+      if (tab === 'completed' && cls.liveStatus !== 'Completed') {
+        return false;
+      }
+      if (tab === 'recordings' && cls.recording.status !== 'Available') {
+        return false;
+      }
+
+      // Attention Key filtering (if clicked from Attention Needed card)
+      if (attentionKey === 'low-attendance' && cls.attendance.rate >= 60) {
+        return false;
+      }
+      if (
+        attentionKey === 'missing-recordings' &&
+        cls.recording.status !== 'Not Available'
+      ) {
+        return false;
+      }
+      if (
+        attentionKey === 'starting-soon' &&
+        !(cls.startTime.includes('09:') || cls.startTime.includes('10:'))
+      ) {
+        return false;
+      }
+      if (
+        attentionKey === 'no-teacher' &&
+        !cls.teacherName.toLowerCase().includes('unassigned')
+      ) {
+        return false;
+      }
+
+      // Dropdown filters
+      const matchesClass =
+        classFilter === 'All Classes' || cls.className.startsWith(classFilter);
+      const matchesSubject =
+        subjectFilter === 'All Subjects' || cls.subject === subjectFilter;
+      const matchesTeacher =
+        teacherFilter === 'All Teachers' || cls.teacherName === teacherFilter;
+      const matchesStatus =
+        statusFilter === 'All Status' || cls.liveStatus === statusFilter;
+
+      // Text query
+      const matchesQuery =
+        !query ||
+        cls.className.toLowerCase().includes(query) ||
+        cls.subject.toLowerCase().includes(query) ||
+        cls.topic.toLowerCase().includes(query) ||
+        cls.teacherName.toLowerCase().includes(query);
+
+      return (
+        matchesClass &&
+        matchesSubject &&
+        matchesTeacher &&
+        matchesStatus &&
+        matchesQuery
+      );
+    });
+  });
+
+  readonly totalFilteredLiveClasses = computed(
+    () => this.filteredLiveClasses().length,
+  );
+
+  readonly liveClassTotalPages = computed(() => {
+    return (
+      Math.ceil(this.totalFilteredLiveClasses() / this.liveClassPageSize()) || 1
+    );
+  });
+
+  readonly paginatedLiveClasses = computed(() => {
+    const page = this.liveClassCurrentPage();
+    const pageSize = this.liveClassPageSize();
+    const start = (page - 1) * pageSize;
+    return this.filteredLiveClasses().slice(start, start + pageSize);
   });
 
   // Setup Signals
@@ -951,6 +1081,135 @@ export class SchoolAdminStore {
     );
     this.setupSaveStatus.set(
       'Readiness alert marked as resolved and logged in governance audit.',
+    );
+  }
+
+  /**
+   * Live Classes Mutations
+   */
+  setActiveLiveClassTab(tab: LiveClassTab): void {
+    this.activeLiveClassTab.set(tab);
+    this.liveClassCurrentPage.set(1);
+    this.activeAttentionFilterKey.set(null);
+  }
+
+  setLiveClassLevelFilter(filter: string): void {
+    this.liveClassLevelFilter.set(filter);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  setLiveClassSubjectFilter(filter: string): void {
+    this.liveClassSubjectFilter.set(filter);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  setLiveClassTeacherFilter(filter: string): void {
+    this.liveClassTeacherFilter.set(filter);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  setLiveClassStatusFilter(filter: string): void {
+    this.liveClassStatusFilter.set(filter);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  setLiveClassSearchQuery(query: string): void {
+    this.liveClassSearchQuery.set(query);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  setLiveClassCurrentPage(page: number): void {
+    this.liveClassCurrentPage.set(page);
+  }
+
+  selectLiveClass(record: LiveClassRecord | null): void {
+    this.selectedLiveClass.set(record);
+  }
+
+  toggleAttentionFilter(
+    key:
+      | 'low-attendance'
+      | 'missing-recordings'
+      | 'starting-soon'
+      | 'no-teacher',
+  ): void {
+    const current = this.activeAttentionFilterKey();
+    if (current === key) {
+      this.activeAttentionFilterKey.set(null);
+    } else {
+      this.activeAttentionFilterKey.set(key);
+    }
+    this.liveClassCurrentPage.set(1);
+  }
+
+  clearAttentionFilter(): void {
+    this.activeAttentionFilterKey.set(null);
+    this.liveClassCurrentPage.set(1);
+  }
+
+  openScheduleModal(): void {
+    this.isScheduleModalOpen.set(true);
+  }
+
+  closeScheduleModal(): void {
+    this.isScheduleModalOpen.set(false);
+  }
+
+  scheduleNewLiveClass(newClass: Partial<LiveClassRecord>): void {
+    const created: LiveClassRecord = {
+      id: `live-${Date.now()}`,
+      className: newClass.className ?? 'JSS 1A',
+      subject: newClass.subject ?? 'General Studies',
+      topic: newClass.topic ?? 'General Orientation',
+      teacherName: newClass.teacherName ?? 'Unassigned Teacher',
+      startTime: newClass.startTime ?? '09:00 AM',
+      endTime: newClass.endTime ?? '09:40 AM',
+      startDate: newClass.startDate ?? '2026-11-10',
+      duration: newClass.duration ?? '40 min',
+      attendance: {
+        rate: 0,
+        rating: 'Pending',
+        presentCount: 0,
+        totalEnrolled: 40,
+      },
+      liveStatus: 'Upcoming',
+      recording: {
+        status: 'Not Available',
+      },
+      meetingLink: `https://learno.school/live/${Date.now()}`,
+      classroomRoomId: `ROOM-${Math.floor(100 + Math.random() * 900)}`,
+      roomCapacity: 50,
+      ...newClass,
+    };
+
+    this.liveClassRecords.update((records) => [created, ...records]);
+    this.liveClassesSummaryMetrics.update((m) => ({
+      ...m,
+      scheduledToday: m.scheduledToday + 1,
+    }));
+    this.liveClassSidebarSummary.update((s) => ({
+      ...s,
+      scheduledToday: s.scheduledToday + 1,
+    }));
+    this.isScheduleModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Live class scheduled successfully: ${created.className} - ${created.subject} (${created.startTime})`,
+    );
+  }
+
+  openLiveClassObserver(record: LiveClassRecord): void {
+    this.observingLiveClass.set(record);
+    this.isObserverModalOpen.set(true);
+  }
+
+  closeLiveClassObserver(): void {
+    this.isObserverModalOpen.set(false);
+    this.observingLiveClass.set(null);
+  }
+
+  exportLiveClassesReport(): void {
+    this.setupSaveStatus.set(
+      'Live classes attendance and session report generated for school administration.',
     );
   }
 

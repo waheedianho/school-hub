@@ -1,0 +1,183 @@
+<div class="attendance-recordings-container">
+  <!-- Cohort Attendance Overview -->
+  <div class="cohort-overview-card">
+    <div class="card-header">
+      <div class="header-left">
+        <span class="material-symbols-outlined header-icon">monitoring</span>
+        <h3 class="card-title">Live Class Attendance by Class Cohort</h3>
+      </div>
+      <div class="storage-info">
+        <span class="material-symbols-outlined storage-icon">cloud</span>
+        <span>Storage: <strong>42.6 GB / 100 GB</strong> used</span>
+      </div>
+    </div>
+
+    <div class="cohort-bars-grid">
+      @for (stat of cohortStats; track stat.cohort) {
+      <div class="cohort-stat-box">
+        <div class="cohort-top">
+          <span class="cohort-name">{{ stat.cohort }}</span>
+          <span class="cohort-rate font-semibold">{{ stat.rate }}%</span>
+        </div>
+        <div class="progress-track">
+          <div
+            class="progress-fill"
+            [style.width.%]="stat.rate"
+            [ngClass]="{
+                'high': stat.rate >= 85,
+                'medium': stat.rate >= 70 && stat.rate < 85,
+                'low': stat.rate < 70
+              }"
+          ></div>
+        </div>
+        <div class="cohort-meta">
+          <span>{{ stat.totalSessions }} live sessions</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Recordings Repository Header & Filter -->
+  <div class="recordings-section-header">
+    <div class="section-title-wrap">
+      <h3 class="section-title">Published Class Recordings Archive</h3>
+      <p class="section-subtitle">
+        Archived HD recordings available for student on-demand revision and
+        instructional quality audit.
+      </p>
+    </div>
+
+    <div class="filter-controls">
+      <select
+        class="cohort-select"
+        [ngModel]="cohortFilter()"
+        (ngModelChange)="cohortFilter.set($event)"
+        aria-label="Filter by cohort"
+      >
+        <option value="All Cohorts">All Cohorts</option>
+        <option value="JSS 1">JSS 1</option>
+        <option value="JSS 2">JSS 2</option>
+        <option value="JSS 3">JSS 3</option>
+        <option value="SSS 1">SSS 1</option>
+        <option value="SSS 2">SSS 2</option>
+        <option value="SSS 3">SSS 3</option>
+      </select>
+
+      <div class="search-wrap">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          type="text"
+          class="recording-search-input"
+          placeholder="Search recordings..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          aria-label="Search recordings"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Recordings Grid -->
+  <div class="recordings-grid">
+    @for (rec of recordedClasses(); track rec.id) {
+    <div class="recording-card">
+      <div class="recording-thumbnail">
+        <div class="video-overlay">
+          <button
+            type="button"
+            class="play-btn"
+            (click)="onPlayRecording(rec)"
+            aria-label="Play recording"
+          >
+            <span class="material-symbols-outlined">play_arrow</span>
+          </button>
+        </div>
+        <div class="video-badge-duration">
+          {{ rec.recording.duration ?? rec.duration }}
+        </div>
+        <div class="video-cohort-pill">{{ rec.className }}</div>
+      </div>
+
+      <div class="recording-body">
+        <div class="recording-header">
+          <span class="subject-tag">{{ rec.subject }}</span>
+          <span class="attendance-tag">Att: {{ rec.attendance.rate }}%</span>
+        </div>
+        <h4 class="recording-topic">{{ rec.topic }}</h4>
+        <div class="recording-teacher">
+          <span class="material-symbols-outlined teacher-icon">person</span>
+          <span>{{ rec.teacherName }}</span>
+        </div>
+
+        <div class="recording-footer">
+          <span class="filesize-info"
+            >{{ rec.recording.fileSize ?? '350 MB' }}</span
+          >
+          <button
+            type="button"
+            class="download-btn"
+            (click)="downloadRecording(rec)"
+            aria-label="Download class recording"
+          >
+            <span class="material-symbols-outlined">download</span>
+            Download
+          </button>
+        </div>
+      </div>
+    </div>
+    } @empty {
+    <div class="no-recordings">
+      <span class="material-symbols-outlined empty-icon">video_library</span>
+      <p>No class recordings found matching your current filter.</p>
+    </div>
+    }
+  </div>
+
+  <!-- Playback Preview Modal -->
+  @if (selectedRecording(); as recording) {
+  <div
+    class="modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalRecordingTitle"
+  >
+    <div class="modal-card">
+      <div class="modal-header">
+        <div>
+          <h3 id="modalRecordingTitle" class="modal-title">
+            {{ recording.subject }}: {{ recording.topic }}
+          </h3>
+          <p class="modal-meta">
+            {{ recording.className }} • {{ recording.teacherName }} • {{
+            recording.duration }}
+          </p>
+        </div>
+        <button
+          type="button"
+          class="close-btn"
+          (click)="closePlayer()"
+          aria-label="Close video player"
+        >
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="video-mock-player">
+        <span class="material-symbols-outlined big-play-icon">play_circle</span>
+        <div class="mock-player-controls">
+          <span class="material-symbols-outlined">play_arrow</span>
+          <div class="scrub-bar">
+            <div class="scrub-fill"></div>
+          </div>
+          <span class="time-display"
+            >14:22 / {{ recording.recording.duration ?? '45:00' }}</span
+          >
+          <span class="material-symbols-outlined">volume_up</span>
+          <span class="material-symbols-outlined">fullscreen</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>

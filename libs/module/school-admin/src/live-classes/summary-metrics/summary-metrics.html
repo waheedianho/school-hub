@@ -1,0 +1,61 @@
+<div class="metrics-grid">
+  <!-- 1. Scheduled Today -->
+  <div class="metric-card">
+    <div class="metric-icon purple">
+      <span class="material-symbols-outlined">calendar_today</span>
+    </div>
+    <div class="metric-body">
+      <div class="metric-value">{{ metrics().scheduledToday }}</div>
+      <div class="metric-label">Scheduled Today</div>
+      <div class="metric-subtitle">Across all classes</div>
+    </div>
+  </div>
+
+  <!-- 2. Ongoing Classes -->
+  <div class="metric-card">
+    <div class="metric-icon green">
+      <span class="material-symbols-outlined">videocam</span>
+    </div>
+    <div class="metric-body">
+      <div class="metric-value">{{ metrics().ongoingClasses }}</div>
+      <div class="metric-label">Ongoing Classes</div>
+      <div class="metric-subtitle">Live now</div>
+    </div>
+  </div>
+
+  <!-- 3. Completed This Week -->
+  <div class="metric-card">
+    <div class="metric-icon blue">
+      <span class="material-symbols-outlined">check_circle</span>
+    </div>
+    <div class="metric-body">
+      <div class="metric-value">{{ metrics().completedThisWeek }}</div>
+      <div class="metric-label">Completed This Week</div>
+      <div class="metric-subtitle">Across all classes</div>
+    </div>
+  </div>
+
+  <!-- 4. Average Attendance -->
+  <div class="metric-card">
+    <div class="metric-icon orange">
+      <span class="material-symbols-outlined">group</span>
+    </div>
+    <div class="metric-body">
+      <div class="metric-value">{{ metrics().averageAttendanceRate }}%</div>
+      <div class="metric-label">Average Attendance</div>
+      <div class="metric-subtitle">This week</div>
+    </div>
+  </div>
+
+  <!-- 5. Missed Classes -->
+  <div class="metric-card">
+    <div class="metric-icon red">
+      <span class="material-symbols-outlined">warning</span>
+    </div>
+    <div class="metric-body">
+      <div class="metric-value">{{ metrics().missedClassesCount }}</div>
+      <div class="metric-label">Missed Classes</div>
+      <div class="metric-subtitle">Require attention</div>
+    </div>
+  </div>
+</div>

@@ -605,3 +605,78 @@ export interface OversightSidebarSummary {
     tone: 'red' | 'orange' | 'amber';
   }>;
 }
+
+/**
+ * ============================================================================
+ * Live Classes Oversight Domain Models
+ * ============================================================================
+ */
+export type LiveClassTab = 'upcoming' | 'ongoing' | 'completed' | 'recordings';
+
+export type LiveClassStatus = 'Upcoming' | 'Live Now' | 'Completed' | 'Missed';
+
+export type AttendanceRating = 'Good' | 'Fair' | 'Poor' | 'Pending';
+
+export interface LiveClassAttendanceInfo {
+  rate: number;
+  rating: AttendanceRating;
+  presentCount: number;
+  totalEnrolled: number;
+}
+
+export type RecordingStatus = 'Not Available' | 'Available' | 'Processing';
+
+export interface LiveClassRecordingInfo {
+  status: RecordingStatus;
+  duration?: string;
+  fileSize?: string;
+  url?: string;
+}
+
+export interface LiveClassRecord {
+  id: string;
+  className: string;
+  subject: string;
+  topic: string;
+  teacherName: string;
+  teacherAvatarUrl?: string;
+  startTime: string;
+  endTime?: string;
+  startDate?: string;
+  duration: string;
+  attendance: LiveClassAttendanceInfo;
+  liveStatus: LiveClassStatus;
+  recording: LiveClassRecordingInfo;
+  meetingLink?: string;
+  classroomRoomId?: string;
+  roomCapacity?: number;
+  activeParticipants?: number;
+}
+
+export interface LiveClassesSummaryMetrics {
+  scheduledToday: number;
+  ongoingClasses: number;
+  completedThisWeek: number;
+  averageAttendanceRate: number;
+  missedClassesCount: number;
+}
+
+export interface LiveClassSidebarSummary {
+  scheduledToday: number;
+  ongoingClasses: number;
+  completedThisWeek: number;
+  averageAttendance: number;
+  missedClasses: number;
+}
+
+export interface LiveClassAttentionItem {
+  id: string;
+  count: number;
+  label: string;
+  tone: 'red' | 'orange' | 'amber';
+  filterKey:
+    | 'low-attendance'
+    | 'missing-recordings'
+    | 'starting-soon'
+    | 'no-teacher';
+}

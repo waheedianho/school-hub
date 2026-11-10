@@ -1,0 +1,149 @@
+<div class="sidebar-stack">
+  <!-- Card 1: Live Class Summary -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <span class="material-symbols-outlined header-icon summary-icon"
+        >leaderboard</span
+      >
+      <h3 class="card-title">Live Class Summary</h3>
+    </div>
+
+    <div class="summary-list">
+      <div class="summary-item">
+        <div class="item-left">
+          <span class="material-symbols-outlined item-icon"
+            >calendar_today</span
+          >
+          <span class="item-label">Scheduled Today</span>
+        </div>
+        <span class="item-value font-semibold"
+          >{{ store.liveClassSidebarSummary().scheduledToday }}</span
+        >
+      </div>
+
+      <div class="summary-item">
+        <div class="item-left">
+          <span class="material-symbols-outlined item-icon">videocam</span>
+          <span class="item-label">Ongoing Classes</span>
+        </div>
+        <span class="item-value font-semibold"
+          >{{ store.liveClassSidebarSummary().ongoingClasses }}</span
+        >
+      </div>
+
+      <div class="summary-item">
+        <div class="item-left">
+          <span class="material-symbols-outlined item-icon">check_circle</span>
+          <span class="item-label">Completed This Week</span>
+        </div>
+        <span class="item-value font-semibold"
+          >{{ store.liveClassSidebarSummary().completedThisWeek }}</span
+        >
+      </div>
+
+      <div class="summary-item">
+        <div class="item-left">
+          <span class="material-symbols-outlined item-icon">trending_up</span>
+          <span class="item-label">Average Attendance</span>
+        </div>
+        <span class="item-value font-semibold"
+          >{{ store.liveClassSidebarSummary().averageAttendance }}%</span
+        >
+      </div>
+
+      <div class="summary-item">
+        <div class="item-left">
+          <span class="material-symbols-outlined item-icon text-red-500"
+            >warning</span
+          >
+          <span class="item-label">Missed Classes</span>
+        </div>
+        <span class="item-value font-semibold text-red-600"
+          >{{ store.liveClassSidebarSummary().missedClasses }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Attention Needed -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <span class="material-symbols-outlined header-icon attention-icon"
+        >warning</span
+      >
+      <h3 class="card-title">Attention Needed</h3>
+    </div>
+
+    <div class="attention-list">
+      @for (item of store.liveClassAttentionItems(); track item.id) {
+      <button
+        type="button"
+        class="attention-item-btn"
+        [class.active-filter]="store.activeAttentionFilterKey() === item.filterKey"
+        (click)="onAttentionClick(item)"
+      >
+        <span
+          class="count-badge"
+          [ngClass]="{
+              'badge-red': item.tone === 'red',
+              'badge-orange': item.tone === 'orange',
+              'badge-amber': item.tone === 'amber'
+            }"
+        >
+          {{ item.count }}
+        </span>
+        <span class="attention-label">{{ item.label }}</span>
+        <span class="material-symbols-outlined arrow-icon">chevron_right</span>
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- Card 3: Quick Actions -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <span class="material-symbols-outlined header-icon actions-icon"
+        >bolt</span
+      >
+      <h3 class="card-title">Quick Actions</h3>
+    </div>
+
+    <div class="actions-stack">
+      <button
+        type="button"
+        class="sidebar-action-btn"
+        (click)="onScheduleClass()"
+      >
+        <span class="material-symbols-outlined btn-icon">calendar_today</span>
+        <span class="btn-text">Schedule Class</span>
+      </button>
+
+      <button
+        type="button"
+        class="sidebar-action-btn"
+        (click)="onMonitorOngoing()"
+      >
+        <span class="material-symbols-outlined btn-icon">videocam</span>
+        <span class="btn-text">Monitor Ongoing</span>
+      </button>
+
+      <button
+        type="button"
+        class="sidebar-action-btn"
+        (click)="onReviewAttendance()"
+      >
+        <span class="material-symbols-outlined btn-icon">group</span>
+        <span class="btn-text">Review Attendance</span>
+      </button>
+
+      <button
+        type="button"
+        class="sidebar-action-btn"
+        (click)="onExportReport()"
+      >
+        <span class="material-symbols-outlined btn-icon">download</span>
+        <span class="btn-text">Export Live Class Report</span>
+      </button>
+    </div>
+  </div>
+</div>
