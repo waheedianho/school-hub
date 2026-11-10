@@ -56,14 +56,17 @@
       background-color: #eff6ff;
       color: #2563eb;
     }
+
     &.status-monitoring {
       background-color: #f0fdf4;
       color: #16a34a;
     }
+
     &.status-under-review {
       background-color: #fff7ed;
       color: #ea580c;
     }
+
     &.status-resolved {
       background-color: #f8fafc;
       color: #64748b;
@@ -162,10 +165,12 @@
           background-color: #fee2e2;
           color: #dc2626;
         }
+
         &.priority-medium {
           background-color: #fef3c7;
           color: #d97706;
         }
+
         &.priority-low {
           background-color: #f1f5f9;
           color: #64748b;
@@ -256,9 +261,11 @@
       &.fill-high {
         background-color: #22c55e;
       }
+
       &.fill-mid {
         background-color: #6366f1;
       }
+
       &.fill-low {
         background-color: #f59e0b;
       }
