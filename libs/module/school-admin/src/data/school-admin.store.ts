@@ -17,6 +17,7 @@ import {
   AssessmentScheduleTab,
   AssessmentSidebarSummary,
   AssessmentsSummaryMetrics,
+  AssignFollowUpFormData,
   ClassReportCardSummary,
   ClassSubjectPerformance,
   ClassesOverviewMetrics,
@@ -25,7 +26,12 @@ import {
   CurriculumMapEntry,
   CurriculumOverviewMetrics,
   GradeDistributionBucket,
+  InterventionAttentionItem,
   InterventionCase,
+  InterventionInsightData,
+  InterventionsSidebarSummary,
+  InterventionsSummaryMetrics,
+  InterventionsTab,
   LearnerRecord,
   LearnerSubmissionReview,
   LessonMonitoringRecord,
@@ -37,6 +43,7 @@ import {
   LiveClassSidebarSummary,
   LiveClassTab,
   LiveClassesSummaryMetrics,
+  NewInterventionPlanFormData,
   NewLearnerFormData,
   NewStaffFormData,
   OversightSidebarSummary,
@@ -47,6 +54,7 @@ import {
   ReportTab,
   RolePermissionRow,
   SafeguardingNotice,
+  ScheduleParentMeetingFormData,
   SchemeOfWorkEntry,
   SchoolAdminMetric,
   SchoolAlert,
@@ -89,7 +97,13 @@ import {
   STAFF_OPERATIONAL_ALERTS_DATA,
   TEACHERS_STAFF_METRICS_DATA,
 } from './school-admin-staff.data';
-import { SCHOOL_INTERVENTIONS_DATA } from './school-admin-interventions.data';
+import {
+  INTERVENTIONS_ATTENTION_ITEMS,
+  INTERVENTIONS_SIDEBAR_SUMMARY,
+  INTERVENTIONS_SUMMARY_METRICS,
+  INTERVENTION_INSIGHTS_DATA,
+  SCHOOL_INTERVENTIONS_DATA,
+} from './school-admin-interventions.data';
 import {
   CURRICULUM_MAP_DATA,
   CURRICULUM_METRICS_DATA,
@@ -900,6 +914,128 @@ export class SchoolAdminStore {
     if (list.length === 0) return 100;
     const approved = list.filter((c) => c.status === 'Approved').length;
     return Math.round((approved / list.length) * 100);
+  });
+
+  // Interventions State
+  readonly activeInterventionsTab = signal<InterventionsTab>('active');
+  readonly interventionsSummaryMetrics = signal<InterventionsSummaryMetrics>(
+    INTERVENTIONS_SUMMARY_METRICS,
+  );
+  readonly interventionsSidebarSummary = signal<InterventionsSidebarSummary>(
+    INTERVENTIONS_SIDEBAR_SUMMARY,
+  );
+  readonly interventionsAttentionItems = signal<InterventionAttentionItem[]>(
+    INTERVENTIONS_ATTENTION_ITEMS,
+  );
+  readonly interventionsInsights = signal<InterventionInsightData>(
+    INTERVENTION_INSIGHTS_DATA,
+  );
+  readonly selectedInterventionCase = signal<InterventionCase | null>(null);
+  readonly isCreateInterventionModalOpen = signal<boolean>(false);
+  readonly isAssignFollowUpModalOpen = signal<boolean>(false);
+  readonly isScheduleParentMeetingModalOpen = signal<boolean>(false);
+  readonly isExportInterventionModalOpen = signal<boolean>(false);
+  readonly selectedInterventionAttentionItem =
+    signal<InterventionAttentionItem | null>(null);
+  readonly interventionSearchQuery = signal<string>('');
+  readonly interventionClassFilter = signal<string>('All Classes');
+  readonly interventionPriorityFilter = signal<string>('All Priorities');
+  readonly interventionStatusFilter = signal<string>('All Statuses');
+  readonly interventionPage = signal<number>(1);
+  readonly interventionPageSize = signal<number>(8);
+
+  readonly filteredInterventions = computed(() => {
+    const list = this.interventions();
+    const tab = this.activeInterventionsTab();
+    const query = this.interventionSearchQuery().toLowerCase().trim();
+    const classFilter = this.interventionClassFilter();
+    const priorityFilter = this.interventionPriorityFilter();
+    const statusFilter = this.interventionStatusFilter();
+    const attentionItem = this.selectedInterventionAttentionItem();
+
+    return list.filter((item) => {
+      // Tab filter
+      if (tab === 'active' && item.status === 'Resolved') return false;
+      if (tab === 'resolved' && item.status !== 'Resolved') return false;
+      if (
+        tab === 'support-plans' &&
+        !item.interventionType.toLowerCase().includes('plan')
+      )
+        return false;
+
+      // Attention item filter
+      if (attentionItem) {
+        if (attentionItem.filterType === 'overdue' && item.priority !== 'High')
+          return false;
+        if (
+          attentionItem.filterType === 'declining-attendance' &&
+          !item.concernArea.toLowerCase().includes('attendance')
+        )
+          return false;
+        if (
+          attentionItem.filterType === 'pending-followup' &&
+          item.status !== 'In Progress'
+        )
+          return false;
+        if (
+          attentionItem.filterType === 'unresolved' &&
+          item.status === 'Resolved'
+        )
+          return false;
+      }
+
+      // Class filter
+      if (classFilter !== 'All Classes' && item.className !== classFilter) {
+        return false;
+      }
+
+      // Priority filter
+      if (
+        priorityFilter !== 'All Priorities' &&
+        item.priority !== priorityFilter
+      ) {
+        return false;
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && item.status !== statusFilter) {
+        return false;
+      }
+
+      // Search query
+      if (query) {
+        const matchesName = item.learnerName.toLowerCase().includes(query);
+        const matchesAdm = item.admissionNo.toLowerCase().includes(query);
+        const matchesConcern = item.concernArea.toLowerCase().includes(query);
+        const matchesType = item.interventionType.toLowerCase().includes(query);
+        const matchesStaff = item.assignedStaff.toLowerCase().includes(query);
+        if (
+          !matchesName &&
+          !matchesAdm &&
+          !matchesConcern &&
+          !matchesType &&
+          !matchesStaff
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly paginatedInterventions = computed(() => {
+    const list = this.filteredInterventions();
+    const page = this.interventionPage();
+    const size = this.interventionPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly interventionTotalPages = computed(() => {
+    const list = this.filteredInterventions();
+    const size = this.interventionPageSize();
+    return Math.max(1, Math.ceil(list.length / size));
   });
 
   // Setup Signals
@@ -1785,6 +1921,194 @@ export class SchoolAdminStore {
     this.setupSaveStatus.set(
       `Performance Report securely shared with ${recipients.join(', ')}.`,
     );
+  }
+
+  /**
+   * Interventions Mutations
+   */
+  setActiveInterventionsTab(tab: InterventionsTab): void {
+    this.activeInterventionsTab.set(tab);
+    this.interventionPage.set(1);
+  }
+
+  setInterventionSearchQuery(query: string): void {
+    this.interventionSearchQuery.set(query);
+    this.interventionPage.set(1);
+  }
+
+  setInterventionClassFilter(cls: string): void {
+    this.interventionClassFilter.set(cls);
+    this.interventionPage.set(1);
+  }
+
+  setInterventionPriorityFilter(priority: string): void {
+    this.interventionPriorityFilter.set(priority);
+    this.interventionPage.set(1);
+  }
+
+  setInterventionStatusFilter(status: string): void {
+    this.interventionStatusFilter.set(status);
+    this.interventionPage.set(1);
+  }
+
+  setInterventionPage(page: number): void {
+    this.interventionPage.set(page);
+  }
+
+  selectInterventionAttentionItem(item: InterventionAttentionItem): void {
+    const current = this.selectedInterventionAttentionItem();
+    if (current?.id === item.id) {
+      this.selectedInterventionAttentionItem.set(null);
+    } else {
+      this.selectedInterventionAttentionItem.set(item);
+    }
+    this.interventionPage.set(1);
+  }
+
+  clearInterventionAttentionItem(): void {
+    this.selectedInterventionAttentionItem.set(null);
+    this.interventionPage.set(1);
+  }
+
+  openCreateInterventionModal(): void {
+    this.isCreateInterventionModalOpen.set(true);
+  }
+
+  closeCreateInterventionModal(): void {
+    this.isCreateInterventionModalOpen.set(false);
+  }
+
+  createInterventionPlan(form: NewInterventionPlanFormData): void {
+    const nameParts = form.learnerName.split(' ');
+    const initials =
+      nameParts.length > 1
+        ? `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase()
+        : form.learnerName.slice(0, 2).toUpperCase();
+
+    const newCase: InterventionCase = {
+      id: `case-${Date.now()}`,
+      learnerId: `lrn-${Date.now()}`,
+      learnerName: form.learnerName,
+      initials,
+      admissionNo: form.admissionNo,
+      className: form.className,
+      concernArea: form.concernArea,
+      interventionType: form.interventionType,
+      assignedStaff: form.assignedStaff,
+      assignedStaffRole: form.assignedStaffRole,
+      status: 'In Progress',
+      priority: form.priority,
+      nextReviewDate: form.nextReviewDate,
+      progress: 10,
+    };
+
+    this.interventions.update((list) => [newCase, ...list]);
+    this.interventionsSummaryMetrics.update((m) => ({
+      ...m,
+      activeInterventions: m.activeInterventions + 1,
+      learnersFlagged: m.learnersFlagged + 1,
+    }));
+    this.isCreateInterventionModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Intervention plan created for ${form.learnerName} assigned to ${form.assignedStaff}.`,
+    );
+  }
+
+  openAssignFollowUpModal(c?: InterventionCase): void {
+    if (c) {
+      this.selectedInterventionCase.set(c);
+    }
+    this.isAssignFollowUpModalOpen.set(true);
+  }
+
+  closeAssignFollowUpModal(): void {
+    this.isAssignFollowUpModalOpen.set(false);
+  }
+
+  assignFollowUp(form: AssignFollowUpFormData): void {
+    this.interventions.update((list) =>
+      list.map((c) =>
+        c.id === form.caseId
+          ? {
+              ...c,
+              assignedStaff: form.assignedStaff,
+              nextReviewDate: form.dueDate,
+            }
+          : c,
+      ),
+    );
+    this.isAssignFollowUpModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Follow-up task for ${form.learnerName} assigned to ${form.assignedStaff} due on ${form.dueDate}.`,
+    );
+  }
+
+  openScheduleParentMeetingModal(c?: InterventionCase): void {
+    if (c) {
+      this.selectedInterventionCase.set(c);
+    }
+    this.isScheduleParentMeetingModalOpen.set(true);
+  }
+
+  closeScheduleParentMeetingModal(): void {
+    this.isScheduleParentMeetingModalOpen.set(false);
+  }
+
+  scheduleParentMeeting(form: ScheduleParentMeetingFormData): void {
+    this.interventionsSidebarSummary.update((s) => ({
+      ...s,
+      parentMeetingsScheduled: s.parentMeetingsScheduled + 1,
+    }));
+    this.isScheduleParentMeetingModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Parent meeting scheduled for ${form.learnerName} on ${form.meetingDate} at ${form.meetingTime}.`,
+    );
+  }
+
+  openExportInterventionModal(): void {
+    this.isExportInterventionModalOpen.set(true);
+  }
+
+  closeExportInterventionModal(): void {
+    this.isExportInterventionModalOpen.set(false);
+  }
+
+  exportInterventionReport(format = 'PDF'): void {
+    this.isExportInterventionModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Intervention and learner support report exported successfully (${format} format).`,
+    );
+  }
+
+  openInterventionDetails(c: InterventionCase): void {
+    this.selectedInterventionCase.set(c);
+  }
+
+  closeInterventionDetails(): void {
+    this.selectedInterventionCase.set(null);
+  }
+
+  updateInterventionProgress(caseId: string, progress: number): void {
+    this.interventions.update((list) =>
+      list.map((c) => (c.id === caseId ? { ...c, progress } : c)),
+    );
+    this.setupSaveStatus.set(`Intervention progress updated to ${progress}%.`);
+  }
+
+  resolveInterventionCase(caseId: string): void {
+    this.interventions.update((list) =>
+      list.map((c) =>
+        c.id === caseId
+          ? { ...c, status: 'Resolved' as const, progress: 100 }
+          : c,
+      ),
+    );
+    this.interventionsSummaryMetrics.update((m) => ({
+      ...m,
+      resolvedCases: m.resolvedCases + 1,
+      activeInterventions: Math.max(0, m.activeInterventions - 1),
+    }));
+    this.setupSaveStatus.set(`Intervention case resolved successfully.`);
   }
 
   /**

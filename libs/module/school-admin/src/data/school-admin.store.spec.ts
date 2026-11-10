@@ -818,4 +818,163 @@ describe('SchoolAdminStore', () => {
     expect(store.overallReportsApprovalRate()).toBe(100);
     expect(store.setupSaveStatus()).toContain('approved and signed');
   });
+
+  it('should manage interventions state, filtering, pagination, and mutations correctly', () => {
+    // Initial state
+    expect(store.activeInterventionsTab()).toBe('active');
+    expect(store.interventionsSummaryMetrics().learnersFlagged).toBe(86);
+    expect(store.interventionsSummaryMetrics().activeInterventions).toBe(54);
+    expect(store.interventionsSummaryMetrics().overdueFollowUps).toBe(18);
+    expect(store.interventionsSummaryMetrics().resolvedCases).toBe(42);
+    expect(store.interventionsSummaryMetrics().interventionSuccessRate).toBe(
+      81,
+    );
+
+    expect(store.interventionsSidebarSummary().highPriorityCases).toBe(22);
+    expect(store.interventionsSidebarSummary().remediationPlans).toBe(36);
+    expect(store.interventionsSidebarSummary().parentMeetingsScheduled).toBe(
+      14,
+    );
+    expect(store.interventionsSidebarSummary().completedFollowUps).toBe(128);
+
+    expect(store.interventionsAttentionItems().length).toBe(4);
+    expect(store.interventionsInsights().commonConcern.title).toBe(
+      'Mathematics Weakness',
+    );
+    expect(store.interventionsInsights().bestPerformingType.type).toBe(
+      'Small Group Remediation',
+    );
+
+    // Filtered and paginated list
+    expect(store.filteredInterventions().length).toBe(10); // 12 total minus 2 resolved
+    expect(store.paginatedInterventions().length).toBe(8);
+    expect(store.interventionTotalPages()).toBe(2);
+
+    // Search query
+    store.setInterventionSearchQuery('Adebayo');
+    expect(store.filteredInterventions().length).toBe(1);
+    expect(store.filteredInterventions()[0].learnerName).toContain('Adebayo');
+    store.setInterventionSearchQuery('');
+
+    // Class filter
+    store.setInterventionClassFilter('JSS 1A');
+    expect(store.filteredInterventions().length).toBe(2);
+    store.setInterventionClassFilter('All Classes');
+
+    // Priority filter
+    store.setInterventionPriorityFilter('High');
+    expect(
+      store.filteredInterventions().every((i) => i.priority === 'High'),
+    ).toBe(true);
+    store.setInterventionPriorityFilter('All Priorities');
+
+    // Tab filter
+    store.setActiveInterventionsTab('resolved');
+    expect(store.filteredInterventions().length).toBe(2);
+    expect(
+      store.filteredInterventions().every((i) => i.status === 'Resolved'),
+    ).toBe(true);
+    store.setActiveInterventionsTab('active');
+
+    // Attention item selection
+    const attItem = store.interventionsAttentionItems()[0];
+    store.selectInterventionAttentionItem(attItem);
+    expect(store.selectedInterventionAttentionItem()?.id).toBe(attItem.id);
+    store.selectInterventionAttentionItem(attItem);
+    expect(store.selectedInterventionAttentionItem()).toBeNull();
+    store.selectInterventionAttentionItem(attItem);
+    store.clearInterventionAttentionItem();
+    expect(store.selectedInterventionAttentionItem()).toBeNull();
+
+    // Create plan modal & mutation
+    expect(store.isCreateInterventionModalOpen()).toBe(false);
+    store.openCreateInterventionModal();
+    expect(store.isCreateInterventionModalOpen()).toBe(true);
+
+    const initialActive =
+      store.interventionsSummaryMetrics().activeInterventions;
+    store.createInterventionPlan({
+      learnerName: 'Aliyu Garba',
+      admissionNo: 'LRN-240300',
+      className: 'JSS 1B',
+      concernArea: 'English Vocabulary',
+      interventionType: 'Guided Reading Practice',
+      assignedStaff: 'Mrs. Balogun K.',
+      assignedStaffRole: 'English Teacher',
+      priority: 'Medium',
+      nextReviewDate: '30 May 2025',
+    });
+    expect(store.isCreateInterventionModalOpen()).toBe(false);
+    expect(store.interventionsSummaryMetrics().activeInterventions).toBe(
+      initialActive + 1,
+    );
+    expect(store.setupSaveStatus()).toContain('Aliyu Garba');
+
+    // Assign follow-up modal & mutation
+    expect(store.isAssignFollowUpModalOpen()).toBe(false);
+    store.openAssignFollowUpModal();
+    expect(store.isAssignFollowUpModalOpen()).toBe(true);
+    store.assignFollowUp({
+      caseId: 'case-001',
+      learnerName: 'Adebayo, Oluwatobi',
+      assignedStaff: 'Mr. Akinola T.',
+      dueDate: '01 June 2025',
+      instructions: 'Check test scores after 2 weeks of remediation',
+    });
+    expect(store.isAssignFollowUpModalOpen()).toBe(false);
+    const updatedCase001 = store
+      .interventions()
+      .find((c) => c.id === 'case-001');
+    expect(updatedCase001?.assignedStaff).toBe('Mr. Akinola T.');
+
+    // Schedule parent meeting modal & mutation
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(false);
+    store.openScheduleParentMeetingModal();
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(true);
+    const initialMeetings =
+      store.interventionsSidebarSummary().parentMeetingsScheduled;
+    store.scheduleParentMeeting({
+      learnerName: 'Bello, Chiamaka',
+      parentName: 'Mr. and Mrs. Bello',
+      className: 'JSS 2B',
+      meetingDate: '25 May 2025',
+      meetingTime: '10:00 AM',
+      meetingType: 'In-Person',
+      agenda: 'Discuss attendance pattern and transport challenges',
+    });
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(false);
+    expect(store.interventionsSidebarSummary().parentMeetingsScheduled).toBe(
+      initialMeetings + 1,
+    );
+
+    // Export modal & mutation
+    expect(store.isExportInterventionModalOpen()).toBe(false);
+    store.openExportInterventionModal();
+    expect(store.isExportInterventionModalOpen()).toBe(true);
+    store.exportInterventionReport('Excel');
+    expect(store.isExportInterventionModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('Excel format');
+
+    // Details & resolution
+    const sampleCase = store.interventions()[0];
+    store.openInterventionDetails(sampleCase);
+    expect(store.selectedInterventionCase()?.id).toBe(sampleCase.id);
+
+    store.updateInterventionProgress(sampleCase.id, 85);
+    const progressed = store
+      .interventions()
+      .find((c) => c.id === sampleCase.id);
+    expect(progressed?.progress).toBe(85);
+
+    const initialResolved = store.interventionsSummaryMetrics().resolvedCases;
+    store.resolveInterventionCase(sampleCase.id);
+    const resolved = store.interventions().find((c) => c.id === sampleCase.id);
+    expect(resolved?.status).toBe('Resolved');
+    expect(store.interventionsSummaryMetrics().resolvedCases).toBe(
+      initialResolved + 1,
+    );
+
+    store.closeInterventionDetails();
+    expect(store.selectedInterventionCase()).toBeNull();
+  });
 });

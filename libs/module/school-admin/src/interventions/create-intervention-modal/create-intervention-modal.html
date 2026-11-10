@@ -1,0 +1,224 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="create-plan-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 id="create-plan-title" class="modal-title">
+        Create Learner Intervention Plan
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="learnerName">Learner Full Name</label>
+          <input
+            id="learnerName"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Aliyu Garba"
+            [value]="formData().learnerName"
+            (input)="updateField('learnerName', $any($event.target).value)"
+            required
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="admissionNo">Admission No</label>
+          <input
+            id="admissionNo"
+            type="text"
+            class="form-input"
+            placeholder="e.g. LRN-240300"
+            [value]="formData().admissionNo"
+            (input)="updateField('admissionNo', $any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="className">Class</label>
+          <select
+            id="className"
+            class="form-select"
+            [value]="formData().className"
+            (change)="updateField('className', $any($event.target).value)"
+          >
+            <option value="JSS 1A">JSS 1A</option>
+            <option value="JSS 1B">JSS 1B</option>
+            <option value="JSS 2A">JSS 2A</option>
+            <option value="JSS 2B">JSS 2B</option>
+            <option value="JSS 3A">JSS 3A</option>
+            <option value="JSS 3B">JSS 3B</option>
+            <option value="SSS 1A">SSS 1A</option>
+            <option value="SSS 2B">SSS 2B</option>
+            <option value="SSS 3A">SSS 3A</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="priority">Priority</label>
+          <select
+            id="priority"
+            class="form-select"
+            [value]="formData().priority"
+            (change)="updateField('priority', $any($event.target).value)"
+          >
+            <option value="High">High Priority</option>
+            <option value="Medium">Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="concernArea">Concern Area</label>
+          <select
+            id="concernArea"
+            class="form-select"
+            [value]="formData().concernArea"
+            (change)="updateField('concernArea', $any($event.target).value)"
+          >
+            <option value="Mathematics Weak Performance">
+              Mathematics Weak Performance
+            </option>
+            <option value="Low Attendance">Low Attendance</option>
+            <option value="Missing Assignments">Missing Assignments</option>
+            <option value="Reading Difficulty">Reading Difficulty</option>
+            <option value="Behaviour Concern">Behaviour Concern</option>
+            <option value="Poor Quiz Performance">Poor Quiz Performance</option>
+            <option value="Incomplete Portfolio Tasks">
+              Incomplete Portfolio Tasks
+            </option>
+            <option value="Science Concepts">Science Concepts</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="interventionType"
+            >Intervention Type</label
+          >
+          <select
+            id="interventionType"
+            class="form-select"
+            [value]="formData().interventionType"
+            (change)="updateField('interventionType', $any($event.target).value)"
+          >
+            <option value="Small Group Remediation">
+              Small Group Remediation
+            </option>
+            <option value="Attendance Support Plan">
+              Attendance Support Plan
+            </option>
+            <option value="Academic Monitoring">Academic Monitoring</option>
+            <option value="Reading Intervention">Reading Intervention</option>
+            <option value="Behaviour Support Plan">
+              Behaviour Support Plan
+            </option>
+            <option value="Targeted Quiz Support">Targeted Quiz Support</option>
+            <option value="Portfolio Completion Plan">
+              Portfolio Completion Plan
+            </option>
+            <option value="Individual Tutoring">Individual Tutoring</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="assignedStaff">Assigned Staff</label>
+          <input
+            id="assignedStaff"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Mr. Adekunle J."
+            [value]="formData().assignedStaff"
+            (input)="updateField('assignedStaff', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="assignedStaffRole">Staff Role</label>
+          <input
+            id="assignedStaffRole"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Maths Teacher"
+            [value]="formData().assignedStaffRole"
+            (input)="updateField('assignedStaffRole', $any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="nextReviewDate"
+          >Target Next Review Date</label
+        >
+        <input
+          id="nextReviewDate"
+          type="text"
+          class="form-input"
+          placeholder="e.g. 30 May 2025"
+          [value]="formData().nextReviewDate"
+          (input)="updateField('nextReviewDate', $any($event.target).value)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="notes"
+          >Diagnostic Notes / Initial Assessment</label
+        >
+        <textarea
+          id="notes"
+          class="form-textarea"
+          rows="3"
+          placeholder="Record specific learning gaps, diagnostic findings, or parental notes..."
+          [value]="formData().notes"
+          (input)="updateField('notes', $any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().learnerName || !formData().admissionNo"
+        (click)="onSubmit()"
+      >
+        Create Intervention Plan
+      </button>
+    </div>
+  </div>
+</div>
+}

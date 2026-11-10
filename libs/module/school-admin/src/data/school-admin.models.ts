@@ -290,10 +290,12 @@ export interface InterventionCase {
   interventionType: string;
   assignedStaff: string;
   assignedStaffRole: string;
-  status: 'In Progress' | 'Under Review' | 'Resolved';
+  status: 'In Progress' | 'Monitoring' | 'Under Review' | 'Resolved';
   priority: 'High' | 'Medium' | 'Low';
   nextReviewDate: string;
   progress: number;
+  initials?: string;
+  notes?: string;
 }
 
 export interface SchoolProfile {
@@ -933,4 +935,105 @@ export interface ClassReportCardSummary {
   reportsApproved: number;
   parentDeliveryRate: number;
   status: 'Approved' | 'In Progress' | 'Pending Approval' | 'Not Started';
+}
+
+/**
+ * ============================================================================
+ * Interventions Domain Models
+ * ============================================================================
+ */
+export type InterventionsTab =
+  | 'active'
+  | 'schedule'
+  | 'support-plans'
+  | 'resolved';
+
+export interface InterventionsSummaryMetrics {
+  learnersFlagged: number;
+  learnersFlaggedChange: number;
+  activeInterventions: number;
+  activeInterventionsChange: number;
+  overdueFollowUps: number;
+  overdueFollowUpsChange: number;
+  resolvedCases: number;
+  resolvedCasesChange: number;
+  interventionSuccessRate: number;
+  interventionSuccessRateChange: number;
+}
+
+export interface InterventionsSidebarSummary {
+  highPriorityCases: number;
+  remediationPlans: number;
+  parentMeetingsScheduled: number;
+  completedFollowUps: number;
+}
+
+export interface InterventionAttentionItem {
+  id: string;
+  rank: number;
+  title: string;
+  countText: string;
+  count: number;
+  tone: 'red' | 'amber';
+  filterType:
+    | 'overdue'
+    | 'declining-attendance'
+    | 'pending-followup'
+    | 'unresolved';
+}
+
+export interface InterventionInsightData {
+  commonConcern: {
+    title: string;
+    percentage: number;
+    change: number;
+  };
+  bestPerformingType: {
+    type: string;
+    successRate: number;
+    change: number;
+  };
+  classNeedingSupport: {
+    className: string;
+    activeCount: number;
+    change: number;
+  };
+  followUpCompletion: {
+    rate: number;
+    change: number;
+  };
+}
+
+export interface NewInterventionPlanFormData {
+  learnerName: string;
+  admissionNo: string;
+  className: string;
+  concernArea: string;
+  interventionType: string;
+  assignedStaff: string;
+  assignedStaffRole: string;
+  priority: 'High' | 'Medium' | 'Low';
+  nextReviewDate: string;
+  notes?: string;
+}
+
+export interface ScheduleParentMeetingFormData {
+  learnerName: string;
+  parentName: string;
+  parentPhone?: string;
+  className: string;
+  meetingDate: string;
+  meetingTime: string;
+  meetingType: 'In-Person' | 'Virtual';
+  agenda: string;
+}
+
+export interface AssignFollowUpFormData {
+  caseId: string;
+  learnerName: string;
+  assignedStaff: string;
+  assignedStaffRole?: string;
+  dueDate: string;
+  instructions: string;
+  followUpFrequency?: 'Weekly' | 'Bi-Weekly' | 'Monthly';
 }

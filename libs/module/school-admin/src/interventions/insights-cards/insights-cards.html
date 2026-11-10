@@ -1,0 +1,229 @@
+<section
+  class="insights-section"
+  aria-label="Interventions Diagnostic Insights"
+>
+  <div class="insights-grid">
+    <!-- Most Common Concern -->
+    <article class="insight-card" data-testid="card-common-concern">
+      <div class="card-left">
+        <div class="icon-circle icon-purple" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
+          </svg>
+        </div>
+        <div class="card-texts">
+          <span class="card-category">Most Common Concern</span>
+          <h4 class="card-headline">{{ insights().commonConcern.title }}</h4>
+          <div class="value-row">
+            <span class="card-value"
+              >{{ insights().commonConcern.percentage }}%</span
+            >
+            <span class="card-subtext"
+              >{{ insights().commonConcern.title === 'Mathematics Weakness' ?
+              'of all active interventions' : 'of interventions' }}</span
+            >
+          </div>
+          <span class="trend-badge trend-up">
+            ▲ {{ insights().commonConcern.change }}% vs Last Term
+          </span>
+        </div>
+      </div>
+      <div class="donut-wrapper" aria-hidden="true">
+        <svg viewBox="0 0 80 80" class="donut-svg">
+          <circle cx="40" cy="40" r="30" class="donut-bg"></circle>
+          <circle
+            cx="40"
+            cy="40"
+            r="30"
+            class="donut-fill fill-purple"
+            stroke-dasharray="188.5"
+            [attr.stroke-dashoffset]="getStrokeDashoffset(insights().commonConcern.percentage)"
+          ></circle>
+        </svg>
+      </div>
+    </article>
+
+    <!-- Best Performing Intervention Type -->
+    <article class="insight-card" data-testid="card-best-performing">
+      <div class="card-left">
+        <div class="icon-circle icon-green" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            ></polygon>
+          </svg>
+        </div>
+        <div class="card-texts">
+          <span class="card-category">Best Performing Intervention Type</span>
+          <h4 class="card-headline">
+            {{ insights().bestPerformingType.type }}
+          </h4>
+          <div class="value-row">
+            <span class="card-value"
+              >{{ insights().bestPerformingType.successRate }}%</span
+            >
+            <span class="card-subtext">success rate</span>
+          </div>
+          <span class="trend-badge trend-up">
+            ▲ {{ insights().bestPerformingType.change }}% vs Last Term
+          </span>
+        </div>
+      </div>
+      <div class="donut-wrapper" aria-hidden="true">
+        <svg viewBox="0 0 80 80" class="donut-svg">
+          <circle cx="40" cy="40" r="30" class="donut-bg"></circle>
+          <circle
+            cx="40"
+            cy="40"
+            r="30"
+            class="donut-fill fill-green"
+            stroke-dasharray="188.5"
+            [attr.stroke-dashoffset]="getStrokeDashoffset(insights().bestPerformingType.successRate)"
+          ></circle>
+        </svg>
+      </div>
+    </article>
+
+    <!-- Class Needing Most Support -->
+    <article class="insight-card" data-testid="card-class-needing-support">
+      <div class="card-left">
+        <div class="icon-circle icon-orange" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M3 21h18M3 7l9-4 9 4v14M6 10v4M10 10v4M14 10v4M18 10v4"
+            ></path>
+          </svg>
+        </div>
+        <div class="card-texts">
+          <span class="card-category">Class Needing Most Support</span>
+          <h4 class="card-headline">
+            {{ insights().classNeedingSupport.className }}
+          </h4>
+          <div class="value-row">
+            <span class="card-value"
+              >{{ insights().classNeedingSupport.activeCount }}</span
+            >
+            <span class="card-subtext">active interventions</span>
+          </div>
+          <span class="trend-badge trend-warning">
+            ▲ {{ insights().classNeedingSupport.change }} vs Last Term
+          </span>
+        </div>
+      </div>
+      <div class="donut-wrapper" aria-hidden="true">
+        <svg viewBox="0 0 80 80" class="donut-svg">
+          <circle cx="40" cy="40" r="30" class="donut-bg"></circle>
+          <circle
+            cx="40"
+            cy="40"
+            r="30"
+            class="donut-fill fill-orange"
+            stroke-dasharray="188.5"
+            [attr.stroke-dashoffset]="getStrokeDashoffset((insights().classNeedingSupport.activeCount / 32) * 100)"
+          ></circle>
+        </svg>
+      </div>
+    </article>
+
+    <!-- Follow-up Completion Rate -->
+    <article class="insight-card" data-testid="card-completion-rate">
+      <div class="card-left">
+        <div class="icon-circle icon-blue" aria-hidden="true">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+            <polyline points="17 6 23 6 23 12"></polyline>
+          </svg>
+        </div>
+        <div class="card-texts">
+          <span class="card-category">Follow-up Completion Rate</span>
+          <h4 class="card-headline">
+            {{ insights().followUpCompletion.rate }}%
+          </h4>
+          <div class="value-row">
+            <span class="card-subtext">completed on time</span>
+          </div>
+          <span class="trend-badge trend-up">
+            ▲ {{ insights().followUpCompletion.change }}% vs Last Term
+          </span>
+        </div>
+      </div>
+      <div class="donut-wrapper" aria-hidden="true">
+        <svg viewBox="0 0 80 80" class="donut-svg">
+          <circle cx="40" cy="40" r="30" class="donut-bg"></circle>
+          <circle
+            cx="40"
+            cy="40"
+            r="30"
+            class="donut-fill fill-blue"
+            stroke-dasharray="188.5"
+            [attr.stroke-dashoffset]="getStrokeDashoffset(insights().followUpCompletion.rate)"
+          ></circle>
+        </svg>
+      </div>
+    </article>
+  </div>
+
+  <!-- Real-time Footer Notice -->
+  <footer class="realtime-notice" role="status">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+    <span
+      >Data is updated in real-time. Last updated: 13 May 2025, 10:30 AM</span
+    >
+  </footer>
+</section>
