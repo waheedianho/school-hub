@@ -1,0 +1,560 @@
+<div class="table-card">
+  <!-- Toolbar: Search on left, Filters on right -->
+  <div class="toolbar">
+    <!-- Search Box -->
+    <div class="search-box">
+      <svg
+        class="search-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="getSearchPlaceholder()"
+        [value]="searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+        aria-label="Search messages"
+      />
+    </div>
+
+    <!-- Dropdown Filters Group -->
+    <div class="filters-group">
+      <!-- 1. Audience Filter -->
+      <div class="filter-item">
+        <label class="sr-only" for="audienceFilter">Audience</label>
+        <select
+          id="audienceFilter"
+          class="filter-select"
+          [value]="selectedAudience()"
+          (change)="onAudienceChange($any($event.target).value)"
+        >
+          @for (aud of audienceOptions; track aud) {
+          <option [value]="aud">{{ aud }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 2. Category Filter -->
+      <div class="filter-item">
+        <label class="sr-only" for="categoryFilter">Category</label>
+        <select
+          id="categoryFilter"
+          class="filter-select"
+          [value]="selectedCategory()"
+          (change)="onCategoryChange($any($event.target).value)"
+        >
+          @for (cat of categoryOptions; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 3. Status Filter -->
+      <div class="filter-item">
+        <label class="sr-only" for="statusFilter">Status</label>
+        <select
+          id="statusFilter"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="onStatusChange($any($event.target).value)"
+        >
+          @for (status of statusOptions; track status) {
+          <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 4. Date Filter -->
+      <div class="filter-item">
+        <label class="sr-only" for="dateFilter">Date</label>
+        <select
+          id="dateFilter"
+          class="filter-select"
+          [value]="selectedDate()"
+          (change)="onDateChange($any($event.target).value)"
+        >
+          @for (dt of dateOptions; track dt) {
+          <option [value]="dt">{{ dt }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Filters Button -->
+      <button type="button" class="filters-btn" aria-label="Advanced filters">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="15"
+          height="15"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon
+            points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
+          ></polygon>
+        </svg>
+        <span>Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Messages Table -->
+  <div class="table-responsive">
+    <table class="messages-table" role="table">
+      <thead>
+        <tr role="row">
+          <th scope="col" class="th-audience">Audience</th>
+          <th scope="col" class="th-title">Message Title</th>
+          <th scope="col" class="th-category">Category</th>
+          <th scope="col" class="th-sent-by">Sent By</th>
+          <th scope="col" class="th-status">Delivery Status</th>
+          <th scope="col" class="th-scheduled">Scheduled Date</th>
+          <th scope="col" class="th-updated">Last Updated</th>
+          <th scope="col" class="th-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of messages(); track item.id) {
+        <tr
+          role="row"
+          class="table-row"
+          (click)="onRowClick(item)"
+          tabindex="0"
+          (keydown.enter)="onRowClick(item)"
+          (keydown.space)="onRowClick(item)"
+        >
+          <!-- 1. Audience -->
+          <td class="td-audience">
+            <div class="audience-badge">
+              <span
+                class="audience-icon"
+                [ngClass]="{
+                'icon-students': item.audience === 'All Students & Parents',
+                'icon-parents': item.audience === 'All Parents',
+                'icon-teachers': item.audience === 'All Teachers & Staff',
+                'icon-selected': item.audience === 'Selected Parents'
+              }"
+              >
+                @if (item.audience === 'All Teachers & Staff') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                  <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+                </svg>
+                } @else if (item.audience === 'Selected Parents') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <polyline points="16 11 18 13 22 9"></polyline>
+                </svg>
+                } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+                }
+              </span>
+              <span class="audience-label">{{ item.audience }}</span>
+            </div>
+          </td>
+
+          <!-- 2. Message Title -->
+          <td class="td-title">
+            <span class="message-title">{{ item.messageTitle }}</span>
+          </td>
+
+          <!-- 3. Category -->
+          <td class="td-category">
+            <span
+              class="category-pill"
+              [ngClass]="'category-' + item.category.toLowerCase()"
+            >
+              {{ item.category }}
+            </span>
+          </td>
+
+          <!-- 4. Sent By -->
+          <td class="td-sent-by">
+            <div class="sent-by-box">
+              <span class="avatar-circle">SA</span>
+              <span class="sent-by-name">{{ item.sentBy }}</span>
+            </div>
+          </td>
+
+          <!-- 5. Delivery Status -->
+          <td class="td-status">
+            <div class="status-cell">
+              <span
+                class="status-pill"
+                [ngClass]="'status-' + item.deliveryStatus.toLowerCase()"
+              >
+                @if (item.deliveryStatus === 'Delivered') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                } @else if (item.deliveryStatus === 'Sent') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="m18 6-7 7-3-3"></path>
+                  <path d="m22 10-7 7-3-3"></path>
+                </svg>
+                } @else if (item.deliveryStatus === 'Scheduled') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                } @else if (item.deliveryStatus === 'Draft') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M12 20h9"></path>
+                  <path
+                    d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+                  ></path>
+                </svg>
+                } @else if (item.deliveryStatus === 'Failed') {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                } {{ item.deliveryStatus }}
+              </span>
+
+              @if (item.deliveryStatus === 'Failed') {
+              <button
+                type="button"
+                class="quick-resend-btn"
+                (click)="onResendMessage(item.id, $event)"
+                title="Resend failed message"
+                aria-label="Resend message"
+              >
+                Resend
+              </button>
+              }
+            </div>
+          </td>
+
+          <!-- 6. Scheduled Date -->
+          <td class="td-scheduled">
+            @if (item.scheduledDate) {
+            <div class="datetime-cell">
+              <span class="date-text">{{ item.scheduledDate }}</span>
+              <span class="time-text">{{ item.scheduledTime }}</span>
+            </div>
+            } @else {
+            <span class="text-muted">—</span>
+            }
+          </td>
+
+          <!-- 7. Last Updated -->
+          <td class="td-updated">
+            <div class="datetime-cell">
+              <span class="date-text">{{ item.lastUpdatedDate }}</span>
+              <span class="time-text">{{ item.lastUpdatedTime }}</span>
+            </div>
+          </td>
+
+          <!-- 8. Actions -->
+          <td class="td-actions" (click)="$event.stopPropagation()">
+            <div class="actions-group">
+              <!-- View Button -->
+              <button
+                type="button"
+                class="action-icon-btn view-btn"
+                title="View Details"
+                (click)="onRowClick(item)"
+                aria-label="View message details"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+
+              <!-- Menu Button -->
+              <div class="menu-container">
+                <button
+                  type="button"
+                  class="action-icon-btn menu-btn"
+                  title="More actions"
+                  (click)="toggleActionMenu(item.id, $event)"
+                  aria-label="More actions"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+
+                @if (activeActionMenuId() === item.id) {
+                <div class="action-dropdown" role="menu">
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    (click)="onRowClick(item)"
+                    role="menuitem"
+                  >
+                    View Details
+                  </button>
+                  @if (item.deliveryStatus === 'Failed') {
+                  <button
+                    type="button"
+                    class="dropdown-item text-primary"
+                    (click)="onResendMessage(item.id, $event)"
+                    role="menuitem"
+                  >
+                    Resend Message
+                  </button>
+                  }
+                  <button
+                    type="button"
+                    class="dropdown-item"
+                    (click)="closeActionMenu()"
+                    role="menuitem"
+                  >
+                    Duplicate Message
+                  </button>
+                  <button
+                    type="button"
+                    class="dropdown-item text-danger"
+                    (click)="closeActionMenu()"
+                    role="menuitem"
+                  >
+                    Archive
+                  </button>
+                </div>
+                }
+              </div>
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="empty-state">
+            <div class="empty-content">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="empty-icon"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              <p class="empty-title">No messages found</p>
+              <p class="empty-subtext">
+                Try adjusting your search criteria or audience filters.
+              </p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Table Pagination Footer -->
+  <div class="table-footer">
+    <div class="footer-info">
+      Showing {{ getStartIndex() }} to {{ getEndIndex() }} of {{
+      filteredTotal().length }} entries
+    </div>
+
+    <div class="footer-controls">
+      <div class="rows-per-page">
+        <label for="pageSizeSelect" class="page-size-label"
+          >Rows per page:</label
+        >
+        <select
+          id="pageSizeSelect"
+          class="page-size-select"
+          [value]="pageSize()"
+          (change)="onPageSizeChange(+$any($event.target).value)"
+        >
+          <option [value]="5">5</option>
+          <option [value]="10">10</option>
+          <option [value]="20">20</option>
+          <option [value]="50">50</option>
+        </select>
+      </div>
+
+      <div class="pagination-buttons">
+        <button
+          type="button"
+          class="page-btn prev-btn"
+          [disabled]="currentPage() <= 1"
+          (click)="onPageChange(currentPage() - 1)"
+          aria-label="Previous page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+
+        @for (p of [].constructor(totalPages()); track $index) {
+        <button
+          type="button"
+          class="page-btn number-btn"
+          [class.active]="currentPage() === ($index + 1)"
+          (click)="onPageChange($index + 1)"
+        >
+          {{ $index + 1 }}
+        </button>
+        }
+
+        <button
+          type="button"
+          class="page-btn next-btn"
+          [disabled]="currentPage() >= totalPages()"
+          (click)="onPageChange(currentPage() + 1)"
+          aria-label="Next page"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

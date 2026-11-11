@@ -1,0 +1,429 @@
+<div class="settings-page">
+  <!-- Status Notification Banner -->
+  @if (store.setupSaveStatus(); as statusMsg) {
+  <div class="status-banner" data-testid="settings-status-banner">
+    <div class="banner-content">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="check-icon"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+      <span>{{ statusMsg }}</span>
+    </div>
+    <button
+      type="button"
+      class="dismiss-btn"
+      (click)="onDismissStatus()"
+      aria-label="Dismiss notification"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Settings &amp; Permissions</h1>
+      <p class="page-subtitle">{{ pageSubtitle() }}</p>
+    </div>
+
+    <div class="header-actions">
+      @if (store.activeSettingsTab() === 'general') {
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onDiscardGeneralSettings()"
+        [disabled]="!store.isGeneralSettingsDirty()"
+      >
+        Discard
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSaveGeneralSettings()"
+        [disabled]="!store.isGeneralSettingsDirty()"
+        data-testid="header-save-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"
+          ></path>
+          <polyline points="17 21 17 13 7 13 7 21"></polyline>
+          <polyline points="7 3 7 8 15 8"></polyline>
+        </svg>
+        <span>Save Changes</span>
+      </button>
+      } @else {
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onOpenExportPermissionModal()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export</span>
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onOpenCreateRoleModal()"
+        data-testid="header-create-role-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <span>Create Role</span>
+      </button>
+      }
+    </div>
+  </div>
+
+  <!-- KPI Summary Metrics (5 Cards) -->
+  <school-hub-settings-summary-metrics
+    [metrics]="store.settingsSummaryMetrics()"
+  ></school-hub-settings-summary-metrics>
+
+  <!-- 6 Navigation Tabs -->
+  <div class="tabs-nav-bar">
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'general'"
+      (click)="onTabChange('general')"
+      data-testid="tab-general"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="3"></circle>
+        <path
+          d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+        ></path>
+      </svg>
+      <span>General Settings</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'roles-permissions'"
+      (click)="onTabChange('roles-permissions')"
+      data-testid="tab-roles-permissions"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+      <span>Roles &amp; Permissions</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'academic-policies'"
+      (click)="onTabChange('academic-policies')"
+      data-testid="tab-academic-policies"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path
+          d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+        ></path>
+      </svg>
+      <span>Academic Policies</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'notifications'"
+      (click)="onTabChange('notifications')"
+      data-testid="tab-notifications"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+      <span>Notifications</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'privacy-security'"
+      (click)="onTabChange('privacy-security')"
+      data-testid="tab-privacy-security"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+      <span>Privacy &amp; Security</span>
+    </button>
+
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.activeSettingsTab() === 'audit-logs'"
+      (click)="onTabChange('audit-logs')"
+      data-testid="tab-audit-logs"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+        ></path>
+        <polyline points="14 2 14 8 20 8"></polyline>
+        <line x1="16" y1="13" x2="8" y2="13"></line>
+        <line x1="16" y1="17" x2="8" y2="17"></line>
+        <polyline points="10 9 9 9 8 9"></polyline>
+      </svg>
+      <span>Audit Logs</span>
+    </button>
+  </div>
+
+  <!-- Main Content Layout (Main Panel + Sidebar) -->
+  <div class="settings-content-layout">
+    <!-- Left Main Content Area -->
+    <div class="main-panel">
+      @if (store.activeSettingsTab() === 'general') {
+      <school-hub-general-settings
+        [settings]="store.generalSettings()"
+        [isDirty]="store.isGeneralSettingsDirty()"
+        (update)="onUpdateGeneralSettings($event)"
+        (save)="onSaveGeneralSettings()"
+        (discard)="onDiscardGeneralSettings()"
+      ></school-hub-general-settings>
+      } @else if (store.activeSettingsTab() === 'roles-permissions') {
+      <school-hub-roles-permissions
+        [roles]="store.paginatedSchoolRoles()"
+        [totalRolesCount]="store.filteredSchoolRoles().length"
+        [searchQuery]="store.roleSearchQuery()"
+        [scopeFilter]="store.roleAccessScopeFilter()"
+        [levelFilter]="store.rolePermissionLevelFilter()"
+        [statusFilter]="store.roleStatusFilter()"
+        [currentPage]="store.rolePage()"
+        [pageSize]="store.rolePageSize()"
+        [totalPages]="store.rolesTotalPages()"
+        (searchQueryChange)="onSearchRoles($event)"
+        (scopeFilterChange)="onScopeFilter($event)"
+        (levelFilterChange)="onLevelFilter($event)"
+        (statusFilterChange)="onStatusFilter($event)"
+        (pageChange)="onPageSelect($event)"
+        (pageSizeChange)="onPageSizeSelect($event)"
+        (viewRole)="onViewRole($event)"
+        (createRoleClick)="onOpenCreateRoleModal()"
+        (cardClick)="onTriggerCard($event)"
+      ></school-hub-roles-permissions>
+      } @else {
+      <!-- Dedicated Policy/Auxiliary Panel -->
+      <div class="auxiliary-panel-card">
+        <div class="aux-header">
+          <div class="aux-icon-box">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <div>
+            <h2 class="aux-title">{{ auxiliaryTitle() }}</h2>
+            <p class="aux-subtitle">
+              Institutional configuration and compliance parameters for
+              Greenfield Academy
+            </p>
+          </div>
+        </div>
+        <div class="aux-body">
+          <div class="aux-info-box">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span>
+              Configuration settings for this section are managed through
+              institutional administrative governance and policy controls.
+              Changes take effect across all portal sessions immediately after
+              saving.
+            </span>
+          </div>
+          <div class="aux-action-row">
+            <button
+              type="button"
+              class="btn btn-outline"
+              (click)="onTabChange('general')"
+            >
+              Back to General Settings
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="onTabChange('roles-permissions')"
+            >
+              Manage Roles &amp; Permissions
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="sidebar-panel">
+      <school-hub-settings-sidebar
+        [activeTab]="store.activeSettingsTab()"
+        [generalSummary]="store.generalSettingsSummary()"
+        [generalAttentionItems]="store.generalSettingsAttentionItems()"
+        [permissionSummary]="store.permissionSidebarSummary()"
+        [permissionAttentionItems]="store.permissionAttentionItems()"
+        [selectedAttentionItem]="store.selectedSettingsAttentionItem()"
+        (attentionItemSelect)="onSelectAttentionItem($event)"
+        (createRole)="onOpenCreateRoleModal()"
+        (exportReport)="onOpenExportPermissionModal()"
+        (switchTab)="onTabChange($event)"
+        (quickActionClick)="onTriggerCard($event)"
+      ></school-hub-settings-sidebar>
+    </div>
+  </div>
+
+  <!-- Interactive Modals -->
+  <school-hub-create-role-modal></school-hub-create-role-modal>
+  <school-hub-role-details-modal></school-hub-role-details-modal>
+  <school-hub-export-permission-modal></school-hub-export-permission-modal>
+  <school-hub-confirm-discard-modal></school-hub-confirm-discard-modal>
+</div>

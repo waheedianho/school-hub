@@ -694,7 +694,7 @@ describe('SchoolAdminStore', () => {
 
     // Return to teacher
     store.returnGradebookToTeacher(targetAssessment.id);
-    expect(store.setupSaveStatus()).toContain('Gradebook returned');
+    expect(store.setupSaveStatus()).toContain('returned to subject teacher');
 
     // Close review drill-down
     store.closeAssessmentReview();
@@ -727,5 +727,732 @@ describe('SchoolAdminStore', () => {
     expect(store.setupSaveStatus()).toContain(
       'assessment and continuous evaluation report',
     );
+  });
+
+  it('should manage reports and report cards state and mutations correctly', () => {
+    // Initial state
+    expect(store.activeReportTab()).toBe('overview');
+    expect(store.reportsSummaryMetrics().schoolAverage).toBe(74.8);
+    expect(store.reportsSummaryMetrics().totalLearnersReported).toBe(386);
+    expect(store.reportsSummaryMetrics().classesAnalysed).toBe(12);
+    expect(store.reportsSummaryMetrics().subjectsAnalysed).toBe(10);
+    expect(store.reportsSummaryMetrics().attendanceAverage).toBe(91.6);
+    expect(store.reportsSummaryMetrics().reportCompletionRate).toBe(89);
+
+    expect(store.termPerformanceTrend().length).toBe(3);
+    expect(store.classPerformanceOverview().length).toBe(7);
+    expect(store.subjectPerformanceRows().length).toBe(7);
+    expect(store.reportsHighlightInsights().topPerformingClass.className).toBe(
+      'JSS 3B',
+    );
+    expect(store.reportsSidebarSummary().totalLearners).toBe(386);
+    expect(store.priorityAttentionAreas().length).toBe(4);
+    expect(store.classReportCards().length).toBe(12);
+    expect(store.selectedStudentReportCard()?.learnerName).toBe(
+      'Maryam Ibrahim',
+    );
+
+    // Filter computeds
+    expect(store.filteredSubjectPerformance().length).toBe(7);
+    store.setReportSubjectFilter('Mathematics');
+    expect(store.filteredSubjectPerformance().length).toBe(1);
+    store.setReportSubjectFilter('All Subjects');
+
+    store.setReportSearchQuery('Basic');
+    expect(store.filteredSubjectPerformance().length).toBe(1);
+    expect(store.filteredSubjectPerformance()[0].subject).toBe('Basic Science');
+    store.setReportSearchQuery('');
+
+    // Class report cards filtering
+    expect(store.filteredClassReportCards().length).toBe(12);
+    store.setReportClassFilter('JSS 1');
+    expect(store.filteredClassReportCards().length).toBe(2);
+    store.setReportClassFilter('All Classes');
+
+    // Attention area toggle
+    const area = store.priorityAttentionAreas()[0];
+    store.selectReportAttentionArea(area);
+    expect(store.selectedReportAttentionArea()?.id).toBe(area.id);
+    store.selectReportAttentionArea(area);
+    expect(store.selectedReportAttentionArea()).toBeNull();
+    store.selectReportAttentionArea(area);
+    store.clearReportAttentionArea();
+    expect(store.selectedReportAttentionArea()).toBeNull();
+
+    // Tab switching
+    store.setActiveReportTab('academic-performance');
+    expect(store.activeReportTab()).toBe('academic-performance');
+    store.setActiveReportTab('overview');
+
+    // Modals
+    expect(store.isStudentReportModalOpen()).toBe(false);
+    store.openStudentReportCard();
+    expect(store.isStudentReportModalOpen()).toBe(true);
+    store.closeStudentReportCard();
+    expect(store.isStudentReportModalOpen()).toBe(false);
+
+    expect(store.isExportReportModalOpen()).toBe(false);
+    store.openExportReportModal();
+    expect(store.isExportReportModalOpen()).toBe(true);
+    store.exportSchoolReport('Excel');
+    expect(store.isExportReportModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('exported successfully');
+
+    expect(store.isShareLeadershipModalOpen()).toBe(false);
+    store.openShareLeadershipModal();
+    expect(store.isShareLeadershipModalOpen()).toBe(true);
+    store.shareReportWithLeadership(['Board of Directors']);
+    expect(store.isShareLeadershipModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('Board of Directors');
+
+    // Class approval & All approval
+    const targetClass = store.classReportCards()[1]; // e.g. JSS 1B
+    store.approveClassReportCards(targetClass.id);
+    const updatedClass = store
+      .classReportCards()
+      .find((c) => c.id === targetClass.id);
+    expect(updatedClass?.status).toBe('Approved');
+
+    store.approveAllSchoolReports();
+    expect(store.reportsSidebarSummary().approvalStatus).toBe('Approved');
+    expect(store.overallReportsApprovalRate()).toBe(100);
+    expect(store.setupSaveStatus()).toContain('approved and signed');
+  });
+
+  it('should manage interventions state, filtering, pagination, and mutations correctly', () => {
+    // Initial state
+    expect(store.activeInterventionsTab()).toBe('active');
+    expect(store.interventionsSummaryMetrics().learnersFlagged).toBe(86);
+    expect(store.interventionsSummaryMetrics().activeInterventions).toBe(54);
+    expect(store.interventionsSummaryMetrics().overdueFollowUps).toBe(18);
+    expect(store.interventionsSummaryMetrics().resolvedCases).toBe(42);
+    expect(store.interventionsSummaryMetrics().interventionSuccessRate).toBe(
+      81,
+    );
+
+    expect(store.interventionsSidebarSummary().highPriorityCases).toBe(22);
+    expect(store.interventionsSidebarSummary().remediationPlans).toBe(36);
+    expect(store.interventionsSidebarSummary().parentMeetingsScheduled).toBe(
+      14,
+    );
+    expect(store.interventionsSidebarSummary().completedFollowUps).toBe(128);
+
+    expect(store.interventionsAttentionItems().length).toBe(4);
+    expect(store.interventionsInsights().commonConcern.title).toBe(
+      'Mathematics Weakness',
+    );
+    expect(store.interventionsInsights().bestPerformingType.type).toBe(
+      'Small Group Remediation',
+    );
+
+    // Filtered and paginated list
+    expect(store.filteredInterventions().length).toBe(10); // 12 total minus 2 resolved
+    expect(store.paginatedInterventions().length).toBe(8);
+    expect(store.interventionTotalPages()).toBe(2);
+
+    // Search query
+    store.setInterventionSearchQuery('Adebayo');
+    expect(store.filteredInterventions().length).toBe(1);
+    expect(store.filteredInterventions()[0].learnerName).toContain('Adebayo');
+    store.setInterventionSearchQuery('');
+
+    // Class filter
+    store.setInterventionClassFilter('JSS 1A');
+    expect(store.filteredInterventions().length).toBe(2);
+    store.setInterventionClassFilter('All Classes');
+
+    // Priority filter
+    store.setInterventionPriorityFilter('High');
+    expect(
+      store.filteredInterventions().every((i) => i.priority === 'High'),
+    ).toBe(true);
+    store.setInterventionPriorityFilter('All Priorities');
+
+    // Tab filter
+    store.setActiveInterventionsTab('resolved');
+    expect(store.filteredInterventions().length).toBe(2);
+    expect(
+      store.filteredInterventions().every((i) => i.status === 'Resolved'),
+    ).toBe(true);
+    store.setActiveInterventionsTab('active');
+
+    // Attention item selection
+    const attItem = store.interventionsAttentionItems()[0];
+    store.selectInterventionAttentionItem(attItem);
+    expect(store.selectedInterventionAttentionItem()?.id).toBe(attItem.id);
+    store.selectInterventionAttentionItem(attItem);
+    expect(store.selectedInterventionAttentionItem()).toBeNull();
+    store.selectInterventionAttentionItem(attItem);
+    store.clearInterventionAttentionItem();
+    expect(store.selectedInterventionAttentionItem()).toBeNull();
+
+    // Create plan modal & mutation
+    expect(store.isCreateInterventionModalOpen()).toBe(false);
+    store.openCreateInterventionModal();
+    expect(store.isCreateInterventionModalOpen()).toBe(true);
+
+    const initialActive =
+      store.interventionsSummaryMetrics().activeInterventions;
+    store.createInterventionPlan({
+      learnerName: 'Aliyu Garba',
+      admissionNo: 'LRN-240300',
+      className: 'JSS 1B',
+      concernArea: 'English Vocabulary',
+      interventionType: 'Guided Reading Practice',
+      assignedStaff: 'Mrs. Balogun K.',
+      assignedStaffRole: 'English Teacher',
+      priority: 'Medium',
+      nextReviewDate: '30 May 2025',
+    });
+    expect(store.isCreateInterventionModalOpen()).toBe(false);
+    expect(store.interventionsSummaryMetrics().activeInterventions).toBe(
+      initialActive + 1,
+    );
+    expect(store.setupSaveStatus()).toContain('Aliyu Garba');
+
+    // Assign follow-up modal & mutation
+    expect(store.isAssignFollowUpModalOpen()).toBe(false);
+    store.openAssignFollowUpModal();
+    expect(store.isAssignFollowUpModalOpen()).toBe(true);
+    store.assignFollowUp({
+      caseId: 'case-001',
+      learnerName: 'Adebayo, Oluwatobi',
+      assignedStaff: 'Mr. Akinola T.',
+      dueDate: '01 June 2025',
+      instructions: 'Check test scores after 2 weeks of remediation',
+    });
+    expect(store.isAssignFollowUpModalOpen()).toBe(false);
+    const updatedCase001 = store
+      .interventions()
+      .find((c) => c.id === 'case-001');
+    expect(updatedCase001?.assignedStaff).toBe('Mr. Akinola T.');
+
+    // Schedule parent meeting modal & mutation
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(false);
+    store.openScheduleParentMeetingModal();
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(true);
+    const initialMeetings =
+      store.interventionsSidebarSummary().parentMeetingsScheduled;
+    store.scheduleParentMeeting({
+      learnerName: 'Bello, Chiamaka',
+      parentName: 'Mr. and Mrs. Bello',
+      className: 'JSS 2B',
+      meetingDate: '25 May 2025',
+      meetingTime: '10:00 AM',
+      meetingType: 'In-Person',
+      agenda: 'Discuss attendance pattern and transport challenges',
+    });
+    expect(store.isScheduleParentMeetingModalOpen()).toBe(false);
+    expect(store.interventionsSidebarSummary().parentMeetingsScheduled).toBe(
+      initialMeetings + 1,
+    );
+
+    // Export modal & mutation
+    expect(store.isExportInterventionModalOpen()).toBe(false);
+    store.openExportInterventionModal();
+    expect(store.isExportInterventionModalOpen()).toBe(true);
+    store.exportInterventionReport('Excel');
+    expect(store.isExportInterventionModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('Excel format');
+
+    // Details & resolution
+    const sampleCase = store.interventions()[0];
+    store.openInterventionDetails(sampleCase);
+    expect(store.selectedInterventionCase()?.id).toBe(sampleCase.id);
+
+    store.updateInterventionProgress(sampleCase.id, 85);
+    const progressed = store
+      .interventions()
+      .find((c) => c.id === sampleCase.id);
+    expect(progressed?.progress).toBe(85);
+
+    const initialResolved = store.interventionsSummaryMetrics().resolvedCases;
+    store.resolveInterventionCase(sampleCase.id);
+    const resolved = store.interventions().find((c) => c.id === sampleCase.id);
+    expect(resolved?.status).toBe('Resolved');
+    expect(store.interventionsSummaryMetrics().resolvedCases).toBe(
+      initialResolved + 1,
+    );
+
+    store.closeInterventionDetails();
+    expect(store.selectedInterventionCase()).toBeNull();
+  });
+
+  it('should manage resources state, filters, and mutations correctly', () => {
+    // Initial metrics matching design (.design/SCHOOL ADMIN/Resources_SA.png)
+    expect(store.resourcesSummaryMetrics().totalResources).toBe(1248);
+    expect(store.resourcesSummaryMetrics().approvedResources).toBe(842);
+    expect(store.resourcesSummaryMetrics().pendingReview).toBe(186);
+    expect(store.resourcesSummaryMetrics().lowDataResources).toBe(72);
+    expect(store.resourcesSummaryMetrics().resourceGaps).toBe(68);
+
+    // Initial sidebar summary
+    expect(store.resourcesSidebarSummary().totalUploaded).toBe(1248);
+    expect(store.resourcesSidebarSummary().approved).toBe(842);
+    expect(store.resourcesSidebarSummary().pendingReview).toBe(186);
+    expect(store.resourcesSidebarSummary().sharedWithTeachers).toBe(1036);
+    expect(store.resourcesSidebarSummary().sharedWithLearners).toBe(892);
+    expect(store.resourceAttentionItems().length).toBe(4);
+
+    // Tab default is 'library'
+    expect(store.activeResourcesTab()).toBe('library');
+    expect(store.paginatedResources().length).toBe(10);
+    expect(store.paginatedResources()[0].title).toBe(
+      'Whole Numbers Lesson Note',
+    );
+
+    // Switch tab to 'queue'
+    store.setActiveResourcesTab('queue');
+    expect(store.activeResourcesTab()).toBe('queue');
+    expect(
+      store
+        .filteredResources()
+        .every((r) => r.approvalStatus === 'Pending Review'),
+    ).toBe(true);
+
+    // Switch tab to 'templates'
+    store.setActiveResourcesTab('templates');
+    expect(store.activeResourcesTab()).toBe('templates');
+    expect(
+      store.filteredResources().every((r) => r.resourceType === 'Template'),
+    ).toBe(true);
+
+    // Reset tab to 'library'
+    store.setActiveResourcesTab('library');
+
+    // Filter by class
+    store.setResourceClassFilter('JSS 1A');
+    expect(
+      store.filteredResources().every((r) => r.className === 'JSS 1A'),
+    ).toBe(true);
+    store.setResourceClassFilter('All Classes');
+
+    // Filter by subject
+    store.setResourceSubjectFilter('Mathematics');
+    expect(
+      store.filteredResources().every((r) => r.subject === 'Mathematics'),
+    ).toBe(true);
+    store.setResourceSubjectFilter('All Subjects');
+
+    // Search query
+    store.setResourceSearchQuery('Infographic');
+    expect(
+      store
+        .filteredResources()
+        .every(
+          (r) =>
+            r.title.toLowerCase().includes('infographic') ||
+            r.resourceType.toLowerCase().includes('infographic'),
+        ),
+    ).toBe(true);
+    store.setResourceSearchQuery('');
+
+    // Pagination
+    store.setResourcePage(2);
+    expect(store.resourcePage()).toBe(2);
+    store.setResourcePage(1);
+
+    // Upload resource modal & mutation
+    expect(store.isUploadResourceModalOpen()).toBe(false);
+    store.openUploadResourceModal();
+    expect(store.isUploadResourceModalOpen()).toBe(true);
+
+    const initialTotal = store.resources().length;
+    store.uploadResource({
+      title: 'Quadratic Equations Worksheet',
+      className: 'SSS 2A',
+      subject: 'Mathematics',
+      week: 'Week 4',
+      topic: 'Algebra',
+      resourceType: 'Worksheet',
+      audience: 'Learners',
+      format: 'PDF',
+      isLowDataVersion: true,
+      description: 'Practice worksheet for factoring quadratic equations.',
+    });
+    expect(store.isUploadResourceModalOpen()).toBe(false);
+    expect(store.resources().length).toBe(initialTotal + 1);
+    expect(store.resources()[0].title).toBe('Quadratic Equations Worksheet');
+    expect(store.resources()[0].approvalStatus).toBe('Pending Review');
+
+    // Approve resource
+    const pendingItem = store.resources()[0];
+    const initialApproved = store.resourcesSummaryMetrics().approvedResources;
+    store.approveResource(pendingItem.id);
+    expect(
+      store.resources().find((r) => r.id === pendingItem.id)?.approvalStatus,
+    ).toBe('Approved');
+    expect(store.resourcesSummaryMetrics().approvedResources).toBe(
+      initialApproved + 1,
+    );
+
+    // Link delivery pack modal & mutation
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(false);
+    store.openLinkDeliveryPackModal(pendingItem);
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(true);
+    store.linkResourceToDeliveryPack({
+      resourceId: pendingItem.id,
+      deliveryPackId: 'SSS 2A - Math W4',
+      className: 'SSS 2A',
+      subject: 'Mathematics',
+      week: 'Week 4',
+    });
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(false);
+    expect(
+      store.resources().find((r) => r.id === pendingItem.id)
+        ?.linkedDeliveryPack,
+    ).toBe('SSS 2A - Math W4');
+
+    // Details modal
+    store.openResourceDetails(pendingItem);
+    expect(store.selectedResourceItem()?.id).toBe(pendingItem.id);
+    store.closeResourceDetails();
+    expect(store.selectedResourceItem()).toBeNull();
+
+    // Export report
+    expect(store.isExportResourceModalOpen()).toBe(false);
+    store.openExportResourceModal();
+    expect(store.isExportResourceModalOpen()).toBe(true);
+    store.exportResourceReport('CSV');
+    expect(store.isExportResourceModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('CSV');
+  });
+
+  it('manages communication state and mutations', () => {
+    // Initial summary metrics (.design/SCHOOL ADMIN/Communication_SA.png)
+    expect(store.communicationSummaryMetrics().totalMessagesSent).toBe(428);
+    expect(store.communicationSummaryMetrics().announcementsPublished).toBe(24);
+    expect(store.communicationSummaryMetrics().parentCommunications).toBe(276);
+    expect(store.communicationSummaryMetrics().pendingReplies).toBe(37);
+
+    // Initial sidebar summary & attention items
+    expect(store.communicationSidebarSummary().messagesThisWeek).toBe(96);
+    expect(store.communicationSidebarSummary().parentRecipients).toBe(2184);
+    expect(store.communicationSidebarSummary().teachersReached).toBe(156);
+    expect(store.communicationSidebarSummary().deliveryRate).toBe(94.2);
+    expect(store.communicationAttentionItems().length).toBe(3);
+
+    // Default tab is 'announcements'
+    expect(store.activeCommunicationTab()).toBe('announcements');
+    expect(store.filteredCommunicationMessages().length).toBeGreaterThanOrEqual(
+      6,
+    );
+
+    // Switch tab to 'teacher-messages'
+    store.setActiveCommunicationTab('teacher-messages');
+    expect(store.activeCommunicationTab()).toBe('teacher-messages');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every(
+          (m) =>
+            m.tab === 'teacher-messages' || m.audience.includes('Teachers'),
+        ),
+    ).toBe(true);
+
+    // Switch tab to 'parent-messages'
+    store.setActiveCommunicationTab('parent-messages');
+    expect(store.activeCommunicationTab()).toBe('parent-messages');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every(
+          (m) => m.tab === 'parent-messages' || m.audience.includes('Parents'),
+        ),
+    ).toBe(true);
+
+    // Switch tab to 'logs'
+    store.setActiveCommunicationTab('logs');
+    expect(store.activeCommunicationTab()).toBe('logs');
+    expect(store.filteredCommunicationMessages().length).toBe(
+      store.communicationMessages().length,
+    );
+
+    // Reset to announcements tab
+    store.setActiveCommunicationTab('announcements');
+
+    // Search query filter
+    store.setCommunicationSearchQuery('PTA');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .some((m) => m.messageTitle.includes('PTA')),
+    ).toBe(true);
+    store.setCommunicationSearchQuery('');
+
+    // Audience filter
+    store.setCommunicationAudienceFilter('All Parents');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.audience === 'All Parents'),
+    ).toBe(true);
+    store.setCommunicationAudienceFilter('All Audiences');
+
+    // Category filter
+    store.setCommunicationCategoryFilter('Events');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.category === 'Events'),
+    ).toBe(true);
+    store.setCommunicationCategoryFilter('All Categories');
+
+    // Status filter
+    store.setCommunicationStatusFilter('Delivered');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.deliveryStatus === 'Delivered'),
+    ).toBe(true);
+    store.setCommunicationStatusFilter('All Statuses');
+
+    // Attention item filter toggle
+    const failedAttention = store
+      .communicationAttentionItems()
+      .find((a) => a.filterType === 'failed');
+    if (failedAttention) {
+      store.selectCommunicationAttentionItem(failedAttention);
+      expect(store.selectedCommunicationAttentionItem()?.id).toBe(
+        failedAttention.id,
+      );
+      expect(
+        store
+          .filteredCommunicationMessages()
+          .every((m) => m.deliveryStatus === 'Failed'),
+      ).toBe(true);
+
+      // Deselect by clicking again
+      store.selectCommunicationAttentionItem(failedAttention);
+      expect(store.selectedCommunicationAttentionItem()).toBeNull();
+    }
+
+    // Pagination
+    store.setCommunicationPage(2);
+    expect(store.communicationPage()).toBe(2);
+    store.setCommunicationPage(1);
+
+    // Create Announcement Modal & Mutation
+    expect(store.isCreateAnnouncementModalOpen()).toBe(false);
+    store.openCreateAnnouncementModal();
+    expect(store.isCreateAnnouncementModalOpen()).toBe(true);
+
+    const initialTotal = store.communicationMessages().length;
+    const initialAnnouncements =
+      store.communicationSummaryMetrics().announcementsPublished;
+    store.createAnnouncement({
+      title: 'Inter-House Sports Competition Notice',
+      audience: 'All Students & Parents',
+      category: 'Events',
+      channels: ['In-App', 'Email'],
+      body: 'The annual inter-house sports competition will hold on June 12.',
+    });
+    expect(store.isCreateAnnouncementModalOpen()).toBe(false);
+    expect(store.communicationMessages().length).toBe(initialTotal + 1);
+    expect(store.communicationMessages()[0].messageTitle).toBe(
+      'Inter-House Sports Competition Notice',
+    );
+    expect(store.communicationSummaryMetrics().announcementsPublished).toBe(
+      initialAnnouncements + 1,
+    );
+
+    // Send Parent Message Modal & Mutation
+    expect(store.isSendParentMessageModalOpen()).toBe(false);
+    store.openSendParentMessageModal();
+    expect(store.isSendParentMessageModalOpen()).toBe(true);
+
+    const initialParentComm =
+      store.communicationSummaryMetrics().parentCommunications;
+    store.sendParentMessage({
+      className: 'JSS 1A',
+      recipientAudience: 'Selected Parents',
+      subject: 'Special Science Workshop Invitation',
+      category: 'Academics',
+      body: 'Your ward has been selected for the STEM robotics clinic.',
+      priority: 'Normal',
+    });
+    expect(store.isSendParentMessageModalOpen()).toBe(false);
+    expect(store.communicationSummaryMetrics().parentCommunications).toBe(
+      initialParentComm + 1,
+    );
+
+    // Message details modal
+    const testMsg = store.communicationMessages()[0];
+    store.openMessageDetails(testMsg);
+    expect(store.selectedCommunicationMessage()?.id).toBe(testMsg.id);
+    store.closeMessageDetails();
+    expect(store.selectedCommunicationMessage()).toBeNull();
+
+    // Resend failed message
+    const failedMsg = store
+      .communicationMessages()
+      .find((m) => m.deliveryStatus === 'Failed');
+    if (failedMsg) {
+      store.resendFailedMessage(failedMsg.id);
+      expect(
+        store.communicationMessages().find((m) => m.id === failedMsg.id)
+          ?.deliveryStatus,
+      ).toBe('Delivered');
+    }
+
+    // Schedule blast modal toggle
+    expect(store.isScheduleBlastModalOpen()).toBe(false);
+    store.openScheduleBlastModal();
+    expect(store.isScheduleBlastModalOpen()).toBe(true);
+    store.closeScheduleBlastModal();
+    expect(store.isScheduleBlastModalOpen()).toBe(false);
+
+    // Export communication report
+    expect(store.isExportCommunicationModalOpen()).toBe(false);
+    store.openExportCommunicationModal();
+    expect(store.isExportCommunicationModalOpen()).toBe(true);
+    store.exportCommunicationReport('PDF');
+    expect(store.isExportCommunicationModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('PDF');
+  });
+
+  it('manages settings and permissions state, dirty tracking, filters, and mutations', () => {
+    // Initial KPI Metrics
+    expect(store.settingsSummaryMetrics().totalRoles).toBe(12);
+    expect(store.settingsSummaryMetrics().activePermissionSets).toBe(24);
+    expect(store.settingsSummaryMetrics().pendingApprovalChanges).toBe(8);
+    expect(store.settingsSummaryMetrics().twoFactorEnabled).toBe(87);
+    expect(store.settingsSummaryMetrics().auditAlerts).toBe(3);
+
+    // Initial General Settings
+    expect(store.activeSettingsTab()).toBe('general');
+    expect(store.generalSettings().schoolName).toBe('Greenfield Academy');
+    expect(store.generalSettings().portalName).toBe('Learno School Portal');
+    expect(store.generalSettings().primaryColor).toBe('#6D28D9');
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+
+    // Initial Sidebar Summaries
+    expect(store.generalSettingsSummary().length).toBe(6);
+    expect(store.generalSettingsAttentionItems().length).toBe(3);
+    expect(store.permissionSidebarSummary().activeRoles).toBe(9);
+    expect(store.permissionSidebarSummary().customRoles).toBe(5);
+    expect(store.permissionAttentionItems().length).toBe(4);
+
+    // Dirty state tracking & Save
+    store.updateGeneralSettings({
+      schoolName: 'Greenfield International Academy',
+    });
+    expect(store.isGeneralSettingsDirty()).toBe(true);
+    store.saveGeneralSettings();
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+    expect(store.generalSettings().schoolName).toBe(
+      'Greenfield International Academy',
+    );
+    expect(store.setupSaveStatus()).toContain('Settings saved successfully');
+
+    // Discard mutation
+    store.updateGeneralSettings({ phone: '+1 (555) 999-8888' });
+    expect(store.isGeneralSettingsDirty()).toBe(true);
+    expect(store.isConfirmDiscardModalOpen()).toBe(false);
+    store.openDiscardConfirmModal();
+    expect(store.isConfirmDiscardModalOpen()).toBe(true);
+    store.discardGeneralSettings();
+    expect(store.isConfirmDiscardModalOpen()).toBe(false);
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+    expect(store.generalSettings().phone).toBe('+1 (555) 123-4567');
+
+    // Switch Tab to Roles & Permissions
+    store.setActiveSettingsTab('roles-permissions');
+    expect(store.activeSettingsTab()).toBe('roles-permissions');
+    expect(store.schoolRoles().length).toBe(6);
+    expect(store.filteredSchoolRoles().length).toBe(6);
+
+    // Search Filter
+    store.setRoleSearchQuery('Vice Principal');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe(
+      'Vice Principal Academics',
+    );
+    store.setRoleSearchQuery('');
+
+    // Access Scope Filter
+    store.setRoleAccessScopeFilter('Assigned Classes');
+    expect(store.filteredSchoolRoles().length).toBe(2);
+    expect(store.filteredSchoolRoles().map((r) => r.name)).toContain('Teacher');
+    expect(store.filteredSchoolRoles().map((r) => r.name)).toContain(
+      'Class Teacher',
+    );
+    store.setRoleAccessScopeFilter('All Scopes');
+
+    // Permission Level Filter
+    store.setRolePermissionLevelFilter('Full Access');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe('School Admin');
+    store.setRolePermissionLevelFilter('All Levels');
+
+    // Status Filter
+    store.setRoleStatusFilter('Review Needed');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe('Class Teacher');
+    store.setRoleStatusFilter('All Statuses');
+
+    // Attention Item Selection
+    const pendingItem = store
+      .permissionAttentionItems()
+      .find((i) => i.id === 'att-perm-1');
+    if (pendingItem) {
+      store.selectSettingsAttentionItem(pendingItem);
+      expect(store.selectedSettingsAttentionItem()?.id).toBe(pendingItem.id);
+      expect(store.filteredSchoolRoles().length).toBe(1);
+      expect(store.filteredSchoolRoles()[0].status).toBe('Review Needed');
+      // Toggle off
+      store.selectSettingsAttentionItem(pendingItem);
+      expect(store.selectedSettingsAttentionItem()).toBeNull();
+      expect(store.filteredSchoolRoles().length).toBe(6);
+    }
+
+    // Pagination
+    store.setRolePageSize(4);
+    expect(store.rolesTotalPages()).toBe(2);
+    expect(store.paginatedSchoolRoles().length).toBe(4);
+    store.setRolePage(2);
+    expect(store.rolePage()).toBe(2);
+    expect(store.paginatedSchoolRoles().length).toBe(2);
+    store.setRolePageSize(10);
+    expect(store.rolePage()).toBe(1);
+
+    // Role Details Modal
+    const roleSample = store.schoolRoles()[0];
+    expect(store.selectedRole()).toBeNull();
+    store.openRoleDetails(roleSample);
+    expect(store.selectedRole()?.id).toBe(roleSample.id);
+    store.closeRoleDetails();
+    expect(store.selectedRole()).toBeNull();
+
+    // Create Role Modal & Mutation
+    expect(store.isCreateRoleModalOpen()).toBe(false);
+    store.openCreateRoleModal();
+    expect(store.isCreateRoleModalOpen()).toBe(true);
+
+    const initialTotalRoles = store.settingsSummaryMetrics().totalRoles;
+    const initialCustomRoles = store.permissionSidebarSummary().customRoles;
+    store.createRole({
+      name: 'Department Head',
+      description: 'Departmental leadership and curriculum review',
+      accessScope: 'All School',
+      permissionLevel: 'High Access',
+      usersAssigned: 8,
+    });
+    expect(store.isCreateRoleModalOpen()).toBe(false);
+    expect(store.settingsSummaryMetrics().totalRoles).toBe(
+      initialTotalRoles + 1,
+    );
+    expect(store.permissionSidebarSummary().customRoles).toBe(
+      initialCustomRoles + 1,
+    );
+    expect(store.schoolRoles()[0].name).toBe('Department Head');
+
+    // Export Permission Report Modal
+    expect(store.isExportPermissionModalOpen()).toBe(false);
+    store.openExportPermissionModal();
+    expect(store.isExportPermissionModalOpen()).toBe(true);
+    store.exportPermissionReport('CSV');
+    expect(store.isExportPermissionModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('CSV');
   });
 });

@@ -1,0 +1,225 @@
+@if (metrics(); as m) {
+<div class="metrics-grid">
+  <!-- 1. Total Roles -->
+  <div class="metric-card" data-testid="metric-total-roles">
+    <div class="metric-icon-box icon-purple">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.totalRoles | number }}</span>
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.totalRolesChange }}% vs last term
+        </span>
+      </div>
+      <span class="metric-label">Total Roles</span>
+    </div>
+  </div>
+
+  <!-- 2. Active Permission Sets -->
+  <div class="metric-card" data-testid="metric-active-permissions">
+    <div class="metric-icon-box icon-green">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <polyline points="9 12 11 14 15 10"></polyline>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.activePermissionSets | number }}</span>
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.activePermissionSetsChange }}% vs last term
+        </span>
+      </div>
+      <span class="metric-label">Active Permission Sets</span>
+    </div>
+  </div>
+
+  <!-- 3. Pending Approval Changes -->
+  <div class="metric-card" data-testid="metric-pending-approvals">
+    <div class="metric-icon-box icon-orange">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value"
+          >{{ m.pendingApprovalChanges | number }}</span
+        >
+        <span class="trend-badge trend-down">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="7" x2="17" y2="17"></line>
+            <polyline points="17 7 17 17 7 17"></polyline>
+          </svg>
+          {{ m.pendingApprovalChangesChange }}% vs last term
+        </span>
+      </div>
+      <span class="metric-label">Pending Approval Changes</span>
+    </div>
+  </div>
+
+  <!-- 4. Two-Factor Enabled -->
+  <div class="metric-card" data-testid="metric-two-factor">
+    <div class="metric-icon-box icon-blue">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.twoFactorEnabled }}%</span>
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.twoFactorEnabledChange }}% vs last term
+        </span>
+      </div>
+      <span class="metric-label">Two-Factor Enabled</span>
+    </div>
+  </div>
+
+  <!-- 5. Audit Alerts -->
+  <div class="metric-card" data-testid="metric-audit-alerts">
+    <div class="metric-icon-box icon-red">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+        ></path>
+        <line x1="12" y1="9" x2="12" y2="13"></line>
+        <line x1="12" y1="17" x2="12.01" y2="17"></line>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.auditAlerts | number }}</span>
+        <span class="trend-badge trend-down">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="7" x2="17" y2="17"></line>
+            <polyline points="17 7 17 17 7 17"></polyline>
+          </svg>
+          {{ m.auditAlertsChange }}% vs last term
+        </span>
+      </div>
+      <span class="metric-label">Audit Alerts</span>
+    </div>
+  </div>
+</div>
+}

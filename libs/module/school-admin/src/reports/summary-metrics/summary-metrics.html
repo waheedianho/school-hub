@@ -1,0 +1,237 @@
+<section class="metrics-grid" aria-label="School Performance Overview Metrics">
+  <!-- School Average -->
+  <article class="metric-card" data-testid="metric-school-average">
+    <div class="card-header">
+      <span class="card-title">School Average</span>
+      <div class="icon-circle icon-indigo" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+          <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().schoolAverage }}%</span>
+      <span class="badge badge-green">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+        +{{ metrics().schoolAverageChange }}%
+      </span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">Term 3 target: 75%</span>
+    </div>
+  </article>
+
+  <!-- Total Learners Reported -->
+  <article class="metric-card" data-testid="metric-learners-reported">
+    <div class="card-header">
+      <span class="card-title">Total Learners Reported</span>
+      <div class="icon-circle icon-teal" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().totalLearnersReported }}</span>
+      <span class="badge badge-teal">100% reported</span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">Across 12 classes</span>
+    </div>
+  </article>
+
+  <!-- Classes Analysed -->
+  <article class="metric-card" data-testid="metric-classes-analysed">
+    <div class="card-header">
+      <span class="card-title">Classes Analysed</span>
+      <div class="icon-circle icon-purple" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().classesAnalysed }}</span>
+      <span class="badge badge-purple">12 of 12 complete</span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">JSS 1A to SSS 3B</span>
+    </div>
+  </article>
+
+  <!-- Subjects Analysed -->
+  <article class="metric-card" data-testid="metric-subjects-analysed">
+    <div class="card-header">
+      <span class="card-title">Subjects Analysed</span>
+      <div class="icon-circle icon-indigo" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path
+            d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+          ></path>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().subjectsAnalysed }}</span>
+      <span class="badge badge-indigo">Core & Electives</span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">Full school curriculum</span>
+    </div>
+  </article>
+
+  <!-- Attendance Average -->
+  <article class="metric-card" data-testid="metric-attendance-average">
+    <div class="card-header">
+      <span class="card-title">Attendance Average</span>
+      <div class="icon-circle icon-green" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().attendanceAverage }}%</span>
+      <span class="badge badge-green">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+        +{{ metrics().attendanceAverageChange }}%
+      </span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">Benchmark: 90%</span>
+    </div>
+  </article>
+
+  <!-- Report Completion Rate -->
+  <article class="metric-card" data-testid="metric-completion-rate">
+    <div class="card-header">
+      <span class="card-title">Report Completion Rate</span>
+      <div class="icon-circle icon-amber" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+      </div>
+    </div>
+    <div class="metric-body">
+      <span class="metric-value">{{ metrics().reportCompletionRate }}%</span>
+      <span class="badge badge-amber">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="19" x2="12" y2="5"></line>
+          <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+        +{{ metrics().reportCompletionRateChange }}%
+      </span>
+    </div>
+    <div class="metric-footer">
+      <span class="subtext">344 of 386 approved</span>
+    </div>
+  </article>
+</section>

@@ -1,0 +1,149 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="share-modal-title"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="share-modal-title" class="modal-title">
+        Share Report with Leadership
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close share dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p class="share-description">
+        Transmit the Term 3 School Performance Report and moderation summary to
+        authorized leadership roles via encrypted portal notification.
+      </p>
+
+      <!-- Recipients -->
+      <div class="form-group">
+        <span class="form-label">Leadership Recipients</span>
+        <div class="recipients-list">
+          <label class="recipient-item">
+            <input
+              type="checkbox"
+              [checked]="recipients().includes('Principal & Head of School')"
+              (change)="toggleRecipient('Principal & Head of School')"
+            />
+            <div class="recipient-details">
+              <span class="r-title">Principal & Head of School</span>
+              <span class="r-desc"
+                >Executive sign-off and final school-wide audit</span
+              >
+            </div>
+          </label>
+
+          <label class="recipient-item">
+            <input
+              type="checkbox"
+              [checked]="recipients().includes('Board of Governors')"
+              (change)="toggleRecipient('Board of Governors')"
+            />
+            <div class="recipient-details">
+              <span class="r-title">Board of Governors</span>
+              <span class="r-desc"
+                >Governance oversight, KPI benchmarking & term review</span
+              >
+            </div>
+          </label>
+
+          <label class="recipient-item">
+            <input
+              type="checkbox"
+              [checked]="recipients().includes('Academic Quality Committee')"
+              (change)="toggleRecipient('Academic Quality Committee')"
+            />
+            <div class="recipient-details">
+              <span class="r-title">Academic Quality Committee</span>
+              <span class="r-desc"
+                >Curriculum standards & teacher evaluation review</span
+              >
+            </div>
+          </label>
+
+          <label class="recipient-item">
+            <input
+              type="checkbox"
+              [checked]="recipients().includes('Ministry Inspection Liaison')"
+              (change)="toggleRecipient('Ministry Inspection Liaison')"
+            />
+            <div class="recipient-details">
+              <span class="r-title">Ministry Inspection Liaison</span>
+              <span class="r-desc"
+                >External regulatory reporting and certification</span
+              >
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Optional Executive Note -->
+      <div class="form-group">
+        <label class="form-label" for="executiveNote"
+          >Executive Note (Optional)</label
+        >
+        <textarea
+          id="executiveNote"
+          class="form-textarea"
+          rows="3"
+          placeholder="Add context or highlights for leadership..."
+          [value]="executiveNote()"
+          (input)="onNoteChange($event)"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-send"
+        [disabled]="recipients().length === 0"
+        (click)="onSubmit()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+        Send to ({{ recipients().length }}) Recipients
+      </button>
+    </div>
+  </div>
+</div>
+}

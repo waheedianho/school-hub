@@ -1,0 +1,188 @@
+@if (selectedItem(); as res) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="resource-details-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="title-with-pill">
+        <h3 id="resource-details-title" class="modal-title">
+          Resource Details
+        </h3>
+        <span
+          class="status-pill"
+          [class.status-approved]="res.approvalStatus === 'Approved'"
+          [class.status-pending]="res.approvalStatus === 'Pending Review'"
+          [class.status-draft]="res.approvalStatus === 'Draft'"
+          [class.status-missing]="res.approvalStatus === 'Missing Link'"
+        >
+          {{ res.approvalStatus }}
+        </span>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- Resource Header Banner -->
+      <div class="resource-header-card">
+        <div
+          class="format-icon-box"
+          [class.format-pdf]="res.format === 'PDF'"
+          [class.format-mp4]="res.format === 'MP4'"
+          [class.format-docx]="res.format === 'DOCX'"
+          [class.format-pptx]="res.format === 'PPTX'"
+          [class.format-png]="res.format === 'PNG'"
+        >
+          {{ res.format }}
+        </div>
+        <div class="resource-meta">
+          <h4 class="resource-name">{{ res.title }}</h4>
+          <div class="resource-subinfo">
+            <span class="class-badge">{{ res.className }}</span>
+            <span class="subject-badge">{{ res.subject }}</span>
+            @if (res.fileSize) {
+            <span class="size-badge">{{ res.fileSize }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Grid -->
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-label">Resource Type</span>
+          <span class="info-value font-medium">{{ res.resourceType }}</span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Audience</span>
+          <span class="info-value">
+            @if (res.audience === 'Teachers') { Teaching Staff Only } @else if
+            (res.audience === 'Learners') { Learners & Students } @else {
+            Teachers & Learners }
+          </span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Curriculum Alignment</span>
+          <span class="info-value">
+            {{ res.week }} @if (res.topic) { — {{ res.topic }} }
+          </span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Linked Delivery Pack</span>
+          <span class="info-value">
+            @if (res.linkedDeliveryPack) {
+            <span class="text-indigo-600 font-medium"
+              >↗ {{ res.linkedDeliveryPack }}</span
+            >
+            } @else {
+            <span class="text-slate-400">Not Linked (Standalone)</span>
+            }
+          </span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Uploaded By</span>
+          <span class="info-value">{{ res.uploadedBy }}</span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Last Updated</span>
+          <span class="info-value">{{ res.lastUpdated }}</span>
+        </div>
+      </div>
+
+      <!-- Low-Data Status -->
+      <div class="low-data-banner" [class.is-low-data]="res.isLowData">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+          <path d="M12 12v6"></path>
+          <path d="m15 15-3 3-3-3"></path>
+        </svg>
+        @if (res.isLowData) {
+        <span
+          >Optimized for low-bandwidth environments (compressed lightweight
+          asset).</span
+        >
+        } @else {
+        <span
+          >Standard media resolution (full quality asset; low-data version
+          recommended).</span
+        >
+        }
+      </div>
+
+      <!-- Description / Pedagogical Notes -->
+      @if (res.description) {
+      <div class="description-section">
+        <span class="section-title">Pedagogical Notes & Usage Guidelines</span>
+        <p class="description-text">{{ res.description }}</p>
+      </div>
+      }
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <div class="footer-left">
+        <button
+          type="button"
+          class="btn-link-pack"
+          (click)="onLinkDeliveryPack(res)"
+        >
+          Link to Delivery Pack
+        </button>
+      </div>
+
+      <div class="footer-right">
+        @if (res.approvalStatus === 'Pending Review') {
+        <button type="button" class="btn-reject" (click)="onReject(res.id)">
+          Mark as Draft
+        </button>
+        <button type="button" class="btn-approve" (click)="onApprove(res.id)">
+          Approve Resource
+        </button>
+        }
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+}

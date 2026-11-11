@@ -1,0 +1,180 @@
+@if (metrics(); as m) {
+<div class="metrics-grid">
+  <!-- 1. Total Messages Sent -->
+  <div class="metric-card" data-testid="metric-total-messages">
+    <div class="metric-icon-box icon-purple">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.totalMessagesSent | number }}</span>
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.totalMessagesSentChange }}% vs last week
+        </span>
+      </div>
+      <span class="metric-label">Total Messages Sent</span>
+    </div>
+  </div>
+
+  <!-- 2. Announcements Published -->
+  <div class="metric-card" data-testid="metric-announcements-published">
+    <div class="metric-icon-box icon-green">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m3 11 18-5v12L3 14v-3z"></path>
+        <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value"
+          >{{ m.announcementsPublished | number }}</span
+        >
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.announcementsPublishedChange }}% vs last week
+        </span>
+      </div>
+      <span class="metric-label">Announcements Published</span>
+    </div>
+  </div>
+
+  <!-- 3. Parent Communications -->
+  <div class="metric-card" data-testid="metric-parent-communications">
+    <div class="metric-icon-box icon-blue">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+        <circle cx="9" cy="7" r="4"></circle>
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.parentCommunications | number }}</span>
+        <span class="trend-badge trend-up">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+          +{{ m.parentCommunicationsChange }}% vs last week
+        </span>
+      </div>
+      <span class="metric-label">Parent Communications</span>
+    </div>
+  </div>
+
+  <!-- 4. Pending Replies -->
+  <div class="metric-card" data-testid="metric-pending-replies">
+    <div class="metric-icon-box icon-orange">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+        ></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <div class="value-row">
+        <span class="metric-value">{{ m.pendingReplies | number }}</span>
+        <span class="trend-badge trend-down">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="7" y1="7" x2="17" y2="17"></line>
+            <polyline points="17 7 17 17 7 17"></polyline>
+          </svg>
+          {{ m.pendingRepliesChange }}% vs last week
+        </span>
+      </div>
+      <span class="metric-label">Pending Replies</span>
+    </div>
+  </div>
+</div>
+}

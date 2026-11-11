@@ -1,0 +1,150 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="export-modal-title"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 id="export-modal-title" class="modal-title">
+        Export School Performance Report
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close export dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <p class="export-description">
+        Generate an official school-wide terminal performance and continuous
+        assessment report for distribution or archival.
+      </p>
+
+      <!-- Report Scope / Type -->
+      <div class="form-group">
+        <label class="form-label" for="reportTypeSelect">Report Scope</label>
+        <select
+          id="reportTypeSelect"
+          class="form-select"
+          [value]="selectedReportType()"
+          (change)="setReportType($any($event.target).value)"
+        >
+          <option value="Comprehensive School Performance Report">
+            Comprehensive School Performance Report (Full Metrics)
+          </option>
+          <option value="Ministry Standard Terminal Report">
+            Ministry Standard Terminal Report (Official Format)
+          </option>
+          <option value="Class Stream Comparative Summary">
+            Class Stream Comparative Summary
+          </option>
+          <option value="Subject Department Performance Analysis">
+            Subject Department Performance Analysis
+          </option>
+        </select>
+      </div>
+
+      <!-- Format Options -->
+      <div class="form-group">
+        <span class="form-label">Export Format</span>
+        <div class="format-options">
+          <button
+            type="button"
+            class="format-btn"
+            [class.active]="selectedFormat() === 'PDF'"
+            (click)="setFormat('PDF')"
+          >
+            <div class="format-icon pdf-icon">PDF</div>
+            <span class="format-name">PDF Document</span>
+            <span class="format-hint">Print-ready layout</span>
+          </button>
+
+          <button
+            type="button"
+            class="format-btn"
+            [class.active]="selectedFormat() === 'Excel'"
+            (click)="setFormat('Excel')"
+          >
+            <div class="format-icon excel-icon">XLS</div>
+            <span class="format-name">Excel Workbook</span>
+            <span class="format-hint">Formula & data sheets</span>
+          </button>
+
+          <button
+            type="button"
+            class="format-btn"
+            [class.active]="selectedFormat() === 'CSV'"
+            (click)="setFormat('CSV')"
+          >
+            <div class="format-icon csv-icon">CSV</div>
+            <span class="format-name">CSV Archive</span>
+            <span class="format-hint">Raw tabular dataset</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Inclusions Checkboxes -->
+      <div class="form-group">
+        <span class="form-label">Include Data Sections</span>
+        <div class="checkbox-group">
+          <label class="checkbox-label">
+            <input type="checkbox" checked />
+            <span>Full class stream breakdown (12 classes)</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" checked />
+            <span>Subject performance and improvement trends</span>
+          </label>
+          <label class="checkbox-label">
+            <input type="checkbox" checked />
+            <span>Attendance correlations and remediation lists</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button type="button" class="btn-export" (click)="onSubmit()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Generate & Download {{ selectedFormat() }}
+      </button>
+    </div>
+  </div>
+</div>
+}

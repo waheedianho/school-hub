@@ -290,10 +290,12 @@ export interface InterventionCase {
   interventionType: string;
   assignedStaff: string;
   assignedStaffRole: string;
-  status: 'In Progress' | 'Under Review' | 'Resolved';
+  status: 'In Progress' | 'Monitoring' | 'Under Review' | 'Resolved';
   priority: 'High' | 'Medium' | 'Low';
   nextReviewDate: string;
   progress: number;
+  initials?: string;
+  notes?: string;
 }
 
 export interface SchoolProfile {
@@ -806,4 +808,535 @@ export interface GradeDistributionBucket {
   learnersCount: number;
   percentage: number;
   tone: 'green' | 'orange' | 'red';
+}
+
+/**
+ * ============================================================================
+ * Reports & Report Cards Domain Models
+ * ============================================================================
+ */
+export type ReportTab =
+  | 'overview'
+  | 'academic-performance'
+  | 'attendance-engagement'
+  | 'subject-analysis'
+  | 'teacher-performance'
+  | 'interventions'
+  | 'export';
+
+export interface ReportsSummaryMetrics {
+  schoolAverage: number;
+  schoolAverageChange: number;
+  totalLearnersReported: number;
+  classesAnalysed: number;
+  subjectsAnalysed: number;
+  attendanceAverage: number;
+  attendanceAverageChange: number;
+  reportCompletionRate: number;
+  reportCompletionRateChange: number;
+}
+
+export interface TermPerformanceTrendPoint {
+  termName: string;
+  averageScore: number;
+}
+
+export interface ClassSubjectPerformance {
+  subject: string;
+  jss1Avg: number;
+  jss2Avg: number;
+  jss3Avg: number;
+}
+
+export interface SubjectPerformanceRow {
+  id: string;
+  subject: string;
+  schoolAverage: number;
+  highestClass: string;
+  highestScore: number;
+  lowestClass: string;
+  lowestScore: number;
+  improvementTrend: number;
+  completionRate: number;
+  status: 'Good' | 'Needs Attention' | 'Monitor';
+}
+
+export interface ReportsHighlightInsights {
+  topPerformingClass: {
+    className: string;
+    averageScore: number;
+    change: number;
+  };
+  mostImprovedSubject: {
+    subject: string;
+    improvement: number;
+  };
+  lowestAttendanceClass: {
+    className: string;
+    attendanceAverage: number;
+    change: number;
+  };
+  interventionSuccess: {
+    successRate: number;
+    studentsShowingImprovement: number;
+    change: number;
+  };
+}
+
+export interface ReportsSidebarSummary {
+  totalLearners: number;
+  totalTeachers: number;
+  subjectsTracked: number;
+  parentReportsShared: number;
+  approvalStatus: 'In Progress' | 'Approved' | 'Finalized' | 'Pending Review';
+}
+
+export interface PriorityAttentionArea {
+  id: string;
+  rank: number;
+  title: string;
+  category: 'academic' | 'completion' | 'attendance' | 'intervention';
+}
+
+export interface StudentSubjectScore {
+  subject: string;
+  caScore: number;
+  examScore: number;
+  totalScore: number;
+  grade: string;
+  teacherRemark: string;
+}
+
+export interface StudentReportCard {
+  id: string;
+  learnerName: string;
+  rollNo: string;
+  className: string;
+  term: string;
+  session: string;
+  overallScore: number;
+  overallGrade: string;
+  rankInClass: number;
+  totalInClass: number;
+  attendancePercentage: number;
+  conductRemark: string;
+  principalRemark: string;
+  subjectScores: StudentSubjectScore[];
+}
+
+export interface ClassReportCardSummary {
+  id: string;
+  className: string;
+  classLevel: string;
+  classTeacher: string;
+  totalLearners: number;
+  averageScore: number;
+  reportsGenerated: number;
+  reportsApproved: number;
+  parentDeliveryRate: number;
+  status: 'Approved' | 'In Progress' | 'Pending Approval' | 'Not Started';
+}
+
+/**
+ * ============================================================================
+ * Interventions Domain Models
+ * ============================================================================
+ */
+export type InterventionsTab =
+  | 'active'
+  | 'schedule'
+  | 'support-plans'
+  | 'resolved';
+
+export interface InterventionsSummaryMetrics {
+  learnersFlagged: number;
+  learnersFlaggedChange: number;
+  activeInterventions: number;
+  activeInterventionsChange: number;
+  overdueFollowUps: number;
+  overdueFollowUpsChange: number;
+  resolvedCases: number;
+  resolvedCasesChange: number;
+  interventionSuccessRate: number;
+  interventionSuccessRateChange: number;
+}
+
+export interface InterventionsSidebarSummary {
+  highPriorityCases: number;
+  remediationPlans: number;
+  parentMeetingsScheduled: number;
+  completedFollowUps: number;
+}
+
+export interface InterventionAttentionItem {
+  id: string;
+  rank: number;
+  title: string;
+  countText: string;
+  count: number;
+  tone: 'red' | 'amber';
+  filterType:
+    | 'overdue'
+    | 'declining-attendance'
+    | 'pending-followup'
+    | 'unresolved';
+}
+
+export interface InterventionInsightData {
+  commonConcern: {
+    title: string;
+    percentage: number;
+    change: number;
+  };
+  bestPerformingType: {
+    type: string;
+    successRate: number;
+    change: number;
+  };
+  classNeedingSupport: {
+    className: string;
+    activeCount: number;
+    change: number;
+  };
+  followUpCompletion: {
+    rate: number;
+    change: number;
+  };
+}
+
+export interface NewInterventionPlanFormData {
+  learnerName: string;
+  admissionNo: string;
+  className: string;
+  concernArea: string;
+  interventionType: string;
+  assignedStaff: string;
+  assignedStaffRole: string;
+  priority: 'High' | 'Medium' | 'Low';
+  nextReviewDate: string;
+  notes?: string;
+}
+
+export interface ScheduleParentMeetingFormData {
+  learnerName: string;
+  parentName: string;
+  parentPhone?: string;
+  className: string;
+  meetingDate: string;
+  meetingTime: string;
+  meetingType: 'In-Person' | 'Virtual';
+  agenda: string;
+}
+
+export interface AssignFollowUpFormData {
+  caseId: string;
+  learnerName: string;
+  assignedStaff: string;
+  assignedStaffRole?: string;
+  dueDate: string;
+  instructions: string;
+  followUpFrequency?: 'Weekly' | 'Bi-Weekly' | 'Monthly';
+}
+
+/**
+ * ============================================================================
+ * Resources Domain Models (.design/SCHOOL ADMIN/Resources_SA.png)
+ * ============================================================================
+ */
+export type ResourcesTab = 'library' | 'queue' | 'delivery' | 'templates';
+
+export interface ResourceItem {
+  id: string;
+  className: string;
+  subject: string;
+  week: string;
+  topic: string;
+  title: string;
+  resourceType:
+    | 'Lesson Note'
+    | 'Video'
+    | 'Worksheet'
+    | 'Marking Guide'
+    | 'Presentation'
+    | 'Infographic'
+    | 'Revision Sheet'
+    | 'Template'
+    | 'Reference Guide';
+  audience: 'Teachers' | 'Learners' | 'Both';
+  format: 'PDF' | 'MP4' | 'DOCX' | 'PPTX' | 'PNG';
+  fileSize?: string;
+  approvalStatus: 'Approved' | 'Pending Review' | 'Draft' | 'Missing Link';
+  linkedDeliveryPack?: string;
+  uploadedBy: string;
+  lastUpdated: string;
+  isLowData?: boolean;
+  downloadUrl?: string;
+  description?: string;
+}
+
+export interface ResourcesSummaryMetrics {
+  totalResources: number;
+  approvedResources: number;
+  pendingReview: number;
+  lowDataResources: number;
+  resourceGaps: number;
+}
+
+export interface ResourcesSidebarSummary {
+  totalUploaded: number;
+  approved: number;
+  pendingReview: number;
+  sharedWithTeachers: number;
+  sharedWithLearners: number;
+}
+
+export interface ResourceAttentionItem {
+  id: string;
+  count: number;
+  label: string;
+  tone: 'red' | 'amber';
+  filterType: 'queue' | 'gaps' | 'outdated' | 'low-data';
+}
+
+export interface UploadResourceFormData {
+  title: string;
+  className: string;
+  subject: string;
+  week: string;
+  topic: string;
+  resourceType: string;
+  audience: 'Teachers' | 'Learners' | 'Both';
+  format: 'PDF' | 'MP4' | 'DOCX' | 'PPTX' | 'PNG';
+  linkedDeliveryPack?: string;
+  isLowDataVersion?: boolean;
+  description?: string;
+}
+
+export interface LinkDeliveryPackFormData {
+  resourceId: string;
+  deliveryPackId: string;
+  className: string;
+  subject: string;
+  week: string;
+}
+
+/**
+ * ============================================================================
+ * Communication Domain Models (.design/SCHOOL ADMIN/Communication_SA.png)
+ * ============================================================================
+ */
+export type CommunicationTab =
+  | 'announcements'
+  | 'teacher-messages'
+  | 'parent-messages'
+  | 'logs';
+
+export type CommunicationAudience =
+  | 'All Students & Parents'
+  | 'All Parents'
+  | 'All Teachers & Staff'
+  | 'Selected Parents'
+  | 'All Students';
+
+export type CommunicationCategory =
+  | 'General'
+  | 'Academics'
+  | 'Events'
+  | 'Internal'
+  | 'Attendance'
+  | 'Emergency';
+
+export type CommunicationDeliveryStatus =
+  | 'Delivered'
+  | 'Sent'
+  | 'Scheduled'
+  | 'Draft'
+  | 'Failed';
+
+export interface CommunicationMessage {
+  id: string;
+  audience: CommunicationAudience;
+  messageTitle: string;
+  category: CommunicationCategory;
+  sentBy: string;
+  sentByInitials?: string;
+  deliveryStatus: CommunicationDeliveryStatus;
+  scheduledDate?: string;
+  scheduledTime?: string;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  tab: CommunicationTab;
+  body?: string;
+  recipientsCount?: number;
+  deliveredCount?: number;
+  failedCount?: number;
+  channels?: ('In-App' | 'Email' | 'SMS')[];
+  attachments?: string[];
+}
+
+export interface CommunicationSummaryMetrics {
+  totalMessagesSent: number;
+  totalMessagesSentChange: number;
+  announcementsPublished: number;
+  announcementsPublishedChange: number;
+  parentCommunications: number;
+  parentCommunicationsChange: number;
+  pendingReplies: number;
+  pendingRepliesChange: number;
+}
+
+export interface CommunicationSidebarSummary {
+  messagesThisWeek: number;
+  parentRecipients: number;
+  teachersReached: number;
+  deliveryRate: number;
+}
+
+export interface CommunicationAttentionItem {
+  id: string;
+  label: string;
+  count: number;
+  tone: 'red' | 'amber' | 'purple';
+  filterStatus?: CommunicationDeliveryStatus;
+  filterType?: 'failed' | 'drafts' | 'pending';
+}
+
+export interface CreateAnnouncementFormData {
+  title: string;
+  audience: CommunicationAudience;
+  category: CommunicationCategory;
+  channels: ('In-App' | 'Email' | 'SMS')[];
+  scheduleDate?: string;
+  scheduleTime?: string;
+  body: string;
+  isUrgent?: boolean;
+}
+
+export interface SendParentMessageFormData {
+  className: string;
+  recipientAudience: 'All Parents' | 'Selected Parents';
+  parentName?: string;
+  subject: string;
+  category: CommunicationCategory;
+  body: string;
+  priority: 'Normal' | 'High';
+}
+
+// Settings & Permissions Models (.design/SCHOOL ADMIN/Settings & Permission_SA.png & Settings & Permission II_SA.png)
+export type SettingsTab =
+  | 'general'
+  | 'roles-permissions'
+  | 'academic-policies'
+  | 'notifications'
+  | 'privacy-security'
+  | 'audit-logs';
+
+export interface SettingsSummaryMetrics {
+  totalRoles: number;
+  totalRolesChange: number;
+  activePermissionSets: number;
+  activePermissionSetsChange: number;
+  pendingApprovalChanges: number;
+  pendingApprovalChangesChange: number;
+  twoFactorEnabled: number;
+  twoFactorEnabledChange: number;
+  auditAlerts: number;
+  auditAlertsChange: number;
+}
+
+export interface GeneralSettingsForm {
+  schoolName: string;
+  schoolCode: string;
+  email: string;
+  phone: string;
+  address: string;
+  logoUrl?: string;
+  timeZone: string;
+  dateFormat: string;
+  language: string;
+  emailAlerts: boolean;
+  reportNotifications: boolean;
+  parentCommunication: boolean;
+  currentSession: string;
+  defaultTerm: string;
+  gradingScale: string;
+  namingConvention: string;
+  classStructure: string;
+  primaryColor: string;
+  portalName: string;
+  faviconUrl?: string;
+  autoSave: string;
+  archivePolicy: string;
+  defaultApprovalWorkflow: string;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  lastUpdatedBy: string;
+}
+
+export interface GeneralSettingsSummaryItem {
+  id: string;
+  label: string;
+  status: 'Complete' | 'Configured' | 'Pending';
+}
+
+export interface SettingsAttentionItem {
+  id: string;
+  label: string;
+  badge: 'Required' | 'Review' | 'Notice';
+  tone: 'red' | 'amber' | 'blue' | 'purple';
+  count?: number;
+  filterType?: string;
+}
+
+export type RoleAccessScope =
+  | 'All School'
+  | 'Assigned Classes'
+  | 'All Students'
+  | 'Own Children';
+
+export type RolePermissionLevel =
+  | 'Full Access'
+  | 'High Access'
+  | 'Moderate Access'
+  | 'Limited Access'
+  | 'Read Only';
+
+export type RoleStatus = 'Active' | 'Review Needed' | 'Restricted' | 'Inactive';
+
+export interface SchoolRole {
+  id: string;
+  name: string;
+  description: string;
+  initials?: string;
+  iconType?:
+    | 'admin'
+    | 'vice-principal'
+    | 'teacher'
+    | 'class-teacher'
+    | 'counselor'
+    | 'parent';
+  usersAssigned: number;
+  accessScope: RoleAccessScope;
+  permissionLevel: RolePermissionLevel;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  status: RoleStatus;
+  modules?: Record<string, boolean>;
+}
+
+export interface PermissionSidebarSummary {
+  activeRoles: number;
+  customRoles: number;
+  restrictedUsers: number;
+  auditLogsThisMonth: number;
+  lastPolicyReview: string;
+}
+
+export interface CreateRoleFormData {
+  name: string;
+  description: string;
+  accessScope: RoleAccessScope;
+  permissionLevel: RolePermissionLevel;
+  status?: RoleStatus;
+  usersAssigned?: number;
 }

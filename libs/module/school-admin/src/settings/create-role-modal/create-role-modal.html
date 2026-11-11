@@ -1,0 +1,207 @@
+@if (isOpen()) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-create-role"
+  >
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="icon-bubble">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <line x1="19" y1="8" x2="19" y2="14"></line>
+            <line x1="22" y1="11" x2="16" y2="11"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 id="modal-title-create-role" class="modal-title">
+            Create Custom Role
+          </h2>
+          <p class="modal-subtitle">
+            Define role privileges, access boundaries, and assigned permission
+            level
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+        data-testid="close-create-role-modal-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="create-role-name-input" class="field-label"
+          >Role Title *</label
+        >
+        <input
+          id="create-role-name-input"
+          type="text"
+          class="form-input"
+          placeholder="e.g. Department Head, Examination Officer"
+          [value]="formData().name"
+          (input)="updateField('name', $any($event.target).value)"
+          data-testid="create-role-name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="create-role-desc-input" class="field-label"
+          >Description *</label
+        >
+        <input
+          id="create-role-desc-input"
+          type="text"
+          class="form-input"
+          placeholder="Brief description of responsibilities and scope"
+          [value]="formData().description"
+          (input)="updateField('description', $any($event.target).value)"
+          data-testid="create-role-desc"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="create-role-scope-select" class="field-label"
+            >Access Scope</label
+          >
+          <select
+            id="create-role-scope-select"
+            class="form-select"
+            [value]="formData().accessScope"
+            (change)="updateField('accessScope', $any($event.target).value)"
+            data-testid="create-role-scope"
+          >
+            <option value="All School">All School</option>
+            <option value="Assigned Classes">Assigned Classes</option>
+            <option value="All Students">All Students</option>
+            <option value="Own Children">Own Children</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="create-role-level-select" class="field-label"
+            >Permission Level</label
+          >
+          <select
+            id="create-role-level-select"
+            class="form-select"
+            [value]="formData().permissionLevel"
+            (change)="updateField('permissionLevel', $any($event.target).value)"
+            data-testid="create-role-level"
+          >
+            <option value="Full Access">Full Access</option>
+            <option value="High Access">High Access</option>
+            <option value="Moderate Access">Moderate Access</option>
+            <option value="Limited Access">Limited Access</option>
+            <option value="Read Only">Read Only</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="create-role-users-input" class="field-label"
+            >Initial Users</label
+          >
+          <input
+            id="create-role-users-input"
+            type="number"
+            class="form-input"
+            min="0"
+            [value]="formData().usersAssigned"
+            (input)="updateField('usersAssigned', +$any($event.target).value)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="create-role-status-select" class="field-label"
+            >Status</label
+          >
+          <select
+            id="create-role-status-select"
+            class="form-select"
+            [value]="formData().status"
+            (change)="updateField('status', $any($event.target).value)"
+          >
+            <option value="Active">Active</option>
+            <option value="Review Needed">Review Needed</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="governance-notice">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="notice-icon"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>
+          Creating a new role generates an entry in the system audit logs. Role
+          assignments can be updated at any time.
+        </span>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSubmit()"
+        [disabled]="!formData().name.trim() || !formData().description.trim()"
+        data-testid="submit-create-role-btn"
+      >
+        Create Role
+      </button>
+    </div>
+  </div>
+</div>
+}

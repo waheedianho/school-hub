@@ -1,0 +1,185 @@
+@if (selectedCase(); as item) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="case-details-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <div class="title-with-pill">
+        <h3 id="case-details-title" class="modal-title">
+          Intervention Case Details
+        </h3>
+        <span
+          class="status-badge"
+          [class.status-in-progress]="item.status === 'In Progress'"
+          [class.status-monitoring]="item.status === 'Monitoring'"
+          [class.status-under-review]="item.status === 'Under Review'"
+          [class.status-resolved]="item.status === 'Resolved'"
+        >
+          {{ item.status }}
+        </span>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <!-- Learner Summary Card -->
+      <div class="learner-header-card">
+        <div class="avatar-circle">{{ item.initials || 'LR' }}</div>
+        <div class="learner-meta">
+          <h4 class="learner-name">{{ item.learnerName }}</h4>
+          <div class="learner-subinfo">
+            <span class="admission-badge">{{ item.admissionNo }}</span>
+            <span class="class-badge">{{ item.className }}</span>
+            <span
+              class="priority-badge"
+              [class.priority-high]="item.priority === 'High'"
+              [class.priority-medium]="item.priority === 'Medium'"
+              [class.priority-low]="item.priority === 'Low'"
+            >
+              {{ item.priority }} Priority
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2x2 Info Grid -->
+      <div class="info-grid">
+        <div class="info-card">
+          <span class="info-label">Concern Area</span>
+          <span class="info-value font-medium">{{ item.concernArea }}</span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Intervention Plan</span>
+          <span class="info-value font-medium"
+            >{{ item.interventionType }}</span
+          >
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Assigned Staff</span>
+          <span class="info-value">
+            {{ item.assignedStaff }} @if (item.assignedStaffRole) {
+            <span class="staff-role-sub">({{ item.assignedStaffRole }})</span>
+            }
+          </span>
+        </div>
+
+        <div class="info-card">
+          <span class="info-label">Target Next Review</span>
+          <span class="info-value flex items-center gap-1.5">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="text-slate-400"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            {{ item.nextReviewDate }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Progress Section -->
+      <div class="progress-section">
+        <div class="progress-header">
+          <span class="section-title">Intervention Goal Progress</span>
+          <span class="progress-percent font-semibold"
+            >{{ progressValue() }}%</span
+          >
+        </div>
+        <div class="progress-bar-track">
+          <div
+            class="progress-bar-fill"
+            [style.width.%]="progressValue()"
+            [class.fill-high]="progressValue() >= 70"
+            [class.fill-mid]="progressValue() >= 40 && progressValue() < 70"
+            [class.fill-low]="progressValue() < 40"
+          ></div>
+        </div>
+        <div class="progress-slider-row">
+          <label class="slider-label" for="progressSlider"
+            >Adjust Progress (%):</label
+          >
+          <input
+            id="progressSlider"
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            class="progress-slider"
+            [value]="progressValue()"
+            (input)="onProgressChange($any($event.target).value)"
+          />
+          <button
+            type="button"
+            class="btn-update-progress"
+            (click)="onSaveProgress()"
+          >
+            Update
+          </button>
+        </div>
+      </div>
+
+      <!-- Diagnostic Notes -->
+      @if (item.notes) {
+      <div class="notes-section">
+        <span class="section-title">Diagnostic & Review Notes</span>
+        <div class="notes-content">{{ item.notes }}</div>
+      </div>
+      }
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn-resolve"
+        [disabled]="item.status === 'Resolved'"
+        (click)="onResolve()"
+      >
+        @if (item.status === 'Resolved') { ✓ Case Resolved } @else { Mark Case
+        as Resolved }
+      </button>
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+}

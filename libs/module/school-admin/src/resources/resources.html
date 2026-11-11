@@ -1,0 +1,70 @@
+<div class="resources-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Resources</h1>
+      <p class="page-subtitle">
+        Monitor and manage learning resources across the school.
+      </p>
+    </div>
+  </header>
+
+  <!-- Summary KPI Cards -->
+  <section class="metrics-section" aria-label="Resources Summary Metrics">
+    <school-hub-resources-summary-metrics />
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav" aria-label="Resource sections">
+    <ul class="tabs-list" role="tablist">
+      @for (tab of tabs; track tab.id) {
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          class="tab-btn"
+          [class.active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          (click)="setTab(tab.id)"
+        >
+          <span>{{ tab.label }}</span>
+          @if (tab.badge) {
+          <span class="tab-badge">{{ tab.badge }}</span>
+          }
+        </button>
+      </li>
+      }
+    </ul>
+  </nav>
+
+  <!-- Main Content Layout (Table + Bottom Cards on Left, Sidebar on Right) -->
+  <div class="resources-layout">
+    <main class="main-column">
+      <!-- Main Resources Table -->
+      <section class="table-section" aria-label="Learning Resources Table">
+        <school-hub-resources-table />
+      </section>
+
+      <!-- Bottom 4 Action Cards & Governance Notice -->
+      <section
+        class="bottom-cards-section"
+        aria-label="Resource Management Actions"
+      >
+        <school-hub-resources-bottom-action-cards />
+      </section>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside
+      class="sidebar-column"
+      aria-label="Resource Summary and Quick Actions"
+    >
+      <school-hub-resources-sidebar />
+    </aside>
+  </div>
+
+  <!-- Interactive Modals -->
+  <school-hub-resources-upload-modal />
+  <school-hub-resources-link-delivery-pack-modal />
+  <school-hub-resources-details-modal />
+</div>

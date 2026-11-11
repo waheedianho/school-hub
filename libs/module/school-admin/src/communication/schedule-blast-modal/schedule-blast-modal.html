@@ -1,0 +1,149 @@
+@if (isOpen()) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-blast"
+  >
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="icon-bubble">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 id="modal-title-blast" class="modal-title">
+            Schedule Message Blast
+          </h2>
+          <p class="modal-subtitle">
+            Configure multi-channel message delivery timed for peak audience
+            engagement
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="blastTitleInput" class="form-label">
+          Blast Campaign Title <span class="required">*</span>
+        </label>
+        <input
+          id="blastTitleInput"
+          type="text"
+          class="form-input"
+          placeholder="e.g. Mid-Term Examination Registration Deadline Reminder"
+          [value]="blastTitle()"
+          (input)="blastTitle.set($any($event.target).value)"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="blastAudienceSelect" class="form-label"
+            >Target Audience</label
+          >
+          <select
+            id="blastAudienceSelect"
+            class="form-select"
+            [value]="audience()"
+            (change)="audience.set($any($event.target).value)"
+          >
+            <option value="All Students & Parents">
+              All Students & Parents
+            </option>
+            <option value="All Parents">All Parents</option>
+            <option value="All Teachers & Staff">All Teachers & Staff</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="blastDateInput" class="form-label">Scheduled Date</label>
+          <input
+            id="blastDateInput"
+            type="text"
+            class="form-input"
+            [value]="blastDate()"
+            (input)="blastDate.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="blastTimeInput" class="form-label">Delivery Time</label>
+        <input
+          id="blastTimeInput"
+          type="text"
+          class="form-input"
+          [value]="blastTime()"
+          (input)="blastTime.set($any($event.target).value)"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="blastContentInput" class="form-label">
+          Broadcast Message <span class="required">*</span>
+        </label>
+        <textarea
+          id="blastContentInput"
+          rows="4"
+          class="form-textarea"
+          placeholder="Enter the broadcast notification message..."
+          [value]="messageContent()"
+          (input)="messageContent.set($any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!blastTitle().trim() || !messageContent().trim()"
+        (click)="onSubmit()"
+      >
+        Schedule Message Blast
+      </button>
+    </div>
+  </div>
+</div>
+}

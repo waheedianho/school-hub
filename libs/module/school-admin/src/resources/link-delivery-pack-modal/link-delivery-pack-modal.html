@@ -1,0 +1,149 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="link-pack-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 id="link-pack-title" class="modal-title">
+        Link Resource to Delivery Pack
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="targetResource"
+          >Select Resource to Link</label
+        >
+        <select
+          id="targetResource"
+          class="form-select"
+          [value]="formData().resourceId"
+          (change)="onResourceChange($any($event.target).value)"
+          required
+        >
+          @for (res of resources(); track res.id) {
+          <option [value]="res.id">
+            {{ res.title }} ({{ res.className }} - {{ res.subject }})
+          </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="linkClass">Class</label>
+          <input
+            id="linkClass"
+            type="text"
+            class="form-input"
+            [value]="formData().className"
+            (input)="updateField('className', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="linkSubject">Subject</label>
+          <input
+            id="linkSubject"
+            type="text"
+            class="form-input"
+            [value]="formData().subject"
+            (input)="updateField('subject', $any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="linkWeek">Curriculum Week</label>
+          <input
+            id="linkWeek"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Week 2"
+            [value]="formData().week"
+            (input)="updateField('week', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="deliveryPackId"
+            >Target Delivery Pack ID</label
+          >
+          <input
+            id="deliveryPackId"
+            type="text"
+            class="form-input"
+            placeholder="e.g. JSS 1C - Sci W2"
+            [value]="formData().deliveryPackId"
+            (input)="updateField('deliveryPackId', $any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="help-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="text-indigo-600 flex-shrink-0"
+        >
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        <span class="text-xs text-slate-600">
+          Linking a resource attaches it directly to the teacher's weekly topic
+          delivery pack and resolves any missing resource gaps.
+        </span>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().resourceId || !formData().deliveryPackId"
+        (click)="onSubmit()"
+      >
+        Confirm Link
+      </button>
+    </div>
+  </div>
+</div>
+}

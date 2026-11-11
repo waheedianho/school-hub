@@ -1,0 +1,585 @@
+<div class="roles-permissions-container">
+  <!-- 1. Toolbar -->
+  <div class="table-toolbar">
+    <div class="toolbar-left">
+      <!-- Search -->
+      <div class="search-input-wrapper">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="search-icon"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search roles..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          aria-label="Search roles"
+          data-testid="roles-search-input"
+        />
+      </div>
+
+      <!-- Scope Filter -->
+      <select
+        class="filter-select"
+        [value]="scopeFilter()"
+        (change)="onScopeChange($event)"
+        aria-label="Filter by access scope"
+        data-testid="roles-scope-filter"
+      >
+        <option value="All Scopes">All Scopes</option>
+        <option value="All School">All School</option>
+        <option value="Assigned Classes">Assigned Classes</option>
+        <option value="All Students">All Students</option>
+        <option value="Own Children">Own Children</option>
+      </select>
+
+      <!-- Level Filter -->
+      <select
+        class="filter-select"
+        [value]="levelFilter()"
+        (change)="onLevelChange($event)"
+        aria-label="Filter by permission level"
+        data-testid="roles-level-filter"
+      >
+        <option value="All Levels">All Levels</option>
+        <option value="Full Access">Full Access</option>
+        <option value="High Access">High Access</option>
+        <option value="Moderate Access">Moderate Access</option>
+        <option value="Limited Access">Limited Access</option>
+        <option value="Read Only">Read Only</option>
+      </select>
+
+      <!-- Status Filter -->
+      <select
+        class="filter-select"
+        [value]="statusFilter()"
+        (change)="onStatusChange($event)"
+        aria-label="Filter by status"
+        data-testid="roles-status-filter"
+      >
+        <option value="All Statuses">All Statuses</option>
+        <option value="Active">Active</option>
+        <option value="Review Needed">Review Needed</option>
+        <option value="Restricted">Restricted</option>
+      </select>
+    </div>
+
+    <div class="toolbar-right">
+      <button
+        type="button"
+        class="btn-filters"
+        aria-label="Show advanced filters"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon
+            points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"
+          ></polygon>
+        </svg>
+        <span>Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- 2. Roles Data Table -->
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="roles-table" data-testid="roles-data-table">
+        <thead>
+          <tr>
+            <th class="col-role">Role</th>
+            <th class="col-users">Users Assigned</th>
+            <th class="col-scope">Access Scope</th>
+            <th class="col-level">Permission Level</th>
+            <th class="col-updated">Last Updated</th>
+            <th class="col-status">Status</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (role of roles(); track role.id) {
+          <tr class="role-row" [attr.data-testid]="'role-row-' + role.id">
+            <!-- Role -->
+            <td class="col-role">
+              <div class="role-cell">
+                <div
+                  class="role-icon-box"
+                  [ngClass]="'icon-' + (role.iconType || 'admin')"
+                >
+                  @if (role.iconType === 'admin') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
+                    ></path>
+                  </svg>
+                  } @else if (role.iconType === 'vice-principal') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z"></path>
+                    <path d="M6 12v5c3 3 9 3 12 0v-5"></path>
+                  </svg>
+                  } @else if (role.iconType === 'teacher') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                    <path
+                      d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                    ></path>
+                  </svg>
+                  } @else if (role.iconType === 'class-teacher') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <polyline points="17 11 19 13 23 9"></polyline>
+                  </svg>
+                  } @else if (role.iconType === 'counselor') {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+                    ></path>
+                  </svg>
+                  } @else {
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  }
+                </div>
+                <div class="role-meta">
+                  <span class="role-name">{{ role.name }}</span>
+                  <span class="role-description">{{ role.description }}</span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Users Assigned -->
+            <td class="col-users">
+              <span class="users-count">{{ role.usersAssigned | number }}</span>
+            </td>
+
+            <!-- Access Scope -->
+            <td class="col-scope">
+              <span
+                class="scope-pill"
+                [ngClass]="{
+                  'scope-all-school': role.accessScope === 'All School',
+                  'scope-assigned-classes': role.accessScope === 'Assigned Classes',
+                  'scope-all-students': role.accessScope === 'All Students',
+                  'scope-own-children': role.accessScope === 'Own Children'
+                }"
+              >
+                {{ role.accessScope }}
+              </span>
+            </td>
+
+            <!-- Permission Level -->
+            <td class="col-level">
+              <span class="permission-level-text"
+                >{{ role.permissionLevel }}</span
+              >
+            </td>
+
+            <!-- Last Updated -->
+            <td class="col-updated">
+              <div class="updated-cell">
+                <span class="updated-date">{{ role.lastUpdatedDate }}</span>
+                <span class="updated-time">{{ role.lastUpdatedTime }}</span>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="col-status">
+              <span
+                class="status-badge"
+                [ngClass]="{
+                  'status-active': role.status === 'Active',
+                  'status-review': role.status === 'Review Needed',
+                  'status-restricted': role.status === 'Restricted'
+                }"
+              >
+                <span class="status-dot"></span>
+                {{ role.status }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td class="col-actions">
+              <div class="action-buttons-group">
+                <button
+                  type="button"
+                  class="btn-icon"
+                  (click)="onSelectRole(role)"
+                  title="View Role Details"
+                  aria-label="View role details"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"
+                    ></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
+                <button
+                  type="button"
+                  class="btn-icon"
+                  title="More Actions"
+                  aria-label="More actions"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="12" cy="5" r="1"></circle>
+                    <circle cx="12" cy="19" r="1"></circle>
+                  </svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="7" class="empty-table-cell">
+              No roles found matching the selected criteria.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="table-footer">
+      <div class="footer-left">
+        <span class="entries-info">
+          Showing 1 to {{ roles().length }} of {{ totalRolesCount() }} entries
+        </span>
+      </div>
+
+      <div class="footer-right">
+        <div class="rows-per-page">
+          <label for="rows-select" class="rows-label">Rows per page</label>
+          <select
+            id="rows-select"
+            class="rows-select"
+            [value]="pageSize()"
+            (change)="onPageSizeSelect($event)"
+          >
+            <option [value]="5">5</option>
+            <option [value]="10">10</option>
+            <option [value]="20">20</option>
+          </select>
+        </div>
+
+        <div class="pagination-controls">
+          <button
+            type="button"
+            class="btn-page"
+            [disabled]="currentPage() <= 1"
+            (click)="onPageSelect(currentPage() - 1)"
+            aria-label="Previous Page"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <span class="page-number-active">{{ currentPage() }}</span>
+          <button
+            type="button"
+            class="btn-page"
+            [disabled]="currentPage() >= totalPages()"
+            (click)="onPageSelect(currentPage() + 1)"
+            aria-label="Next Page"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Bottom Action Cards (4 cards) -->
+  <div class="action-cards-grid">
+    <!-- Card 1 -->
+    <button
+      type="button"
+      class="action-card"
+      (click)="onTriggerCard('grading-policy')"
+      data-testid="action-card-grading-policy"
+    >
+      <div class="action-card-header">
+        <div class="card-icon-box box-blue">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+            <path
+              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+            ></path>
+          </svg>
+        </div>
+        <span class="action-card-title">Configure Grading Policy &gt;</span>
+      </div>
+      <p class="action-card-description">
+        Set grading scales, report card structures, and academic standards.
+      </p>
+    </button>
+
+    <!-- Card 2 -->
+    <button
+      type="button"
+      class="action-card"
+      (click)="onTriggerCard('notification-rules')"
+      data-testid="action-card-notification-rules"
+    >
+      <div class="action-card-header">
+        <div class="card-icon-box box-purple">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+        </div>
+        <span class="action-card-title">Manage Notification Rules &gt;</span>
+      </div>
+      <p class="action-card-description">
+        Customize notification preferences and delivery rules for users.
+      </p>
+    </button>
+
+    <!-- Card 3 -->
+    <button
+      type="button"
+      class="action-card"
+      (click)="onTriggerCard('privacy-settings')"
+      data-testid="action-card-privacy-settings"
+    >
+      <div class="action-card-header">
+        <div class="card-icon-box box-green">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <span class="action-card-title"
+          >Privacy &amp; Consent Settings &gt;</span
+        >
+      </div>
+      <p class="action-card-description">
+        Manage data privacy, consent forms, and data retention policies.
+      </p>
+    </button>
+
+    <!-- Card 4 -->
+    <button
+      type="button"
+      class="action-card"
+      (click)="onTriggerCard('audit-log')"
+      data-testid="action-card-audit-log"
+    >
+      <div class="action-card-header">
+        <div class="card-icon-box box-orange">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            ></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <span class="action-card-title">Review Audit Log &gt;</span>
+      </div>
+      <p class="action-card-description">
+        View and search comprehensive audit logs and system activities.
+      </p>
+    </button>
+  </div>
+
+  <!-- 4. Governance Banner -->
+  <div class="governance-banner">
+    <div class="banner-icon-box">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+    </div>
+    <div class="banner-content">
+      <span class="banner-text">
+        All permission changes are tracked with audit history for accountability
+        and safeguarding. Regular reviews help maintain data security and
+        compliance.
+      </span>
+      <a href="javascript:void(0)" class="banner-link">
+        Learn more about roles &amp; permissions ↗
+      </a>
+    </div>
+  </div>
+</div>

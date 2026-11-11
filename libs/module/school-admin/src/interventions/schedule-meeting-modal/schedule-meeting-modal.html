@@ -1,0 +1,157 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="schedule-meeting-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 id="schedule-meeting-title" class="modal-title">
+        Schedule Parent Meeting
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="meetingLearnerName"
+            >Learner Full Name</label
+          >
+          <input
+            id="meetingLearnerName"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Adebayo, Oluwatobi"
+            [value]="formData().learnerName"
+            (input)="updateField('learnerName', $any($event.target).value)"
+            required
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="parentName"
+            >Parent / Guardian Name</label
+          >
+          <input
+            id="parentName"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Mr. & Mrs. Adebayo"
+            [value]="formData().parentName"
+            (input)="updateField('parentName', $any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="parentPhone"
+            >Parent Contact Phone</label
+          >
+          <input
+            id="parentPhone"
+            type="tel"
+            class="form-input"
+            placeholder="e.g. +234 803 123 4567"
+            [value]="formData().parentPhone"
+            (input)="updateField('parentPhone', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="meetingType">Meeting Format</label>
+          <select
+            id="meetingType"
+            class="form-select"
+            [value]="formData().meetingType"
+            (change)="updateField('meetingType', $any($event.target).value)"
+          >
+            <option value="In-Person">In-Person (School Admin Office)</option>
+            <option value="Virtual">
+              Virtual Conference (Google Meet / Zoom)
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="meetingDate">Meeting Date</label>
+          <input
+            id="meetingDate"
+            type="date"
+            class="form-input"
+            [value]="formData().meetingDate"
+            (input)="updateField('meetingDate', $any($event.target).value)"
+            required
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="meetingTime">Meeting Time</label>
+          <input
+            id="meetingTime"
+            type="text"
+            class="form-input"
+            placeholder="e.g. 10:00 AM"
+            [value]="formData().meetingTime"
+            (input)="updateField('meetingTime', $any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="meetingAgenda"
+          >Meeting Agenda & Objective</label
+        >
+        <textarea
+          id="meetingAgenda"
+          class="form-textarea"
+          rows="3"
+          placeholder="Outline remediation steps, home support strategies, and review schedule..."
+          [value]="formData().agenda"
+          (input)="updateField('agenda', $any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().learnerName || !formData().parentName || !formData().meetingDate"
+        (click)="onSubmit()"
+      >
+        Confirm & Schedule Meeting
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,72 @@
+<div class="interventions-page">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <div class="title-row">
+        <h1 class="page-title">Interventions</h1>
+        <span class="term-badge">
+          <span class="badge-dot"></span>
+          Active Term 2, 2024/2025
+        </span>
+      </div>
+      <p class="page-subtitle">
+        Manage learner support plans, monitor follow-up actions, and evaluate
+        remediation outcomes across classes.
+      </p>
+    </div>
+  </header>
+
+  <!-- Summary KPI Cards -->
+  <section class="metrics-section" aria-label="Interventions Summary Metrics">
+    <school-hub-interventions-summary-metrics />
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav" aria-label="Intervention sections">
+    <ul class="tabs-list" role="tablist">
+      @for (tab of tabs; track tab.id) {
+      <li role="presentation">
+        <button
+          type="button"
+          role="tab"
+          class="tab-btn"
+          [class.active]="activeTab() === tab.id"
+          [attr.aria-selected]="activeTab() === tab.id"
+          (click)="setTab(tab.id)"
+        >
+          {{ tab.label }}
+        </button>
+      </li>
+      }
+    </ul>
+  </nav>
+
+  <!-- Main Content Layout (Table + Insights on Left, Sidebar on Right) -->
+  <div class="interventions-layout">
+    <main class="main-column">
+      <!-- Main Table Card -->
+      <section class="table-section" aria-label="Interventions Data Table">
+        <school-hub-interventions-table />
+      </section>
+
+      <!-- Bottom 4 Diagnostic Insight Cards -->
+      <section class="insights-section" aria-label="Diagnostic Insights">
+        <school-hub-interventions-insights-cards />
+      </section>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside
+      class="sidebar-column"
+      aria-label="Interventions Summary and Quick Actions"
+    >
+      <school-hub-interventions-sidebar />
+    </aside>
+  </div>
+
+  <!-- Interactive Modals -->
+  <school-hub-interventions-create-modal />
+  <school-hub-interventions-schedule-meeting-modal />
+  <school-hub-interventions-assign-followup-modal />
+  <school-hub-interventions-case-details-modal />
+</div>

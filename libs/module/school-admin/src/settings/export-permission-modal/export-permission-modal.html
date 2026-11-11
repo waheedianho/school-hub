@@ -1,0 +1,159 @@
+@if (isOpen()) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-export-permission"
+  >
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="icon-bubble">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+        </div>
+        <div>
+          <h2 id="modal-title-export-permission" class="modal-title">
+            Export Permissions Report
+          </h2>
+          <p class="modal-subtitle">
+            Download administrative role privileges and governance access logs
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+        data-testid="close-export-modal-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <span class="field-label">Select Export Format</span>
+      <div class="format-grid">
+        <button
+          type="button"
+          class="format-card"
+          [class.selected]="selectedFormat() === 'PDF'"
+          (click)="selectFormat('PDF')"
+          data-testid="format-pdf"
+        >
+          <div class="format-icon-box pdf">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+              ></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div class="format-info">
+            <span class="format-title">PDF Document</span>
+            <span class="format-desc">
+              Formatted governance report with executive permission summary
+            </span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="format-card"
+          [class.selected]="selectedFormat() === 'CSV'"
+          (click)="selectFormat('CSV')"
+          data-testid="format-csv"
+        >
+          <div class="format-icon-box csv">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="format-info">
+            <span class="format-title">CSV Spreadsheet</span>
+            <span class="format-desc">
+              Raw tabular data including role IDs, access scopes, and timestamps
+            </span>
+          </div>
+        </button>
+      </div>
+
+      <div class="export-scope-box">
+        <span class="scope-title">Included Data:</span>
+        <ul class="scope-list">
+          <li>12 configured institutional roles and descriptions</li>
+          <li>Scope permissions and assigned user breakdowns</li>
+          <li>Two-factor authentication compliance logs (87%)</li>
+          <li>Audit log alert summaries for May 2025</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onExport()"
+        data-testid="submit-export-btn"
+      >
+        Export {{ selectedFormat() }}
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,150 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="assign-followup-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 id="assign-followup-title" class="modal-title">
+        Assign Staff Follow-up
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="targetIntervention"
+          >Select Target Learner Intervention Case</label
+        >
+        <select
+          id="targetIntervention"
+          class="form-select"
+          [value]="formData().caseId"
+          (change)="onCaseChange($any($event.target).value)"
+          required
+        >
+          @for (item of interventions(); track item.id) {
+          <option [value]="item.id">
+            {{ item.learnerName }} ({{ item.className }}) — {{ item.concernArea
+            }}
+          </option>
+          }
+        </select>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="assigneeStaffName"
+            >Assigned Staff Name</label
+          >
+          <input
+            id="assigneeStaffName"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Mr. Adekunle J."
+            [value]="formData().assignedStaff"
+            (input)="updateField('assignedStaff', $any($event.target).value)"
+            required
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="assigneeStaffRole"
+            >Staff Role / Designation</label
+          >
+          <input
+            id="assigneeStaffRole"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Maths Teacher"
+            [value]="formData().assignedStaffRole || ''"
+            (input)="updateField('assignedStaffRole', $any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="followUpFrequency"
+            >Follow-up Cadence</label
+          >
+          <select
+            id="followUpFrequency"
+            class="form-select"
+            [value]="formData().followUpFrequency"
+            (change)="updateField('followUpFrequency', $any($event.target).value)"
+          >
+            <option value="Weekly">Weekly Check-in</option>
+            <option value="Bi-Weekly">Bi-Weekly Check-in</option>
+            <option value="Monthly">Monthly Comprehensive Review</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="dueDate">Target Review Date</label>
+          <input
+            id="dueDate"
+            type="text"
+            class="form-input"
+            placeholder="e.g. 28 May 2025"
+            [value]="formData().dueDate"
+            (input)="updateField('dueDate', $any($event.target).value)"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="followupInstructions"
+          >Follow-up Instructions & Expectations</label
+        >
+        <textarea
+          id="followupInstructions"
+          class="form-textarea"
+          rows="3"
+          placeholder="Specify observation metrics, worksheet checks, or remedial milestones..."
+          [value]="formData().instructions || ''"
+          (input)="updateField('instructions', $any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().caseId || !formData().assignedStaff || !formData().dueDate"
+        (click)="onSubmit()"
+      >
+        Confirm Staff Assignment
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,213 @@
+@if (role(); as r) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-role-details"
+  >
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="icon-bubble">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 id="modal-title-role-details" class="modal-title">
+            {{ r.name }}
+          </h2>
+          <p class="modal-subtitle">{{ r.description }}</p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+        data-testid="close-role-details-modal-btn"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Role Meta Grid -->
+      <div class="meta-summary-card">
+        <div class="meta-item">
+          <span class="meta-label">Access Scope</span>
+          <span class="meta-value scope-tag">{{ r.accessScope }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Permission Level</span>
+          <span class="meta-value">{{ r.permissionLevel }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Users Assigned</span>
+          <span class="meta-value">{{ r.usersAssigned | number }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Status</span>
+          <span
+            class="meta-value status-pill"
+            [ngClass]="{
+              'status-active': r.status === 'Active',
+              'status-review': r.status === 'Review Needed',
+              'status-restricted': r.status === 'Restricted'
+            }"
+          >
+            {{ r.status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Module Privileges -->
+      <div class="privileges-section">
+        <h3 class="section-title">Module Privileges</h3>
+        <p class="section-desc">
+          Current module access configuration for this administrative role.
+        </p>
+
+        <div class="privileges-grid">
+          <div class="privilege-item">
+            <span class="privilege-name">Dashboard &amp; Overview</span>
+            <span class="privilege-status granted">Granted</span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Classes &amp; Learners</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['classes']"
+              [class.restricted]="!r.modules?.['classes']"
+            >
+              {{ r.modules?.['classes'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Teachers &amp; Staff</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['teachers']"
+              [class.restricted]="!r.modules?.['teachers']"
+            >
+              {{ r.modules?.['teachers'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Curriculum &amp; Schemes</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['curriculum']"
+              [class.restricted]="!r.modules?.['curriculum']"
+            >
+              {{ r.modules?.['curriculum'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Lessons &amp; Oversight</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['lessons']"
+              [class.restricted]="!r.modules?.['lessons']"
+            >
+              {{ r.modules?.['lessons'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Assessments &amp; Gradebooks</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['assessments']"
+              [class.restricted]="!r.modules?.['assessments']"
+            >
+              {{ r.modules?.['assessments'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Reports &amp; Analytics</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['reports']"
+              [class.restricted]="!r.modules?.['reports']"
+            >
+              {{ r.modules?.['reports'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Academic Interventions</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['interventions']"
+              [class.restricted]="!r.modules?.['interventions']"
+            >
+              {{ r.modules?.['interventions'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Communication Center</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['communication']"
+              [class.restricted]="!r.modules?.['communication']"
+            >
+              {{ r.modules?.['communication'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+          <div class="privilege-item">
+            <span class="privilege-name">Settings &amp; Governance</span>
+            <span
+              class="privilege-status"
+              [class.granted]="r.modules?.['settings']"
+              [class.restricted]="!r.modules?.['settings']"
+            >
+              {{ r.modules?.['settings'] ? 'Granted' : 'Restricted' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="audit-history-note">
+        <span class="note-label">Last modified:</span>
+        <span class="note-val"
+          >{{ r.lastUpdatedDate }} at {{ r.lastUpdatedTime }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onClose()">
+        Close
+      </button>
+      <button type="button" class="btn btn-primary" (click)="onClose()">
+        Done
+      </button>
+    </div>
+  </div>
+</div>
+}

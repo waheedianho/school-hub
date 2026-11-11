@@ -1,0 +1,172 @@
+<section class="highlights-section" aria-label="Key Performance Highlights">
+  <div class="highlights-grid">
+    <!-- Top Performing Class -->
+    <article class="highlight-card card-green" data-testid="card-top-class">
+      <div class="card-icon icon-green" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polygon
+            points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+          ></polygon>
+        </svg>
+      </div>
+      <div class="card-content">
+        <span class="card-title">Top Performing Class</span>
+        <div class="value-row">
+          <span class="card-value"
+            >{{ insights().topPerformingClass.className }} ({{
+            insights().topPerformingClass.averageScore }}%)</span
+          >
+        </div>
+        <p class="card-subtext">
+          +{{ insights().topPerformingClass.change }}% term gain • 32 Learners
+        </p>
+      </div>
+    </article>
+
+    <!-- Most Improved Subject -->
+    <article
+      class="highlight-card card-indigo"
+      data-testid="card-most-improved"
+    >
+      <div class="card-icon icon-indigo" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+          <polyline points="17 6 23 6 23 12"></polyline>
+        </svg>
+      </div>
+      <div class="card-content">
+        <span class="card-title">Most Improved Subject</span>
+        <div class="value-row">
+          <span class="card-value"
+            >{{ insights().mostImprovedSubject.subject }} (+{{
+            insights().mostImprovedSubject.improvement }}%)</span
+          >
+        </div>
+        <p class="card-subtext">Average moved from 69% to 76% across cohorts</p>
+      </div>
+    </article>
+
+    <!-- Lowest Attendance Class -->
+    <article
+      class="highlight-card card-amber"
+      data-testid="card-lowest-attendance"
+    >
+      <div class="card-icon icon-amber" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <div class="card-content">
+        <span class="card-title">Lowest Attendance Class</span>
+        <div class="value-row">
+          <span class="card-value"
+            >{{ insights().lowestAttendanceClass.className }} ({{
+            insights().lowestAttendanceClass.attendanceAverage }}%)</span
+          >
+        </div>
+        <p class="card-subtext">
+          {{ insights().lowestAttendanceClass.change }}% dip • 5 persistent
+          absentees identified
+        </p>
+      </div>
+    </article>
+
+    <!-- Intervention Success Rate -->
+    <article
+      class="highlight-card card-purple"
+      data-testid="card-intervention-success"
+    >
+      <div class="card-icon icon-purple" aria-hidden="true">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
+          ></path>
+        </svg>
+      </div>
+      <div class="card-content">
+        <span class="card-title">Intervention Success Rate</span>
+        <div class="value-row">
+          <span class="card-value"
+            >{{ insights().interventionSuccess.successRate }}% ({{
+            insights().interventionSuccess.studentsShowingImprovement }}
+            students)</span
+          >
+        </div>
+        <p class="card-subtext">
+          Showing measurable progress in remedial assessments
+        </p>
+      </div>
+    </article>
+  </div>
+
+  <!-- Data Accuracy Notice Banner -->
+  <aside class="notice-banner" role="status" aria-label="Data Accuracy Notice">
+    <div class="notice-icon" aria-hidden="true">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <line x1="12" y1="16" x2="12" y2="12"></line>
+        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+      </svg>
+    </div>
+    <div class="notice-text">
+      <strong>Data Accuracy & Moderation Notice:</strong> All term assessment
+      marks and gradebooks have been synchronized with the central academic
+      registry. Official Ministry Report Cards can be finalized once all 12
+      class stream approvals are signed off by the Academic Committee.
+    </div>
+  </aside>
+</section>

@@ -1,0 +1,243 @@
+@if (isOpen()) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-announcement"
+  >
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="icon-bubble">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m3 11 18-5v12L3 14v-3z"></path>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
+          </svg>
+        </div>
+        <div>
+          <h2 id="modal-title-announcement" class="modal-title">
+            Create School Announcement
+          </h2>
+          <p class="modal-subtitle">
+            Broadcast messages to learners, guardians, and faculty members
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Title -->
+      <div class="form-group">
+        <label for="announcementTitle" class="form-label">
+          Announcement Title <span class="required">*</span>
+        </label>
+        <input
+          id="announcementTitle"
+          type="text"
+          class="form-input"
+          placeholder="e.g. End of Term Examination Schedule and Guidelines"
+          [value]="formData().title"
+          (input)="updateField('title', $any($event.target).value)"
+        />
+      </div>
+
+      <!-- Two column: Audience & Category -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="targetAudience" class="form-label">Target Audience</label>
+          <select
+            id="targetAudience"
+            class="form-select"
+            [value]="formData().audience"
+            (change)="updateField('audience', $any($event.target).value)"
+          >
+            <option value="All Students & Parents">
+              All Students & Parents
+            </option>
+            <option value="All Parents">All Parents</option>
+            <option value="All Teachers & Staff">All Teachers & Staff</option>
+            <option value="Selected Parents">Selected Parents</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="announcementCategory" class="form-label">Category</label>
+          <select
+            id="announcementCategory"
+            class="form-select"
+            [value]="formData().category"
+            (change)="updateField('category', $any($event.target).value)"
+          >
+            <option value="General">General</option>
+            <option value="Academics">Academics</option>
+            <option value="Events">Events</option>
+            <option value="Internal">Internal</option>
+            <option value="Attendance">Attendance</option>
+            <option value="Emergency">Emergency</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Channels -->
+      <div class="form-group">
+        <span class="form-label">Delivery Channels</span>
+        <div class="channel-options">
+          <label
+            class="checkbox-card"
+            [class.checked]="formData().channels.includes('In-App')"
+          >
+            <input
+              type="checkbox"
+              [checked]="formData().channels.includes('In-App')"
+              (change)="toggleChannel('In-App')"
+            />
+            <div class="checkbox-text">
+              <span class="channel-title">In-App Notification</span>
+              <span class="channel-desc"
+                >Visible on learner and parent dashboards</span
+              >
+            </div>
+          </label>
+
+          <label
+            class="checkbox-card"
+            [class.checked]="formData().channels.includes('Email')"
+          >
+            <input
+              type="checkbox"
+              [checked]="formData().channels.includes('Email')"
+              (change)="toggleChannel('Email')"
+            />
+            <div class="checkbox-text">
+              <span class="channel-title">Email Digest</span>
+              <span class="channel-desc"
+                >Direct delivery to registered emails</span
+              >
+            </div>
+          </label>
+
+          <label
+            class="checkbox-card"
+            [class.checked]="formData().channels.includes('SMS')"
+          >
+            <input
+              type="checkbox"
+              [checked]="formData().channels.includes('SMS')"
+              (change)="toggleChannel('SMS')"
+            />
+            <div class="checkbox-text">
+              <span class="channel-title">SMS Broadcast</span>
+              <span class="channel-desc"
+                >Urgent SMS text alert to mobile numbers</span
+              >
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Schedule Toggle -->
+      <div class="form-group">
+        <label class="toggle-row">
+          <input
+            type="checkbox"
+            [checked]="isScheduled()"
+            (change)="toggleScheduled($any($event.target).checked)"
+          />
+          <span class="toggle-text">Schedule message for later date/time</span>
+        </label>
+      </div>
+
+      @if (isScheduled()) {
+      <div class="form-row schedule-fields">
+        <div class="form-group">
+          <label for="scheduleDate" class="form-label">Scheduled Date</label>
+          <input
+            id="scheduleDate"
+            type="text"
+            class="form-input"
+            placeholder="e.g. May 25, 2025"
+            [value]="formData().scheduleDate ?? ''"
+            (input)="updateField('scheduleDate', $any($event.target).value)"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="scheduleTime" class="form-label">Scheduled Time</label>
+          <input
+            id="scheduleTime"
+            type="text"
+            class="form-input"
+            placeholder="e.g. 08:00 AM"
+            [value]="formData().scheduleTime ?? ''"
+            (input)="updateField('scheduleTime', $any($event.target).value)"
+          />
+        </div>
+      </div>
+      }
+
+      <!-- Body -->
+      <div class="form-group">
+        <label for="announcementBody" class="form-label">
+          Announcement Message <span class="required">*</span>
+        </label>
+        <textarea
+          id="announcementBody"
+          rows="5"
+          class="form-textarea"
+          placeholder="Compose detailed announcement message..."
+          [value]="formData().body"
+          (input)="updateField('body', $any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().title.trim() || !formData().body.trim()"
+        (click)="onSubmit()"
+      >
+        {{ isScheduled() ? 'Schedule Announcement' : 'Publish Announcement' }}
+      </button>
+    </div>
+  </div>
+</div>
+}
