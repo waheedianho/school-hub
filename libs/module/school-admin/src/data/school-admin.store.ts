@@ -21,7 +21,13 @@ import {
   ClassReportCardSummary,
   ClassSubjectPerformance,
   ClassesOverviewMetrics,
+  CommunicationAttentionItem,
+  CommunicationMessage,
   CommunicationSafeguardingSettings,
+  CommunicationSidebarSummary,
+  CommunicationSummaryMetrics,
+  CommunicationTab,
+  CreateAnnouncementFormData,
   CurriculumCoverage,
   CurriculumMapEntry,
   CurriculumOverviewMetrics,
@@ -66,6 +72,7 @@ import {
   SchoolAlert,
   SchoolClass,
   SchoolProfile,
+  SendParentMessageFormData,
   SetupChecklistItem,
   SetupQuickAction,
   StaffMember,
@@ -168,6 +175,12 @@ import {
   RESOURCES_SIDEBAR_SUMMARY,
   RESOURCE_ATTENTION_ITEMS,
 } from './school-admin-resources.data';
+import {
+  COMMUNICATION_MESSAGES_DATA,
+  COMMUNICATION_SUMMARY_METRICS,
+  COMMUNICATION_SIDEBAR_SUMMARY,
+  COMMUNICATION_ATTENTION_ITEMS,
+} from './school-admin-communication.data';
 
 const STORAGE_KEY_SESSION = 'schoolhub_admin_session';
 const STORAGE_KEY_TERM = 'schoolhub_admin_term';
@@ -1166,6 +1179,149 @@ export class SchoolAdminStore {
   readonly approvalQueueCount = computed(() => {
     return this.resources().filter((r) => r.approvalStatus === 'Pending Review')
       .length;
+  });
+
+  // Communication State (.design/SCHOOL ADMIN/Communication_SA.png)
+  readonly communicationMessages = signal<CommunicationMessage[]>(
+    COMMUNICATION_MESSAGES_DATA,
+  );
+  readonly activeCommunicationTab = signal<CommunicationTab>('announcements');
+  readonly communicationSummaryMetrics = signal<CommunicationSummaryMetrics>(
+    COMMUNICATION_SUMMARY_METRICS,
+  );
+  readonly communicationSidebarSummary = signal<CommunicationSidebarSummary>(
+    COMMUNICATION_SIDEBAR_SUMMARY,
+  );
+  readonly communicationAttentionItems = signal<CommunicationAttentionItem[]>(
+    COMMUNICATION_ATTENTION_ITEMS,
+  );
+  readonly selectedCommunicationMessage = signal<CommunicationMessage | null>(
+    null,
+  );
+  readonly selectedCommunicationAttentionItem =
+    signal<CommunicationAttentionItem | null>(null);
+  readonly isCreateAnnouncementModalOpen = signal<boolean>(false);
+  readonly isSendParentMessageModalOpen = signal<boolean>(false);
+  readonly isScheduleBlastModalOpen = signal<boolean>(false);
+  readonly isExportCommunicationModalOpen = signal<boolean>(false);
+  readonly communicationSearchQuery = signal<string>('');
+  readonly communicationAudienceFilter = signal<string>('All Audiences');
+  readonly communicationCategoryFilter = signal<string>('All Categories');
+  readonly communicationStatusFilter = signal<string>('All Statuses');
+  readonly communicationDateFilter = signal<string>('All Dates');
+  readonly communicationPage = signal<number>(1);
+  readonly communicationPageSize = signal<number>(10);
+
+  readonly filteredCommunicationMessages = computed(() => {
+    const list = this.communicationMessages();
+    const tab = this.activeCommunicationTab();
+    const query = this.communicationSearchQuery().toLowerCase().trim();
+    const audienceFilter = this.communicationAudienceFilter();
+    const categoryFilter = this.communicationCategoryFilter();
+    const statusFilter = this.communicationStatusFilter();
+    const dateFilter = this.communicationDateFilter();
+    const attention = this.selectedCommunicationAttentionItem();
+
+    return list.filter((item) => {
+      // Tab filter
+      if (tab === 'announcements') {
+        const isAnnouncementRow =
+          item.tab === 'announcements' ||
+          [
+            'msg-001',
+            'msg-002',
+            'msg-003',
+            'msg-004',
+            'msg-005',
+            'msg-006',
+            'msg-012',
+          ].includes(item.id);
+        if (!isAnnouncementRow) return false;
+      } else if (tab === 'teacher-messages') {
+        const isTeacherMessage =
+          item.tab === 'teacher-messages' || item.audience.includes('Teacher');
+        if (!isTeacherMessage) return false;
+      } else if (tab === 'parent-messages') {
+        const isParentMessage =
+          item.tab === 'parent-messages' || item.audience.includes('Parent');
+        if (!isParentMessage) return false;
+      }
+      // 'logs' displays all messages
+
+      // Attention item filter
+      if (attention) {
+        if (
+          attention.filterStatus &&
+          item.deliveryStatus !== attention.filterStatus
+        ) {
+          return false;
+        }
+        if (attention.filterType === 'pending') {
+          const isPending =
+            item.tab === 'parent-messages' || item.audience.includes('Parent');
+          if (!isPending) return false;
+        }
+      }
+
+      // Dropdown filters
+      if (
+        audienceFilter !== 'All Audiences' &&
+        item.audience !== audienceFilter
+      ) {
+        return false;
+      }
+      if (
+        categoryFilter !== 'All Categories' &&
+        item.category !== categoryFilter
+      ) {
+        return false;
+      }
+      if (
+        statusFilter !== 'All Statuses' &&
+        item.deliveryStatus !== statusFilter
+      ) {
+        return false;
+      }
+      if (dateFilter !== 'All Dates') {
+        const matchScheduled = item.scheduledDate?.includes(dateFilter);
+        const matchUpdated = item.lastUpdatedDate.includes(dateFilter);
+        if (!matchScheduled && !matchUpdated) return false;
+      }
+
+      // Search query
+      if (query) {
+        const matchTitle = item.messageTitle.toLowerCase().includes(query);
+        const matchAudience = item.audience.toLowerCase().includes(query);
+        const matchCategory = item.category.toLowerCase().includes(query);
+        const matchSentBy = item.sentBy.toLowerCase().includes(query);
+        const matchBody = item.body?.toLowerCase().includes(query) ?? false;
+        if (
+          !matchTitle &&
+          !matchAudience &&
+          !matchCategory &&
+          !matchSentBy &&
+          !matchBody
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly paginatedCommunicationMessages = computed(() => {
+    const filtered = this.filteredCommunicationMessages();
+    const page = this.communicationPage();
+    const size = this.communicationPageSize();
+    const start = (page - 1) * size;
+    return filtered.slice(start, start + size);
+  });
+
+  readonly communicationTotalPages = computed(() => {
+    const total = this.filteredCommunicationMessages().length;
+    const size = this.communicationPageSize();
+    return Math.max(1, Math.ceil(total / size));
   });
 
   // Setup Signals
@@ -2436,6 +2592,235 @@ export class SchoolAdminStore {
     this.isExportResourceModalOpen.set(false);
     this.setupSaveStatus.set(
       `Resource inventory report exported successfully (${format}).`,
+    );
+  }
+
+  // Communication Actions
+  setActiveCommunicationTab(tab: CommunicationTab): void {
+    this.activeCommunicationTab.set(tab);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationSearchQuery(q: string): void {
+    this.communicationSearchQuery.set(q);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationAudienceFilter(audience: string): void {
+    this.communicationAudienceFilter.set(audience);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationCategoryFilter(category: string): void {
+    this.communicationCategoryFilter.set(category);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationStatusFilter(status: string): void {
+    this.communicationStatusFilter.set(status);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationDateFilter(date: string): void {
+    this.communicationDateFilter.set(date);
+    this.communicationPage.set(1);
+  }
+
+  setCommunicationPage(page: number): void {
+    this.communicationPage.set(page);
+  }
+
+  setCommunicationPageSize(size: number): void {
+    this.communicationPageSize.set(size);
+    this.communicationPage.set(1);
+  }
+
+  selectCommunicationAttentionItem(item: CommunicationAttentionItem): void {
+    if (this.selectedCommunicationAttentionItem()?.id === item.id) {
+      this.selectedCommunicationAttentionItem.set(null);
+    } else {
+      this.selectedCommunicationAttentionItem.set(item);
+      this.communicationPage.set(1);
+    }
+  }
+
+  clearCommunicationAttentionItem(): void {
+    this.selectedCommunicationAttentionItem.set(null);
+  }
+
+  openCreateAnnouncementModal(): void {
+    this.isCreateAnnouncementModalOpen.set(true);
+  }
+
+  closeCreateAnnouncementModal(): void {
+    this.isCreateAnnouncementModalOpen.set(false);
+  }
+
+  createAnnouncement(form: CreateAnnouncementFormData): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const isScheduled = !!form.scheduleDate;
+    const newMessage: CommunicationMessage = {
+      id: `msg-${Date.now().toString().slice(-4)}`,
+      audience: form.audience,
+      messageTitle: form.title,
+      category: form.category,
+      sentBy: 'School Admin',
+      sentByInitials: 'SA',
+      deliveryStatus: isScheduled ? 'Scheduled' : 'Delivered',
+      scheduledDate: form.scheduleDate ?? dateStr,
+      scheduledTime: form.scheduleTime ?? timeStr,
+      lastUpdatedDate: dateStr,
+      lastUpdatedTime: timeStr,
+      tab: 'announcements',
+      channels: form.channels,
+      body: form.body,
+      recipientsCount: form.audience.includes('All') ? 2184 : 156,
+      deliveredCount: isScheduled
+        ? 0
+        : form.audience.includes('All')
+          ? 2184
+          : 156,
+      failedCount: 0,
+    };
+
+    this.communicationMessages.update((list) => [newMessage, ...list]);
+    this.communicationSummaryMetrics.update((m) => ({
+      ...m,
+      totalMessagesSent: m.totalMessagesSent + (isScheduled ? 0 : 1),
+      announcementsPublished: m.announcementsPublished + 1,
+    }));
+    this.communicationSidebarSummary.update((s) => ({
+      ...s,
+      messagesThisWeek: s.messagesThisWeek + 1,
+    }));
+    this.isCreateAnnouncementModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Announcement "${form.title}" ${isScheduled ? 'scheduled' : 'published'} successfully.`,
+    );
+  }
+
+  openSendParentMessageModal(): void {
+    this.isSendParentMessageModalOpen.set(true);
+  }
+
+  closeSendParentMessageModal(): void {
+    this.isSendParentMessageModalOpen.set(false);
+  }
+
+  sendParentMessage(form: SendParentMessageFormData): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const newMessage: CommunicationMessage = {
+      id: `msg-${Date.now().toString().slice(-4)}`,
+      audience: form.recipientAudience,
+      messageTitle: form.subject,
+      category: form.category,
+      sentBy: 'School Admin',
+      sentByInitials: 'SA',
+      deliveryStatus: 'Delivered',
+      scheduledDate: dateStr,
+      scheduledTime: timeStr,
+      lastUpdatedDate: dateStr,
+      lastUpdatedTime: timeStr,
+      tab: 'parent-messages',
+      channels: ['In-App', 'Email'],
+      body: form.body,
+      recipientsCount: form.recipientAudience === 'All Parents' ? 1450 : 38,
+      deliveredCount: form.recipientAudience === 'All Parents' ? 1450 : 38,
+      failedCount: 0,
+    };
+
+    this.communicationMessages.update((list) => [newMessage, ...list]);
+    this.communicationSummaryMetrics.update((m) => ({
+      ...m,
+      totalMessagesSent: m.totalMessagesSent + 1,
+      parentCommunications: m.parentCommunications + 1,
+    }));
+    this.communicationSidebarSummary.update((s) => ({
+      ...s,
+      messagesThisWeek: s.messagesThisWeek + 1,
+      parentRecipients:
+        s.parentRecipients +
+        (form.recipientAudience === 'All Parents' ? 1450 : 38),
+    }));
+    this.isSendParentMessageModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Message "${form.subject}" sent to parents successfully.`,
+    );
+  }
+
+  openScheduleBlastModal(): void {
+    this.isScheduleBlastModalOpen.set(true);
+  }
+
+  closeScheduleBlastModal(): void {
+    this.isScheduleBlastModalOpen.set(false);
+  }
+
+  openMessageDetails(msg: CommunicationMessage): void {
+    this.selectedCommunicationMessage.set(msg);
+  }
+
+  closeMessageDetails(): void {
+    this.selectedCommunicationMessage.set(null);
+  }
+
+  resendFailedMessage(id: string): void {
+    this.communicationMessages.update((list) =>
+      list.map((m) =>
+        m.id === id
+          ? {
+              ...m,
+              deliveryStatus: 'Delivered' as const,
+              failedCount: 0,
+              deliveredCount: m.recipientsCount ?? m.deliveredCount,
+            }
+          : m,
+      ),
+    );
+    this.communicationAttentionItems.update((items) =>
+      items.map((item) =>
+        item.filterType === 'failed'
+          ? { ...item, count: Math.max(0, item.count - 1) }
+          : item,
+      ),
+    );
+    this.setupSaveStatus.set(
+      `Failed message resent and delivered successfully.`,
+    );
+  }
+
+  openExportCommunicationModal(): void {
+    this.isExportCommunicationModalOpen.set(true);
+  }
+
+  closeExportCommunicationModal(): void {
+    this.isExportCommunicationModalOpen.set(false);
+  }
+
+  exportCommunicationReport(format = 'PDF'): void {
+    this.isExportCommunicationModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Communication report exported successfully (${format}).`,
     );
   }
 

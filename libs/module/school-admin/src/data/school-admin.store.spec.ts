@@ -1117,4 +1117,197 @@ describe('SchoolAdminStore', () => {
     expect(store.isExportResourceModalOpen()).toBe(false);
     expect(store.setupSaveStatus()).toContain('CSV');
   });
+
+  it('manages communication state and mutations', () => {
+    // Initial summary metrics (.design/SCHOOL ADMIN/Communication_SA.png)
+    expect(store.communicationSummaryMetrics().totalMessagesSent).toBe(428);
+    expect(store.communicationSummaryMetrics().announcementsPublished).toBe(24);
+    expect(store.communicationSummaryMetrics().parentCommunications).toBe(276);
+    expect(store.communicationSummaryMetrics().pendingReplies).toBe(37);
+
+    // Initial sidebar summary & attention items
+    expect(store.communicationSidebarSummary().messagesThisWeek).toBe(96);
+    expect(store.communicationSidebarSummary().parentRecipients).toBe(2184);
+    expect(store.communicationSidebarSummary().teachersReached).toBe(156);
+    expect(store.communicationSidebarSummary().deliveryRate).toBe(94.2);
+    expect(store.communicationAttentionItems().length).toBe(3);
+
+    // Default tab is 'announcements'
+    expect(store.activeCommunicationTab()).toBe('announcements');
+    expect(store.filteredCommunicationMessages().length).toBeGreaterThanOrEqual(
+      6,
+    );
+
+    // Switch tab to 'teacher-messages'
+    store.setActiveCommunicationTab('teacher-messages');
+    expect(store.activeCommunicationTab()).toBe('teacher-messages');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every(
+          (m) =>
+            m.tab === 'teacher-messages' || m.audience.includes('Teachers'),
+        ),
+    ).toBe(true);
+
+    // Switch tab to 'parent-messages'
+    store.setActiveCommunicationTab('parent-messages');
+    expect(store.activeCommunicationTab()).toBe('parent-messages');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every(
+          (m) => m.tab === 'parent-messages' || m.audience.includes('Parents'),
+        ),
+    ).toBe(true);
+
+    // Switch tab to 'logs'
+    store.setActiveCommunicationTab('logs');
+    expect(store.activeCommunicationTab()).toBe('logs');
+    expect(store.filteredCommunicationMessages().length).toBe(
+      store.communicationMessages().length,
+    );
+
+    // Reset to announcements tab
+    store.setActiveCommunicationTab('announcements');
+
+    // Search query filter
+    store.setCommunicationSearchQuery('PTA');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .some((m) => m.messageTitle.includes('PTA')),
+    ).toBe(true);
+    store.setCommunicationSearchQuery('');
+
+    // Audience filter
+    store.setCommunicationAudienceFilter('All Parents');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.audience === 'All Parents'),
+    ).toBe(true);
+    store.setCommunicationAudienceFilter('All Audiences');
+
+    // Category filter
+    store.setCommunicationCategoryFilter('Events');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.category === 'Events'),
+    ).toBe(true);
+    store.setCommunicationCategoryFilter('All Categories');
+
+    // Status filter
+    store.setCommunicationStatusFilter('Delivered');
+    expect(
+      store
+        .filteredCommunicationMessages()
+        .every((m) => m.deliveryStatus === 'Delivered'),
+    ).toBe(true);
+    store.setCommunicationStatusFilter('All Statuses');
+
+    // Attention item filter toggle
+    const failedAttention = store
+      .communicationAttentionItems()
+      .find((a) => a.filterType === 'failed');
+    if (failedAttention) {
+      store.selectCommunicationAttentionItem(failedAttention);
+      expect(store.selectedCommunicationAttentionItem()?.id).toBe(
+        failedAttention.id,
+      );
+      expect(
+        store
+          .filteredCommunicationMessages()
+          .every((m) => m.deliveryStatus === 'Failed'),
+      ).toBe(true);
+
+      // Deselect by clicking again
+      store.selectCommunicationAttentionItem(failedAttention);
+      expect(store.selectedCommunicationAttentionItem()).toBeNull();
+    }
+
+    // Pagination
+    store.setCommunicationPage(2);
+    expect(store.communicationPage()).toBe(2);
+    store.setCommunicationPage(1);
+
+    // Create Announcement Modal & Mutation
+    expect(store.isCreateAnnouncementModalOpen()).toBe(false);
+    store.openCreateAnnouncementModal();
+    expect(store.isCreateAnnouncementModalOpen()).toBe(true);
+
+    const initialTotal = store.communicationMessages().length;
+    const initialAnnouncements =
+      store.communicationSummaryMetrics().announcementsPublished;
+    store.createAnnouncement({
+      title: 'Inter-House Sports Competition Notice',
+      audience: 'All Students & Parents',
+      category: 'Events',
+      channels: ['In-App', 'Email'],
+      body: 'The annual inter-house sports competition will hold on June 12.',
+    });
+    expect(store.isCreateAnnouncementModalOpen()).toBe(false);
+    expect(store.communicationMessages().length).toBe(initialTotal + 1);
+    expect(store.communicationMessages()[0].messageTitle).toBe(
+      'Inter-House Sports Competition Notice',
+    );
+    expect(store.communicationSummaryMetrics().announcementsPublished).toBe(
+      initialAnnouncements + 1,
+    );
+
+    // Send Parent Message Modal & Mutation
+    expect(store.isSendParentMessageModalOpen()).toBe(false);
+    store.openSendParentMessageModal();
+    expect(store.isSendParentMessageModalOpen()).toBe(true);
+
+    const initialParentComm =
+      store.communicationSummaryMetrics().parentCommunications;
+    store.sendParentMessage({
+      className: 'JSS 1A',
+      recipientAudience: 'Selected Parents',
+      subject: 'Special Science Workshop Invitation',
+      category: 'Academics',
+      body: 'Your ward has been selected for the STEM robotics clinic.',
+      priority: 'Normal',
+    });
+    expect(store.isSendParentMessageModalOpen()).toBe(false);
+    expect(store.communicationSummaryMetrics().parentCommunications).toBe(
+      initialParentComm + 1,
+    );
+
+    // Message details modal
+    const testMsg = store.communicationMessages()[0];
+    store.openMessageDetails(testMsg);
+    expect(store.selectedCommunicationMessage()?.id).toBe(testMsg.id);
+    store.closeMessageDetails();
+    expect(store.selectedCommunicationMessage()).toBeNull();
+
+    // Resend failed message
+    const failedMsg = store
+      .communicationMessages()
+      .find((m) => m.deliveryStatus === 'Failed');
+    if (failedMsg) {
+      store.resendFailedMessage(failedMsg.id);
+      expect(
+        store.communicationMessages().find((m) => m.id === failedMsg.id)
+          ?.deliveryStatus,
+      ).toBe('Delivered');
+    }
+
+    // Schedule blast modal toggle
+    expect(store.isScheduleBlastModalOpen()).toBe(false);
+    store.openScheduleBlastModal();
+    expect(store.isScheduleBlastModalOpen()).toBe(true);
+    store.closeScheduleBlastModal();
+    expect(store.isScheduleBlastModalOpen()).toBe(false);
+
+    // Export communication report
+    expect(store.isExportCommunicationModalOpen()).toBe(false);
+    store.openExportCommunicationModal();
+    expect(store.isExportCommunicationModalOpen()).toBe(true);
+    store.exportCommunicationReport('PDF');
+    expect(store.isExportCommunicationModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('PDF');
+  });
 });

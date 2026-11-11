@@ -1,0 +1,128 @@
+@if (selectedMessage(); as msg) {
+<div class="modal-backdrop">
+  <div
+    class="modal-dialog"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title-details"
+  >
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="header-left">
+        <span
+          class="status-pill"
+          [ngClass]="'status-' + msg.deliveryStatus.toLowerCase()"
+        >
+          {{ msg.deliveryStatus }}
+        </span>
+        <h2 id="modal-title-details" class="modal-title">
+          {{ msg.messageTitle }}
+        </h2>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Meta Information Cards -->
+      <div class="meta-grid">
+        <div class="meta-card">
+          <span class="meta-label">Target Audience</span>
+          <span class="meta-value">{{ msg.audience }}</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Category</span>
+          <span class="meta-value">{{ msg.category }}</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Sent By</span>
+          <span class="meta-value">{{ msg.sentBy }}</span>
+        </div>
+        <div class="meta-card">
+          <span class="meta-label">Scheduled / Sent</span>
+          <span class="meta-value">
+            {{ msg.scheduledDate ? (msg.scheduledDate + ' (' + msg.scheduledTime
+            + ')') : '—' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Delivery Stats Metrics -->
+      <div class="delivery-stats-box">
+        <h3 class="section-title">Delivery Breakdown</h3>
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-number text-slate"
+              >{{ (msg.recipientsCount ?? 0) | number }}</span
+            >
+            <span class="stat-label">Total Recipients</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number text-emerald"
+              >{{ (msg.deliveredCount ?? 0) | number }}</span
+            >
+            <span class="stat-label">Delivered Successfully</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number text-rose"
+              >{{ (msg.failedCount ?? 0) | number }}</span
+            >
+            <span class="stat-label">Failed Deliveries</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Channels -->
+      @if (msg.channels && msg.channels.length > 0) {
+      <div class="channels-box">
+        <span class="channels-label">Dispatched via Channels:</span>
+        <div class="channels-list">
+          @for (ch of msg.channels; track ch) {
+          <span class="channel-chip">{{ ch }}</span>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Message Content -->
+      <div class="message-body-box">
+        <h3 class="section-title">Message Body</h3>
+        <div class="message-content">
+          {{ msg.body || 'No detailed text available.' }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      @if (msg.deliveryStatus === 'Failed' || (msg.failedCount &&
+      msg.failedCount > 0)) {
+      <button type="button" class="btn-resend" (click)="onResend(msg.id)">
+        Resend Failed Deliveries
+      </button>
+      }
+      <button type="button" class="btn-close" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</div>
+}

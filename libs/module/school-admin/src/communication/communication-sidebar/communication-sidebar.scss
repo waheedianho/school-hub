@@ -1,0 +1,208 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typo;
+
+.sidebar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sidebar-card {
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--color-border, #e2e8f0);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  padding: 1.25rem;
+
+  .card-header {
+    margin-bottom: 1rem;
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .card-title {
+        font-size: 0.9375rem;
+        font-weight: 600;
+        color: var(--color-text-primary, #0f172a);
+        margin: 0;
+      }
+    }
+  }
+}
+
+// Icon helper colors
+.text-indigo {
+  color: #7c3aed;
+}
+
+.text-slate {
+  color: #64748b;
+}
+
+.text-blue {
+  color: #2563eb;
+}
+
+.text-amber {
+  color: #d97706;
+}
+
+.text-green {
+  color: #16a34a;
+}
+
+.text-red {
+  color: #dc2626;
+}
+
+// Summary Card
+.summary-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  .summary-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.8125rem;
+
+    .row-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #475569;
+    }
+
+    .row-value {
+      font-weight: 600;
+      color: #0f172a;
+    }
+  }
+}
+
+// Attention Needed Card
+.attention-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .attention-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.625rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+
+    &:hover {
+      background-color: #f8fafc;
+    }
+
+    &.selected {
+      background-color: #ede9fe;
+      outline: 1px solid #c4b5fd;
+    }
+
+    .badge-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.5rem;
+      height: 1.5rem;
+      padding: 0 0.375rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+
+      &.badge-red {
+        background-color: #fee2e2;
+        color: #dc2626;
+      }
+
+      &.badge-amber {
+        background-color: #fef3c7;
+        color: #d97706;
+      }
+
+      &.badge-purple {
+        background-color: #ede9fe;
+        color: #7c3aed;
+      }
+    }
+
+    .attention-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: #334155;
+    }
+  }
+}
+
+.card-footer-link {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f1f5f9;
+
+  .link-btn {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #7c3aed;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Quick Actions Card
+.actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  .quick-action-btn {
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.15s ease;
+
+    .btn-inner {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    &.primary-btn {
+      background-color: #7c3aed;
+      color: #ffffff;
+      border: 1px solid #7c3aed;
+
+      &:hover {
+        background-color: #6d28d9;
+        border-color: #6d28d9;
+      }
+    }
+
+    &.outline-btn {
+      background-color: #ffffff;
+      color: #334155;
+      border: 1px solid var(--color-border, #cbd5e1);
+
+      &:hover {
+        background-color: #f8fafc;
+        border-color: #94a3b8;
+        color: #0f172a;
+      }
+    }
+  }
+}

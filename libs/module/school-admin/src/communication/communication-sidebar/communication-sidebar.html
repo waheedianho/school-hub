@@ -1,0 +1,333 @@
+<div class="sidebar-container">
+  <!-- 1. Communication Summary Card -->
+  @if (summary(); as s) {
+  <div class="sidebar-card" data-testid="sidebar-communication-summary">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-indigo"
+        >
+          <path d="M3 3v18h18"></path>
+          <path d="m19 9-5 5-4-4-3 3"></path>
+        </svg>
+        <h3 class="card-title">Communication Summary</h3>
+      </div>
+    </div>
+
+    <div class="summary-list">
+      <!-- Messages This Week -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-slate"
+          >
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+          Messages This Week
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.messagesThisWeek | number }}</span
+        >
+      </div>
+
+      <!-- Parent Recipients -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-blue"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Parent Recipients
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.parentRecipients | number }}</span
+        >
+      </div>
+
+      <!-- Teachers Reached -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-amber"
+          >
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+          Teachers Reached
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.teachersReached | number }}</span
+        >
+      </div>
+
+      <!-- Delivery Rate -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-green"
+          >
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+          Delivery Rate
+        </span>
+        <span class="row-value font-semibold text-green"
+          >{{ s.deliveryRate }}%</span
+        >
+      </div>
+    </div>
+
+    <div class="card-footer-link">
+      <a
+        href="#summary"
+        class="link-btn"
+        (click)="$event.preventDefault(); onReviewLogs()"
+      >
+        View full delivery logs &rarr;
+      </a>
+    </div>
+  </div>
+  }
+
+  <!-- 2. Attention Needed Card -->
+  <div class="sidebar-card" data-testid="sidebar-attention-needed">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-red"
+        >
+          <path
+            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <h3 class="card-title">Attention Needed</h3>
+      </div>
+    </div>
+
+    <div class="attention-list">
+      @for (item of attentionItems(); track item.id) {
+      <div
+        class="attention-row"
+        [class.selected]="selectedAttention()?.id === item.id"
+        (click)="onSelectAttention(item)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="onSelectAttention(item)"
+        (keydown.space)="onSelectAttention(item)"
+      >
+        <span
+          class="badge-count"
+          [class.badge-red]="item.tone === 'red'"
+          [class.badge-amber]="item.tone === 'amber'"
+          [class.badge-purple]="item.tone === 'purple'"
+        >
+          {{ item.count }}
+        </span>
+        <span class="attention-label">{{ item.label }}</span>
+      </div>
+      }
+    </div>
+
+    <div class="card-footer-link">
+      <a href="#issues" class="link-btn" (click)="$event.preventDefault()">
+        View all communication issues &rarr;
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Quick Actions Card -->
+  <div class="sidebar-card" data-testid="sidebar-quick-actions">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-indigo"
+        >
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <h3 class="card-title">Quick Actions</h3>
+      </div>
+    </div>
+
+    <div class="actions-list">
+      <!-- Create Announcement (Primary Button) -->
+      <button
+        type="button"
+        class="quick-action-btn primary-btn"
+        (click)="onCreateAnnouncement()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path d="m3 11 18-5v12L3 14v-3z"></path>
+            <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"></path>
+          </svg>
+          <span>Create Announcement</span>
+        </div>
+      </button>
+
+      <!-- Send Parent Message -->
+      <button
+        type="button"
+        class="quick-action-btn outline-btn"
+        (click)="onSendParentMessage()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          <span>Send Parent Message</span>
+        </div>
+      </button>
+
+      <!-- Review Logs -->
+      <button
+        type="button"
+        class="quick-action-btn outline-btn"
+        (click)="onReviewLogs()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path
+              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+            ></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Review Logs</span>
+        </div>
+      </button>
+
+      <!-- Export Communication Report -->
+      <button
+        type="button"
+        class="quick-action-btn outline-btn"
+        (click)="onExportReport()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Communication Report</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

@@ -101,21 +101,25 @@
       color: #dc2626;
       border: 1px solid #fecaca;
     }
+
     &.format-mp4 {
       background-color: #faf5ff;
       color: #7c3aed;
       border: 1px solid #e9d5ff;
     }
+
     &.format-docx {
       background-color: #eff6ff;
       color: #2563eb;
       border: 1px solid #bfdbfe;
     }
+
     &.format-pptx {
       background-color: #fff7ed;
       color: #ea580c;
       border: 1px solid #fed7aa;
     }
+
     &.format-png {
       background-color: #f0fdf4;
       color: #16a34a;
@@ -247,14 +251,17 @@
     background-color: #dcfce7;
     color: #16a34a;
   }
+
   &.status-pending {
     background-color: #ffedd5;
     color: #ea580c;
   }
+
   &.status-draft {
     background-color: #f1f5f9;
     color: #64748b;
   }
+
   &.status-missing {
     background-color: #fee2e2;
     color: #dc2626;

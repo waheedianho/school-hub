@@ -113,6 +113,14 @@ export const schoolAdminRoutes: Routes = [
         loadComponent: () =>
           import('./resources/resources').then((m) => m.ResourcesComponent),
       },
+      {
+        path: 'communication',
+        title: 'Communication | SchoolHub Admin',
+        loadComponent: () =>
+          import('./communication/communication').then(
+            (m) => m.CommunicationComponent,
+          ),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -160,6 +168,8 @@ export const schoolAdminRoutes: Routes = [
       { path: 'repository', redirectTo: 'resources', pathMatch: 'full' },
       { path: 'digital-library', redirectTo: 'resources', pathMatch: 'full' },
       { path: 'messages', redirectTo: 'communication', pathMatch: 'full' },
+      { path: 'announcements', redirectTo: 'communication', pathMatch: 'full' },
+      { path: 'broadcasts', redirectTo: 'communication', pathMatch: 'full' },
       // Register all remaining portal pages
       ...SCHOOL_ADMIN_PAGES.filter(
         (page) =>
@@ -173,7 +183,8 @@ export const schoolAdminRoutes: Routes = [
           page.path !== 'assessments-gradebooks' &&
           page.path !== 'reports' &&
           page.path !== 'interventions' &&
-          page.path !== 'resources',
+          page.path !== 'resources' &&
+          page.path !== 'communication',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,

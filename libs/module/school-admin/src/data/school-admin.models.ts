@@ -1119,3 +1119,105 @@ export interface LinkDeliveryPackFormData {
   subject: string;
   week: string;
 }
+
+/**
+ * ============================================================================
+ * Communication Domain Models (.design/SCHOOL ADMIN/Communication_SA.png)
+ * ============================================================================
+ */
+export type CommunicationTab =
+  | 'announcements'
+  | 'teacher-messages'
+  | 'parent-messages'
+  | 'logs';
+
+export type CommunicationAudience =
+  | 'All Students & Parents'
+  | 'All Parents'
+  | 'All Teachers & Staff'
+  | 'Selected Parents'
+  | 'All Students';
+
+export type CommunicationCategory =
+  | 'General'
+  | 'Academics'
+  | 'Events'
+  | 'Internal'
+  | 'Attendance'
+  | 'Emergency';
+
+export type CommunicationDeliveryStatus =
+  | 'Delivered'
+  | 'Sent'
+  | 'Scheduled'
+  | 'Draft'
+  | 'Failed';
+
+export interface CommunicationMessage {
+  id: string;
+  audience: CommunicationAudience;
+  messageTitle: string;
+  category: CommunicationCategory;
+  sentBy: string;
+  sentByInitials?: string;
+  deliveryStatus: CommunicationDeliveryStatus;
+  scheduledDate?: string;
+  scheduledTime?: string;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  tab: CommunicationTab;
+  body?: string;
+  recipientsCount?: number;
+  deliveredCount?: number;
+  failedCount?: number;
+  channels?: ('In-App' | 'Email' | 'SMS')[];
+  attachments?: string[];
+}
+
+export interface CommunicationSummaryMetrics {
+  totalMessagesSent: number;
+  totalMessagesSentChange: number;
+  announcementsPublished: number;
+  announcementsPublishedChange: number;
+  parentCommunications: number;
+  parentCommunicationsChange: number;
+  pendingReplies: number;
+  pendingRepliesChange: number;
+}
+
+export interface CommunicationSidebarSummary {
+  messagesThisWeek: number;
+  parentRecipients: number;
+  teachersReached: number;
+  deliveryRate: number;
+}
+
+export interface CommunicationAttentionItem {
+  id: string;
+  label: string;
+  count: number;
+  tone: 'red' | 'amber' | 'purple';
+  filterStatus?: CommunicationDeliveryStatus;
+  filterType?: 'failed' | 'drafts' | 'pending';
+}
+
+export interface CreateAnnouncementFormData {
+  title: string;
+  audience: CommunicationAudience;
+  category: CommunicationCategory;
+  channels: ('In-App' | 'Email' | 'SMS')[];
+  scheduleDate?: string;
+  scheduleTime?: string;
+  body: string;
+  isUrgent?: boolean;
+}
+
+export interface SendParentMessageFormData {
+  className: string;
+  recipientAudience: 'All Parents' | 'Selected Parents';
+  parentName?: string;
+  subject: string;
+  category: CommunicationCategory;
+  body: string;
+  priority: 'Normal' | 'High';
+}
