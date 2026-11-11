@@ -121,6 +121,12 @@ export const schoolAdminRoutes: Routes = [
             (m) => m.CommunicationComponent,
           ),
       },
+      {
+        path: 'settings',
+        title: 'Settings & Permissions | SchoolHub Admin',
+        loadComponent: () =>
+          import('./settings/settings').then((m) => m.SettingsComponent),
+      },
       // Convenience aliases for intuitive navigation
       { path: 'setup', redirectTo: 'school-setup', pathMatch: 'full' },
       { path: 'classes', redirectTo: 'classes-learners', pathMatch: 'full' },
@@ -170,6 +176,13 @@ export const schoolAdminRoutes: Routes = [
       { path: 'messages', redirectTo: 'communication', pathMatch: 'full' },
       { path: 'announcements', redirectTo: 'communication', pathMatch: 'full' },
       { path: 'broadcasts', redirectTo: 'communication', pathMatch: 'full' },
+      {
+        path: 'settings-permissions',
+        redirectTo: 'settings',
+        pathMatch: 'full',
+      },
+      { path: 'permissions', redirectTo: 'settings', pathMatch: 'full' },
+      { path: 'roles', redirectTo: 'settings', pathMatch: 'full' },
       // Register all remaining portal pages
       ...SCHOOL_ADMIN_PAGES.filter(
         (page) =>
@@ -184,7 +197,8 @@ export const schoolAdminRoutes: Routes = [
           page.path !== 'reports' &&
           page.path !== 'interventions' &&
           page.path !== 'resources' &&
-          page.path !== 'communication',
+          page.path !== 'communication' &&
+          page.path !== 'settings',
       ).map((page) => ({
         path: page.path,
         component: SchoolAdmin,

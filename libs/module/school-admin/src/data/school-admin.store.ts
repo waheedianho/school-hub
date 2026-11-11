@@ -28,9 +28,12 @@ import {
   CommunicationSummaryMetrics,
   CommunicationTab,
   CreateAnnouncementFormData,
+  CreateRoleFormData,
   CurriculumCoverage,
   CurriculumMapEntry,
   CurriculumOverviewMetrics,
+  GeneralSettingsForm,
+  GeneralSettingsSummaryItem,
   GradeDistributionBucket,
   InterventionAttentionItem,
   InterventionCase,
@@ -54,6 +57,7 @@ import {
   NewLearnerFormData,
   NewStaffFormData,
   OversightSidebarSummary,
+  PermissionSidebarSummary,
   PriorityAttentionArea,
   ReportsHighlightInsights,
   ReportsSidebarSummary,
@@ -72,7 +76,11 @@ import {
   SchoolAlert,
   SchoolClass,
   SchoolProfile,
+  SchoolRole,
   SendParentMessageFormData,
+  SettingsAttentionItem,
+  SettingsSummaryMetrics,
+  SettingsTab,
   SetupChecklistItem,
   SetupQuickAction,
   StaffMember,
@@ -181,6 +189,15 @@ import {
   COMMUNICATION_SIDEBAR_SUMMARY,
   COMMUNICATION_ATTENTION_ITEMS,
 } from './school-admin-communication.data';
+import {
+  GENERAL_SETTINGS_ATTENTION_ITEMS,
+  GENERAL_SETTINGS_DATA,
+  GENERAL_SETTINGS_SUMMARY_DATA,
+  PERMISSION_ATTENTION_ITEMS,
+  PERMISSION_SIDEBAR_SUMMARY_DATA,
+  SCHOOL_ROLES_DATA,
+  SETTINGS_SUMMARY_METRICS,
+} from './school-admin-settings.data';
 
 const STORAGE_KEY_SESSION = 'schoolhub_admin_session';
 const STORAGE_KEY_TERM = 'schoolhub_admin_term';
@@ -1321,6 +1338,153 @@ export class SchoolAdminStore {
   readonly communicationTotalPages = computed(() => {
     const total = this.filteredCommunicationMessages().length;
     const size = this.communicationPageSize();
+    return Math.max(1, Math.ceil(total / size));
+  });
+
+  // Settings & Permissions Signals
+  readonly activeSettingsTab = signal<SettingsTab>('general');
+  readonly settingsSummaryMetrics = signal<SettingsSummaryMetrics>(
+    SETTINGS_SUMMARY_METRICS,
+  );
+  readonly generalSettings = signal<GeneralSettingsForm>(GENERAL_SETTINGS_DATA);
+  readonly initialGeneralSettings = signal<GeneralSettingsForm>(
+    GENERAL_SETTINGS_DATA,
+  );
+  readonly generalSettingsSummary = signal<GeneralSettingsSummaryItem[]>(
+    GENERAL_SETTINGS_SUMMARY_DATA,
+  );
+  readonly generalSettingsAttentionItems = signal<SettingsAttentionItem[]>(
+    GENERAL_SETTINGS_ATTENTION_ITEMS,
+  );
+  readonly schoolRoles = signal<SchoolRole[]>(SCHOOL_ROLES_DATA);
+  readonly permissionSidebarSummary = signal<PermissionSidebarSummary>(
+    PERMISSION_SIDEBAR_SUMMARY_DATA,
+  );
+  readonly permissionAttentionItems = signal<SettingsAttentionItem[]>(
+    PERMISSION_ATTENTION_ITEMS,
+  );
+  readonly selectedSettingsAttentionItem = signal<SettingsAttentionItem | null>(
+    null,
+  );
+  readonly selectedRole = signal<SchoolRole | null>(null);
+  readonly isCreateRoleModalOpen = signal<boolean>(false);
+  readonly isExportPermissionModalOpen = signal<boolean>(false);
+  readonly isConfirmDiscardModalOpen = signal<boolean>(false);
+  readonly roleSearchQuery = signal<string>('');
+  readonly roleAccessScopeFilter = signal<string>('All Scopes');
+  readonly rolePermissionLevelFilter = signal<string>('All Levels');
+  readonly roleStatusFilter = signal<string>('All Statuses');
+  readonly rolePage = signal<number>(1);
+  readonly rolePageSize = signal<number>(10);
+
+  readonly isGeneralSettingsDirty = computed(() => {
+    const curr = this.generalSettings();
+    const init = this.initialGeneralSettings();
+    return (
+      curr.schoolName !== init.schoolName ||
+      curr.schoolCode !== init.schoolCode ||
+      curr.email !== init.email ||
+      curr.phone !== init.phone ||
+      curr.address !== init.address ||
+      curr.logoUrl !== init.logoUrl ||
+      curr.timeZone !== init.timeZone ||
+      curr.dateFormat !== init.dateFormat ||
+      curr.language !== init.language ||
+      curr.emailAlerts !== init.emailAlerts ||
+      curr.reportNotifications !== init.reportNotifications ||
+      curr.parentCommunication !== init.parentCommunication ||
+      curr.currentSession !== init.currentSession ||
+      curr.defaultTerm !== init.defaultTerm ||
+      curr.gradingScale !== init.gradingScale ||
+      curr.namingConvention !== init.namingConvention ||
+      curr.classStructure !== init.classStructure ||
+      curr.primaryColor !== init.primaryColor ||
+      curr.portalName !== init.portalName ||
+      curr.faviconUrl !== init.faviconUrl ||
+      curr.autoSave !== init.autoSave ||
+      curr.archivePolicy !== init.archivePolicy ||
+      curr.defaultApprovalWorkflow !== init.defaultApprovalWorkflow
+    );
+  });
+
+  readonly filteredSchoolRoles = computed(() => {
+    const roles = this.schoolRoles();
+    const query = this.roleSearchQuery().toLowerCase().trim();
+    const scopeFilter = this.roleAccessScopeFilter();
+    const levelFilter = this.rolePermissionLevelFilter();
+    const statusFilter = this.roleStatusFilter();
+    const attention = this.selectedSettingsAttentionItem();
+
+    return roles.filter((role) => {
+      // Attention item filter
+      if (attention) {
+        if (
+          attention.filterType === 'pending-approvals' &&
+          role.status !== 'Review Needed'
+        ) {
+          return false;
+        }
+        if (
+          attention.filterType === 'password-resets' &&
+          role.status !== 'Restricted'
+        ) {
+          return false;
+        }
+        if (
+          attention.filterType === 'policy-updates' &&
+          role.accessScope !== 'Assigned Classes'
+        ) {
+          return false;
+        }
+        if (
+          attention.filterType === 'elevated-access' &&
+          role.permissionLevel !== 'Full Access' &&
+          role.permissionLevel !== 'High Access'
+        ) {
+          return false;
+        }
+      }
+
+      // Dropdown filters
+      if (scopeFilter !== 'All Scopes' && role.accessScope !== scopeFilter) {
+        return false;
+      }
+      if (
+        levelFilter !== 'All Levels' &&
+        role.permissionLevel !== levelFilter
+      ) {
+        return false;
+      }
+      if (statusFilter !== 'All Statuses' && role.status !== statusFilter) {
+        return false;
+      }
+
+      // Search query
+      if (query) {
+        const matchName = role.name.toLowerCase().includes(query);
+        const matchDesc = role.description.toLowerCase().includes(query);
+        const matchScope = role.accessScope.toLowerCase().includes(query);
+        const matchLevel = role.permissionLevel.toLowerCase().includes(query);
+        if (!matchName && !matchDesc && !matchScope && !matchLevel) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly paginatedSchoolRoles = computed(() => {
+    const list = this.filteredSchoolRoles();
+    const page = this.rolePage();
+    const size = this.rolePageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly rolesTotalPages = computed(() => {
+    const total = this.filteredSchoolRoles().length;
+    const size = this.rolePageSize();
     return Math.max(1, Math.ceil(total / size));
   });
 
@@ -2821,6 +2985,199 @@ export class SchoolAdminStore {
     this.isExportCommunicationModalOpen.set(false);
     this.setupSaveStatus.set(
       `Communication report exported successfully (${format}).`,
+    );
+  }
+
+  /**
+   * Settings & Permissions Actions
+   */
+  setActiveSettingsTab(tab: SettingsTab): void {
+    this.activeSettingsTab.set(tab);
+    this.rolePage.set(1);
+    this.selectedSettingsAttentionItem.set(null);
+  }
+
+  updateGeneralSettings(partial: Partial<GeneralSettingsForm>): void {
+    this.generalSettings.update((curr) => ({ ...curr, ...partial }));
+  }
+
+  saveGeneralSettings(): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const updated: GeneralSettingsForm = {
+      ...this.generalSettings(),
+      lastUpdatedDate: dateStr,
+      lastUpdatedTime: timeStr,
+      lastUpdatedBy: 'School Admin',
+    };
+
+    this.generalSettings.set(updated);
+    this.initialGeneralSettings.set(updated);
+    this.setupSaveStatus.set(`Settings saved successfully at ${timeStr}.`);
+  }
+
+  discardGeneralSettings(): void {
+    this.generalSettings.set(this.initialGeneralSettings());
+    this.isConfirmDiscardModalOpen.set(false);
+  }
+
+  openDiscardConfirmModal(): void {
+    if (this.isGeneralSettingsDirty()) {
+      this.isConfirmDiscardModalOpen.set(true);
+    } else {
+      this.discardGeneralSettings();
+    }
+  }
+
+  closeDiscardConfirmModal(): void {
+    this.isConfirmDiscardModalOpen.set(false);
+  }
+
+  setRoleSearchQuery(query: string): void {
+    this.roleSearchQuery.set(query);
+    this.rolePage.set(1);
+  }
+
+  setRoleAccessScopeFilter(scope: string): void {
+    this.roleAccessScopeFilter.set(scope);
+    this.rolePage.set(1);
+  }
+
+  setRolePermissionLevelFilter(level: string): void {
+    this.rolePermissionLevelFilter.set(level);
+    this.rolePage.set(1);
+  }
+
+  setRoleStatusFilter(status: string): void {
+    this.roleStatusFilter.set(status);
+    this.rolePage.set(1);
+  }
+
+  setRolePage(page: number): void {
+    if (page >= 1 && page <= this.rolesTotalPages()) {
+      this.rolePage.set(page);
+    }
+  }
+
+  setRolePageSize(size: number): void {
+    this.rolePageSize.set(size);
+    this.rolePage.set(1);
+  }
+
+  selectSettingsAttentionItem(item: SettingsAttentionItem): void {
+    const current = this.selectedSettingsAttentionItem();
+    if (current?.id === item.id) {
+      this.selectedSettingsAttentionItem.set(null);
+    } else {
+      this.selectedSettingsAttentionItem.set(item);
+    }
+    this.rolePage.set(1);
+  }
+
+  clearSettingsAttentionItem(): void {
+    this.selectedSettingsAttentionItem.set(null);
+    this.rolePage.set(1);
+  }
+
+  openCreateRoleModal(): void {
+    this.isCreateRoleModalOpen.set(true);
+  }
+
+  closeCreateRoleModal(): void {
+    this.isCreateRoleModalOpen.set(false);
+  }
+
+  createRole(form: CreateRoleFormData): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const initials = form.name
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+
+    const newRole: SchoolRole = {
+      id: `role-${Date.now().toString().slice(-4)}`,
+      name: form.name,
+      description: form.description,
+      initials,
+      usersAssigned: form.usersAssigned ?? 0,
+      accessScope: form.accessScope,
+      permissionLevel: form.permissionLevel,
+      lastUpdatedDate: dateStr,
+      lastUpdatedTime: timeStr,
+      status: form.status ?? 'Active',
+      modules: {
+        dashboard: true,
+        setup: false,
+        classes: true,
+        teachers: false,
+        curriculum: false,
+        lessons: true,
+        liveClasses: false,
+        assessments: true,
+        reports: false,
+        interventions: false,
+        resources: true,
+        communication: false,
+        settings: false,
+      },
+    };
+
+    this.schoolRoles.update((list) => [newRole, ...list]);
+    this.settingsSummaryMetrics.update((m) => ({
+      ...m,
+      totalRoles: m.totalRoles + 1,
+      activePermissionSets: m.activePermissionSets + 1,
+    }));
+    this.permissionSidebarSummary.update((s) => ({
+      ...s,
+      customRoles: s.customRoles + 1,
+      activeRoles: s.activeRoles + 1,
+    }));
+    this.isCreateRoleModalOpen.set(false);
+    this.setupSaveStatus.set(`Role "${form.name}" created successfully.`);
+  }
+
+  openRoleDetails(role: SchoolRole): void {
+    this.selectedRole.set(role);
+  }
+
+  closeRoleDetails(): void {
+    this.selectedRole.set(null);
+  }
+
+  openExportPermissionModal(): void {
+    this.isExportPermissionModalOpen.set(true);
+  }
+
+  closeExportPermissionModal(): void {
+    this.isExportPermissionModalOpen.set(false);
+  }
+
+  exportPermissionReport(format = 'PDF'): void {
+    this.isExportPermissionModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Roles & permissions report exported successfully (${format}).`,
     );
   }
 

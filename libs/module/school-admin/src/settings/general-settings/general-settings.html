@@ -1,0 +1,553 @@
+@if (settings(); as s) {
+<div class="general-settings-container">
+  <div class="settings-two-column-grid">
+    <!-- Left Column -->
+    <div class="settings-column">
+      <!-- 1. School Profile Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">School Profile</h2>
+          <p class="card-subtitle">
+            Basic information about your school and institution branding
+          </p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-group">
+            <label for="school-name-input" class="field-label"
+              >School Name</label
+            >
+            <input
+              id="school-name-input"
+              type="text"
+              class="form-input"
+              [value]="s.schoolName"
+              (input)="onFieldChange('schoolName', $any($event.target).value)"
+            />
+          </div>
+
+          <div class="form-row-two-col">
+            <div class="form-group">
+              <label for="school-code-input" class="field-label"
+                >School Code</label
+              >
+              <input
+                id="school-code-input"
+                type="text"
+                class="form-input"
+                [value]="s.schoolCode"
+                (input)="onFieldChange('schoolCode', $any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="school-phone-input" class="field-label"
+                >Phone Number</label
+              >
+              <input
+                id="school-phone-input"
+                type="text"
+                class="form-input"
+                [value]="s.phone"
+                (input)="onFieldChange('phone', $any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="school-email-input" class="field-label"
+              >Official Email</label
+            >
+            <input
+              id="school-email-input"
+              type="email"
+              class="form-input"
+              [value]="s.email"
+              (input)="onFieldChange('email', $any($event.target).value)"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="school-address-input" class="field-label"
+              >Physical Address</label
+            >
+            <textarea
+              id="school-address-input"
+              rows="2"
+              class="form-textarea"
+              [value]="s.address"
+              (input)="onFieldChange('address', $any($event.target).value)"
+            ></textarea>
+          </div>
+
+          <!-- Logo Upload Section -->
+          <div class="logo-upload-section">
+            <span class="field-label">School Logo</span>
+            <div class="logo-uploader-row">
+              <div class="logo-preview-box">
+                <img
+                  [src]="s.logoUrl || 'images/admin.png'"
+                  alt="School Logo Preview"
+                  class="logo-img"
+                />
+              </div>
+              <div class="logo-actions">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-outline btn-sm">
+                    Upload Logo
+                  </button>
+                  <button type="button" class="btn btn-text btn-sm text-red">
+                    Remove
+                  </button>
+                </div>
+                <span class="helper-text">
+                  Recommended: PNG or JPG, at least 400x400px
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Localization Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">Localization</h2>
+          <p class="card-subtitle">
+            Regional preferences and display formatting
+          </p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-group">
+            <label for="timezone-select" class="field-label">Time Zone</label>
+            <select
+              id="timezone-select"
+              class="form-select"
+              [value]="s.timeZone"
+              (change)="onFieldChange('timeZone', $any($event.target).value)"
+            >
+              <option value="(UTC-08:00) Pacific Time (US & Canada)">
+                (UTC-08:00) Pacific Time (US & Canada)
+              </option>
+              <option value="(UTC-05:00) Eastern Time (US & Canada)">
+                (UTC-05:00) Eastern Time (US & Canada)
+              </option>
+              <option value="(UTC+00:00) Greenwich Mean Time">
+                (UTC+00:00) Greenwich Mean Time
+              </option>
+              <option value="(UTC+01:00) West Central Africa">
+                (UTC+01:00) West Central Africa
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row-two-col">
+            <div class="form-group">
+              <label for="date-format-select" class="field-label"
+                >Date Format</label
+              >
+              <select
+                id="date-format-select"
+                class="form-select"
+                [value]="s.dateFormat"
+                (change)="onFieldChange('dateFormat', $any($event.target).value)"
+              >
+                <option value="May 12, 2025 (MM DD, YYYY)">
+                  May 12, 2025 (MM DD, YYYY)
+                </option>
+                <option value="12 May 2025 (DD MM, YYYY)">
+                  12 May 2025 (DD MM, YYYY)
+                </option>
+                <option value="2025-05-12 (YYYY-MM-DD)">
+                  2025-05-12 (YYYY-MM-DD)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="language-select" class="field-label">Language</label>
+              <select
+                id="language-select"
+                class="form-select"
+                [value]="s.language"
+                (change)="onFieldChange('language', $any($event.target).value)"
+              >
+                <option value="English (US)">English (US)</option>
+                <option value="English (UK)">English (UK)</option>
+                <option value="French">French</option>
+                <option value="Spanish">Spanish</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Notification Defaults Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">Notification Defaults</h2>
+          <p class="card-subtitle">
+            System-wide automated alerts and delivery preferences
+          </p>
+        </div>
+
+        <div class="card-body toggles-list">
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">Email Alerts</span>
+              <span class="toggle-description">
+                Send email notifications for critical updates, alerts, and
+                system notices
+              </span>
+            </div>
+            <label class="switch" for="email-alerts-toggle">
+              <input
+                type="checkbox"
+                id="email-alerts-toggle"
+                [checked]="s.emailAlerts"
+                (change)="onFieldChange('emailAlerts', $any($event.target).checked)"
+              />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">Report Notifications</span>
+              <span class="toggle-description">
+                Notify users when term report cards and assessment results are
+                finalized
+              </span>
+            </div>
+            <label class="switch" for="report-notifications-toggle">
+              <input
+                type="checkbox"
+                id="report-notifications-toggle"
+                [checked]="s.reportNotifications"
+                (change)="onFieldChange('reportNotifications', $any($event.target).checked)"
+              />
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-info">
+              <span class="toggle-title">Parent Communication</span>
+              <span class="toggle-description">
+                Allow automated SMS and in-app alerts sent directly to
+                registered parents
+              </span>
+            </div>
+            <label class="switch" for="parent-communication-toggle">
+              <input
+                type="checkbox"
+                id="parent-communication-toggle"
+                [checked]="s.parentCommunication"
+                (change)="onFieldChange('parentCommunication', $any($event.target).checked)"
+              />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="settings-column">
+      <!-- 1. Academic Defaults Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">Academic Defaults</h2>
+          <p class="card-subtitle">
+            System academic cycle and structural configurations
+          </p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-row-two-col">
+            <div class="form-group">
+              <label for="session-select" class="field-label"
+                >Current Session</label
+              >
+              <select
+                id="session-select"
+                class="form-select"
+                [value]="s.currentSession"
+                (change)="onFieldChange('currentSession', $any($event.target).value)"
+              >
+                <option value="2024/2025">2024/2025</option>
+                <option value="2025/2026">2025/2026</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="default-term-select" class="field-label"
+                >Default Term</label
+              >
+              <select
+                id="default-term-select"
+                class="form-select"
+                [value]="s.defaultTerm"
+                (change)="onFieldChange('defaultTerm', $any($event.target).value)"
+              >
+                <option value="First Term">First Term</option>
+                <option value="Second Term">Second Term</option>
+                <option value="Third Term">Third Term</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row-two-col">
+            <div class="form-group">
+              <label for="grading-scale-select" class="field-label"
+                >Grading Scale</label
+              >
+              <select
+                id="grading-scale-select"
+                class="form-select"
+                [value]="s.gradingScale"
+                (change)="onFieldChange('gradingScale', $any($event.target).value)"
+              >
+                <option value="A-F">A-F (Standard Letter Grades)</option>
+                <option value="Percentage">Percentage (0-100%)</option>
+                <option value="1-5">1-5 Numerical Scale</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="naming-convention-select" class="field-label"
+                >Naming Convention</label
+              >
+              <select
+                id="naming-convention-select"
+                class="form-select"
+                [value]="s.namingConvention"
+                (change)="onFieldChange('namingConvention', $any($event.target).value)"
+              >
+                <option value="First Last (e.g. John Smith)">
+                  First Last (e.g. John Smith)
+                </option>
+                <option value="Last, First (e.g. Smith, John)">
+                  Last, First (e.g. Smith, John)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="class-structure-select" class="field-label"
+              >Class Structure</label
+            >
+            <select
+              id="class-structure-select"
+              class="form-select"
+              [value]="s.classStructure"
+              (change)="onFieldChange('classStructure', $any($event.target).value)"
+            >
+              <option value="Grade-based (e.g. Grade 1, Grade 2)">
+                Grade-based (e.g. Grade 1, Grade 2)
+              </option>
+              <option value="Year-based (e.g. Year 7, Year 8)">
+                Year-based (e.g. Year 7, Year 8)
+              </option>
+              <option value="Secondary Standard (JSS / SSS)">
+                Secondary Standard (JSS / SSS)
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Branding Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">Branding</h2>
+          <p class="card-subtitle">Portal customization and brand appearance</p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-row-two-col">
+            <div class="form-group">
+              <label for="primary-color-input" class="field-label"
+                >Primary Color</label
+              >
+              <div class="color-picker-input-wrap">
+                <span
+                  class="color-swatch-preview"
+                  [style.background-color]="s.primaryColor"
+                ></span>
+                <input
+                  id="primary-color-input"
+                  type="text"
+                  class="form-input color-code-input"
+                  [value]="s.primaryColor"
+                  (input)="onFieldChange('primaryColor', $any($event.target).value)"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="portal-name-input" class="field-label"
+                >Portal Name</label
+              >
+              <input
+                id="portal-name-input"
+                type="text"
+                class="form-input"
+                [value]="s.portalName"
+                (input)="onFieldChange('portalName', $any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <!-- Favicon / App Icon -->
+          <div class="favicon-section">
+            <span class="field-label">Favicon / App Icon</span>
+            <div class="favicon-uploader-row">
+              <div
+                class="favicon-preview-box"
+                [style.background-color]="s.primaryColor"
+              >
+                <span class="favicon-symbol">L</span>
+              </div>
+              <div class="favicon-actions">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-outline btn-sm">
+                    Upload Icon
+                  </button>
+                  <a
+                    href="javascript:void(0)"
+                    class="preview-link"
+                    title="Preview Portal Appearance"
+                  >
+                    Preview Portal ↗
+                  </a>
+                </div>
+                <span class="helper-text">
+                  Recommended: 64x64px ICO or PNG format
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Data & System Preferences Card -->
+      <div class="settings-card">
+        <div class="card-header">
+          <h2 class="card-title">Data & System Preferences</h2>
+          <p class="card-subtitle">
+            Data retention, autosave, and workflow automation
+          </p>
+        </div>
+
+        <div class="card-body">
+          <div class="form-group">
+            <label for="autosave-select" class="field-label">Auto-save</label>
+            <select
+              id="autosave-select"
+              class="form-select"
+              [value]="s.autoSave"
+              (change)="onFieldChange('autoSave', $any($event.target).value)"
+            >
+              <option value="Save changes automatically">
+                Save changes automatically
+              </option>
+              <option value="Manual save only">Manual save only</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="archive-policy-select" class="field-label"
+              >Archive Policy</label
+            >
+            <select
+              id="archive-policy-select"
+              class="form-select"
+              [value]="s.archivePolicy"
+              (change)="onFieldChange('archivePolicy', $any($event.target).value)"
+            >
+              <option value="Archive after 3 academic years">
+                Archive after 3 academic years
+              </option>
+              <option value="Archive after 5 academic years">
+                Archive after 5 academic years
+              </option>
+              <option value="Never archive automatically">
+                Never archive automatically
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="approval-workflow-select" class="field-label">
+              Default Approval Workflow
+            </label>
+            <select
+              id="approval-workflow-select"
+              class="form-select"
+              [value]="s.defaultApprovalWorkflow"
+              (change)="onFieldChange('defaultApprovalWorkflow', $any($event.target).value)"
+            >
+              <option value="Admin Approval -> Final Approval">
+                Admin Approval -> Final Approval
+              </option>
+              <option value="Direct Approval">Direct Approval</option>
+              <option value="Multi-tier Leadership Approval">
+                Multi-tier Leadership Approval
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Action Bar -->
+  <div class="bottom-action-bar">
+    <div class="last-updated-info">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="clock-icon"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      <span>
+        Last updated: {{ s.lastUpdatedDate }} {{ s.lastUpdatedTime }} by {{
+        s.lastUpdatedBy }}
+      </span>
+    </div>
+
+    <div class="action-buttons">
+      <button
+        type="button"
+        class="btn btn-outline"
+        (click)="onDiscard()"
+        [disabled]="!isDirty()"
+        data-testid="discard-settings-btn"
+      >
+        Discard
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onSave()"
+        [disabled]="!isDirty()"
+        data-testid="save-settings-btn"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,134 @@
+@use '../../../../../shared/ui-elements/src/styles/typography' as typo;
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-dialog {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border, #e2e8f0);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.875rem;
+
+    .icon-bubble {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      &.warning {
+        background-color: #fef3c7;
+        color: #d97706;
+      }
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--color-text-primary, #0f172a);
+      margin: 0;
+    }
+
+    .modal-subtitle {
+      font-size: typo.$caption;
+      color: var(--color-text-secondary, #64748b);
+      margin: 0.125rem 0 0 0;
+    }
+  }
+
+  .close-btn {
+    border: none;
+    background: transparent;
+    color: var(--color-text-secondary, #94a3b8);
+    cursor: pointer;
+    padding: 0.375rem;
+    border-radius: 0.375rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+  }
+}
+
+.modal-body {
+  padding: 1.5rem;
+
+  .confirm-message {
+    font-size: typo.$body;
+    color: var(--color-text-primary, #334155);
+    line-height: 1.5;
+    margin: 0;
+  }
+}
+
+.modal-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--color-border, #e2e8f0);
+  background-color: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  font-size: typo.$body;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  border: 1px solid transparent;
+
+  &.btn-outline {
+    background-color: #ffffff;
+    border-color: var(--color-border, #cbd5e1);
+    color: #334155;
+
+    &:hover {
+      background-color: #f8fafc;
+    }
+  }
+
+  &.btn-danger {
+    background-color: #dc2626;
+    color: #ffffff;
+
+    &:hover {
+      background-color: #b91c1c;
+    }
+  }
+}

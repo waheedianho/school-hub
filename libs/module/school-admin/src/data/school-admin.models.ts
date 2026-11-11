@@ -1221,3 +1221,122 @@ export interface SendParentMessageFormData {
   body: string;
   priority: 'Normal' | 'High';
 }
+
+// Settings & Permissions Models (.design/SCHOOL ADMIN/Settings & Permission_SA.png & Settings & Permission II_SA.png)
+export type SettingsTab =
+  | 'general'
+  | 'roles-permissions'
+  | 'academic-policies'
+  | 'notifications'
+  | 'privacy-security'
+  | 'audit-logs';
+
+export interface SettingsSummaryMetrics {
+  totalRoles: number;
+  totalRolesChange: number;
+  activePermissionSets: number;
+  activePermissionSetsChange: number;
+  pendingApprovalChanges: number;
+  pendingApprovalChangesChange: number;
+  twoFactorEnabled: number;
+  twoFactorEnabledChange: number;
+  auditAlerts: number;
+  auditAlertsChange: number;
+}
+
+export interface GeneralSettingsForm {
+  schoolName: string;
+  schoolCode: string;
+  email: string;
+  phone: string;
+  address: string;
+  logoUrl?: string;
+  timeZone: string;
+  dateFormat: string;
+  language: string;
+  emailAlerts: boolean;
+  reportNotifications: boolean;
+  parentCommunication: boolean;
+  currentSession: string;
+  defaultTerm: string;
+  gradingScale: string;
+  namingConvention: string;
+  classStructure: string;
+  primaryColor: string;
+  portalName: string;
+  faviconUrl?: string;
+  autoSave: string;
+  archivePolicy: string;
+  defaultApprovalWorkflow: string;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  lastUpdatedBy: string;
+}
+
+export interface GeneralSettingsSummaryItem {
+  id: string;
+  label: string;
+  status: 'Complete' | 'Configured' | 'Pending';
+}
+
+export interface SettingsAttentionItem {
+  id: string;
+  label: string;
+  badge: 'Required' | 'Review' | 'Notice';
+  tone: 'red' | 'amber' | 'blue' | 'purple';
+  count?: number;
+  filterType?: string;
+}
+
+export type RoleAccessScope =
+  | 'All School'
+  | 'Assigned Classes'
+  | 'All Students'
+  | 'Own Children';
+
+export type RolePermissionLevel =
+  | 'Full Access'
+  | 'High Access'
+  | 'Moderate Access'
+  | 'Limited Access'
+  | 'Read Only';
+
+export type RoleStatus = 'Active' | 'Review Needed' | 'Restricted' | 'Inactive';
+
+export interface SchoolRole {
+  id: string;
+  name: string;
+  description: string;
+  initials?: string;
+  iconType?:
+    | 'admin'
+    | 'vice-principal'
+    | 'teacher'
+    | 'class-teacher'
+    | 'counselor'
+    | 'parent';
+  usersAssigned: number;
+  accessScope: RoleAccessScope;
+  permissionLevel: RolePermissionLevel;
+  lastUpdatedDate: string;
+  lastUpdatedTime: string;
+  status: RoleStatus;
+  modules?: Record<string, boolean>;
+}
+
+export interface PermissionSidebarSummary {
+  activeRoles: number;
+  customRoles: number;
+  restrictedUsers: number;
+  auditLogsThisMonth: number;
+  lastPolicyReview: string;
+}
+
+export interface CreateRoleFormData {
+  name: string;
+  description: string;
+  accessScope: RoleAccessScope;
+  permissionLevel: RolePermissionLevel;
+  status?: RoleStatus;
+  usersAssigned?: number;
+}

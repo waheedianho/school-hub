@@ -1310,4 +1310,149 @@ describe('SchoolAdminStore', () => {
     expect(store.isExportCommunicationModalOpen()).toBe(false);
     expect(store.setupSaveStatus()).toContain('PDF');
   });
+
+  it('manages settings and permissions state, dirty tracking, filters, and mutations', () => {
+    // Initial KPI Metrics
+    expect(store.settingsSummaryMetrics().totalRoles).toBe(12);
+    expect(store.settingsSummaryMetrics().activePermissionSets).toBe(24);
+    expect(store.settingsSummaryMetrics().pendingApprovalChanges).toBe(8);
+    expect(store.settingsSummaryMetrics().twoFactorEnabled).toBe(87);
+    expect(store.settingsSummaryMetrics().auditAlerts).toBe(3);
+
+    // Initial General Settings
+    expect(store.activeSettingsTab()).toBe('general');
+    expect(store.generalSettings().schoolName).toBe('Greenfield Academy');
+    expect(store.generalSettings().portalName).toBe('Learno School Portal');
+    expect(store.generalSettings().primaryColor).toBe('#6D28D9');
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+
+    // Initial Sidebar Summaries
+    expect(store.generalSettingsSummary().length).toBe(6);
+    expect(store.generalSettingsAttentionItems().length).toBe(3);
+    expect(store.permissionSidebarSummary().activeRoles).toBe(9);
+    expect(store.permissionSidebarSummary().customRoles).toBe(5);
+    expect(store.permissionAttentionItems().length).toBe(4);
+
+    // Dirty state tracking & Save
+    store.updateGeneralSettings({
+      schoolName: 'Greenfield International Academy',
+    });
+    expect(store.isGeneralSettingsDirty()).toBe(true);
+    store.saveGeneralSettings();
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+    expect(store.generalSettings().schoolName).toBe(
+      'Greenfield International Academy',
+    );
+    expect(store.setupSaveStatus()).toContain('Settings saved successfully');
+
+    // Discard mutation
+    store.updateGeneralSettings({ phone: '+1 (555) 999-8888' });
+    expect(store.isGeneralSettingsDirty()).toBe(true);
+    expect(store.isConfirmDiscardModalOpen()).toBe(false);
+    store.openDiscardConfirmModal();
+    expect(store.isConfirmDiscardModalOpen()).toBe(true);
+    store.discardGeneralSettings();
+    expect(store.isConfirmDiscardModalOpen()).toBe(false);
+    expect(store.isGeneralSettingsDirty()).toBe(false);
+    expect(store.generalSettings().phone).toBe('+1 (555) 123-4567');
+
+    // Switch Tab to Roles & Permissions
+    store.setActiveSettingsTab('roles-permissions');
+    expect(store.activeSettingsTab()).toBe('roles-permissions');
+    expect(store.schoolRoles().length).toBe(6);
+    expect(store.filteredSchoolRoles().length).toBe(6);
+
+    // Search Filter
+    store.setRoleSearchQuery('Vice Principal');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe(
+      'Vice Principal Academics',
+    );
+    store.setRoleSearchQuery('');
+
+    // Access Scope Filter
+    store.setRoleAccessScopeFilter('Assigned Classes');
+    expect(store.filteredSchoolRoles().length).toBe(2);
+    expect(store.filteredSchoolRoles().map((r) => r.name)).toContain('Teacher');
+    expect(store.filteredSchoolRoles().map((r) => r.name)).toContain(
+      'Class Teacher',
+    );
+    store.setRoleAccessScopeFilter('All Scopes');
+
+    // Permission Level Filter
+    store.setRolePermissionLevelFilter('Full Access');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe('School Admin');
+    store.setRolePermissionLevelFilter('All Levels');
+
+    // Status Filter
+    store.setRoleStatusFilter('Review Needed');
+    expect(store.filteredSchoolRoles().length).toBe(1);
+    expect(store.filteredSchoolRoles()[0].name).toBe('Class Teacher');
+    store.setRoleStatusFilter('All Statuses');
+
+    // Attention Item Selection
+    const pendingItem = store
+      .permissionAttentionItems()
+      .find((i) => i.id === 'att-perm-1');
+    if (pendingItem) {
+      store.selectSettingsAttentionItem(pendingItem);
+      expect(store.selectedSettingsAttentionItem()?.id).toBe(pendingItem.id);
+      expect(store.filteredSchoolRoles().length).toBe(1);
+      expect(store.filteredSchoolRoles()[0].status).toBe('Review Needed');
+      // Toggle off
+      store.selectSettingsAttentionItem(pendingItem);
+      expect(store.selectedSettingsAttentionItem()).toBeNull();
+      expect(store.filteredSchoolRoles().length).toBe(6);
+    }
+
+    // Pagination
+    store.setRolePageSize(4);
+    expect(store.rolesTotalPages()).toBe(2);
+    expect(store.paginatedSchoolRoles().length).toBe(4);
+    store.setRolePage(2);
+    expect(store.rolePage()).toBe(2);
+    expect(store.paginatedSchoolRoles().length).toBe(2);
+    store.setRolePageSize(10);
+    expect(store.rolePage()).toBe(1);
+
+    // Role Details Modal
+    const roleSample = store.schoolRoles()[0];
+    expect(store.selectedRole()).toBeNull();
+    store.openRoleDetails(roleSample);
+    expect(store.selectedRole()?.id).toBe(roleSample.id);
+    store.closeRoleDetails();
+    expect(store.selectedRole()).toBeNull();
+
+    // Create Role Modal & Mutation
+    expect(store.isCreateRoleModalOpen()).toBe(false);
+    store.openCreateRoleModal();
+    expect(store.isCreateRoleModalOpen()).toBe(true);
+
+    const initialTotalRoles = store.settingsSummaryMetrics().totalRoles;
+    const initialCustomRoles = store.permissionSidebarSummary().customRoles;
+    store.createRole({
+      name: 'Department Head',
+      description: 'Departmental leadership and curriculum review',
+      accessScope: 'All School',
+      permissionLevel: 'High Access',
+      usersAssigned: 8,
+    });
+    expect(store.isCreateRoleModalOpen()).toBe(false);
+    expect(store.settingsSummaryMetrics().totalRoles).toBe(
+      initialTotalRoles + 1,
+    );
+    expect(store.permissionSidebarSummary().customRoles).toBe(
+      initialCustomRoles + 1,
+    );
+    expect(store.schoolRoles()[0].name).toBe('Department Head');
+
+    // Export Permission Report Modal
+    expect(store.isExportPermissionModalOpen()).toBe(false);
+    store.openExportPermissionModal();
+    expect(store.isExportPermissionModalOpen()).toBe(true);
+    store.exportPermissionReport('CSV');
+    expect(store.isExportPermissionModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('CSV');
+  });
 });

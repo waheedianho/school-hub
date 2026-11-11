@@ -115,3 +115,13 @@ export * from './communication/send-parent-message-modal/send-parent-message-mod
 export * from './communication/message-details-modal/message-details-modal';
 export * from './communication/schedule-blast-modal/schedule-blast-modal';
 export * from './communication/export-communication-modal/export-communication-modal';
+export * from './data/school-admin-settings.data';
+export * from './settings/settings';
+export * from './settings/summary-metrics/summary-metrics';
+export * from './settings/general-settings/general-settings';
+export * from './settings/roles-permissions/roles-permissions';
+export * from './settings/settings-sidebar/settings-sidebar';
+export * from './settings/create-role-modal/create-role-modal';
+export * from './settings/role-details-modal/role-details-modal';
+export * from './settings/export-permission-modal/export-permission-modal';
+export * from './settings/confirm-discard-modal/confirm-discard-modal';
