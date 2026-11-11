@@ -1,0 +1,133 @@
+@if (metrics(); as m) {
+<div class="metrics-grid">
+  <!-- 1. Total Resources -->
+  <div class="metric-card" data-testid="metric-total-resources">
+    <div class="metric-icon-box icon-purple">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"
+        ></path>
+        <path d="M6 6h10"></path>
+        <path d="M6 10h10"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <span class="metric-value">{{ m.totalResources | number }}</span>
+      <span class="metric-label">Total Resources</span>
+      <span class="metric-subtext">All uploaded resources</span>
+    </div>
+  </div>
+
+  <!-- 2. Approved Resources -->
+  <div class="metric-card" data-testid="metric-approved-resources">
+    <div class="metric-icon-box icon-green">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <span class="metric-value">{{ m.approvedResources | number }}</span>
+      <span class="metric-label">Approved Resources</span>
+      <span class="metric-subtext">Ready for teaching</span>
+    </div>
+  </div>
+
+  <!-- 3. Pending Review -->
+  <div class="metric-card" data-testid="metric-pending-review">
+    <div class="metric-icon-box icon-orange">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <span class="metric-value">{{ m.pendingReview | number }}</span>
+      <span class="metric-label">Pending Review</span>
+      <span class="metric-subtext">Awaiting approval</span>
+    </div>
+  </div>
+
+  <!-- 4. Low-Data Resources -->
+  <div class="metric-card" data-testid="metric-low-data">
+    <div class="metric-icon-box icon-red">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path>
+        <path d="M12 12v6"></path>
+        <path d="m15 15-3 3-3-3"></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <span class="metric-value">{{ m.lowDataResources | number }}</span>
+      <span class="metric-label">Low-Data Resources</span>
+      <span class="metric-subtext">Need lightweight version</span>
+    </div>
+  </div>
+
+  <!-- 5. Resource Gaps -->
+  <div class="metric-card" data-testid="metric-resource-gaps">
+    <div class="metric-icon-box icon-indigo">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="22"
+        height="22"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path
+          d="M19.439 7.85c0-1.57.802-2.54 2.061-2.54V3.5h-3.41c0 1.259-.97 2.061-2.54 2.061s-2.54-.802-2.54-2.061H9.5v1.81c1.259 0 2.061.97 2.061 2.54s-.802 2.54-2.061 2.54V12H3.5v3.41c1.259 0 2.061.97 2.061 2.54s-.802 2.54-2.061 2.54V22.5h3.41c0-1.259.97-2.061 2.54-2.061s2.54.802 2.54 2.061H13.5v-1.81c-1.259 0-2.061-.97-2.061-2.54s.802-2.54 2.061-2.54V16h6v-3.41c-1.259 0-2.061-.97-2.061-2.54s.802-2.54 2.061-2.54V7.85Z"
+        ></path>
+      </svg>
+    </div>
+    <div class="metric-details">
+      <span class="metric-value">{{ m.resourceGaps | number }}</span>
+      <span class="metric-label">Resource Gaps</span>
+      <span class="metric-subtext">Missing in delivery packs</span>
+    </div>
+  </div>
+</div>
+}

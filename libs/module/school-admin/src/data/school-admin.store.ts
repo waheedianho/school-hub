@@ -38,6 +38,7 @@ import {
   LessonOversightMetrics,
   LessonReadinessAlert,
   LessonReviewRecord,
+  LinkDeliveryPackFormData,
   LiveClassAttentionItem,
   LiveClassRecord,
   LiveClassSidebarSummary,
@@ -52,6 +53,11 @@ import {
   ReportsSidebarSummary,
   ReportsSummaryMetrics,
   ReportTab,
+  ResourceAttentionItem,
+  ResourceItem,
+  ResourcesSidebarSummary,
+  ResourcesSummaryMetrics,
+  ResourcesTab,
   RolePermissionRow,
   SafeguardingNotice,
   ScheduleParentMeetingFormData,
@@ -73,6 +79,7 @@ import {
   TopicDeliveryPack,
   TopPerformingSubject,
   UpcomingSchoolEvent,
+  UploadResourceFormData,
   WeekResourceItem,
   WeekSchemeDetail,
 } from './school-admin.models';
@@ -155,6 +162,12 @@ import {
   SETUP_CHECKLIST_DATA,
   SETUP_QUICK_ACTIONS_DATA,
 } from './school-admin-setup.data';
+import {
+  RESOURCES_DATA,
+  RESOURCES_SUMMARY_METRICS,
+  RESOURCES_SIDEBAR_SUMMARY,
+  RESOURCE_ATTENTION_ITEMS,
+} from './school-admin-resources.data';
 
 const STORAGE_KEY_SESSION = 'schoolhub_admin_session';
 const STORAGE_KEY_TERM = 'schoolhub_admin_term';
@@ -1036,6 +1049,123 @@ export class SchoolAdminStore {
     const list = this.filteredInterventions();
     const size = this.interventionPageSize();
     return Math.max(1, Math.ceil(list.length / size));
+  });
+
+  // Resources State (.design/SCHOOL ADMIN/Resources_SA.png)
+  readonly resources = signal<ResourceItem[]>(RESOURCES_DATA);
+  readonly activeResourcesTab = signal<ResourcesTab>('library');
+  readonly resourcesSummaryMetrics = signal<ResourcesSummaryMetrics>(
+    RESOURCES_SUMMARY_METRICS,
+  );
+  readonly resourcesSidebarSummary = signal<ResourcesSidebarSummary>(
+    RESOURCES_SIDEBAR_SUMMARY,
+  );
+  readonly resourceAttentionItems = signal<ResourceAttentionItem[]>(
+    RESOURCE_ATTENTION_ITEMS,
+  );
+  readonly selectedResourceItem = signal<ResourceItem | null>(null);
+  readonly selectedResourceAttentionItem = signal<ResourceAttentionItem | null>(
+    null,
+  );
+  readonly isUploadResourceModalOpen = signal<boolean>(false);
+  readonly isLinkDeliveryPackModalOpen = signal<boolean>(false);
+  readonly isExportResourceModalOpen = signal<boolean>(false);
+  readonly resourceSearchQuery = signal<string>('');
+  readonly resourceClassFilter = signal<string>('All Classes');
+  readonly resourceSubjectFilter = signal<string>('All Subjects');
+  readonly resourceTypeFilter = signal<string>('All Types');
+  readonly resourceStatusFilter = signal<string>('All Statuses');
+  readonly resourcePage = signal<number>(1);
+  readonly resourcePageSize = signal<number>(10);
+
+  readonly filteredResources = computed(() => {
+    const list = this.resources();
+    const tab = this.activeResourcesTab();
+    const query = this.resourceSearchQuery().toLowerCase().trim();
+    const classFilter = this.resourceClassFilter();
+    const subjectFilter = this.resourceSubjectFilter();
+    const typeFilter = this.resourceTypeFilter();
+    const statusFilter = this.resourceStatusFilter();
+    const attention = this.selectedResourceAttentionItem();
+
+    return list.filter((item) => {
+      // Tab filter
+      if (tab === 'queue' && item.approvalStatus !== 'Pending Review')
+        return false;
+      if (tab === 'delivery' && !item.linkedDeliveryPack) return false;
+      if (tab === 'templates' && item.resourceType !== 'Template') return false;
+
+      // Attention item filter
+      if (attention) {
+        if (
+          attention.filterType === 'queue' &&
+          item.approvalStatus !== 'Pending Review'
+        )
+          return false;
+        if (
+          attention.filterType === 'gaps' &&
+          item.approvalStatus !== 'Missing Link' &&
+          item.linkedDeliveryPack !== undefined
+        )
+          return false;
+        if (attention.filterType === 'low-data' && item.isLowData !== false)
+          return false;
+      }
+
+      // Dropdown filters
+      if (classFilter !== 'All Classes' && item.className !== classFilter)
+        return false;
+      if (subjectFilter !== 'All Subjects' && item.subject !== subjectFilter)
+        return false;
+      if (typeFilter !== 'All Types' && item.resourceType !== typeFilter)
+        return false;
+      if (
+        statusFilter !== 'All Statuses' &&
+        item.approvalStatus !== statusFilter
+      )
+        return false;
+
+      // Search query
+      if (query) {
+        const matchTitle = item.title.toLowerCase().includes(query);
+        const matchSubject = item.subject.toLowerCase().includes(query);
+        const matchClass = item.className.toLowerCase().includes(query);
+        const matchTopic = item.topic.toLowerCase().includes(query);
+        const matchAuthor = item.uploadedBy.toLowerCase().includes(query);
+        const matchType = item.resourceType.toLowerCase().includes(query);
+        if (
+          !matchTitle &&
+          !matchSubject &&
+          !matchClass &&
+          !matchTopic &&
+          !matchAuthor &&
+          !matchType
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly paginatedResources = computed(() => {
+    const filtered = this.filteredResources();
+    const page = this.resourcePage();
+    const size = this.resourcePageSize();
+    const start = (page - 1) * size;
+    return filtered.slice(start, start + size);
+  });
+
+  readonly resourceTotalPages = computed(() => {
+    const total = this.filteredResources().length;
+    const size = this.resourcePageSize();
+    return Math.max(1, Math.ceil(total / size));
+  });
+
+  readonly approvalQueueCount = computed(() => {
+    return this.resources().filter((r) => r.approvalStatus === 'Pending Review')
+      .length;
   });
 
   // Setup Signals
@@ -2109,6 +2239,204 @@ export class SchoolAdminStore {
       activeInterventions: Math.max(0, m.activeInterventions - 1),
     }));
     this.setupSaveStatus.set(`Intervention case resolved successfully.`);
+  }
+
+  /**
+   * Resources Mutations (.design/SCHOOL ADMIN/Resources_SA.png)
+   */
+  setActiveResourcesTab(tab: ResourcesTab): void {
+    this.activeResourcesTab.set(tab);
+    this.resourcePage.set(1);
+    if (tab === 'queue') {
+      this.resourceStatusFilter.set('Pending Review');
+    } else if (this.resourceStatusFilter() === 'Pending Review') {
+      this.resourceStatusFilter.set('All Statuses');
+    }
+  }
+
+  setResourceSearchQuery(query: string): void {
+    this.resourceSearchQuery.set(query);
+    this.resourcePage.set(1);
+  }
+
+  setResourceClassFilter(cls: string): void {
+    this.resourceClassFilter.set(cls);
+    this.resourcePage.set(1);
+  }
+
+  setResourceSubjectFilter(subj: string): void {
+    this.resourceSubjectFilter.set(subj);
+    this.resourcePage.set(1);
+  }
+
+  setResourceTypeFilter(type: string): void {
+    this.resourceTypeFilter.set(type);
+    this.resourcePage.set(1);
+  }
+
+  setResourceStatusFilter(status: string): void {
+    this.resourceStatusFilter.set(status);
+    this.resourcePage.set(1);
+  }
+
+  setResourcePage(page: number): void {
+    const validPage = Math.max(1, Math.min(page, this.resourceTotalPages()));
+    this.resourcePage.set(validPage);
+  }
+
+  selectResourceAttentionItem(item: ResourceAttentionItem): void {
+    const current = this.selectedResourceAttentionItem();
+    if (current?.id === item.id) {
+      this.selectedResourceAttentionItem.set(null);
+    } else {
+      this.selectedResourceAttentionItem.set(item);
+    }
+    this.resourcePage.set(1);
+  }
+
+  clearResourceAttentionItem(): void {
+    this.selectedResourceAttentionItem.set(null);
+    this.resourcePage.set(1);
+  }
+
+  openUploadResourceModal(): void {
+    this.isUploadResourceModalOpen.set(true);
+  }
+
+  closeUploadResourceModal(): void {
+    this.isUploadResourceModalOpen.set(false);
+  }
+
+  uploadResource(form: UploadResourceFormData): void {
+    const newId = `res-${Date.now().toString().slice(-4)}`;
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
+
+    const newResource: ResourceItem = {
+      id: newId,
+      className: form.className,
+      subject: form.subject,
+      week: form.week || 'Week 1',
+      topic: form.topic || '',
+      title: form.title,
+      resourceType: form.resourceType as ResourceItem['resourceType'],
+      audience: form.audience,
+      format: form.format,
+      fileSize: '1.5 MB',
+      approvalStatus: 'Pending Review',
+      linkedDeliveryPack: form.linkedDeliveryPack,
+      uploadedBy: 'School Admin',
+      lastUpdated: dateStr,
+      isLowData: form.isLowDataVersion ?? true,
+      description: form.description,
+    };
+
+    this.resources.update((list) => [newResource, ...list]);
+    this.resourcesSummaryMetrics.update((m) => ({
+      ...m,
+      totalResources: m.totalResources + 1,
+      pendingReview: m.pendingReview + 1,
+    }));
+    this.resourcesSidebarSummary.update((s) => ({
+      ...s,
+      totalUploaded: s.totalUploaded + 1,
+      pendingReview: s.pendingReview + 1,
+    }));
+    this.isUploadResourceModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Resource "${form.title}" uploaded and queued for review.`,
+    );
+  }
+
+  openLinkDeliveryPackModal(item?: ResourceItem): void {
+    if (item) {
+      this.selectedResourceItem.set(item);
+    }
+    this.isLinkDeliveryPackModalOpen.set(true);
+  }
+
+  closeLinkDeliveryPackModal(): void {
+    this.isLinkDeliveryPackModalOpen.set(false);
+  }
+
+  linkResourceToDeliveryPack(form: LinkDeliveryPackFormData): void {
+    this.resources.update((list) =>
+      list.map((r) =>
+        r.id === form.resourceId
+          ? {
+              ...r,
+              linkedDeliveryPack: form.deliveryPackId,
+              approvalStatus:
+                r.approvalStatus === 'Missing Link'
+                  ? 'Approved'
+                  : r.approvalStatus,
+            }
+          : r,
+      ),
+    );
+    this.isLinkDeliveryPackModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Resource linked to delivery pack ${form.deliveryPackId}.`,
+    );
+  }
+
+  openResourceDetails(item: ResourceItem): void {
+    this.selectedResourceItem.set(item);
+  }
+
+  closeResourceDetails(): void {
+    this.selectedResourceItem.set(null);
+  }
+
+  approveResource(id: string): void {
+    this.resources.update((list) =>
+      list.map((r) =>
+        r.id === id ? { ...r, approvalStatus: 'Approved' as const } : r,
+      ),
+    );
+    this.resourcesSummaryMetrics.update((m) => ({
+      ...m,
+      approvedResources: m.approvedResources + 1,
+      pendingReview: Math.max(0, m.pendingReview - 1),
+    }));
+    this.resourcesSidebarSummary.update((s) => ({
+      ...s,
+      approved: s.approved + 1,
+      pendingReview: Math.max(0, s.pendingReview - 1),
+    }));
+    this.setupSaveStatus.set(`Resource approved for teaching.`);
+  }
+
+  rejectResource(id: string): void {
+    this.resources.update((list) =>
+      list.map((r) =>
+        r.id === id ? { ...r, approvalStatus: 'Draft' as const } : r,
+      ),
+    );
+    this.resourcesSummaryMetrics.update((m) => ({
+      ...m,
+      pendingReview: Math.max(0, m.pendingReview - 1),
+    }));
+    this.setupSaveStatus.set(`Resource marked as draft.`);
+  }
+
+  openExportResourceModal(): void {
+    this.isExportResourceModalOpen.set(true);
+  }
+
+  closeExportResourceModal(): void {
+    this.isExportResourceModalOpen.set(false);
+  }
+
+  exportResourceReport(format = 'PDF'): void {
+    this.isExportResourceModalOpen.set(false);
+    this.setupSaveStatus.set(
+      `Resource inventory report exported successfully (${format}).`,
+    );
   }
 
   /**

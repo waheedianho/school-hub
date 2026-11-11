@@ -1,0 +1,414 @@
+<div class="table-card">
+  <!-- Filters Bar -->
+  <div class="toolbar">
+    <div class="filters-group">
+      <!-- 1. Class Level -->
+      <div class="filter-item">
+        <label class="sr-only" for="classFilter">Class Level</label>
+        <select
+          id="classFilter"
+          class="filter-select"
+          [value]="selectedClass()"
+          (change)="onClassChange($any($event.target).value)"
+        >
+          @for (cls of classOptions; track cls) {
+          <option [value]="cls">{{ cls }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 2. Subject -->
+      <div class="filter-item">
+        <label class="sr-only" for="subjectFilter">Subject</label>
+        <select
+          id="subjectFilter"
+          class="filter-select"
+          [value]="selectedSubject()"
+          (change)="onSubjectChange($any($event.target).value)"
+        >
+          @for (subj of subjectOptions; track subj) {
+          <option [value]="subj">{{ subj }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 3. Resource Type -->
+      <div class="filter-item">
+        <label class="sr-only" for="typeFilter">Resource Type</label>
+        <select
+          id="typeFilter"
+          class="filter-select"
+          [value]="selectedType()"
+          (change)="onTypeChange($any($event.target).value)"
+        >
+          @for (type of typeOptions; track type) {
+          <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- 4. Approval Status -->
+      <div class="filter-item">
+        <label class="sr-only" for="statusFilter">Approval Status</label>
+        <select
+          id="statusFilter"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="onStatusChange($any($event.target).value)"
+        >
+          @for (status of statusOptions; track status) {
+          <option [value]="status">{{ status }}</option>
+          }
+        </select>
+      </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="search-box">
+      <svg
+        class="search-icon"
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="11" cy="11" r="8"></circle>
+        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+      </svg>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search resources..."
+        [value]="searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+        aria-label="Search resources"
+      />
+    </div>
+  </div>
+
+  <!-- Main Resources Table -->
+  <div class="table-responsive">
+    <table class="data-table" aria-label="Learning Resources Table">
+      <thead>
+        <tr>
+          <th scope="col">Class</th>
+          <th scope="col">Subject</th>
+          <th scope="col">Week / Topic</th>
+          <th scope="col">Resource Title</th>
+          <th scope="col">Resource Type</th>
+          <th scope="col" class="text-center">Audience</th>
+          <th scope="col" class="text-center">Format</th>
+          <th scope="col">Approval Status</th>
+          <th scope="col">Linked Delivery Pack</th>
+          <th scope="col">Uploaded By</th>
+          <th scope="col">Last Updated</th>
+          <th scope="col" class="text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of resources(); track item.id) {
+        <tr (click)="onRowClick(item)" class="table-row">
+          <!-- 1. Class -->
+          <td class="font-medium text-slate-900">{{ item.className }}</td>
+
+          <!-- 2. Subject -->
+          <td>{{ item.subject }}</td>
+
+          <!-- 3. Week / Topic -->
+          <td>
+            <div class="week-topic-cell">
+              <span class="week-text">{{ item.week }}</span>
+              @if (item.topic) {
+              <span class="topic-text">{{ item.topic }}</span>
+              }
+            </div>
+          </td>
+
+          <!-- 4. Resource Title -->
+          <td>
+            <span class="resource-title">{{ item.title }}</span>
+          </td>
+
+          <!-- 5. Resource Type -->
+          <td>
+            <span
+              class="type-pill"
+              [class.pill-lesson-note]="item.resourceType === 'Lesson Note'"
+              [class.pill-video]="item.resourceType === 'Video'"
+              [class.pill-worksheet]="item.resourceType === 'Worksheet'"
+              [class.pill-marking-guide]="item.resourceType === 'Marking Guide'"
+              [class.pill-presentation]="item.resourceType === 'Presentation'"
+              [class.pill-infographic]="item.resourceType === 'Infographic'"
+              [class.pill-revision-sheet]="item.resourceType === 'Revision Sheet'"
+              [class.pill-template]="item.resourceType === 'Template'"
+              [class.pill-reference-guide]="item.resourceType === 'Reference Guide'"
+            >
+              {{ item.resourceType }}
+            </span>
+          </td>
+
+          <!-- 6. Audience -->
+          <td class="text-center">
+            @if (item.audience === 'Teachers') {
+            <span class="audience-icon" title="Teachers only">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-indigo-600"
+              >
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </span>
+            } @else {
+            <span class="audience-icon" title="Learners">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="text-indigo-600"
+              >
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </span>
+            }
+          </td>
+
+          <!-- 7. Format -->
+          <td class="text-center">
+            <span
+              class="format-badge"
+              [class.format-pdf]="item.format === 'PDF'"
+              [class.format-mp4]="item.format === 'MP4'"
+              [class.format-docx]="item.format === 'DOCX'"
+              [class.format-pptx]="item.format === 'PPTX'"
+              [class.format-png]="item.format === 'PNG'"
+            >
+              @if (item.format === 'PDF') {
+              <span class="format-tag">PDF</span>
+              } @else if (item.format === 'MP4') {
+              <span class="format-tag">▶ MP4</span>
+              } @else if (item.format === 'DOCX') {
+              <span class="format-tag">W DOCX</span>
+              } @else if (item.format === 'PPTX') {
+              <span class="format-tag">P PPTX</span>
+              } @else {
+              <span class="format-tag">IMG PNG</span>
+              }
+            </span>
+          </td>
+
+          <!-- 8. Approval Status -->
+          <td>
+            <span
+              class="status-pill"
+              [class.status-approved]="item.approvalStatus === 'Approved'"
+              [class.status-pending]="item.approvalStatus === 'Pending Review'"
+              [class.status-draft]="item.approvalStatus === 'Draft'"
+              [class.status-missing]="item.approvalStatus === 'Missing Link'"
+            >
+              {{ item.approvalStatus }}
+            </span>
+          </td>
+
+          <!-- 9. Linked Delivery Pack -->
+          <td>
+            @if (item.linkedDeliveryPack) {
+            <div class="delivery-pack-link">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="link-icon"
+              >
+                <path
+                  d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                ></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              <span>{{ item.linkedDeliveryPack }}</span>
+            </div>
+            } @else {
+            <span class="text-slate-400">—</span>
+            }
+          </td>
+
+          <!-- 10. Uploaded By -->
+          <td class="text-slate-600">{{ item.uploadedBy }}</td>
+
+          <!-- 11. Last Updated -->
+          <td class="text-slate-500 whitespace-nowrap">
+            {{ item.lastUpdated }}
+          </td>
+
+          <!-- 12. Actions -->
+          <td class="text-right" (click)="$event.stopPropagation()">
+            <div class="action-menu-container">
+              <button
+                type="button"
+                class="btn-action-trigger"
+                (click)="toggleActionMenu(item.id, $event)"
+                aria-label="Resource actions"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <circle cx="12" cy="12" r="1"></circle>
+                  <circle cx="12" cy="5" r="1"></circle>
+                  <circle cx="12" cy="19" r="1"></circle>
+                </svg>
+              </button>
+
+              @if (activeActionMenuId() === item.id) {
+              <div class="action-dropdown" role="menu">
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onRowClick(item)"
+                >
+                  View Details
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onLinkDeliveryPack(item, $event)"
+                >
+                  Link to Delivery Pack
+                </button>
+                @if (item.approvalStatus === 'Pending Review') {
+                <button
+                  type="button"
+                  class="dropdown-item text-green-600"
+                  (click)="onApprove(item.id, $event)"
+                >
+                  Approve Resource
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item text-red-600"
+                  (click)="onReject(item.id, $event)"
+                >
+                  Reject / Draft
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="12" class="empty-state">
+            No learning resources match the current criteria.
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="table-footer">
+    <span class="pagination-info">
+      Showing 1 to {{ resources().length }} of {{ metrics().totalResources |
+      number }} resources
+    </span>
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="onPageChange(currentPage() - 1)"
+        aria-label="Previous page"
+      >
+        &lt;
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [class.active]="currentPage() === 1"
+        (click)="onPageChange(1)"
+      >
+        1
+      </button>
+
+      @if (totalPages() >= 2) {
+      <button
+        type="button"
+        class="pagination-btn"
+        [class.active]="currentPage() === 2"
+        (click)="onPageChange(2)"
+      >
+        2
+      </button>
+      } @if (totalPages() >= 3) {
+      <button
+        type="button"
+        class="pagination-btn"
+        [class.active]="currentPage() === 3"
+        (click)="onPageChange(3)"
+      >
+        3
+      </button>
+      }
+
+      <span class="pagination-ellipsis">...</span>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [class.active]="currentPage() === 125"
+        (click)="onPageChange(125)"
+      >
+        125
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() >= totalPages() && totalPages() > 1"
+        (click)="onPageChange(currentPage() + 1)"
+        aria-label="Next page"
+      >
+        &gt;
+      </button>
+    </div>
+  </div>
+</div>

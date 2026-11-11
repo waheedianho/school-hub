@@ -1,0 +1,354 @@
+<div class="sidebar-container">
+  <!-- 1. Resource Summary Card -->
+  @if (summary(); as s) {
+  <div class="sidebar-card" data-testid="sidebar-resource-summary">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-indigo-600"
+        >
+          <path d="M3 3v18h18"></path>
+          <path d="m19 9-5 5-4-4-3 3"></path>
+        </svg>
+        <h3 class="card-title">Resource Summary</h3>
+      </div>
+    </div>
+
+    <div class="summary-list">
+      <!-- Total Uploaded -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-slate-400"
+          >
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M7 7h10"></path>
+            <path d="M7 12h10"></path>
+          </svg>
+          Total Uploaded
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.totalUploaded | number }}</span
+        >
+      </div>
+
+      <!-- Approved -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-emerald-500"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          Approved
+        </span>
+        <span class="row-value font-semibold">{{ s.approved | number }}</span>
+      </div>
+
+      <!-- Pending Review -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-amber-500"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          Pending Review
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.pendingReview | number }}</span
+        >
+      </div>
+
+      <!-- Shared with Teachers -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-indigo-500"
+          >
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Shared with Teachers
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.sharedWithTeachers | number }}</span
+        >
+      </div>
+
+      <!-- Shared with Learners -->
+      <div class="summary-row">
+        <span class="row-label">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="14"
+            height="14"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="row-icon text-indigo-500"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Shared with Learners
+        </span>
+        <span class="row-value font-semibold"
+          >{{ s.sharedWithLearners | number }}</span
+        >
+      </div>
+    </div>
+
+    <div class="card-footer-link">
+      <a href="#summary" class="link-btn" (click)="$event.preventDefault()">
+        View full resource summary &rarr;
+      </a>
+    </div>
+  </div>
+  }
+
+  <!-- 2. Attention Needed Card -->
+  <div class="sidebar-card" data-testid="sidebar-attention-needed">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-red-500"
+        >
+          <path
+            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"
+          ></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+        <h3 class="card-title">Attention Needed</h3>
+      </div>
+    </div>
+
+    <div class="attention-list">
+      @for (item of attentionItems(); track item.id) {
+      <div
+        class="attention-row"
+        [class.selected]="selectedAttention()?.id === item.id"
+        (click)="onSelectAttention(item)"
+        role="button"
+        tabindex="0"
+        (keydown.enter)="onSelectAttention(item)"
+      >
+        <span
+          class="badge-count"
+          [class.badge-red]="item.tone === 'red'"
+          [class.badge-amber]="item.tone === 'amber'"
+        >
+          {{ item.count }}
+        </span>
+        <span class="attention-label">{{ item.label }}</span>
+      </div>
+      }
+    </div>
+
+    <div class="card-footer-link">
+      <a href="#issues" class="link-btn" (click)="$event.preventDefault()">
+        View all issues &rarr;
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Quick Actions Card -->
+  <div class="sidebar-card" data-testid="sidebar-quick-actions">
+    <div class="card-header">
+      <div class="header-title-box">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="header-icon text-indigo-600"
+        >
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+        </svg>
+        <h3 class="card-title">Quick Actions</h3>
+      </div>
+    </div>
+
+    <div class="actions-list">
+      <!-- Upload Resource -->
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="onUploadResource()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path
+              d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"
+            ></path>
+            <path d="M12 12v9"></path>
+            <path d="m16 16-4-4-4 4"></path>
+          </svg>
+          <span>Upload Resource</span>
+        </div>
+      </button>
+
+      <!-- Review Approval Queue -->
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="onReviewApprovalQueue()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"></path>
+            <path d="m9 12 2 2 4-4"></path>
+          </svg>
+          <span>Review Approval Queue</span>
+        </div>
+        <span class="btn-badge">186</span>
+      </button>
+
+      <!-- Link to Delivery Pack -->
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="onLinkDeliveryPack()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path
+              d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+            ></path>
+            <path
+              d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+            ></path>
+          </svg>
+          <span>Link to Delivery Pack</span>
+        </div>
+      </button>
+
+      <!-- Export Resource Report -->
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="onExportResourceReport()"
+      >
+        <div class="btn-inner">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="btn-icon"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Export Resource Report</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>

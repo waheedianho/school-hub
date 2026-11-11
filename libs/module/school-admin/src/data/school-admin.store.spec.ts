@@ -977,4 +977,144 @@ describe('SchoolAdminStore', () => {
     store.closeInterventionDetails();
     expect(store.selectedInterventionCase()).toBeNull();
   });
+
+  it('should manage resources state, filters, and mutations correctly', () => {
+    // Initial metrics matching design (.design/SCHOOL ADMIN/Resources_SA.png)
+    expect(store.resourcesSummaryMetrics().totalResources).toBe(1248);
+    expect(store.resourcesSummaryMetrics().approvedResources).toBe(842);
+    expect(store.resourcesSummaryMetrics().pendingReview).toBe(186);
+    expect(store.resourcesSummaryMetrics().lowDataResources).toBe(72);
+    expect(store.resourcesSummaryMetrics().resourceGaps).toBe(68);
+
+    // Initial sidebar summary
+    expect(store.resourcesSidebarSummary().totalUploaded).toBe(1248);
+    expect(store.resourcesSidebarSummary().approved).toBe(842);
+    expect(store.resourcesSidebarSummary().pendingReview).toBe(186);
+    expect(store.resourcesSidebarSummary().sharedWithTeachers).toBe(1036);
+    expect(store.resourcesSidebarSummary().sharedWithLearners).toBe(892);
+    expect(store.resourceAttentionItems().length).toBe(4);
+
+    // Tab default is 'library'
+    expect(store.activeResourcesTab()).toBe('library');
+    expect(store.paginatedResources().length).toBe(10);
+    expect(store.paginatedResources()[0].title).toBe(
+      'Whole Numbers Lesson Note',
+    );
+
+    // Switch tab to 'queue'
+    store.setActiveResourcesTab('queue');
+    expect(store.activeResourcesTab()).toBe('queue');
+    expect(
+      store
+        .filteredResources()
+        .every((r) => r.approvalStatus === 'Pending Review'),
+    ).toBe(true);
+
+    // Switch tab to 'templates'
+    store.setActiveResourcesTab('templates');
+    expect(store.activeResourcesTab()).toBe('templates');
+    expect(
+      store.filteredResources().every((r) => r.resourceType === 'Template'),
+    ).toBe(true);
+
+    // Reset tab to 'library'
+    store.setActiveResourcesTab('library');
+
+    // Filter by class
+    store.setResourceClassFilter('JSS 1A');
+    expect(
+      store.filteredResources().every((r) => r.className === 'JSS 1A'),
+    ).toBe(true);
+    store.setResourceClassFilter('All Classes');
+
+    // Filter by subject
+    store.setResourceSubjectFilter('Mathematics');
+    expect(
+      store.filteredResources().every((r) => r.subject === 'Mathematics'),
+    ).toBe(true);
+    store.setResourceSubjectFilter('All Subjects');
+
+    // Search query
+    store.setResourceSearchQuery('Infographic');
+    expect(
+      store
+        .filteredResources()
+        .every(
+          (r) =>
+            r.title.toLowerCase().includes('infographic') ||
+            r.resourceType.toLowerCase().includes('infographic'),
+        ),
+    ).toBe(true);
+    store.setResourceSearchQuery('');
+
+    // Pagination
+    store.setResourcePage(2);
+    expect(store.resourcePage()).toBe(2);
+    store.setResourcePage(1);
+
+    // Upload resource modal & mutation
+    expect(store.isUploadResourceModalOpen()).toBe(false);
+    store.openUploadResourceModal();
+    expect(store.isUploadResourceModalOpen()).toBe(true);
+
+    const initialTotal = store.resources().length;
+    store.uploadResource({
+      title: 'Quadratic Equations Worksheet',
+      className: 'SSS 2A',
+      subject: 'Mathematics',
+      week: 'Week 4',
+      topic: 'Algebra',
+      resourceType: 'Worksheet',
+      audience: 'Learners',
+      format: 'PDF',
+      isLowDataVersion: true,
+      description: 'Practice worksheet for factoring quadratic equations.',
+    });
+    expect(store.isUploadResourceModalOpen()).toBe(false);
+    expect(store.resources().length).toBe(initialTotal + 1);
+    expect(store.resources()[0].title).toBe('Quadratic Equations Worksheet');
+    expect(store.resources()[0].approvalStatus).toBe('Pending Review');
+
+    // Approve resource
+    const pendingItem = store.resources()[0];
+    const initialApproved = store.resourcesSummaryMetrics().approvedResources;
+    store.approveResource(pendingItem.id);
+    expect(
+      store.resources().find((r) => r.id === pendingItem.id)?.approvalStatus,
+    ).toBe('Approved');
+    expect(store.resourcesSummaryMetrics().approvedResources).toBe(
+      initialApproved + 1,
+    );
+
+    // Link delivery pack modal & mutation
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(false);
+    store.openLinkDeliveryPackModal(pendingItem);
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(true);
+    store.linkResourceToDeliveryPack({
+      resourceId: pendingItem.id,
+      deliveryPackId: 'SSS 2A - Math W4',
+      className: 'SSS 2A',
+      subject: 'Mathematics',
+      week: 'Week 4',
+    });
+    expect(store.isLinkDeliveryPackModalOpen()).toBe(false);
+    expect(
+      store.resources().find((r) => r.id === pendingItem.id)
+        ?.linkedDeliveryPack,
+    ).toBe('SSS 2A - Math W4');
+
+    // Details modal
+    store.openResourceDetails(pendingItem);
+    expect(store.selectedResourceItem()?.id).toBe(pendingItem.id);
+    store.closeResourceDetails();
+    expect(store.selectedResourceItem()).toBeNull();
+
+    // Export report
+    expect(store.isExportResourceModalOpen()).toBe(false);
+    store.openExportResourceModal();
+    expect(store.isExportResourceModalOpen()).toBe(true);
+    store.exportResourceReport('CSV');
+    expect(store.isExportResourceModalOpen()).toBe(false);
+    expect(store.setupSaveStatus()).toContain('CSV');
+  });
 });

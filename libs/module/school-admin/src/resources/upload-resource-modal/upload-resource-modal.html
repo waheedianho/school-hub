@@ -1,0 +1,234 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="upload-resource-title"
+>
+  <div class="modal-dialog">
+    <!-- Modal Header -->
+    <div class="modal-header">
+      <h3 id="upload-resource-title" class="modal-title">
+        Upload New Learning Resource
+      </h3>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="resTitle">Resource Title</label>
+        <input
+          id="resTitle"
+          type="text"
+          class="form-input"
+          placeholder="e.g. Algebraic Expressions Guided Practice"
+          [value]="formData().title"
+          (input)="updateField('title', $any($event.target).value)"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="resClass">Class Level</label>
+          <select
+            id="resClass"
+            class="form-select"
+            [value]="formData().className"
+            (change)="updateField('className', $any($event.target).value)"
+          >
+            <option value="All Classes">All Classes</option>
+            <option value="JSS 1A">JSS 1A</option>
+            <option value="JSS 1B">JSS 1B</option>
+            <option value="JSS 1C">JSS 1C</option>
+            <option value="JSS 2A">JSS 2A</option>
+            <option value="JSS 2B">JSS 2B</option>
+            <option value="JSS 2C">JSS 2C</option>
+            <option value="JSS 3A">JSS 3A</option>
+            <option value="JSS 3B">JSS 3B</option>
+            <option value="SSS 1A">SSS 1A</option>
+            <option value="SSS 2B">SSS 2B</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="resSubject">Subject</label>
+          <select
+            id="resSubject"
+            class="form-select"
+            [value]="formData().subject"
+            (change)="updateField('subject', $any($event.target).value)"
+          >
+            <option value="Mathematics">Mathematics</option>
+            <option value="English Language">English Language</option>
+            <option value="Basic Science">Basic Science</option>
+            <option value="Civic Education">Civic Education</option>
+            <option value="Business Studies">Business Studies</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="resWeek">Week</label>
+          <input
+            id="resWeek"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Week 1"
+            [value]="formData().week"
+            (input)="updateField('week', $any($event.target).value)"
+          />
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="resTopic">Topic / Chapter</label>
+          <input
+            id="resTopic"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Whole Numbers"
+            [value]="formData().topic"
+            (input)="updateField('topic', $any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="resType">Resource Type</label>
+          <select
+            id="resType"
+            class="form-select"
+            [value]="formData().resourceType"
+            (change)="updateField('resourceType', $any($event.target).value)"
+          >
+            <option value="Lesson Note">Lesson Note</option>
+            <option value="Video">Video</option>
+            <option value="Worksheet">Worksheet</option>
+            <option value="Marking Guide">Marking Guide</option>
+            <option value="Presentation">Presentation</option>
+            <option value="Infographic">Infographic</option>
+            <option value="Revision Sheet">Revision Sheet</option>
+            <option value="Template">Template</option>
+            <option value="Reference Guide">Reference Guide</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="resFormat">Format</label>
+          <select
+            id="resFormat"
+            class="form-select"
+            [value]="formData().format"
+            (change)="updateField('format', $any($event.target).value)"
+          >
+            <option value="PDF">PDF Document</option>
+            <option value="MP4">MP4 Video</option>
+            <option value="DOCX">DOCX Word Document</option>
+            <option value="PPTX">PPTX Slide Presentation</option>
+            <option value="PNG">PNG Image / Graphic</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group flex-1">
+          <label class="form-label" for="resAudience">Target Audience</label>
+          <select
+            id="resAudience"
+            class="form-select"
+            [value]="formData().audience"
+            (change)="updateField('audience', $any($event.target).value)"
+          >
+            <option value="Learners">
+              Learners (Shared to student portal)
+            </option>
+            <option value="Teachers">Teachers (Teaching staff only)</option>
+            <option value="Both">Both Teachers & Learners</option>
+          </select>
+        </div>
+        <div class="form-group flex-1">
+          <label class="form-label" for="resDeliveryPack"
+            >Link Delivery Pack (Optional)</label
+          >
+          <input
+            id="resDeliveryPack"
+            type="text"
+            class="form-input"
+            placeholder="e.g. JSS 1A - Math W1"
+            [value]="formData().linkedDeliveryPack || ''"
+            (input)="updateField('linkedDeliveryPack', $any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label" for="resLowData">
+          <input
+            id="resLowData"
+            type="checkbox"
+            class="form-checkbox"
+            [checked]="formData().isLowDataVersion"
+            (change)="updateField('isLowDataVersion', $any($event.target).checked)"
+          />
+          <span
+            >Enable Low-Data Optimization (compress media for low-bandwidth
+            networks)</span
+          >
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="resDesc"
+          >Description & Pedagogical Notes</label
+        >
+        <textarea
+          id="resDesc"
+          class="form-textarea"
+          rows="3"
+          placeholder="Outline resource learning outcomes, instructions, or teacher guidelines..."
+          [value]="formData().description || ''"
+          (input)="updateField('description', $any($event.target).value)"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-cancel" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn-submit"
+        [disabled]="!formData().title || !formData().className || !formData().subject"
+        (click)="onSubmit()"
+      >
+        Upload & Queue Resource
+      </button>
+    </div>
+  </div>
+</div>
+}

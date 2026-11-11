@@ -1037,3 +1037,85 @@ export interface AssignFollowUpFormData {
   instructions: string;
   followUpFrequency?: 'Weekly' | 'Bi-Weekly' | 'Monthly';
 }
+
+/**
+ * ============================================================================
+ * Resources Domain Models (.design/SCHOOL ADMIN/Resources_SA.png)
+ * ============================================================================
+ */
+export type ResourcesTab = 'library' | 'queue' | 'delivery' | 'templates';
+
+export interface ResourceItem {
+  id: string;
+  className: string;
+  subject: string;
+  week: string;
+  topic: string;
+  title: string;
+  resourceType:
+    | 'Lesson Note'
+    | 'Video'
+    | 'Worksheet'
+    | 'Marking Guide'
+    | 'Presentation'
+    | 'Infographic'
+    | 'Revision Sheet'
+    | 'Template'
+    | 'Reference Guide';
+  audience: 'Teachers' | 'Learners' | 'Both';
+  format: 'PDF' | 'MP4' | 'DOCX' | 'PPTX' | 'PNG';
+  fileSize?: string;
+  approvalStatus: 'Approved' | 'Pending Review' | 'Draft' | 'Missing Link';
+  linkedDeliveryPack?: string;
+  uploadedBy: string;
+  lastUpdated: string;
+  isLowData?: boolean;
+  downloadUrl?: string;
+  description?: string;
+}
+
+export interface ResourcesSummaryMetrics {
+  totalResources: number;
+  approvedResources: number;
+  pendingReview: number;
+  lowDataResources: number;
+  resourceGaps: number;
+}
+
+export interface ResourcesSidebarSummary {
+  totalUploaded: number;
+  approved: number;
+  pendingReview: number;
+  sharedWithTeachers: number;
+  sharedWithLearners: number;
+}
+
+export interface ResourceAttentionItem {
+  id: string;
+  count: number;
+  label: string;
+  tone: 'red' | 'amber';
+  filterType: 'queue' | 'gaps' | 'outdated' | 'low-data';
+}
+
+export interface UploadResourceFormData {
+  title: string;
+  className: string;
+  subject: string;
+  week: string;
+  topic: string;
+  resourceType: string;
+  audience: 'Teachers' | 'Learners' | 'Both';
+  format: 'PDF' | 'MP4' | 'DOCX' | 'PPTX' | 'PNG';
+  linkedDeliveryPack?: string;
+  isLowDataVersion?: boolean;
+  description?: string;
+}
+
+export interface LinkDeliveryPackFormData {
+  resourceId: string;
+  deliveryPackId: string;
+  className: string;
+  subject: string;
+  week: string;
+}
