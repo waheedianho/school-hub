@@ -1,0 +1,124 @@
+<div class="dashboard-container">
+  <!-- Top Header -->
+  <header class="dashboard-header">
+    <div class="header-titles">
+      <h1 class="page-title">Super Admin Dashboard</h1>
+      <p class="page-subtitle">
+        Platform-wide operations, quality, compliance, and growth overview
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Date Range Dropdown -->
+      <div class="date-picker-wrap">
+        <button
+          type="button"
+          class="date-picker-btn"
+          [attr.aria-expanded]="isDatePickerOpen()"
+          aria-haspopup="true"
+          (click)="toggleDatePicker()"
+        >
+          <i class="material-symbols-outlined icon-calendar">calendar_today</i>
+          <span>{{ selectedDateRange() }}</span>
+          <i class="material-symbols-outlined icon-chevron">expand_more</i>
+        </button>
+
+        @if (isDatePickerOpen()) {
+        <div class="date-picker-menu" role="menu">
+          @for (range of dateRanges; track range) {
+          <button
+            type="button"
+            class="date-option"
+            [class.selected]="selectedDateRange() === range"
+            role="menuitem"
+            (click)="selectDateRange(range)"
+          >
+            {{ range }}
+          </button>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Notifications Button -->
+      <button
+        type="button"
+        class="icon-action-btn"
+        aria-label="View notifications (12 unread)"
+      >
+        <i class="material-symbols-outlined">notifications</i>
+        <span class="notification-badge">12</span>
+      </button>
+
+      <!-- Help Button -->
+      <button
+        type="button"
+        class="icon-action-btn"
+        aria-label="Help and documentation"
+      >
+        <i class="material-symbols-outlined">help_outline</i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Row 1: Top Metrics Grid -->
+  <div class="section-row metrics-row">
+    <school-hub-top-metrics [metrics]="metrics()" />
+  </div>
+
+  <!-- Row 2: Analytics & Summaries Grid (4 Cards) -->
+  <div class="section-row analytics-row">
+    <div class="col-chart">
+      <school-hub-usage-trend-chart
+        [data]="usageTrend()"
+        [period]="selectedUsagePeriod()"
+        (periodChange)="onUsagePeriodChange($event)"
+      />
+    </div>
+
+    <div class="col-subscription">
+      <school-hub-subscription-status-card [data]="subscriptionStatus()" />
+    </div>
+
+    <div class="col-readiness">
+      <school-hub-content-readiness-card [data]="contentReadiness()" />
+    </div>
+
+    <div class="col-revenue">
+      <school-hub-revenue-summary-card [data]="revenueSummary()" />
+    </div>
+  </div>
+
+  <!-- Row 3: Operational Monitoring & Governance Grid -->
+  <div class="section-row operations-row">
+    <div class="col-schools">
+      <school-hub-schools-attention-table
+        [schools]="schoolsAttention()"
+        [count]="attentionSchoolsCount()"
+      />
+    </div>
+
+    <div class="col-tickets">
+      <school-hub-support-tickets-card
+        [tickets]="supportTickets()"
+        (resolve)="onResolveTicket($event)"
+      />
+    </div>
+
+    <div class="col-alerts">
+      <school-hub-safeguarding-alerts-card
+        [alerts]="safeguardingAlerts()"
+        (dismiss)="onDismissAlert($event)"
+      />
+    </div>
+
+    <div class="col-actions">
+      <school-hub-quick-actions-card [actions]="quickActions()" />
+    </div>
+  </div>
+
+  <!-- Row 4: Platform Health Bar -->
+  <div class="section-row health-row">
+    <school-hub-platform-health-bar [health]="platformHealth()" />
+  </div>
+</div>

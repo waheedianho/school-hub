@@ -9,6 +9,7 @@
     "test": {
       "executor": "@nx/angular:unit-test",
       "options": {
+        "buildTarget": "shell:build:development",
         "watch": false
       }
     },

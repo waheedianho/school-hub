@@ -1,0 +1,35 @@
+<article class="alerts-card">
+  <div class="card-header">
+    <h3 class="card-title">Safeguarding Alerts</h3>
+    <a routerLink="/super-admin/safeguarding-compliance" class="view-all-link">
+      <span>View All</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+
+  <div class="alert-list" role="list">
+    @for (alert of alerts(); track alert.id) {
+    <div class="alert-item" role="listitem">
+      <div class="alert-icon-wrap" [ngClass]="getIconClass(alert.severity)">
+        <i class="material-symbols-outlined">{{ alert.icon }}</i>
+      </div>
+      <div class="alert-body">
+        <div class="alert-top">
+          <h4 class="alert-title">{{ alert.title }}</h4>
+          <span
+            class="alert-severity"
+            [ngClass]="getSeverityBadgeClass(alert.severity)"
+          >
+            {{ alert.severity }}
+          </span>
+        </div>
+        <div class="alert-meta">
+          <span class="alert-school">{{ alert.schoolName }}</span>
+          <span class="meta-dot">&bull;</span>
+          <span class="alert-time">{{ alert.timeAgo }}</span>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</article>

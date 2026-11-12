@@ -1,0 +1,141 @@
+.readiness-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.875rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.card-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.info-badge {
+  display: inline-flex;
+  align-items: center;
+  color: #94a3b8;
+  cursor: help;
+
+  i {
+    font-size: 1rem;
+  }
+}
+
+.status-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+  flex: 1;
+  justify-content: space-around;
+}
+
+.readiness-block {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 0.875rem;
+  border-radius: 0.75rem;
+  border: 1px solid #f1f5f9;
+  background-color: #f8fafc;
+  gap: 0.875rem;
+}
+
+.icon-circle {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1.25rem;
+  }
+
+  &.icon-approved {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+
+  &.icon-pending {
+    background-color: #fef3c7;
+    color: #d97706;
+  }
+
+  &.icon-missing {
+    background-color: #fee2e2;
+    color: #dc2626;
+  }
+}
+
+.block-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.block-label {
+  font-size: 0.8125rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.block-value {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.block-trend {
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &.trend-positive {
+    color: #059669;
+  }
+
+  &.trend-negative {
+    color: #dc2626;
+  }
+}
+
+:host-context(.dark) {
+  .readiness-card {
+    background-color: #0c1427;
+    border-color: #172036;
+  }
+
+  .card-title,
+  .block-value {
+    color: #f8fafc;
+  }
+
+  .readiness-block {
+    background-color: #111c38;
+    border-color: #1e293b;
+  }
+
+  .block-label {
+    color: #94a3b8;
+  }
+}

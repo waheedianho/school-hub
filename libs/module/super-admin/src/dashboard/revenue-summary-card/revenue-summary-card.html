@@ -1,0 +1,55 @@
+<article class="revenue-card">
+  <div class="card-header">
+    <div class="header-left">
+      <h3 class="card-title">Revenue Summary</h3>
+      <span
+        class="info-badge"
+        title="Monthly and annual platform recurring revenue"
+      >
+        <i class="material-symbols-outlined">info</i>
+      </span>
+    </div>
+    <div class="header-right">
+      <span class="filter-pill">This Month</span>
+    </div>
+  </div>
+
+  <div class="revenue-stats">
+    <!-- MRR -->
+    <div class="stat-group">
+      <span class="stat-label">MRR (May 2025)</span>
+      <div class="stat-main">
+        <span class="stat-value primary-value">{{ data().mrrFormatted }}</span>
+        <span class="stat-trend trend-up">{{ data().mrrTrend }}</span>
+      </div>
+    </div>
+
+    <!-- ARR -->
+    <div class="stat-group">
+      <span class="stat-label">ARR (Annual Run Rate)</span>
+      <div class="stat-main">
+        <span class="stat-value secondary-value"
+          >{{ data().arrFormatted }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Total Invoices -->
+    <div class="stat-group">
+      <span class="stat-label">Total Invoices</span>
+      <div class="stat-main">
+        <span class="stat-value secondary-value"
+          >{{ data().totalInvoices | number }}</span
+        >
+        <span class="stat-trend trend-up">{{ data().invoicesTrend }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/super-admin/subscriptions-billing" class="reports-link">
+      <span>View Billing Reports</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</article>

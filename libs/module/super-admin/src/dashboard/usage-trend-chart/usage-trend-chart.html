@@ -1,0 +1,108 @@
+<article class="chart-card">
+  <div class="card-header">
+    <div class="header-left">
+      <h3 class="card-title">Platform Usage Trend</h3>
+      <span class="info-badge" title="Daily and monthly active platform users">
+        <i class="material-symbols-outlined">info</i>
+      </span>
+    </div>
+    <div class="header-right">
+      <label for="usage-period-select" class="sr-only"
+        >Select usage period</label
+      >
+      <select
+        id="usage-period-select"
+        class="period-select"
+        [value]="period()"
+        (change)="onPeriodSelect($event)"
+      >
+        <option value="Last 30 Days">Last 30 Days</option>
+        <option value="Last 6 Months">Last 6 Months</option>
+        <option value="Last 12 Months">Last 12 Months</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <div class="legend-item">
+      <span class="legend-dot active-learners-dot"></span>
+      <span class="legend-text">Active Learners</span>
+    </div>
+    @if (hoveredPoint(); as hp) {
+    <div class="tooltip-badge">
+      <strong>{{ hp.label }}:</strong> {{ hp.value }} Active
+    </div>
+    }
+  </div>
+
+  <div class="svg-container" tabindex="0" aria-label="Usage trend line chart">
+    <svg
+      class="trend-svg"
+      [attr.viewBox]="'0 0 ' + width + ' ' + height"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <defs>
+        <linearGradient id="usageGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#2563eb" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#2563eb" stop-opacity="0.0" />
+        </linearGradient>
+      </defs>
+
+      <!-- Y Axis Grid Lines & Labels -->
+      @for (yItem of yAxisLabels; track yItem.label) {
+      <line
+        [attr.x1]="padding.left"
+        [attr.y1]="getYPosition(yItem.value)"
+        [attr.x2]="width - padding.right"
+        [attr.y2]="getYPosition(yItem.value)"
+        class="grid-line"
+      />
+      <text
+        [attr.x]="padding.left - 10"
+        [attr.y]="getYPosition(yItem.value) + 4"
+        class="axis-text y-axis-text"
+      >
+        {{ yItem.label }}
+      </text>
+      }
+
+      <!-- Shaded Area -->
+      @if (areaPath()) {
+      <path [attr.d]="areaPath()" fill="url(#usageGradient)" />
+      }
+
+      <!-- Main Trend Line -->
+      @if (polylinePoints()) {
+      <polyline
+        fill="none"
+        stroke="#2563eb"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        [attr.points]="polylinePoints()"
+      />
+      }
+
+      <!-- Data Points -->
+      @for (pt of points(); track pt.label) {
+      <circle
+        [attr.cx]="pt.x"
+        [attr.cy]="pt.y"
+        r="4.5"
+        class="data-point"
+        [class.active]="hoveredPoint()?.label === pt.label"
+        (mouseenter)="onPointHover(pt)"
+        (mouseleave)="onPointHover(null)"
+      />
+      <!-- X Axis Label -->
+      <text
+        [attr.x]="pt.x"
+        [attr.y]="height - 10"
+        class="axis-text x-axis-text"
+      >
+        {{ pt.label }}
+      </text>
+      }
+    </svg>
+  </div>
+</article>

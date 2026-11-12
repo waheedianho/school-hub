@@ -1,0 +1,31 @@
+<article class="tickets-card">
+  <div class="card-header">
+    <h3 class="card-title">Recent Support Tickets</h3>
+    <a routerLink="/super-admin/support-centre" class="view-all-link">
+      <span>View All</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+
+  <div class="ticket-list" role="list">
+    @for (ticket of tickets(); track ticket.id) {
+    <div class="ticket-item" role="listitem">
+      <div class="ticket-top">
+        <span class="ticket-id">{{ ticket.ticketNumber }}</span>
+        <span
+          class="ticket-status"
+          [ngClass]="getStatusBadgeClass(ticket.status)"
+        >
+          {{ ticket.status }}
+        </span>
+      </div>
+      <h4 class="ticket-title">{{ ticket.title }}</h4>
+      <div class="ticket-meta">
+        <span class="ticket-school">{{ ticket.schoolName }}</span>
+        <span class="meta-dot">&bull;</span>
+        <span class="ticket-time">{{ ticket.timeAgo }}</span>
+      </div>
+    </div>
+    }
+  </div>
+</article>
