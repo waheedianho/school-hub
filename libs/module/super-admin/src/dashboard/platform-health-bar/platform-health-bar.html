@@ -1,0 +1,104 @@
+<section class="health-bar" aria-label="Platform system health summary">
+  <div class="health-main">
+    <div class="health-badge">
+      <span class="status-pulse"></span>
+      <i class="material-symbols-outlined">check_circle</i>
+    </div>
+    <div class="health-meta">
+      <span class="health-label">Platform Health</span>
+      <span class="health-desc">{{ health().overallDescription }}</span>
+    </div>
+  </div>
+
+  <div class="indicators-row">
+    <!-- System Status -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-system">
+        <i class="material-symbols-outlined">dns</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">System Status</span>
+        <div class="status-val">
+          <span class="indicator-dot dot-green"></span>
+          <span>{{ health().systemStatus }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Services -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-services">
+        <i class="material-symbols-outlined">hub</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">Services</span>
+        <div class="status-val">
+          <span class="indicator-dot dot-green"></span>
+          <span>{{ health().services }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Database -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-database">
+        <i class="material-symbols-outlined">database</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">Database</span>
+        <div class="status-val">
+          <span class="indicator-dot dot-green"></span>
+          <span>{{ health().database }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Storage -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-storage">
+        <i class="material-symbols-outlined">cloud</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">Storage</span>
+        <div class="status-val text-blue">
+          <span>{{ health().storageDescription }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Backup -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-backup">
+        <i class="material-symbols-outlined">backup</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">Backup</span>
+        <div class="status-val">
+          <span class="indicator-dot dot-green"></span>
+          <span>{{ health().backupStatus }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security -->
+    <div class="indicator-item">
+      <span class="indicator-icon-wrap icon-security">
+        <i class="material-symbols-outlined">shield</i>
+      </span>
+      <div class="indicator-details">
+        <span class="indicator-label">Security</span>
+        <div class="status-val">
+          <span class="indicator-dot dot-green"></span>
+          <span>{{ health().securityStatus }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="health-actions">
+    <a routerLink="/super-admin/system-settings" class="status-page-btn">
+      <span>View Status Page</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</section>

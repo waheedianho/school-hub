@@ -1,0 +1,51 @@
+<article class="readiness-card">
+  <div class="card-header">
+    <div class="header-left">
+      <h3 class="card-title">Content Readiness Overview</h3>
+      <span
+        class="info-badge"
+        title="Status of curriculum packages and required learning assets"
+      >
+        <i class="material-symbols-outlined">info</i>
+      </span>
+    </div>
+  </div>
+
+  <div class="status-blocks">
+    <!-- Approved Packs -->
+    <div class="readiness-block block-approved">
+      <div class="icon-circle icon-approved">
+        <i class="material-symbols-outlined">check_circle</i>
+      </div>
+      <div class="block-details">
+        <span class="block-label">Approved Packs</span>
+        <span class="block-value">{{ data().approvedPacks | number }}</span>
+      </div>
+      <div class="block-trend trend-positive">{{ data().approvedTrend }}</div>
+    </div>
+
+    <!-- Pending Review -->
+    <div class="readiness-block block-pending">
+      <div class="icon-circle icon-pending">
+        <i class="material-symbols-outlined">schedule</i>
+      </div>
+      <div class="block-details">
+        <span class="block-label">Pending Review</span>
+        <span class="block-value">{{ data().pendingReview | number }}</span>
+      </div>
+      <div class="block-trend trend-positive">{{ data().pendingTrend }}</div>
+    </div>
+
+    <!-- Missing Assets -->
+    <div class="readiness-block block-missing">
+      <div class="icon-circle icon-missing">
+        <i class="material-symbols-outlined">warning</i>
+      </div>
+      <div class="block-details">
+        <span class="block-label">Missing Assets</span>
+        <span class="block-value">{{ data().missingAssets | number }}</span>
+      </div>
+      <div class="block-trend trend-negative">{{ data().missingTrend }}</div>
+    </div>
+  </div>
+</article>

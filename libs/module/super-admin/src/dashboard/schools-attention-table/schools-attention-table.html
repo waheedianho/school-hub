@@ -1,0 +1,71 @@
+<article class="schools-card">
+  <div class="card-header">
+    <div class="header-left">
+      <h3 class="card-title">Schools Requiring Attention</h3>
+      <span class="count-badge">{{ count() }}</span>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table
+      class="attention-table"
+      aria-label="Schools requiring administrative attention"
+    >
+      <thead>
+        <tr>
+          <th scope="col">School</th>
+          <th scope="col">Issue</th>
+          <th scope="col">Usage</th>
+          <th scope="col">Subscription</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (school of schools(); track school.id) {
+        <tr>
+          <td class="school-cell">
+            <div class="school-avatar" aria-hidden="true">
+              {{ school.initials }}
+            </div>
+            <div class="school-meta">
+              <span class="school-name">{{ school.name }}</span>
+              <span class="school-domain">{{ school.domain }}</span>
+            </div>
+          </td>
+          <td class="issue-cell">{{ school.issue }}</td>
+          <td class="usage-cell">
+            <span
+              class="usage-dot"
+              [ngClass]="getUsageDotClass(school.usageLevel)"
+            ></span>
+            <span>{{ school.usageLevel }} ({{ school.usagePercent }}%)</span>
+          </td>
+          <td class="subscription-cell">
+            <span
+              class="sub-pill"
+              [ngClass]="getSubscriptionPillClass(school.subscriptionStatus)"
+            >
+              {{ school.subscriptionStatus }}
+            </span>
+          </td>
+          <td class="status-cell">
+            <span
+              class="status-badge"
+              [ngClass]="getStatusPillClass(school.status)"
+            >
+              {{ school.status }}
+            </span>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card-footer">
+    <a routerLink="/super-admin/schools" class="view-all-link">
+      <span>View all schools requiring attention</span>
+      <i class="material-symbols-outlined">arrow_forward</i>
+    </a>
+  </div>
+</article>

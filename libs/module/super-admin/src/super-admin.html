@@ -1,1 +1,13 @@
-<p>SuperAdmin works!</p>
+@if (page(); as p) {
+<school-hub-page-placeholder
+  [title]="p.label"
+  [description]="p.description"
+  [icon]="p.icon"
+/>
+} @else {
+<school-hub-page-placeholder
+  title="Super Admin"
+  description="Platform-wide operations, quality, compliance, and growth overview."
+  icon="dashboard"
+/>
+}

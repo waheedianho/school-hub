@@ -1,0 +1,20 @@
+<article class="actions-card">
+  <div class="card-header">
+    <h3 class="card-title">Quick Actions</h3>
+  </div>
+
+  <div class="actions-list" role="list">
+    @for (action of actions(); track action.id) {
+    <a [routerLink]="action.route" class="action-item" role="listitem">
+      <div class="action-icon-wrap">
+        <i class="material-symbols-outlined">{{ action.icon }}</i>
+      </div>
+      <div class="action-body">
+        <span class="action-title">{{ action.title }}</span>
+        <span class="action-desc">{{ action.description }}</span>
+      </div>
+      <i class="material-symbols-outlined chevron-icon">chevron_right</i>
+    </a>
+    }
+  </div>
+</article>

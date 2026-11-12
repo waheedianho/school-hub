@@ -1,0 +1,99 @@
+<article class="status-card">
+  <div class="card-header">
+    <div class="header-left">
+      <h3 class="card-title">Subscription Status</h3>
+      <span
+        class="info-badge"
+        title="Breakdown of active, trial, expiring, and suspended schools"
+      >
+        <i class="material-symbols-outlined">info</i>
+      </span>
+    </div>
+    <div class="header-right">
+      <span class="filter-pill">All Time</span>
+    </div>
+  </div>
+
+  <!-- Segmented Progress Bar -->
+  <div
+    class="segmented-bar"
+    role="progressbar"
+    aria-label="Subscription status breakdown"
+    [attr.aria-valuenow]="data().activePercentage"
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <div
+      class="segment active-segment"
+      [style.width.%]="data().activePercentage"
+      title="Active: {{ data().activePercentage }}%"
+    ></div>
+    <div
+      class="segment trial-segment"
+      [style.width.%]="data().trialPercentage"
+      title="Trial: {{ data().trialPercentage }}%"
+    ></div>
+    <div
+      class="segment expiring-segment"
+      [style.width.%]="data().expiringPercentage"
+      title="Expiring: {{ data().expiringPercentage }}%"
+    ></div>
+    <div
+      class="segment suspended-segment"
+      [style.width.%]="data().suspendedPercentage"
+      title="Suspended: {{ data().suspendedPercentage }}%"
+    ></div>
+  </div>
+
+  <!-- Status List -->
+  <ul class="breakdown-list">
+    <li class="breakdown-item">
+      <div class="status-info">
+        <span class="status-dot dot-active"></span>
+        <span class="status-name">Active</span>
+      </div>
+      <div class="status-numbers">
+        <span class="status-count">{{ data().activeCount | number }}</span>
+        <span class="status-percent">{{ data().activePercentage }}%</span>
+      </div>
+    </li>
+
+    <li class="breakdown-item">
+      <div class="status-info">
+        <span class="status-dot dot-trial"></span>
+        <span class="status-name">Trial</span>
+      </div>
+      <div class="status-numbers">
+        <span class="status-count">{{ data().trialCount | number }}</span>
+        <span class="status-percent">{{ data().trialPercentage }}%</span>
+      </div>
+    </li>
+
+    <li class="breakdown-item">
+      <div class="status-info">
+        <span class="status-dot dot-expiring"></span>
+        <span class="status-name">Expiring (&le;30 days)</span>
+      </div>
+      <div class="status-numbers">
+        <span class="status-count">{{ data().expiringCount | number }}</span>
+        <span class="status-percent">{{ data().expiringPercentage }}%</span>
+      </div>
+    </li>
+
+    <li class="breakdown-item">
+      <div class="status-info">
+        <span class="status-dot dot-suspended"></span>
+        <span class="status-name">Suspended</span>
+      </div>
+      <div class="status-numbers">
+        <span class="status-count">{{ data().suspendedCount | number }}</span>
+        <span class="status-percent">{{ data().suspendedPercentage }}%</span>
+      </div>
+    </li>
+  </ul>
+
+  <div class="total-row">
+    <span class="total-label">Total</span>
+    <span class="total-count">{{ data().totalCount | number }}</span>
+  </div>
+</article>
