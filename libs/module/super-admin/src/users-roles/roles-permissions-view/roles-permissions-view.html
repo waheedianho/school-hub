@@ -1,0 +1,121 @@
+<div class="roles-view-container">
+  <!-- Top Role Templates Overview -->
+  <section class="roles-cards-grid" aria-label="System role definitions">
+    @for (tpl of templates(); track tpl.id) {
+    <article class="role-card">
+      <div class="role-card-header">
+        <div class="role-icon-wrap" [ngClass]="getRoleToneBg(tpl.tone)">
+          <i class="material-symbols-outlined">{{ tpl.icon }}</i>
+        </div>
+        <div class="role-card-titles">
+          <h3 class="role-name">{{ tpl.name }}</h3>
+          <span class="role-level">{{ tpl.accessLevel }}</span>
+        </div>
+      </div>
+
+      <p class="role-description">{{ tpl.description }}</p>
+
+      <div class="role-card-footer">
+        <div class="users-count-tag">
+          <i class="material-symbols-outlined text-sm">group</i>
+          <span>{{ tpl.assignedUsersCount | number }} users</span>
+        </div>
+        <button
+          type="button"
+          class="btn-edit-role"
+          (click)="editTemplate.emit(tpl)"
+        >
+          <span>Configure</span>
+          <i class="material-symbols-outlined text-sm">chevron_right</i>
+        </button>
+      </div>
+    </article>
+    }
+  </section>
+
+  <!-- Permissions Matrix Card -->
+  <section class="matrix-card">
+    <div class="matrix-header">
+      <div>
+        <h3 class="matrix-title">System Role Permissions Matrix</h3>
+        <p class="matrix-subtitle">
+          Platform-level access authority across key system domains and
+          institutional boundaries.
+        </p>
+      </div>
+      <button type="button" class="btn-create-role" (click)="createRole.emit()">
+        <i class="material-symbols-outlined">add</i>
+        <span>Create Custom Role</span>
+      </button>
+    </div>
+
+    <div class="matrix-table-wrap">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th scope="col" class="th-module">Platform Module / Domain</th>
+            <th scope="col" class="th-role text-center">Super Admin</th>
+            <th scope="col" class="th-role text-center">School Admin</th>
+            <th scope="col" class="th-role text-center">Teacher</th>
+            <th scope="col" class="th-role text-center">Learner</th>
+            <th scope="col" class="th-role text-center">Parent</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of matrix(); track row.module) {
+          <tr class="matrix-row">
+            <td class="td-module">
+              <span class="module-title">{{ row.module }}</span>
+            </td>
+
+            <!-- Super Admin -->
+            <td class="td-check text-center">
+              @if (row.superAdmin) {
+              <i class="material-symbols-outlined check-active">check_circle</i>
+              } @else {
+              <i class="material-symbols-outlined check-inactive">remove</i>
+              }
+            </td>
+
+            <!-- School Admin -->
+            <td class="td-check text-center">
+              @if (row.schoolAdmin) {
+              <i class="material-symbols-outlined check-active">check_circle</i>
+              } @else {
+              <i class="material-symbols-outlined check-inactive">remove</i>
+              }
+            </td>
+
+            <!-- Teacher -->
+            <td class="td-check text-center">
+              @if (row.teacher) {
+              <i class="material-symbols-outlined check-active">check_circle</i>
+              } @else {
+              <i class="material-symbols-outlined check-inactive">remove</i>
+              }
+            </td>
+
+            <!-- Learner -->
+            <td class="td-check text-center">
+              @if (row.learner) {
+              <i class="material-symbols-outlined check-active">check_circle</i>
+              } @else {
+              <i class="material-symbols-outlined check-inactive">remove</i>
+              }
+            </td>
+
+            <!-- Parent -->
+            <td class="td-check text-center">
+              @if (row.parent) {
+              <i class="material-symbols-outlined check-active">check_circle</i>
+              } @else {
+              <i class="material-symbols-outlined check-inactive">remove</i>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>

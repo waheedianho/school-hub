@@ -1,0 +1,319 @@
+<aside class="space-y-4" aria-label="Curriculum Insights & Activity">
+  <!-- Content Health Overview -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-sm font-semibold text-slate-900">
+        Content Health Overview
+      </h3>
+      <span class="text-xs text-slate-400">Governance</span>
+    </div>
+
+    <!-- Donut Chart -->
+    <div
+      class="relative w-44 h-44 mx-auto mb-4 flex items-center justify-center"
+    >
+      <svg
+        class="w-full h-full -rotate-90"
+        viewBox="0 0 160 160"
+        aria-label="Content health breakdown chart"
+      >
+        <circle
+          cx="80"
+          cy="80"
+          r="60"
+          stroke="#f1f5f9"
+          stroke-width="20"
+          fill="none"
+        />
+        <!-- Approved (65.4%) -->
+        <circle
+          cx="80"
+          cy="80"
+          r="60"
+          stroke="#10b981"
+          stroke-width="20"
+          stroke-dasharray="246.6 377"
+          stroke-dashoffset="0"
+          fill="none"
+          stroke-linecap="round"
+        />
+        <!-- Pending Review (16.6%) -->
+        <circle
+          cx="80"
+          cy="80"
+          r="60"
+          stroke="#f59e0b"
+          stroke-width="20"
+          stroke-dasharray="62.6 377"
+          stroke-dashoffset="-246.6"
+          fill="none"
+        />
+        <!-- Draft (13.8%) -->
+        <circle
+          cx="80"
+          cy="80"
+          r="60"
+          stroke="#8b5cf6"
+          stroke-width="20"
+          stroke-dasharray="52.0 377"
+          stroke-dashoffset="-309.2"
+          fill="none"
+        />
+        <!-- Missing Assets (7.5%) -->
+        <circle
+          cx="80"
+          cy="80"
+          r="60"
+          stroke="#ef4444"
+          stroke-width="20"
+          stroke-dasharray="28.3 377"
+          stroke-dashoffset="-361.2"
+          fill="none"
+        />
+      </svg>
+      <div
+        class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none text-center"
+      >
+        <span class="text-[11px] font-medium text-slate-400">Total Packs</span>
+        <span class="text-lg font-bold text-slate-900 leading-tight"
+          >{{ contentHealth().totalPacks | number }}</span
+        >
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="space-y-2 text-xs">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+          <span class="text-slate-600">Approved</span>
+        </div>
+        <div class="font-medium text-slate-900">
+          {{ contentHealth().approved.count }}
+          <span class="text-slate-400"
+            >({{ contentHealth().approved.percentage }}%)</span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-slate-600">Pending Review</span>
+        </div>
+        <div class="font-medium text-slate-900">
+          {{ contentHealth().pendingReview.count }}
+          <span class="text-slate-400"
+            >({{ contentHealth().pendingReview.percentage }}%)</span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-purple-500 shrink-0"></span>
+          <span class="text-slate-600">Draft</span>
+        </div>
+        <div class="font-medium text-slate-900">
+          {{ contentHealth().draft.count }}
+          <span class="text-slate-400"
+            >({{ contentHealth().draft.percentage }}%)</span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+          <span class="text-slate-600">Missing Assets</span>
+        </div>
+        <div class="font-medium text-slate-900">
+          {{ contentHealth().missingAssets.count }}
+          <span class="text-slate-400"
+            >({{ contentHealth().missingAssets.percentage }}%)</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Queue Breakdown -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-slate-900">Review Queue</h3>
+      <button
+        type="button"
+        class="text-xs font-medium text-blue-600 hover:text-blue-700 cursor-pointer"
+        (click)="openReviewQueue.emit()"
+      >
+        View Queue
+      </button>
+    </div>
+
+    <div class="space-y-2.5 text-xs">
+      <div
+        class="flex items-center justify-between p-2 rounded-lg bg-rose-50/60 border border-rose-100"
+      >
+        <div class="flex items-center gap-2 text-rose-900 font-medium">
+          <span
+            class="material-symbols-outlined text-base text-rose-600"
+            aria-hidden="true"
+            >warning</span
+          >
+          High Priority
+        </div>
+        <span class="font-bold text-rose-700"
+          >{{ reviewSummary().highPriority }}</span
+        >
+      </div>
+
+      <div
+        class="flex items-center justify-between p-2 rounded-lg bg-amber-50/60 border border-amber-100"
+      >
+        <div class="flex items-center gap-2 text-amber-900 font-medium">
+          <span
+            class="material-symbols-outlined text-base text-amber-600"
+            aria-hidden="true"
+            >schedule</span
+          >
+          Awaiting Academic Review
+        </div>
+        <span class="font-bold text-amber-700"
+          >{{ reviewSummary().awaitingAcademicReview }}</span
+        >
+      </div>
+
+      <div
+        class="flex items-center justify-between p-2 rounded-lg bg-blue-50/60 border border-blue-100"
+      >
+        <div class="flex items-center gap-2 text-blue-900 font-medium">
+          <span
+            class="material-symbols-outlined text-base text-blue-600"
+            aria-hidden="true"
+            >cloud_upload</span
+          >
+          Awaiting Media Upload
+        </div>
+        <span class="font-bold text-blue-700"
+          >{{ reviewSummary().awaitingMediaUpload }}</span
+        >
+      </div>
+
+      <div
+        class="flex items-center justify-between p-2 rounded-lg bg-purple-50/60 border border-purple-100"
+      >
+        <div class="flex items-center gap-2 text-purple-900 font-medium">
+          <span
+            class="material-symbols-outlined text-base text-purple-600"
+            aria-hidden="true"
+            >handyman</span
+          >
+          Requires Fixes
+        </div>
+        <span class="font-bold text-purple-700"
+          >{{ reviewSummary().requiresFixes }}</span
+        >
+      </div>
+
+      <div
+        class="pt-2 border-t border-slate-100 flex items-center justify-between text-xs"
+      >
+        <span class="font-semibold text-slate-700">Total in Queue</span>
+        <span class="font-bold text-slate-900"
+          >{{ reviewSummary().total }}</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Content Activity -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-semibold text-slate-900">
+        Recent Content Activity
+      </h3>
+      <button
+        type="button"
+        class="text-xs font-medium text-blue-600 hover:text-blue-700 cursor-pointer"
+        (click)="viewAllActivities.emit()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="space-y-3">
+      @for (activity of activities(); track activity.id) {
+      <div class="flex items-start gap-2.5 text-xs">
+        <div
+          class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5"
+          [ngClass]="{
+              'bg-emerald-100 text-emerald-600': activity.type === 'approved',
+              'bg-blue-100 text-blue-600': activity.type === 'uploaded',
+              'bg-amber-100 text-amber-600': activity.type === 'revision',
+              'bg-purple-100 text-purple-600': activity.type === 'updated'
+            }"
+        >
+          <span class="material-symbols-outlined text-sm" aria-hidden="true"
+            >{{ activity.icon }}</span
+          >
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="font-semibold text-slate-900 truncate">
+            {{ activity.packName }}
+          </div>
+          <div class="text-slate-500 text-[11px]">{{ activity.action }}</div>
+        </div>
+        <span class="text-[10px] text-slate-400 whitespace-nowrap"
+          >{{ activity.timeAgo }}</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Standards Coverage -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4">
+    <div class="flex items-center justify-between mb-1.5">
+      <h3 class="text-sm font-semibold text-slate-900">Standards Coverage</h3>
+      <span
+        class="material-symbols-outlined text-slate-400 text-sm"
+        aria-hidden="true"
+        >info</span
+      >
+    </div>
+    <div class="text-xs text-slate-500 mb-2">Coverage Across All Packs</div>
+
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <span class="text-xl font-bold text-slate-900"
+          >{{ standardsCoverage() }}%</span
+        >
+        <span class="text-xs font-medium text-emerald-600 flex items-center">
+          <span class="material-symbols-outlined text-sm" aria-hidden="true"
+            >arrow_upward</span
+          >
+          4% vs Apr 2025
+        </span>
+      </div>
+
+      <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+        <div
+          class="h-full rounded-full bg-emerald-500 transition-all duration-300"
+          [style.width.%]="standardsCoverage()"
+        ></div>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button
+          type="button"
+          class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center justify-end gap-1 w-full cursor-pointer"
+        >
+          View Status Page
+          <span class="material-symbols-outlined text-sm" aria-hidden="true"
+            >arrow_forward</span
+          >
+        </button>
+      </div>
+    </div>
+  </div>
+</aside>

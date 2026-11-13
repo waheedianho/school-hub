@@ -1,0 +1,188 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title"
+>
+  <div class="modal-dialog">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="user-header-info">
+        <div
+          class="user-avatar-lg"
+          [style.background-color]="user().avatarColor"
+        >
+          {{ user().initials }}
+        </div>
+        <div class="header-text">
+          <div class="title-row">
+            <h2 id="modal-title" class="user-title">{{ user().name }}</h2>
+            <span class="user-id-badge">ID: {{ user().id }}</span>
+          </div>
+          <div class="badges-row">
+            <span
+              class="role-tag"
+              [class]="'role-' + user().role.toLowerCase().replace(' ', '-')"
+            >
+              {{ user().role }}
+            </span>
+            <span
+              class="status-tag"
+              [class]="'status-' + user().status.toLowerCase()"
+            >
+              {{ user().status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Quick Stats Strip -->
+      <div class="quick-stats-strip">
+        <div class="stat-box">
+          <span class="stat-label">Institution</span>
+          <span class="stat-value" [title]="user().institution"
+            >{{ user().institution }}</span
+          >
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Region</span>
+          <span class="stat-value">{{ user().region }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">MFA Security</span>
+          <span class="stat-value" [class.text-emerald]="user().mfaEnabled">
+            {{ user().mfaEnabled ? 'Enabled' : 'Not Enabled' }}
+          </span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Active Sessions</span>
+          <span class="stat-value">{{ user().sessionsCount ?? 1 }}</span>
+        </div>
+      </div>
+
+      <!-- Detail Sections Grid -->
+      <div class="sections-grid">
+        <!-- Contact Information -->
+        <div class="section-card">
+          <h4 class="section-heading">
+            <i class="material-symbols-outlined">person</i>
+            Contact Information
+          </h4>
+          <dl class="details-list">
+            <div class="detail-row">
+              <dt>Email Address:</dt>
+              <dd>
+                <a [href]="'mailto:' + user().email" class="link-item">
+                  {{ user().email }}
+                </a>
+              </dd>
+            </div>
+            <div class="detail-row">
+              <dt>Phone Number:</dt>
+              <dd>{{ user().phone || 'Not provided' }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Registered Date:</dt>
+              <dd>{{ user().createdAt }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Last Active:</dt>
+              <dd>{{ user().lastActive }}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Security & Access Controls -->
+        <div class="section-card">
+          <h4 class="section-heading">
+            <i class="material-symbols-outlined">security</i>
+            Security & Credentials
+          </h4>
+          <div class="security-actions-list">
+            <div class="sec-item">
+              <div class="sec-info">
+                <span class="sec-title">Two-Factor Auth (MFA)</span>
+                <span class="sec-desc">
+                  {{ user().mfaEnabled ? 'Account protected by two-factor
+                  authentication.' : 'MFA is currently inactive for this
+                  account.' }}
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-sec-action"
+                (click)="onToggleMfa()"
+              >
+                {{ user().mfaEnabled ? 'Disable' : 'Enable' }}
+              </button>
+            </div>
+
+            <div class="sec-item">
+              <div class="sec-info">
+                <span class="sec-title">Password Reset</span>
+                <span class="sec-desc"
+                  >Send temporary credentials link to user email.</span
+                >
+              </div>
+              <button
+                type="button"
+                class="btn-sec-action text-blue-600"
+                (click)="onResetPassword()"
+              >
+                Reset
+              </button>
+            </div>
+
+            <div class="sec-item">
+              <div class="sec-info">
+                <span class="sec-title">Account Access</span>
+                <span class="sec-desc">
+                  {{ user().status === 'Suspended' ? 'Account is currently
+                  restricted.' : 'Account is authorized for platform access.' }}
+                </span>
+              </div>
+              <button
+                type="button"
+                class="btn-sec-action"
+                [class.text-rose-600]="user().status !== 'Suspended'"
+                [class.text-emerald-600]="user().status === 'Suspended'"
+                (click)="onToggleStatus()"
+              >
+                {{ user().status === 'Suspended' ? 'Reactivate' : 'Suspend' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" (click)="onClose()">
+        Close
+      </button>
+      <div class="footer-actions">
+        <button type="button" class="btn-danger-outline" (click)="onDelete()">
+          <i class="material-symbols-outlined">delete</i>
+          Delete User
+        </button>
+        <button type="button" class="btn-primary" (click)="onEdit()">
+          <i class="material-symbols-outlined">edit</i>
+          Edit User
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

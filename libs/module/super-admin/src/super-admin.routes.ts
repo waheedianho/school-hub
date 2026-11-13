@@ -21,42 +21,63 @@ export const superAdminRoutes: Routes = [
             (m) => m.SuperAdminDashboardComponent,
           ),
       },
-      ...SUPER_ADMIN_PAGES.filter((page) => page.path !== 'dashboard').map(
-        (page) => ({
-          path: page.path,
-          component: SuperAdmin,
-          title: `${page.label} | Learno Super Admin`,
-          data: { page },
-        }),
-      ),
-      // Detail routes & sub-flows
       {
-        path: 'schools/onboard',
-        component: SuperAdmin,
-        title: 'Onboard School | Learno Super Admin',
-        data: {
-          page: {
-            path: 'schools/onboard',
-            label: 'Onboard School',
-            icon: 'apartment',
-            description:
-              'Create a new institution and configure access, subscription, and onboarding details.',
-          },
-        },
+        path: 'schools',
+        title: 'Schools / Institutions | Learno Super Admin',
+        loadComponent: () =>
+          import('./schools/schools-list/schools-list').then(
+            (m) => m.SchoolsListComponent,
+          ),
       },
       {
-        path: 'curriculum/create',
-        component: SuperAdmin,
+        path: 'schools/onboard',
+        title: 'Onboard School | Learno Super Admin',
+        loadComponent: () =>
+          import('./schools/school-onboard/school-onboard').then(
+            (m) => m.SchoolOnboardComponent,
+          ),
+      },
+      {
+        path: 'users-roles',
+        title: 'Users & Roles | Learno Super Admin',
+        loadComponent: () =>
+          import('./users-roles/users-roles').then(
+            (m) => m.UsersRolesComponent,
+          ),
+      },
+      {
+        path: 'curriculum-content',
+        title: 'Curriculum & Content | Learno Super Admin',
+        loadComponent: () =>
+          import('./curriculum-content/curriculum-content').then(
+            (m) => m.CurriculumContentComponent,
+          ),
+      },
+      {
+        path: 'curriculum-content/create',
         title: 'Create Curriculum Pack | Learno Super Admin',
-        data: {
-          page: {
-            path: 'curriculum/create',
-            label: 'Create Curriculum Pack',
-            icon: 'menu_book',
-            description:
-              'Build and publish a master curriculum pack for schools and institutions.',
-          },
-        },
+        loadComponent: () =>
+          import('./curriculum-content/create-pack/create-pack').then(
+            (m) => m.CreatePackComponent,
+          ),
+      },
+      ...SUPER_ADMIN_PAGES.filter(
+        (page) =>
+          page.path !== 'dashboard' &&
+          page.path !== 'schools' &&
+          page.path !== 'users-roles' &&
+          page.path !== 'curriculum-content',
+      ).map((page) => ({
+        path: page.path,
+        component: SuperAdmin,
+        title: `${page.label} | Learno Super Admin`,
+        data: { page },
+      })),
+      // Detail routes & sub-flows
+      {
+        path: 'curriculum/create',
+        redirectTo: 'curriculum-content/create',
+        pathMatch: 'full',
       },
       {
         path: 'assessments/create',
