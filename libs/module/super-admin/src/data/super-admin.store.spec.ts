@@ -336,4 +336,95 @@ describe('SuperAdminStore', () => {
       false,
     );
   });
+
+  it('should initialize with subscription and billing data', () => {
+    expect(store.subscriptionMetrics().length).toBe(6);
+    expect(store.schoolSubscriptions().length).toBe(7);
+    expect(store.subscriptionPlans().length).toBe(4);
+    expect(store.subscriptionInvoices().length).toBe(5);
+    expect(store.subscriptionBottomMetrics().length).toBe(5);
+    expect(store.revenueOverview().length).toBe(4);
+    expect(store.renewalQueue().length).toBe(4);
+    expect(store.recentBillingActivity().length).toBe(4);
+    expect(store.planDistribution().length).toBe(4);
+    expect(store.billingHealth().percentage).toBe(92);
+  });
+
+  it('should filter subscriptions by tab, search, and dropdowns', () => {
+    // Initial filtered count
+    expect(store.filteredSubscriptions().length).toBe(7);
+    expect(store.totalSubscriptionsCount()).toBe(7);
+
+    // Filter by Active Billing tab
+    store.setSubscriptionTab('Active Billing');
+    expect(
+      store.filteredSubscriptions().every((s) => s.status === 'Active'),
+    ).toBe(true);
+
+    // Reset tab and filter by search
+    store.setSubscriptionTab('Subscription Plans');
+    store.setSubscriptionsSearch('Greenfield');
+    expect(store.filteredSubscriptions().length).toBe(1);
+    expect(store.filteredSubscriptions()[0].schoolName).toContain('Greenfield');
+
+    // Filter by plan
+    store.setSubscriptionsSearch('');
+    store.setSubscriptionPlanFilter('Enterprise');
+    expect(
+      store.filteredSubscriptions().every((s) => s.plan === 'Enterprise'),
+    ).toBe(true);
+
+    // Filter by status
+    store.setSubscriptionPlanFilter('All Plans');
+    store.setSubscriptionStatusFilter('Suspended');
+    expect(
+      store.filteredSubscriptions().every((s) => s.status === 'Suspended'),
+    ).toBe(true);
+  });
+
+  it('should paginate subscriptions and update status', () => {
+    store.setSubscriptionStatusFilter('All Billing Statuses');
+    store.setSubscriptionsPage(1);
+    expect(store.paginatedSubscriptions().length).toBeLessThanOrEqual(7);
+
+    // Update subscription status
+    const firstSub = store.schoolSubscriptions()[0];
+    store.updateSubscriptionStatus(firstSub.id, 'Suspended');
+    const updated = store
+      .schoolSubscriptions()
+      .find((s) => s.id === firstSub.id);
+    expect(updated?.status).toBe('Suspended');
+  });
+
+  it('should generate invoices and add subscription plans', () => {
+    const initialInvoices = store.subscriptionInvoices().length;
+    const inv = store.generateInvoice({
+      invoiceNumber: 'INV-2025-9999',
+      schoolName: 'Test School',
+      schoolDomain: 'testschool.edu',
+      plan: 'Professional',
+      amount: 4500,
+      amountFormatted: '$4,500.00',
+      issueDate: 'May 20, 2025',
+      dueDate: 'Jun 20, 2025',
+      status: 'Pending',
+    });
+
+    expect(store.subscriptionInvoices().length).toBe(initialInvoices + 1);
+    expect(inv.id).toBeDefined();
+
+    const initialPlans = store.subscriptionPlans().length;
+    store.createSubscriptionPlan({
+      id: 'plan-custom',
+      name: 'Trial',
+      tagline: 'Custom test plan',
+      priceAnnual: 1000,
+      priceQuarterly: 300,
+      priceMonthly: 100,
+      maxLearners: 50,
+      features: ['Feature 1'],
+      activeSchoolsCount: 1,
+    });
+    expect(store.subscriptionPlans().length).toBe(initialPlans + 1);
+  });
 });

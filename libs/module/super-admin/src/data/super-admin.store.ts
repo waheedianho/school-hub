@@ -141,6 +141,31 @@ import {
   SUBJECT_CONSUMPTION_DATA,
   TOP_ACTIVE_INSTITUTIONS,
 } from './super-admin-analytics.data';
+import {
+  BillingHealth,
+  PlanDistributionItem,
+  RecentBillingActivity,
+  RenewalQueueItem,
+  RevenueOverviewCategory,
+  SchoolSubscription,
+  SubscriptionBottomMetric,
+  SubscriptionInvoice,
+  SubscriptionMetric,
+  SubscriptionPlanDefinition,
+  SubscriptionStatus,
+} from './super-admin-subscriptions.models';
+import {
+  INITIAL_BILLING_HEALTH,
+  INITIAL_BOTTOM_METRICS,
+  INITIAL_PLAN_DISTRIBUTION,
+  INITIAL_RECENT_BILLING_ACTIVITY,
+  INITIAL_RENEWAL_QUEUE,
+  INITIAL_REVENUE_OVERVIEW,
+  INITIAL_SCHOOL_SUBSCRIPTIONS,
+  INITIAL_SUBSCRIPTION_INVOICES,
+  INITIAL_SUBSCRIPTION_METRICS,
+  INITIAL_SUBSCRIPTION_PLANS,
+} from './super-admin-subscriptions.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -315,6 +340,47 @@ export class SuperAdminStore {
   readonly selectedAssessmentTrendPeriod = signal<string>('Last 30 Days');
   readonly selectedSubjectConsumptionPeriod = signal<string>('Last 30 Days');
   readonly selectedHeatmapPeriod = signal<string>('Last 30 Days');
+
+  // Subscriptions & Billing Signals
+  readonly subscriptionMetrics = signal<SubscriptionMetric[]>(
+    INITIAL_SUBSCRIPTION_METRICS,
+  );
+  readonly schoolSubscriptions = signal<SchoolSubscription[]>(
+    INITIAL_SCHOOL_SUBSCRIPTIONS,
+  );
+  readonly subscriptionPlans = signal<SubscriptionPlanDefinition[]>(
+    INITIAL_SUBSCRIPTION_PLANS,
+  );
+  readonly subscriptionInvoices = signal<SubscriptionInvoice[]>(
+    INITIAL_SUBSCRIPTION_INVOICES,
+  );
+  readonly subscriptionBottomMetrics = signal<SubscriptionBottomMetric[]>(
+    INITIAL_BOTTOM_METRICS,
+  );
+  readonly revenueOverview = signal<RevenueOverviewCategory[]>(
+    INITIAL_REVENUE_OVERVIEW,
+  );
+  readonly renewalQueue = signal<RenewalQueueItem[]>(INITIAL_RENEWAL_QUEUE);
+  readonly recentBillingActivity = signal<RecentBillingActivity[]>(
+    INITIAL_RECENT_BILLING_ACTIVITY,
+  );
+  readonly planDistribution = signal<PlanDistributionItem[]>(
+    INITIAL_PLAN_DISTRIBUTION,
+  );
+  readonly billingHealth = signal<BillingHealth>(INITIAL_BILLING_HEALTH);
+
+  readonly selectedSubscriptionTab = signal<string>('Subscription Plans');
+  readonly subscriptionsSearch = signal<string>('');
+  readonly selectedSubscriptionPlanFilter = signal<string>('All Plans');
+  readonly selectedSubscriptionStatusFilter = signal<string>(
+    'All Billing Statuses',
+  );
+  readonly selectedRenewalDateSort = signal<'asc' | 'desc' | 'none'>('asc');
+  readonly subscriptionsCurrentPage = signal<number>(1);
+  readonly subscriptionsPageSize = signal<number>(7);
+  readonly selectedSubscriptionsDateRange = signal<string>(
+    'May 12 – May 18, 2025',
+  );
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -663,6 +729,93 @@ export class SuperAdminStore {
   readonly totalActiveSchoolsCount = computed(() => {
     return (
       this.regionSpread().find((r) => r.region === 'Total')?.institutions ?? 248
+    );
+  });
+
+  // Subscriptions & Billing Computeds
+  readonly filteredSubscriptions = computed(() => {
+    const list = this.schoolSubscriptions();
+    const tab = this.selectedSubscriptionTab();
+    const search = this.subscriptionsSearch().trim().toLowerCase();
+    const planFilter = this.selectedSubscriptionPlanFilter();
+    const statusFilter = this.selectedSubscriptionStatusFilter();
+    const sort = this.selectedRenewalDateSort();
+
+    let result = list.filter((sub) => {
+      // Tab filter
+      if (tab === 'Active Billing' && sub.status !== 'Active') {
+        return false;
+      }
+      if (
+        tab === 'Renewals' &&
+        sub.status !== 'Expiring Soon' &&
+        sub.renewalRemainingDays > 45
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Payment Issues' &&
+        sub.status !== 'Payment Failed' &&
+        sub.status !== 'Suspended'
+      ) {
+        return false;
+      }
+
+      // Plan filter
+      if (planFilter !== 'All Plans' && sub.plan !== planFilter) {
+        return false;
+      }
+
+      // Status filter
+      if (
+        statusFilter !== 'All Billing Statuses' &&
+        sub.status !== statusFilter
+      ) {
+        return false;
+      }
+
+      // Search
+      if (search) {
+        const matchesName = sub.schoolName.toLowerCase().includes(search);
+        const matchesDomain = sub.domain.toLowerCase().includes(search);
+        const matchesPlan = sub.plan.toLowerCase().includes(search);
+        if (!matchesName && !matchesDomain && !matchesPlan) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    if (sort !== 'none') {
+      result = [...result].sort((a, b) => {
+        const aVal = a.isExpired ? -1 : a.renewalRemainingDays;
+        const bVal = b.isExpired ? -1 : b.renewalRemainingDays;
+        return sort === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    }
+
+    return result;
+  });
+
+  readonly totalSubscriptionsCount = computed(
+    () => this.filteredSubscriptions().length,
+  );
+
+  readonly paginatedSubscriptions = computed(() => {
+    const list = this.filteredSubscriptions();
+    const page = this.subscriptionsCurrentPage();
+    const size = this.subscriptionsPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalSubscriptionsPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(
+        this.filteredSubscriptions().length / this.subscriptionsPageSize(),
+      ),
     );
   });
 
@@ -1189,5 +1342,66 @@ export class SuperAdminStore {
 
   dismissAttentionSchool(id: string): void {
     this.attentionSchoolsList.update((list) => list.filter((s) => s.id !== id));
+  }
+
+  // Subscriptions & Billing Actions
+  setSubscriptionTab(tab: string): void {
+    this.selectedSubscriptionTab.set(tab);
+    this.subscriptionsCurrentPage.set(1);
+  }
+
+  setSubscriptionsSearch(term: string): void {
+    this.subscriptionsSearch.set(term);
+    this.subscriptionsCurrentPage.set(1);
+  }
+
+  setSubscriptionPlanFilter(plan: string): void {
+    this.selectedSubscriptionPlanFilter.set(plan);
+    this.subscriptionsCurrentPage.set(1);
+  }
+
+  setSubscriptionStatusFilter(status: string): void {
+    this.selectedSubscriptionStatusFilter.set(status);
+    this.subscriptionsCurrentPage.set(1);
+  }
+
+  setSubscriptionsPage(page: number): void {
+    this.subscriptionsCurrentPage.set(page);
+  }
+
+  setSubscriptionsDateRange(range: string): void {
+    this.selectedSubscriptionsDateRange.set(range);
+  }
+
+  toggleRenewalDateSort(): void {
+    const current = this.selectedRenewalDateSort();
+    if (current === 'asc') {
+      this.selectedRenewalDateSort.set('desc');
+    } else if (current === 'desc') {
+      this.selectedRenewalDateSort.set('none');
+    } else {
+      this.selectedRenewalDateSort.set('asc');
+    }
+  }
+
+  updateSubscriptionStatus(id: string, status: SubscriptionStatus): void {
+    this.schoolSubscriptions.update((list) =>
+      list.map((sub) => (sub.id === id ? { ...sub, status } : sub)),
+    );
+  }
+
+  createSubscriptionPlan(plan: SubscriptionPlanDefinition): void {
+    this.subscriptionPlans.update((list) => [...list, plan]);
+  }
+
+  generateInvoice(
+    invoiceData: Omit<SubscriptionInvoice, 'id'>,
+  ): SubscriptionInvoice {
+    const newInvoice: SubscriptionInvoice = {
+      ...invoiceData,
+      id: `inv-${Date.now().toString(36)}`,
+    };
+    this.subscriptionInvoices.update((list) => [newInvoice, ...list]);
+    return newInvoice;
   }
 }

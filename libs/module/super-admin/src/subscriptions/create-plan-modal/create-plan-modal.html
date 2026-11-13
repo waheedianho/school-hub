@@ -1,0 +1,167 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="create-plan-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-titles">
+        <h3 id="create-plan-title" class="modal-title">
+          Create Subscription Plan
+        </h3>
+        <p class="modal-subtitle">
+          Define a new pricing and capability tier for platform institutions.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <form class="modal-form" (ngSubmit)="onSubmit()">
+      <!-- Plan Name & Tagline -->
+      <div class="form-row">
+        <div class="form-field flex-1">
+          <label class="field-label" for="plan-tier-select">Plan Tier</label>
+          <select
+            id="plan-tier-select"
+            class="form-select"
+            [ngModel]="planName()"
+            (ngModelChange)="planName.set($event)"
+            name="planName"
+          >
+            @for (tier of availablePlanTypes; track tier) {
+            <option [value]="tier">{{ tier }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-field flex-1">
+          <label class="field-label" for="max-learners-input"
+            >Learners Limit</label
+          >
+          <input
+            id="max-learners-input"
+            type="text"
+            class="form-input"
+            [ngModel]="maxLearners()"
+            (ngModelChange)="maxLearners.set($event)"
+            name="maxLearners"
+            placeholder="e.g. 1000 or Unlimited"
+          />
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="field-label" for="tagline-input"
+          >Plan Tagline / Description</label
+        >
+        <input
+          id="tagline-input"
+          type="text"
+          class="form-input"
+          [ngModel]="tagline()"
+          (ngModelChange)="tagline.set($event)"
+          name="tagline"
+          placeholder="Brief description of the target institution"
+        />
+      </div>
+
+      <!-- Pricing: Annual, Quarterly, Monthly -->
+      <div class="pricing-group">
+        <span class="field-label">Pricing Matrix ($ USD)</span>
+        <div class="pricing-row">
+          <div class="form-field flex-1">
+            <label class="sub-label" for="annual-price-input"
+              >Annual Price ($)</label
+            >
+            <input
+              id="annual-price-input"
+              type="number"
+              class="form-input"
+              [ngModel]="priceAnnual()"
+              (ngModelChange)="priceAnnual.set($event)"
+              name="priceAnnual"
+              min="0"
+            />
+          </div>
+          <div class="form-field flex-1">
+            <label class="sub-label" for="quarterly-price-input"
+              >Quarterly Price ($)</label
+            >
+            <input
+              id="quarterly-price-input"
+              type="number"
+              class="form-input"
+              [ngModel]="priceQuarterly()"
+              (ngModelChange)="priceQuarterly.set($event)"
+              name="priceQuarterly"
+              min="0"
+            />
+          </div>
+          <div class="form-field flex-1">
+            <label class="sub-label" for="monthly-price-input"
+              >Monthly Price ($)</label
+            >
+            <input
+              id="monthly-price-input"
+              type="number"
+              class="form-input"
+              [ngModel]="priceMonthly()"
+              (ngModelChange)="priceMonthly.set($event)"
+              name="priceMonthly"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Included Features -->
+      <div class="form-field">
+        <label class="field-label" for="features-textarea"
+          >Included Features (one per line)</label
+        >
+        <textarea
+          id="features-textarea"
+          class="form-textarea"
+          rows="4"
+          [ngModel]="featuresText()"
+          (ngModelChange)="featuresText.set($event)"
+          name="featuresText"
+          placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
+        ></textarea>
+      </div>
+
+      <!-- Highlight popular toggle -->
+      <div class="checkbox-field">
+        <input
+          type="checkbox"
+          id="is-popular-checkbox"
+          [ngModel]="isPopular()"
+          (ngModelChange)="isPopular.set($event)"
+          name="isPopular"
+        />
+        <label for="is-popular-checkbox"
+          >Highlight as "Most Popular" plan badge</label
+        >
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-submit">
+          <i class="material-symbols-outlined">add</i>
+          <span>Save Plan</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

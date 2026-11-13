@@ -1,0 +1,172 @@
+<div class="subscriptions-container">
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification">
+    <i class="material-symbols-outlined">check_circle</i>
+    <span>{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Subscriptions & Billing</h1>
+      <p class="page-subtitle">
+        Manage subscription plans, billing status, renewals, invoices, and
+        platform revenue across all institutions.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Date Range Picker -->
+      <div class="date-picker-wrap">
+        <button
+          type="button"
+          class="date-picker-btn"
+          (click)="toggleDatePicker()"
+          aria-label="Select date range"
+        >
+          <i class="material-symbols-outlined">calendar_today</i>
+          <span>{{ store.selectedSubscriptionsDateRange() }}</span>
+          <i class="material-symbols-outlined dropdown-caret"
+            >arrow_drop_down</i
+          >
+        </button>
+
+        @if (isDatePickerOpen()) {
+        <div class="date-picker-menu">
+          @for (opt of dateRangeOptions; track opt) {
+          <button
+            type="button"
+            class="date-option"
+            [class.selected]="store.selectedSubscriptionsDateRange() === opt"
+            (click)="selectDateRange(opt)"
+          >
+            <span>{{ opt }}</span>
+            @if (store.selectedSubscriptionsDateRange() === opt) {
+            <i class="material-symbols-outlined check-icon">check</i>
+            }
+          </button>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Notification Bell -->
+      <button type="button" class="bell-btn" aria-label="Notifications">
+        <i class="material-symbols-outlined">notifications</i>
+        <span class="bell-badge">0</span>
+      </button>
+
+      <!-- Super Admin Avatar -->
+      <div class="user-pill">
+        <div class="avatar-circle">SA</div>
+        <div class="user-text">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top 6 KPI Metric Cards -->
+  <section class="metrics-section">
+    <school-hub-subscriptions-metrics [metrics]="store.subscriptionMetrics()" />
+  </section>
+
+  <!-- Tabs Bar -->
+  <nav class="subscriptions-tabs-bar" aria-label="Subscription Navigation Tabs">
+    @for (tab of tabs; track tab) {
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.selectedSubscriptionTab() === tab"
+      (click)="selectTab(tab)"
+    >
+      <span>{{ tab }}</span>
+      @if (tab === 'Active Billing') {
+      <span class="tab-badge">248</span>
+      } @else if (tab === 'Renewals') {
+      <span class="tab-badge text-amber">18</span>
+      } @else if (tab === 'Payment Issues') {
+      <span class="tab-badge text-danger">14</span>
+      }
+    </button>
+    }
+  </nav>
+
+  <!-- Content Layout: Main Table Left, Sidebar Right -->
+  <div class="content-layout-grid">
+    <!-- Main Left Column -->
+    <main class="main-content-column">
+      @if (store.selectedSubscriptionTab() !== 'Invoices') {
+      <school-hub-subscriptions-table
+        [subscriptions]="store.paginatedSubscriptions()"
+        [totalCount]="store.totalSubscriptionsCount()"
+        [currentPage]="store.subscriptionsCurrentPage()"
+        [totalPages]="store.totalSubscriptionsPages()"
+        [pageSize]="store.subscriptionsPageSize()"
+        [searchQuery]="store.subscriptionsSearch()"
+        [selectedPlan]="store.selectedSubscriptionPlanFilter()"
+        [selectedStatus]="store.selectedSubscriptionStatusFilter()"
+        [renewalSort]="store.selectedRenewalDateSort()"
+        (searchChange)="onSearchChange($event)"
+        (planChange)="onPlanFilterChange($event)"
+        (statusChange)="onStatusFilterChange($event)"
+        (sortToggle)="onSortToggle()"
+        (pageChange)="onPageChange($event)"
+        (createPlanClicked)="openCreatePlanModal()"
+        (generateInvoiceClicked)="openGenerateInvoiceModal()"
+        (exportClicked)="onExportData()"
+        (viewSchoolDetails)="openSubscriptionDetail($event)"
+        (statusUpdate)="onStatusUpdate($event)"
+      />
+      } @else {
+      <school-hub-invoices-table
+        [invoices]="store.subscriptionInvoices()"
+        (downloadInvoice)="onDownloadInvoice($event)"
+        (generateInvoice)="openGenerateInvoiceModal()"
+      />
+      }
+
+      <!-- Bottom 5 Metrics -->
+      <section class="bottom-metrics-section">
+        <school-hub-subscriptions-bottom-metrics
+          [metrics]="store.subscriptionBottomMetrics()"
+        />
+      </section>
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="sidebar-column">
+      <school-hub-subscriptions-sidebar
+        [revenueOverview]="store.revenueOverview()"
+        [renewalQueue]="store.renewalQueue()"
+        [recentActivity]="store.recentBillingActivity()"
+        [planDistribution]="store.planDistribution()"
+        [billingHealth]="store.billingHealth()"
+        (viewAllRenewals)="selectTab('Renewals')"
+        (viewAllActivity)="selectTab('Subscription Plans')"
+      />
+    </aside>
+  </div>
+
+  <!-- Modals -->
+  @if (isCreatePlanModalOpen()) {
+  <school-hub-create-plan-modal
+    (planCreated)="onPlanCreated($event)"
+    (closed)="closeCreatePlanModal()"
+  />
+  } @if (isGenerateInvoiceModalOpen()) {
+  <school-hub-generate-invoice-modal
+    [schools]="store.schoolSubscriptions()"
+    (invoiceGenerated)="onInvoiceGenerated($event)"
+    (closed)="closeGenerateInvoiceModal()"
+  />
+  } @if (selectedDetailSubscription()) {
+  <school-hub-subscription-detail-modal
+    [subscription]="selectedDetailSubscription()!"
+    (closed)="closeSubscriptionDetail()"
+  />
+  }
+</div>

@@ -85,6 +85,14 @@ export const superAdminRoutes: Routes = [
             (m) => m.PlatformAnalyticsComponent,
           ),
       },
+      {
+        path: 'subscriptions-billing',
+        title: 'Subscriptions & Billing | Learno Super Admin',
+        loadComponent: () =>
+          import('./subscriptions/subscriptions-billing').then(
+            (m) => m.SubscriptionsBillingComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -92,7 +100,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'users-roles' &&
           page.path !== 'curriculum-content' &&
           page.path !== 'assessments-qb' &&
-          page.path !== 'analytics',
+          page.path !== 'analytics' &&
+          page.path !== 'subscriptions-billing',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -108,6 +117,11 @@ export const superAdminRoutes: Routes = [
       {
         path: 'assessments/create',
         redirectTo: 'assessments-qb/create',
+        pathMatch: 'full',
+      },
+      {
+        path: 'subscriptions',
+        redirectTo: 'subscriptions-billing',
         pathMatch: 'full',
       },
       {

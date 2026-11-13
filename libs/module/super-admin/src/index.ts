@@ -25,3 +25,6 @@ export * from './assessments-qb/create-assessment/create-assessment';
 export * from './data/super-admin-analytics.models';
 export * from './data/super-admin-analytics.data';
 export * from './analytics/platform-analytics';
+export * from './data/super-admin-subscriptions.models';
+export * from './data/super-admin-subscriptions.data';
+export * from './subscriptions/subscriptions-billing';
