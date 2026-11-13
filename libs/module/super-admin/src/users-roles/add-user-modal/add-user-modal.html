@@ -1,0 +1,172 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="add-user-title"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="header-content">
+        <i class="material-symbols-outlined header-icon">person_add</i>
+        <div>
+          <h2 id="add-user-title" class="modal-title">Create Platform User</h2>
+          <p class="modal-subtitle">
+            Provision access, assign roles, and set authentication rules.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <form class="modal-body" (ngSubmit)="onSubmit()">
+      @if (validationError()) {
+      <div class="error-banner" role="alert">
+        <i class="material-symbols-outlined">error</i>
+        <span>{{ validationError() }}</span>
+      </div>
+      }
+
+      <div class="form-grid">
+        <!-- Full Name -->
+        <div class="form-group col-span-2">
+          <label for="newUserName" class="form-label"
+            >Full Name <span class="required">*</span></label
+          >
+          <input
+            id="newUserName"
+            type="text"
+            class="form-input"
+            placeholder="e.g. Eleanor Vance"
+            [ngModel]="formData().name"
+            (ngModelChange)="updateField('name', $event)"
+            name="name"
+            required
+          />
+        </div>
+
+        <!-- Email -->
+        <div class="form-group col-span-2">
+          <label for="newUserEmail" class="form-label"
+            >Email Address <span class="required">*</span></label
+          >
+          <div class="input-with-icon">
+            <i class="material-symbols-outlined input-icon">mail</i>
+            <input
+              id="newUserEmail"
+              type="email"
+              class="form-input"
+              placeholder="user@school.edu"
+              [ngModel]="formData().email"
+              (ngModelChange)="updateField('email', $event)"
+              name="email"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Role -->
+        <div class="form-group">
+          <label for="newUserRole" class="form-label"
+            >Assigned Role <span class="required">*</span></label
+          >
+          <select
+            id="newUserRole"
+            class="form-select"
+            [ngModel]="formData().role"
+            (ngModelChange)="updateField('role', $event)"
+            name="role"
+          >
+            @for (r of roleOptions; track r) {
+            <option [value]="r">{{ r }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Institution -->
+        <div class="form-group">
+          <label for="newUserInst" class="form-label"
+            >Institution <span class="required">*</span></label
+          >
+          <select
+            id="newUserInst"
+            class="form-select"
+            [ngModel]="formData().institution"
+            (ngModelChange)="updateField('institution', $event)"
+            name="institution"
+          >
+            @for (inst of institutionOptions; track inst) {
+            <option [value]="inst">{{ inst }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Phone -->
+        <div class="form-group col-span-2">
+          <label for="newUserPhone" class="form-label">Phone Number</label>
+          <div class="input-with-icon">
+            <i class="material-symbols-outlined input-icon">call</i>
+            <input
+              id="newUserPhone"
+              type="tel"
+              class="form-input"
+              placeholder="+44 20 7946 0000"
+              [ngModel]="formData().phone"
+              (ngModelChange)="updateField('phone', $event)"
+              name="phone"
+            />
+          </div>
+        </div>
+
+        <!-- Toggles -->
+        <div class="form-group toggle-group">
+          <span class="form-label">Send Invitation Email</span>
+          <label class="toggle-switch">
+            <input
+              type="checkbox"
+              [ngModel]="formData().sendInvite"
+              (ngModelChange)="updateField('sendInvite', $event)"
+              name="sendInvite"
+            />
+            <span class="slider"></span>
+          </label>
+          <span class="form-helper"
+            >Dispatches invitation link and temporary setup token.</span
+          >
+        </div>
+
+        <div class="form-group toggle-group">
+          <span class="form-label">Require Two-Factor (MFA)</span>
+          <label class="toggle-switch">
+            <input
+              type="checkbox"
+              [ngModel]="formData().requireMfa"
+              (ngModelChange)="updateField('requireMfa', $event)"
+              name="requireMfa"
+            />
+            <span class="slider"></span>
+          </label>
+          <span class="form-helper"
+            >Requires authenticator app pairing upon first login.</span
+          >
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" (click)="onClose()">
+          Cancel
+        </button>
+        <button type="submit" class="btn-primary">
+          <i class="material-symbols-outlined">person_add</i>
+          <span>Create User</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

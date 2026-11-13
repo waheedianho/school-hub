@@ -1,0 +1,382 @@
+<div class="table-container">
+  <!-- Filter & Search Toolbar -->
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="material-symbols-outlined search-icon">search</i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by name, email, or institution..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+        aria-label="Search users"
+      />
+    </div>
+
+    <div class="filters-group">
+      <div class="filter-item">
+        <label for="role-filter" class="filter-label">Role</label>
+        <select
+          id="role-filter"
+          class="filter-select"
+          [value]="roleFilter()"
+          (change)="onRoleSelect($any($event.target).value)"
+        >
+          @for (opt of roleOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="inst-filter" class="filter-label">Institution</label>
+        <select
+          id="inst-filter"
+          class="filter-select"
+          [value]="institutionFilter()"
+          (change)="onInstitutionSelect($any($event.target).value)"
+        >
+          @for (opt of institutionOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="status-filter" class="filter-label">Status</label>
+        <select
+          id="status-filter"
+          class="filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusSelect($any($event.target).value)"
+        >
+          @for (opt of statusOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="mfa-filter" class="filter-label">MFA</label>
+        <select
+          id="mfa-filter"
+          class="filter-select"
+          [value]="mfaFilter()"
+          (change)="onMfaSelect($any($event.target).value)"
+        >
+          @for (opt of mfaOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="region-filter" class="filter-label">Region</label>
+        <select
+          id="region-filter"
+          class="filter-select"
+          [value]="regionFilter()"
+          (change)="onRegionSelect($any($event.target).value)"
+        >
+          @for (opt of regionOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" class="btn-more-filters" title="Additional Filters">
+        <i class="material-symbols-outlined">filter_list</i>
+        <span>Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Content -->
+  <div class="table-responsive">
+    <table class="users-data-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-user">Name</th>
+          <th scope="col" class="th-role">Role</th>
+          <th scope="col" class="th-inst">Institution</th>
+          <th scope="col" class="th-email">Email</th>
+          <th scope="col" class="th-status">Status</th>
+          <th scope="col" class="th-mfa">MFA</th>
+          <th scope="col" class="th-active">Last Active</th>
+          <th scope="col" class="th-actions text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of paginatedUsers(); track user.id) {
+        <tr class="table-row">
+          <!-- Name + ID -->
+          <td class="td-user">
+            <div class="user-cell">
+              <div
+                class="user-avatar"
+                [style.background-color]="user.avatarColor"
+                [attr.aria-label]="user.name"
+              >
+                {{ user.initials }}
+              </div>
+              <div class="user-info">
+                <span class="user-name" [title]="user.name"
+                  >{{ user.name }}</span
+                >
+                <span class="user-id">ID: {{ user.id }}</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Role -->
+          <td class="td-role">
+            <span class="role-pill" [ngClass]="getRoleBadgeClass(user.role)">
+              {{ user.role }}
+            </span>
+          </td>
+
+          <!-- Institution -->
+          <td class="td-inst">
+            <span class="inst-text" [title]="user.institution"
+              >{{ user.institution }}</span
+            >
+          </td>
+
+          <!-- Email -->
+          <td class="td-email">
+            <span class="email-text" [title]="user.email"
+              >{{ user.email }}</span
+            >
+          </td>
+
+          <!-- Status -->
+          <td class="td-status">
+            <span
+              class="status-pill"
+              [ngClass]="getStatusBadgeClass(user.status)"
+            >
+              {{ user.status }}
+            </span>
+          </td>
+
+          <!-- MFA -->
+          <td class="td-mfa">
+            @if (user.mfaEnabled) {
+            <span class="mfa-enabled">
+              <i class="material-symbols-outlined mfa-icon">check_circle</i>
+              <span>Enabled</span>
+            </span>
+            } @else {
+            <span class="mfa-disabled">
+              <i class="material-symbols-outlined mfa-icon">cancel</i>
+              <span>Not Enabled</span>
+            </span>
+            }
+          </td>
+
+          <!-- Last Active -->
+          <td class="td-active">
+            <span class="active-text">{{ user.lastActive }}</span>
+          </td>
+
+          <!-- Actions -->
+          <td class="td-actions">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="btn-icon"
+                title="View User Details"
+                (click)="onView(user)"
+              >
+                <i class="material-symbols-outlined">visibility</i>
+              </button>
+
+              <button
+                type="button"
+                class="btn-icon"
+                title="Edit User"
+                (click)="onEdit(user)"
+              >
+                <i class="material-symbols-outlined">edit</i>
+              </button>
+
+              <div class="action-menu-wrap">
+                <button
+                  type="button"
+                  class="btn-icon"
+                  title="More Options"
+                  (click)="toggleActionsMenu(user.id)"
+                >
+                  <i class="material-symbols-outlined">more_vert</i>
+                </button>
+
+                @if (activeMenuUserId() === user.id) {
+                <div class="dropdown-menu">
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onResetPassword(user)"
+                  >
+                    <i class="material-symbols-outlined text-blue-600"
+                      >lock_reset</i
+                    >
+                    <span>Reset Password</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onResendInvite(user)"
+                  >
+                    <i class="material-symbols-outlined text-purple-600"
+                      >send</i
+                    >
+                    <span>Resend Invite</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onToggleMfa(user)"
+                  >
+                    <i class="material-symbols-outlined text-emerald-600"
+                      >security</i
+                    >
+                    <span
+                      >{{ user.mfaEnabled ? 'Disable MFA' : 'Enable MFA'
+                      }}</span
+                    >
+                  </button>
+
+                  <div class="menu-divider"></div>
+
+                  @if (user.status === 'Suspended') {
+                  <button
+                    type="button"
+                    class="menu-item text-success"
+                    (click)="onStatusChange(user, 'Active')"
+                  >
+                    <i class="material-symbols-outlined text-emerald-600"
+                      >check_circle</i
+                    >
+                    <span>Reactivate User</span>
+                  </button>
+                  } @else {
+                  <button
+                    type="button"
+                    class="menu-item text-danger"
+                    (click)="onStatusChange(user, 'Suspended')"
+                  >
+                    <i class="material-symbols-outlined text-rose-600">block</i>
+                    <span>Suspend User</span>
+                  </button>
+                  }
+
+                  <button
+                    type="button"
+                    class="menu-item text-danger"
+                    (click)="onDelete(user)"
+                  >
+                    <i class="material-symbols-outlined">delete</i>
+                    <span>Delete User</span>
+                  </button>
+                </div>
+                }
+              </div>
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="empty-state">
+            <div class="empty-wrap">
+              <i class="material-symbols-outlined empty-icon">group_off</i>
+              <p class="empty-title">No users found</p>
+              <p class="empty-desc">
+                Try adjusting your search query or filter parameters.
+              </p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Bar -->
+  <div class="table-pagination">
+    <div class="pagination-info">
+      Showing {{ rangeStart() }} to {{ rangeEnd() }} of {{ totalCount() ||
+      users().length }} users
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(1)"
+        title="First Page"
+      >
+        <i class="material-symbols-outlined">first_page</i>
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(currentPage() - 1)"
+        title="Previous Page"
+      >
+        <i class="material-symbols-outlined">chevron_left</i>
+      </button>
+
+      @for (pg of displayedPages(); track $index) { @if (pg === '...') {
+      <span class="pagination-ellipsis">...</span>
+      } @else {
+      <button
+        type="button"
+        class="pagination-page-btn"
+        [class.active]="currentPage() === pg"
+        (click)="goToPage(pg)"
+      >
+        {{ pg }}
+      </button>
+      } }
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(currentPage() + 1)"
+        title="Next Page"
+      >
+        <i class="material-symbols-outlined">chevron_right</i>
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(totalPages())"
+        title="Last Page"
+      >
+        <i class="material-symbols-outlined">last_page</i>
+      </button>
+
+      <div class="per-page-select-wrap">
+        <select
+          class="per-page-select"
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          aria-label="Users per page"
+        >
+          <option [value]="5">5 / page</option>
+          <option [value]="10">10 / page</option>
+          <option [value]="25">25 / page</option>
+          <option [value]="50">50 / page</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

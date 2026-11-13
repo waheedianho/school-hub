@@ -1,0 +1,181 @@
+<aside
+  class="sidebar-container"
+  aria-label="Role statistics and recent access activity"
+>
+  <!-- 1. Role Distribution Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Role Distribution</h3>
+    </div>
+
+    <div class="distribution-content">
+      <div class="chart-wrap">
+        <svg
+          class="donut-chart"
+          viewBox="0 0 100 100"
+          width="100"
+          height="100"
+          role="img"
+          aria-label="Role Distribution Donut Chart"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f1f5f9"
+            stroke-width="16"
+          />
+          <!-- Learners 53.2% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#10b981"
+            stroke-width="16"
+            stroke-dasharray="133.7 251.3"
+            stroke-dashoffset="0"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- Teachers 30.5% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#8b5cf6"
+            stroke-width="16"
+            stroke-dasharray="76.6 251.3"
+            stroke-dashoffset="-133.7"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- School Admins 9.7% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f59e0b"
+            stroke-width="16"
+            stroke-dasharray="24.4 251.3"
+            stroke-dashoffset="-210.3"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- Parents 13.7% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f43f5e"
+            stroke-width="16"
+            stroke-dasharray="15.1 251.3"
+            stroke-dashoffset="-234.7"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- Super Admins 0.6% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#2563eb"
+            stroke-width="16"
+            stroke-dasharray="2 251.3"
+            stroke-dashoffset="-249.8"
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
+      </div>
+
+      <div class="legend-list">
+        @for (item of roleDistribution().items; track item.role) {
+        <div class="legend-item">
+          <span class="legend-dot" [style.background-color]="item.color"></span>
+          <span class="legend-label">{{ item.role }}s</span>
+          <span class="legend-val"
+            >{{ item.count | number }} ({{ item.percentage }}%)</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+
+    <div class="total-row">
+      <span class="total-label">Total Users</span>
+      <span class="total-value"
+        >{{ roleDistribution().totalUsers | number }}</span
+      >
+    </div>
+  </section>
+
+  <!-- 2. Permission Templates Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Permission Templates</h3>
+    </div>
+
+    <div class="templates-list">
+      @for (tpl of permissionTemplates(); track tpl.id) {
+      <button
+        type="button"
+        class="template-item"
+        (click)="onSelectTemplate(tpl)"
+      >
+        <div class="template-icon-wrap" [ngClass]="getTemplateToneBg(tpl.tone)">
+          <i class="material-symbols-outlined">{{ tpl.icon }}</i>
+        </div>
+        <div class="template-details">
+          <span class="template-name">{{ tpl.name }}</span>
+          <span class="template-count"
+            >{{ tpl.assignedUsersCount | number }} users</span
+          >
+        </div>
+        <span class="template-badge"
+          >{{ tpl.assignedUsersCount | number }}</span
+        >
+      </button>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="view-link"
+      (click)="manageRolePermissions.emit()"
+    >
+      <span>Manage Role Permissions</span>
+      <i class="material-symbols-outlined link-icon">arrow_forward</i>
+    </button>
+  </section>
+
+  <!-- 3. Recent Access Activity Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Access Activity</h3>
+    </div>
+
+    <ul class="activity-list">
+      @for (activity of recentActivities(); track activity.id) {
+      <li class="activity-item">
+        <div
+          class="activity-avatar"
+          [style.background-color]="activity.avatarColor"
+        >
+          {{ activity.avatarInitials }}
+        </div>
+        <div class="activity-details">
+          <span class="activity-user">{{ activity.userName }}</span>
+          <span class="activity-action">{{ activity.action }}</span>
+        </div>
+        <span class="activity-time">{{ activity.timeAgo }}</span>
+      </li>
+      }
+    </ul>
+
+    <button type="button" class="view-link" (click)="viewAllActivity.emit()">
+      <span>View all activity</span>
+      <i class="material-symbols-outlined link-icon">arrow_forward</i>
+    </button>
+  </section>
+</aside>

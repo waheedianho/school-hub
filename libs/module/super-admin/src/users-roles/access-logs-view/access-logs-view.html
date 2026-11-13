@@ -1,0 +1,93 @@
+<div class="logs-container">
+  <!-- Toolbar -->
+  <div class="logs-toolbar">
+    <div class="search-box">
+      <i class="material-symbols-outlined search-icon">search</i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Filter by user, action, or IP address..."
+        [value]="searchQuery()"
+        (input)="onSearch($any($event.target).value)"
+        aria-label="Filter access logs"
+      />
+    </div>
+
+    <div class="toolbar-actions">
+      <div class="filter-item">
+        <label for="log-status" class="filter-label">Status</label>
+        <select
+          id="log-status"
+          class="filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusChange($any($event.target).value)"
+        >
+          @for (opt of statusOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" class="btn-export-logs" (click)="exportLogs.emit()">
+        <i class="material-symbols-outlined">file_download</i>
+        <span>Export Log</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
+    <table class="logs-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-time">Timestamp</th>
+          <th scope="col" class="th-user">User Account</th>
+          <th scope="col" class="th-action">Action Performed</th>
+          <th scope="col" class="th-status text-center">Status</th>
+          <th scope="col" class="th-ip">IP & Location</th>
+          <th scope="col" class="th-device">Device / Client</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (log of filteredLogs(); track log.id) {
+        <tr class="log-row">
+          <td class="td-time">
+            <span class="time-text">{{ log.timestamp }}</span>
+          </td>
+          <td class="td-user">
+            <div class="user-meta">
+              <span class="user-name">{{ log.userName }}</span>
+              <span class="user-role"
+                >{{ log.role }} • {{ log.userEmail }}</span
+              >
+            </div>
+          </td>
+          <td class="td-action">
+            <span class="action-desc">{{ log.action }}</span>
+          </td>
+          <td class="td-status text-center">
+            <span class="status-badge" [ngClass]="getStatusClass(log.status)">
+              {{ log.status }}
+            </span>
+          </td>
+          <td class="td-ip">
+            <span class="ip-text font-mono">{{ log.ipAddress }}</span>
+          </td>
+          <td class="td-device">
+            <span class="device-text">{{ log.device }}</span>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="empty-state">
+            <div class="empty-wrap">
+              <i class="material-symbols-outlined empty-icon">manage_search</i>
+              <p class="empty-title">No access logs matching criteria</p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

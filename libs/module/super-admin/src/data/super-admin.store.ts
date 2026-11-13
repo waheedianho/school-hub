@@ -39,6 +39,28 @@ import {
   SCHOOLS_ATTENTION_STATS,
   SCHOOLS_METRICS,
 } from './super-admin-schools.data';
+import {
+  AccessActivity,
+  AccessLogEntry,
+  CreateUserData,
+  PermissionTemplate,
+  PlatformUser,
+  RoleDistribution,
+  RolePermissionMatrixItem,
+  UserRole,
+  UsersMetric,
+  UserStatus,
+  UserTab,
+} from './super-admin-users.models';
+import {
+  PERMISSION_TEMPLATES_DATA,
+  RECENT_ACCESS_ACTIVITIES,
+  ROLE_DISTRIBUTION_DATA,
+  ROLE_PERMISSION_MATRIX,
+  SAMPLE_ACCESS_LOGS,
+  SAMPLE_PLATFORM_USERS,
+  USERS_METRICS,
+} from './super-admin-users.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -91,6 +113,29 @@ export class SuperAdminStore {
   readonly selectedPlanFilter = signal<string>('All');
   readonly selectedRegionFilter = signal<string>('All');
   readonly selectedOnboardingStatusFilter = signal<string>('All');
+
+  // Users & Roles Signals
+  readonly users = signal<PlatformUser[]>(SAMPLE_PLATFORM_USERS);
+  readonly usersMetrics = signal<UsersMetric[]>(USERS_METRICS);
+  readonly roleDistribution = signal<RoleDistribution>(ROLE_DISTRIBUTION_DATA);
+  readonly permissionTemplates = signal<PermissionTemplate[]>(
+    PERMISSION_TEMPLATES_DATA,
+  );
+  readonly recentAccessActivities = signal<AccessActivity[]>(
+    RECENT_ACCESS_ACTIVITIES,
+  );
+  readonly permissionMatrix = signal<RolePermissionMatrixItem[]>(
+    ROLE_PERMISSION_MATRIX,
+  );
+  readonly accessLogs = signal<AccessLogEntry[]>(SAMPLE_ACCESS_LOGS);
+
+  readonly selectedUserTab = signal<UserTab>('all');
+  readonly userSearchQuery = signal<string>('');
+  readonly selectedUserRoleFilter = signal<string>('All');
+  readonly selectedUserInstitutionFilter = signal<string>('All');
+  readonly selectedUserStatusFilter = signal<string>('All');
+  readonly selectedUserMfaFilter = signal<string>('All');
+  readonly selectedUserRegionFilter = signal<string>('All');
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -186,6 +231,82 @@ export class SuperAdminStore {
           !matchesAdmin &&
           !matchesLocation
         ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  // Users Computeds
+  readonly totalUsersCount = computed(() => this.users().length);
+  readonly pendingInvitesCount = computed(
+    () =>
+      this.users().filter(
+        (u) => u.status === 'Invited' || u.status === 'Pending',
+      ).length,
+  );
+  readonly activeUsersCount = computed(
+    () => this.users().filter((u) => u.status === 'Active').length,
+  );
+  readonly suspendedUsersCount = computed(
+    () => this.users().filter((u) => u.status === 'Suspended').length,
+  );
+
+  readonly filteredUsers = computed(() => {
+    const list = this.users();
+    const query = this.userSearchQuery().toLowerCase().trim();
+    const tab = this.selectedUserTab();
+    const role = this.selectedUserRoleFilter();
+    const institution = this.selectedUserInstitutionFilter();
+    const status = this.selectedUserStatusFilter();
+    const mfa = this.selectedUserMfaFilter();
+    const region = this.selectedUserRegionFilter();
+
+    return list.filter((user) => {
+      // Tab filter
+      if (tab === 'pending') {
+        if (user.status !== 'Invited' && user.status !== 'Pending') {
+          return false;
+        }
+      }
+
+      // Role filter
+      if (role !== 'All' && user.role !== role) {
+        return false;
+      }
+
+      // Institution filter
+      if (institution !== 'All' && user.institution !== institution) {
+        return false;
+      }
+
+      // Status filter
+      if (status !== 'All' && user.status !== status) {
+        return false;
+      }
+
+      // MFA filter
+      if (mfa === 'Enabled' && !user.mfaEnabled) {
+        return false;
+      }
+      if (mfa === 'Not Enabled' && user.mfaEnabled) {
+        return false;
+      }
+
+      // Region filter
+      if (region !== 'All' && user.region !== region) {
+        return false;
+      }
+
+      // Search query
+      if (query) {
+        const matchesName = user.name.toLowerCase().includes(query);
+        const matchesEmail = user.email.toLowerCase().includes(query);
+        const matchesInst = user.institution.toLowerCase().includes(query);
+        const matchesId = user.id.toLowerCase().includes(query);
+        if (!matchesName && !matchesEmail && !matchesInst && !matchesId) {
           return false;
         }
       }
@@ -312,5 +433,112 @@ export class SuperAdminStore {
     this.recentActivities.update((prev) => [newActivity, ...prev]);
 
     return newSchool;
+  }
+
+  // User Actions
+  setUserTab(tab: UserTab): void {
+    this.selectedUserTab.set(tab);
+  }
+
+  setUserSearchQuery(query: string): void {
+    this.userSearchQuery.set(query);
+  }
+
+  setUserRoleFilter(role: string): void {
+    this.selectedUserRoleFilter.set(role);
+  }
+
+  setUserInstitutionFilter(institution: string): void {
+    this.selectedUserInstitutionFilter.set(institution);
+  }
+
+  setUserStatusFilter(status: string): void {
+    this.selectedUserStatusFilter.set(status);
+  }
+
+  setUserMfaFilter(mfa: string): void {
+    this.selectedUserMfaFilter.set(mfa);
+  }
+
+  setUserRegionFilter(region: string): void {
+    this.selectedUserRegionFilter.set(region);
+  }
+
+  createUser(userData: CreateUserData): PlatformUser {
+    const initials =
+      userData.name
+        .split(' ')
+        .slice(0, 2)
+        .map((w) => w[0]?.toUpperCase() || '')
+        .join('') || 'U';
+
+    const newUser: PlatformUser = {
+      id: `USR-${(this.users().length + 1).toString().padStart(4, '0')}`,
+      name: userData.name,
+      email: userData.email,
+      role: userData.role,
+      institution: userData.institution,
+      status: userData.sendInvite ? 'Invited' : 'Active',
+      mfaEnabled: userData.requireMfa,
+      lastActive: '—',
+      initials,
+      avatarColor: '#2563EB',
+      phone: userData.phone || '+44 20 7946 0000',
+      createdAt: new Date().toISOString().split('T')[0],
+      region: 'UK',
+      sessionsCount: 0,
+    };
+
+    this.users.update((prev) => [newUser, ...prev]);
+
+    // Add activity
+    const activity: AccessActivity = {
+      id: `act-${Date.now()}`,
+      userName: newUser.name,
+      action: `created new ${newUser.role} user`,
+      timeAgo: 'Just now',
+      avatarInitials: initials,
+      avatarColor: newUser.avatarColor,
+      ipAddress: '127.0.0.1',
+    };
+    this.recentAccessActivities.update((prev) => [activity, ...prev]);
+
+    return newUser;
+  }
+
+  updateUserStatus(id: string, status: UserStatus): void {
+    this.users.update((list) =>
+      list.map((u) => (u.id === id ? { ...u, status } : u)),
+    );
+  }
+
+  updateUserRole(id: string, role: UserRole): void {
+    this.users.update((list) =>
+      list.map((u) => (u.id === id ? { ...u, role } : u)),
+    );
+  }
+
+  toggleUserMfa(id: string): void {
+    this.users.update((list) =>
+      list.map((u) => (u.id === id ? { ...u, mfaEnabled: !u.mfaEnabled } : u)),
+    );
+  }
+
+  deleteUser(id: string): void {
+    this.users.update((list) => list.filter((u) => u.id !== id));
+  }
+
+  resendInvite(id: string): void {
+    this.users.update((list) =>
+      list.map((u) =>
+        u.id === id
+          ? {
+              ...u,
+              status: 'Invited' as const,
+              lastActive: 'Invite resent just now',
+            }
+          : u,
+      ),
+    );
   }
 }

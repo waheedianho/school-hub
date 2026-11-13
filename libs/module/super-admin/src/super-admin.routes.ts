@@ -37,8 +37,19 @@ export const superAdminRoutes: Routes = [
             (m) => m.SchoolOnboardComponent,
           ),
       },
+      {
+        path: 'users-roles',
+        title: 'Users & Roles | Learno Super Admin',
+        loadComponent: () =>
+          import('./users-roles/users-roles').then(
+            (m) => m.UsersRolesComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
-        (page) => page.path !== 'dashboard' && page.path !== 'schools',
+        (page) =>
+          page.path !== 'dashboard' &&
+          page.path !== 'schools' &&
+          page.path !== 'users-roles',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,

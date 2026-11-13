@@ -11,3 +11,6 @@ export * from './data/super-admin.store';
 export * from './dashboard/super-admin-dashboard';
 export * from './schools/schools-list/schools-list';
 export * from './schools/school-onboard/school-onboard';
+export * from './data/super-admin-users.models';
+export * from './data/super-admin-users.data';
+export * from './users-roles/users-roles';

@@ -1,0 +1,13 @@
+<section class="quick-actions-row" aria-label="User management quick actions">
+  @for (action of actions; track action.id) {
+  <button type="button" class="action-card" (click)="triggerAction(action.id)">
+    <div class="action-icon-wrap">
+      <i class="material-symbols-outlined">{{ action.icon }}</i>
+    </div>
+    <div class="action-details">
+      <span class="action-title">{{ action.title }}</span>
+      <span class="action-subtitle">{{ action.subtitle }}</span>
+    </div>
+  </button>
+  }
+</section>
