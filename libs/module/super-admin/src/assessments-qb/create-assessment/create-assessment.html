@@ -1,0 +1,996 @@
+<div class="space-y-6 max-w-7xl mx-auto pb-12">
+  <!-- Toast Message -->
+  @if (toastMessage()) {
+  <div
+    class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg border border-slate-700 flex items-center gap-2 text-xs animate-in slide-in-from-bottom-2 duration-200"
+    data-testid="toast-message"
+  >
+    <span class="material-symbols-outlined text-emerald-400 text-base"
+      >check_circle</span
+    >
+    <span>{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Breadcrumbs & Header -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200"
+  >
+    <div>
+      <nav
+        class="flex items-center gap-1.5 text-xs text-slate-500 mb-1"
+        aria-label="Breadcrumb"
+      >
+        <button
+          type="button"
+          (click)="cancel()"
+          class="hover:text-blue-600 transition-colors cursor-pointer"
+        >
+          Assessments & Question Bank
+        </button>
+        <span class="material-symbols-outlined text-xs">chevron_right</span>
+        <span class="text-slate-900 font-medium">Create Assessment Pack</span>
+      </nav>
+      <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
+        Create Assessment Pack
+      </h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Author standardized CBT blueprints, question distributions, and
+        moderation parameters
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        (click)="cancel()"
+        class="px-3.5 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg transition-colors cursor-pointer"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="saveDraft()"
+        class="px-3.5 py-2 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer"
+        data-testid="save-draft-header-btn"
+      >
+        <span class="material-symbols-outlined text-sm">save</span>
+        Save Draft
+      </button>
+    </div>
+  </div>
+
+  <!-- 5-Step Stepper Bar -->
+  <nav
+    class="bg-white rounded-xl border border-slate-200 p-3 shadow-xs"
+    aria-label="Progress"
+  >
+    <ol class="grid grid-cols-2 sm:grid-cols-5 gap-2">
+      @for (st of steps; track st.number) {
+      <li class="relative">
+        <button
+          type="button"
+          (click)="setStep(st.number)"
+          class="w-full flex items-center gap-2.5 p-2 rounded-lg text-left transition-all cursor-pointer"
+          [ngClass]="{
+            'bg-blue-50/80 text-blue-700 font-semibold': currentStep() === st.number,
+            'text-emerald-700 hover:bg-slate-50': currentStep() > st.number,
+            'text-slate-500 hover:bg-slate-50': currentStep() < st.number
+          }"
+        >
+          <div
+            class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0"
+            [ngClass]="{
+              'bg-blue-600 text-white': currentStep() === st.number,
+              'bg-emerald-600 text-white': currentStep() > st.number,
+              'bg-slate-200 text-slate-600': currentStep() < st.number
+            }"
+          >
+            @if (currentStep() > st.number) {
+            <span class="material-symbols-outlined text-sm">check</span>
+            } @else { {{ st.number }} }
+          </div>
+          <div class="truncate text-xs">
+            <span class="hidden sm:inline font-medium"
+              >Step {{ st.number }}:
+            </span>
+            {{ st.label }}
+          </div>
+        </button>
+      </li>
+      }
+    </ol>
+  </nav>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <!-- Form Area (8 cols) -->
+    <div
+      class="lg:col-span-8 bg-white rounded-xl border border-slate-200 p-6 space-y-6"
+    >
+      <!-- Step 1: Assessment Details -->
+      @if (currentStep() === 1) {
+      <div class="space-y-4" data-testid="step-1-details">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">
+            Step 1: Assessment Details
+          </h2>
+          <p class="text-xs text-slate-500">
+            Provide the fundamental identification and academic metadata
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Assessment Name -->
+          <div>
+            <label
+              for="ca-name"
+              class="block text-xs font-semibold text-slate-700 mb-1"
+            >
+              Assessment Pack Name <span class="text-rose-500">*</span>
+            </label>
+            <input
+              id="ca-name"
+              type="text"
+              [ngModel]="assessmentName()"
+              (ngModelChange)="assessmentName.set($event)"
+              placeholder="e.g. JSS 1 Mathematics Weekly Quiz Pack"
+              class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              data-testid="input-assessment-name"
+            />
+          </div>
+
+          <!-- Type & Class Level -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="ca-type"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Assessment Type</label
+              >
+              <select
+                id="ca-type"
+                [ngModel]="assessmentType()"
+                (ngModelChange)="assessmentType.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              >
+                <option value="Quiz">Quiz</option>
+                <option value="Topic Test">Topic Test</option>
+                <option value="Assessment">Assessment</option>
+                <option value="Term Assessment">Term Assessment</option>
+                <option value="Practical Test">Practical Test</option>
+                <option value="Mock Exam">Mock Exam</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="ca-class"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Class Level</label
+              >
+              <select
+                id="ca-class"
+                [ngModel]="classLevel()"
+                (ngModelChange)="classLevel.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              >
+                <option value="JSS 1">JSS 1</option>
+                <option value="JSS 2">JSS 2</option>
+                <option value="JSS 3">JSS 3</option>
+                <option value="SS 1">SS 1</option>
+                <option value="SS 2">SS 2</option>
+                <option value="SS 3">SS 3</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Subject & Term -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="ca-subject"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Subject</label
+              >
+              <select
+                id="ca-subject"
+                [ngModel]="subject()"
+                (ngModelChange)="subject.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white"
+              >
+                <option value="Mathematics">Mathematics</option>
+                <option value="English Language">English Language</option>
+                <option value="Basic Science">Basic Science</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Biology">Biology</option>
+                <option value="Social Studies">Social Studies</option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="ca-term"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Term & Session</label
+              >
+              <div class="grid grid-cols-2 gap-2">
+                <select
+                  id="ca-term"
+                  [ngModel]="term()"
+                  (ngModelChange)="term.set($event)"
+                  class="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="First Term">First Term</option>
+                  <option value="Second Term">Second Term</option>
+                  <option value="Third Term">Third Term</option>
+                </select>
+                <input
+                  type="text"
+                  [ngModel]="academicSession()"
+                  (ngModelChange)="academicSession.set($event)"
+                  placeholder="2024/2025"
+                  class="w-full px-2.5 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Code & Version -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="ca-code"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Assessment Code</label
+              >
+              <input
+                id="ca-code"
+                type="text"
+                [ngModel]="assessmentCode()"
+                (ngModelChange)="assessmentCode.set($event)"
+                placeholder="MTH-J1-QZ1"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label
+                for="ca-version"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Blueprint Version</label
+              >
+              <input
+                id="ca-version"
+                type="text"
+                [ngModel]="version()"
+                (ngModelChange)="version.set($event)"
+                placeholder="v1.0"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label
+              for="ca-description"
+              class="block text-xs font-semibold text-slate-700 mb-1"
+              >Description & Syllabus Scope</label
+            >
+            <textarea
+              id="ca-description"
+              rows="3"
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+              placeholder="Outline the learning objectives and coverage for this assessment pack..."
+              class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            ></textarea>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Step 2: Structure & Scope -->
+      @if (currentStep() === 2) {
+      <div class="space-y-4" data-testid="step-2-structure">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">
+            Step 2: Structure & Delivery Scope
+          </h2>
+          <p class="text-xs text-slate-500">
+            Configure delivery mode, timing parameters, and attempt limits
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Institutions & Delivery Mode -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="ca-target-inst"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Target Institutions</label
+              >
+              <select
+                id="ca-target-inst"
+                [ngModel]="targetInstitutions()"
+                (ngModelChange)="targetInstitutions.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="All Schools">All Schools & Institutions</option>
+                <option value="Public Secondary Schools">
+                  Public Secondary Schools Only
+                </option>
+                <option value="Private Academies">
+                  Private Academies Only
+                </option>
+                <option value="Lagos Region Pilot">
+                  Lagos Region Pilot Schools
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="ca-delivery-mode"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Delivery Mode</label
+              >
+              <select
+                id="ca-delivery-mode"
+                [ngModel]="deliveryMode()"
+                (ngModelChange)="deliveryMode.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Online CBT">
+                  Online CBT (Computer Based Test)
+                </option>
+                <option value="Paper-Based Booklet">
+                  Paper-Based Booklet (PDF / Printable)
+                </option>
+                <option value="Blended CBT & Paper">
+                  Blended CBT & Paper Exam
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Duration, Marks & Attempt Limit -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label
+                for="ca-duration"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Duration (Minutes)</label
+              >
+              <input
+                id="ca-duration"
+                type="number"
+                min="5"
+                max="300"
+                [ngModel]="durationMins()"
+                (ngModelChange)="durationMins.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            <div>
+              <label
+                for="ca-attempt-limit"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Attempt Limit</label
+              >
+              <select
+                id="ca-attempt-limit"
+                [ngModel]="attemptLimit()"
+                (ngModelChange)="attemptLimit.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Single Attempt (1)">Single Attempt (1)</option>
+                <option value="Two Attempts (2)">Two Attempts (2)</option>
+                <option value="Three Attempts (3)">Three Attempts (3)</option>
+                <option value="Unlimited Practice">Unlimited Practice</option>
+              </select>
+            </div>
+
+            <div>
+              <span class="block text-xs font-semibold text-slate-700 mb-1"
+                >Total Marks Calculated</span
+              >
+              <div
+                class="px-3 py-2 bg-slate-100 rounded-lg text-xs font-bold text-slate-800"
+              >
+                {{ computedTotalMarks() }} Marks
+              </div>
+            </div>
+          </div>
+
+          <!-- Randomization Toggles -->
+          <div
+            class="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3"
+          >
+            <h3 class="text-xs font-bold text-slate-900">
+              Anti-Cheating & Randomization Rules
+            </h3>
+            <div class="flex items-center justify-between">
+              <div>
+                <label
+                  for="ca-random-q"
+                  class="text-xs font-semibold text-slate-800 cursor-pointer block"
+                  >Randomize Question Order</label
+                >
+                <div class="text-[11px] text-slate-500">
+                  Each student receives items in a unique sequence
+                </div>
+              </div>
+              <input
+                id="ca-random-q"
+                type="checkbox"
+                [ngModel]="randomizeQuestions()"
+                (ngModelChange)="randomizeQuestions.set($event)"
+                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+            </div>
+
+            <div
+              class="flex items-center justify-between pt-2 border-t border-slate-200/60"
+            >
+              <div>
+                <label
+                  for="ca-random-opt"
+                  class="text-xs font-semibold text-slate-800 cursor-pointer block"
+                  >Randomize Multiple-Choice Options</label
+                >
+                <div class="text-[11px] text-slate-500">
+                  Shuffle A, B, C, D choices per examinee
+                </div>
+              </div>
+              <input
+                id="ca-random-opt"
+                type="checkbox"
+                [ngModel]="randomizeOptions()"
+                (ngModelChange)="randomizeOptions.set($event)"
+                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Step 3: Question Composition -->
+      @if (currentStep() === 3) {
+      <div class="space-y-4" data-testid="step-3-composition">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">
+            Step 3: Question Composition & Mix
+          </h2>
+          <p class="text-xs text-slate-500">
+            Balance question types, mark weighting, and question bank sources
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr
+                class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]"
+              >
+                <th scope="col" class="py-2.5 px-3">Question Type</th>
+                <th scope="col" class="py-2.5 px-3">Item Count</th>
+                <th scope="col" class="py-2.5 px-3">Marks / Item</th>
+                <th scope="col" class="py-2.5 px-3">Subtotal Marks</th>
+                <th scope="col" class="py-2.5 px-3">Item Source</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (comp of compositions(); track comp.type; let i = $index) {
+              <tr class="hover:bg-slate-50/50">
+                <td
+                  class="py-3 px-3 font-medium text-slate-900 flex items-center gap-2"
+                >
+                  <span
+                    class="material-symbols-outlined text-slate-400 text-base"
+                    >{{ comp.icon }}</span
+                  >
+                  {{ comp.type }}
+                </td>
+                <td class="py-3 px-3">
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    [ngModel]="comp.count"
+                    (ngModelChange)="updateCompositionCount(i, $event)"
+                    class="w-16 px-2 py-1 text-xs bg-slate-50 border border-slate-200 rounded font-semibold text-center focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </td>
+                <td class="py-3 px-3 text-slate-600 font-medium">
+                  {{ comp.marksPerItem }} pt{{ comp.marksPerItem > 1 ? 's' : ''
+                  }}
+                </td>
+                <td class="py-3 px-3 font-bold text-slate-900">
+                  {{ comp.totalMarks }} marks
+                </td>
+                <td class="py-3 px-3">
+                  <span
+                    class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700"
+                  >
+                    {{ comp.source }}
+                  </span>
+                </td>
+              </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr
+                class="bg-slate-50 font-bold text-slate-900 border-t border-slate-200"
+              >
+                <td class="py-2.5 px-3">Total Blueprint Items</td>
+                <td class="py-2.5 px-3 text-center">
+                  {{ computedTotalQuestions() }}
+                </td>
+                <td class="py-2.5 px-3">—</td>
+                <td class="py-2.5 px-3">{{ computedTotalMarks() }} marks</td>
+                <td class="py-2.5 px-3">100% Balanced</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- Question Selection Rules card -->
+        <div
+          class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl space-y-2"
+        >
+          <div class="flex items-center gap-2 text-blue-900 font-bold text-xs">
+            <span class="material-symbols-outlined text-base">psychology</span>
+            Cognitive Taxonomy & Balance
+          </div>
+          <p class="text-xs text-blue-800 leading-relaxed">
+            This pack incorporates <strong>40% Knowledge & Recall</strong>,
+            <strong>40% Application & Comprehension</strong>, and
+            <strong>20% Higher-Order Thinking / Analysis</strong>. Diagnostic
+            distractor items are automatically loaded from the approved Question
+            Bank to catch common misconceptions.
+          </p>
+        </div>
+      </div>
+      }
+
+      <!-- Step 4: Review Rules -->
+      @if (currentStep() === 4) {
+      <div class="space-y-4" data-testid="step-4-rules">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">
+            Step 4: Scoring & Moderation Rules
+          </h2>
+          <p class="text-xs text-slate-500">
+            Configure pass marks, grade scales, and review SLAs
+          </p>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Passing Threshold -->
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <label
+                for="ca-pass-threshold"
+                class="text-xs font-semibold text-slate-700"
+                >Passing Threshold (%)</label
+              >
+              <span class="text-xs font-bold text-blue-600"
+                >{{ passingThreshold() }}%</span
+              >
+            </div>
+            <input
+              id="ca-pass-threshold"
+              type="range"
+              min="30"
+              max="90"
+              step="5"
+              [ngModel]="passingThreshold()"
+              (ngModelChange)="passingThreshold.set($event)"
+              class="w-full accent-blue-600 cursor-pointer"
+            />
+          </div>
+
+          <!-- Grade Scale & Review SLA -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                for="ca-grade-scale"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Grade Scale Blueprint</label
+              >
+              <select
+                id="ca-grade-scale"
+                [ngModel]="gradeScaleTemplate()"
+                (ngModelChange)="gradeScaleTemplate.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="Standard WAEC / BECE Grade Scale">
+                  Standard WAEC / BECE Grade Scale (A1 - F9)
+                </option>
+                <option value="Cambridge Checkpoint Grade Scale">
+                  Cambridge Checkpoint Grade Scale (1.0 - 6.0)
+                </option>
+                <option value="Continuous Assessment 40-Point Scale">
+                  Continuous Assessment 40-Point Scale
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <label
+                for="ca-review-sla"
+                class="block text-xs font-semibold text-slate-700 mb-1"
+                >Moderation SLA</label
+              >
+              <select
+                id="ca-review-sla"
+                [ngModel]="reviewSla()"
+                (ngModelChange)="reviewSla.set($event)"
+                class="w-full px-3 py-2 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="24 Hours">24 Hours (Urgent)</option>
+                <option value="48 Hours">48 Hours (Standard)</option>
+                <option value="5 Business Days">
+                  5 Business Days (Terminal Examination)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Moderation Toggle -->
+          <div
+            class="flex items-center justify-between p-3.5 bg-slate-50 rounded-xl border border-slate-200"
+          >
+            <div>
+              <label
+                for="ca-moderation-req"
+                class="text-xs font-semibold text-slate-800 cursor-pointer block"
+                >Require Academic Moderation Sign-Off</label
+              >
+              <div class="text-[11px] text-slate-500">
+                Requires review by Senior Moderator before deployment to schools
+              </div>
+            </div>
+            <input
+              id="ca-moderation-req"
+              type="checkbox"
+              [ngModel]="moderationRequired()"
+              (ngModelChange)="moderationRequired.set($event)"
+              class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+            />
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Step 5: Publish & Final Verification -->
+      @if (currentStep() === 5) {
+      <div class="space-y-4" data-testid="step-5-publish">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-base font-bold text-slate-900">
+            Step 5: Publish & Deployment Sign-Off
+          </h2>
+          <p class="text-xs text-slate-500">
+            Verify specifications and choose deployment status
+          </p>
+        </div>
+
+        <div
+          class="p-4 rounded-xl border border-slate-200 bg-slate-50 space-y-3 text-xs"
+        >
+          <div class="grid grid-cols-2 gap-2 pb-3 border-b border-slate-200/60">
+            <div>
+              <span class="text-slate-400 block text-[11px]"
+                >Assessment Title</span
+              >
+              <span class="font-bold text-slate-800"
+                >{{ assessmentName() }}</span
+              >
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]"
+                >Target Level & Subject</span
+              >
+              <span class="font-bold text-slate-800"
+                >{{ subject() }} • {{ classLevel() }}</span
+              >
+            </div>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <span class="text-slate-400 block text-[11px]"
+                >Questions & Marks</span
+              >
+              <span class="font-semibold text-slate-800"
+                >{{ computedTotalQuestions() }} items ({{ computedTotalMarks()
+                }} pts)</span
+              >
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]">Duration</span>
+              <span class="font-semibold text-slate-800"
+                >{{ durationMins() }} mins</span
+              >
+            </div>
+            <div>
+              <span class="text-slate-400 block text-[11px]"
+                >Delivery Mode</span
+              >
+              <span class="font-semibold text-slate-800"
+                >{{ deliveryMode() }}</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Publishing Action Radios -->
+        <div class="space-y-3 pt-2">
+          <label
+            class="flex items-start gap-3 p-3.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer"
+          >
+            <input
+              type="radio"
+              name="publishOpt"
+              value="Draft"
+              [ngModel]="publishStatus()"
+              (ngModelChange)="publishStatus.set($event)"
+              class="mt-0.5 text-blue-600 focus:ring-blue-500"
+            />
+            <div>
+              <div class="text-xs font-semibold text-slate-900">
+                Save as Draft
+              </div>
+              <div class="text-[11px] text-slate-500">
+                Retain blueprint in draft state for iterative authoring
+              </div>
+            </div>
+          </label>
+
+          <label
+            class="flex items-start gap-3 p-3.5 rounded-xl border border-amber-200 bg-amber-50/30 hover:bg-amber-50/60 cursor-pointer"
+          >
+            <input
+              type="radio"
+              name="publishOpt"
+              value="Submit for Review"
+              [ngModel]="publishStatus()"
+              (ngModelChange)="publishStatus.set($event)"
+              class="mt-0.5 text-amber-600 focus:ring-amber-500"
+            />
+            <div>
+              <div class="text-xs font-semibold text-amber-900">
+                Submit to Moderation Queue
+              </div>
+              <div class="text-[11px] text-amber-700">
+                Route to subject moderators for psychometric check and approval
+                (48hr SLA)
+              </div>
+            </div>
+          </label>
+
+          <label
+            class="flex items-start gap-3 p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/30 hover:bg-emerald-50/60 cursor-pointer"
+          >
+            <input
+              type="radio"
+              name="publishOpt"
+              value="Publish"
+              [ngModel]="publishStatus()"
+              (ngModelChange)="publishStatus.set($event)"
+              class="mt-0.5 text-emerald-600 focus:ring-emerald-500"
+            />
+            <div>
+              <div class="text-xs font-semibold text-emerald-900">
+                Publish Immediately
+              </div>
+              <div class="text-[11px] text-emerald-700">
+                Deploy directly to target school institutions with active CBT
+                availability
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+      }
+
+      <!-- Stepper Controls (Bottom of Form) -->
+      <div
+        class="pt-4 border-t border-slate-100 flex items-center justify-between"
+      >
+        <button
+          type="button"
+          (click)="prevStep()"
+          [disabled]="currentStep() === 1"
+          class="px-4 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+          data-testid="prev-step-btn"
+        >
+          Back
+        </button>
+
+        <div class="flex items-center gap-2">
+          @if (currentStep() < 5) {
+          <button
+            type="button"
+            (click)="nextStep()"
+            class="px-4 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors cursor-pointer"
+            data-testid="next-step-btn"
+          >
+            Continue
+          </button>
+          } @else {
+          <button
+            type="button"
+            (click)="publishStatus() === 'Publish' ? publishLive() : publishStatus() === 'Submit for Review' ? submitForReview() : saveDraft()"
+            class="px-5 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors cursor-pointer"
+            data-testid="complete-publish-btn"
+          >
+            Confirm & Complete
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar (4 cols) -->
+    <div class="lg:col-span-4 space-y-4">
+      <!-- Live Review Summary Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4 space-y-3">
+        <h3
+          class="text-sm font-semibold text-slate-900 flex items-center justify-between"
+        >
+          <span>Blueprint Summary</span>
+          <span class="text-xs text-blue-600 font-normal">Live Preview</span>
+        </h3>
+
+        <div class="space-y-2 text-xs">
+          <div
+            class="flex items-center justify-between py-1 border-b border-slate-100"
+          >
+            <span class="text-slate-500">Name</span>
+            <span class="font-medium text-slate-900 truncate max-w-[160px]"
+              >{{ assessmentName() }}</span
+            >
+          </div>
+          <div
+            class="flex items-center justify-between py-1 border-b border-slate-100"
+          >
+            <span class="text-slate-500">Subject</span>
+            <span class="font-medium text-slate-900">{{ subject() }}</span>
+          </div>
+          <div
+            class="flex items-center justify-between py-1 border-b border-slate-100"
+          >
+            <span class="text-slate-500">Level</span>
+            <span class="font-medium text-slate-900">{{ classLevel() }}</span>
+          </div>
+          <div
+            class="flex items-center justify-between py-1 border-b border-slate-100"
+          >
+            <span class="text-slate-500">Questions</span>
+            <span class="font-bold text-slate-900"
+              >{{ computedTotalQuestions() }} items</span
+            >
+          </div>
+          <div class="flex items-center justify-between py-1">
+            <span class="text-slate-500">Total Marks</span>
+            <span class="font-bold text-emerald-600"
+              >{{ computedTotalMarks() }} pts</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Assessment Mix Donut/Breakdown -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <h3 class="text-sm font-semibold text-slate-900 mb-2">
+          Item Composition Mix
+        </h3>
+        <div class="space-y-2 text-xs">
+          @for (comp of compositions(); track comp.type) {
+          <div>
+            <div class="flex items-center justify-between text-[11px] mb-1">
+              <span class="text-slate-600">{{ comp.type }}</span>
+              <span class="font-semibold text-slate-800"
+                >{{ comp.count }} ({{ comp.totalMarks }} marks)</span
+              >
+            </div>
+            <div class="w-full h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                class="h-full bg-blue-500 rounded-full"
+                [style.width.%]="(comp.count / (computedTotalQuestions() || 1)) * 100"
+              ></div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Quality Checklist -->
+      <div class="bg-white rounded-xl border border-slate-200 p-4">
+        <h3 class="text-sm font-semibold text-slate-900 mb-3">
+          Readiness Checklist
+        </h3>
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center gap-2 text-emerald-700">
+            <span class="material-symbols-outlined text-base"
+              >check_circle</span
+            >
+            <span>Standard syllabus mapped</span>
+          </div>
+          <div class="flex items-center gap-2 text-emerald-700">
+            <span class="material-symbols-outlined text-base"
+              >check_circle</span
+            >
+            <span>Marking rubric attached</span>
+          </div>
+          <div class="flex items-center gap-2 text-emerald-700">
+            <span class="material-symbols-outlined text-base"
+              >check_circle</span
+            >
+            <span>Item count requirement met</span>
+          </div>
+          <div class="flex items-center gap-2 text-emerald-700">
+            <span class="material-symbols-outlined text-base"
+              >check_circle</span
+            >
+            <span>Timed duration specified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tips Card -->
+      <div
+        class="bg-amber-50/60 rounded-xl border border-amber-200 p-4 space-y-2 text-xs text-amber-900"
+      >
+        <div class="font-bold flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base">lightbulb</span>
+          Assessment Tip
+        </div>
+        <p class="leading-relaxed text-amber-800 text-[11px]">
+          For CBT tests with more than 20 items, enable Option Randomization to
+          minimize exam collusion across adjacent testing terminals.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom System Status Bar -->
+  <div
+    class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500"
+  >
+    <div class="flex flex-wrap items-center gap-4">
+      <div class="flex items-center gap-2">
+        <span class="text-slate-400">Draft Completeness:</span>
+        <div class="w-20 h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div class="h-full bg-blue-500 rounded-full" style="width: 72%"></div>
+        </div>
+        <span class="font-semibold text-slate-700">72%</span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm text-slate-400"
+          >schedule</span
+        >
+        <span>Review SLA: <strong>48 Hours</strong></span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="material-symbols-outlined text-sm text-emerald-500"
+          >group</span
+        >
+        <span>Moderators: <strong>18 Online</strong></span>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+      <span class="font-medium text-slate-700"
+        >Assessment Engine Operational</span
+      >
+    </div>
+  </div>
+</div>

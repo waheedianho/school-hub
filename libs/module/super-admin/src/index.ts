@@ -18,3 +18,7 @@ export * from './data/super-admin-curriculum.models';
 export * from './data/super-admin-curriculum.data';
 export * from './curriculum-content/curriculum-content';
 export * from './curriculum-content/create-pack/create-pack';
+export * from './data/super-admin-assessments.models';
+export * from './data/super-admin-assessments.data';
+export * from './assessments-qb/assessments-qb';
+export * from './assessments-qb/create-assessment/create-assessment';
