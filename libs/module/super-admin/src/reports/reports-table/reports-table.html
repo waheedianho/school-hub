@@ -1,0 +1,335 @@
+<div class="table-card">
+  <!-- Filter & Action Toolbar -->
+  <div class="toolbar-section">
+    <div class="filter-group">
+      <!-- Search Input -->
+      <div class="search-wrap">
+        <i class="material-symbols-outlined search-icon">search</i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search reports by name or description..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchInput($event)"
+          aria-label="Search reports by name or description"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearchInput('')"
+          aria-label="Clear search"
+        >
+          <i class="material-symbols-outlined">close</i>
+        </button>
+        }
+      </div>
+
+      <!-- Schools Filter -->
+      <div class="select-wrap">
+        <select
+          class="filter-select"
+          [ngModel]="selectedSchool()"
+          (ngModelChange)="onSchoolSelect($event)"
+          aria-label="Filter by school"
+        >
+          @for (s of schoolsList; track s) {
+          <option [value]="s">{{ s }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-arrow">expand_more</i>
+      </div>
+
+      <!-- Report Types Filter -->
+      <div class="select-wrap">
+        <select
+          class="filter-select"
+          [ngModel]="selectedType()"
+          (ngModelChange)="onTypeSelect($event)"
+          aria-label="Filter by report type"
+        >
+          @for (t of typesList; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-arrow">expand_more</i>
+      </div>
+
+      <!-- Date Range Button / Display -->
+      <div class="date-filter-display">
+        <i class="material-symbols-outlined">calendar_today</i>
+        <span>{{ selectedDateRange() }}</span>
+        <i class="material-symbols-outlined dropdown-caret">expand_more</i>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="select-wrap">
+        <select
+          class="filter-select"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="onStatusSelect($event)"
+          aria-label="Filter by status"
+        >
+          @for (st of statusesList; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-arrow">expand_more</i>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons-group">
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="createReportClicked.emit()"
+      >
+        <i class="material-symbols-outlined">add</i>
+        <span>Create Report</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="scheduleReportClicked.emit()"
+      >
+        <i class="material-symbols-outlined">calendar_month</i>
+        <span>Schedule Report</span>
+      </button>
+
+      <button type="button" class="btn-outline" (click)="exportClicked.emit()">
+        <i class="material-symbols-outlined">download</i>
+        <span>Export</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Reports Data Table -->
+  <div class="table-responsive">
+    <table class="reports-table">
+      <thead>
+        <tr>
+          <th class="col-name">Report Name</th>
+          <th class="col-category">Category</th>
+          <th class="col-scope">Scope</th>
+          <th class="col-freq">Frequency</th>
+          <th class="col-date">Last Generated</th>
+          <th class="col-status">Status</th>
+          <th class="col-format">Format</th>
+          <th class="col-owner">Owner</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (rep of reports(); track rep.id) {
+        <tr class="table-row">
+          <!-- Name & Icon -->
+          <td class="col-name">
+            <div class="report-name-cell">
+              <div class="report-icon-box" [ngClass]="'tone-' + rep.iconTone">
+                <i class="material-symbols-outlined">{{ rep.icon }}</i>
+              </div>
+              <div class="report-info">
+                <span class="report-title">{{ rep.name }}</span>
+                <span class="report-desc">{{ rep.description }}</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td class="col-category">
+            <span
+              class="category-pill"
+              [ngClass]="getCategoryBadgeClass(rep.category)"
+            >
+              {{ rep.category }}
+            </span>
+          </td>
+
+          <!-- Scope -->
+          <td class="col-scope">
+            <div class="scope-cell">
+              <span class="scope-title">{{ rep.scope }}</span>
+              <span class="scope-count"
+                >{{ rep.scopeSchoolsCount.toLocaleString() }} schools</span
+              >
+            </div>
+          </td>
+
+          <!-- Frequency -->
+          <td class="col-freq">
+            <span class="freq-label">{{ rep.frequency }}</span>
+          </td>
+
+          <!-- Last Generated -->
+          <td class="col-date">
+            <div class="date-cell">
+              <span class="gen-date">{{ rep.lastGeneratedDate }}</span>
+              <span class="gen-time">{{ rep.lastGeneratedTime }}</span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="col-status">
+            <div class="status-cell">
+              <span
+                class="status-pill"
+                [ngClass]="{
+                    'badge-ready': rep.status === 'Ready',
+                    'badge-scheduled': rep.status === 'Scheduled',
+                    'badge-pending': rep.status === 'Pending Review',
+                    'badge-update': rep.status === 'Needs Update'
+                  }"
+              >
+                <span class="status-dot"></span>
+                <span>{{ rep.status }}</span>
+              </span>
+              @if (rep.scheduledDate) {
+              <span
+                class="status-subtext"
+                [class.text-danger]="rep.scheduledDate === 'Overdue'"
+              >
+                {{ rep.scheduledDate }}
+              </span>
+              }
+            </div>
+          </td>
+
+          <!-- Format -->
+          <td class="col-format">
+            <span class="format-text">{{ rep.format }}</span>
+          </td>
+
+          <!-- Owner -->
+          <td class="col-owner">
+            <div class="owner-cell">
+              <div class="owner-avatar">{{ rep.ownerInitials }}</div>
+              <span class="owner-name">{{ rep.ownerName }}</span>
+            </div>
+          </td>
+
+          <!-- Actions -->
+          <td class="col-actions">
+            <div class="actions-wrapper">
+              <button
+                type="button"
+                class="action-menu-trigger"
+                (click)="toggleActionMenu(rep.id, $event)"
+                aria-label="Actions menu"
+              >
+                <i class="material-symbols-outlined">more_vert</i>
+              </button>
+
+              @if (openActionMenuId() === rep.id) {
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onDownload(rep)"
+                >
+                  <i class="material-symbols-outlined">download</i>
+                  <span>Download Report</span>
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onView(rep)"
+                >
+                  <i class="material-symbols-outlined">visibility</i>
+                  <span>View Details</span>
+                </button>
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onGenerate(rep)"
+                >
+                  <i class="material-symbols-outlined">refresh</i>
+                  <span>Regenerate Now</span>
+                </button>
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="9" class="empty-state">
+            <i class="material-symbols-outlined empty-icon">description</i>
+            <p class="empty-text">No reports found matching your criteria.</p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Bar -->
+  <div class="pagination-bar">
+    <span class="pagination-info">
+      Showing {{ startItemIndex }} to {{ endItemIndex }} of {{ totalCount() }}
+      reports
+    </span>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="currentPage() === 1"
+        (click)="onPageSelect(currentPage() - 1)"
+        aria-label="Previous page"
+      >
+        <i class="material-symbols-outlined">chevron_left</i>
+      </button>
+
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 1"
+        (click)="onPageSelect(1)"
+      >
+        1
+      </button>
+
+      @if (totalPages() >= 2) {
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 2"
+        (click)="onPageSelect(2)"
+      >
+        2
+      </button>
+      } @if (totalPages() >= 3) {
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 3"
+        (click)="onPageSelect(3)"
+      >
+        3
+      </button>
+      } @if (totalPages() > 4) {
+      <span class="page-ellipsis">...</span>
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === totalPages()"
+        (click)="onPageSelect(totalPages())"
+      >
+        {{ totalPages() }}
+      </button>
+      }
+
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="currentPage() === totalPages() || totalPages() === 0"
+        (click)="onPageSelect(currentPage() + 1)"
+        aria-label="Next page"
+      >
+        <i class="material-symbols-outlined">chevron_right</i>
+      </button>
+    </div>
+  </div>
+</div>

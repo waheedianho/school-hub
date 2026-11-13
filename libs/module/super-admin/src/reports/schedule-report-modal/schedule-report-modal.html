@@ -1,0 +1,124 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="schedule-report-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-titles">
+        <h3 id="schedule-report-title" class="modal-title">
+          Schedule Automated Report
+        </h3>
+        <p class="modal-subtitle">
+          Configure recurring delivery and dispatch cadence.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <form class="modal-form" (ngSubmit)="onSubmit()">
+      <!-- Select Report -->
+      <div class="form-field">
+        <label class="field-label" for="schedule-report-select"
+          >Target Report</label
+        >
+        <select
+          id="schedule-report-select"
+          class="form-select"
+          [ngModel]="selectedReportId()"
+          (ngModelChange)="selectedReportId.set($event)"
+          name="reportId"
+          required
+        >
+          <option value="" disabled>Select a report to schedule...</option>
+          @for (rep of reports(); track rep.id) {
+          <option [value]="rep.id">{{ rep.name }} ({{ rep.category }})</option>
+          }
+        </select>
+      </div>
+
+      <!-- Frequency & Schedule Time -->
+      <div class="form-row">
+        <div class="form-field flex-1">
+          <label class="field-label" for="schedule-freq-select"
+            >Recurrence Cadence</label
+          >
+          <select
+            id="schedule-freq-select"
+            class="form-select"
+            [ngModel]="frequency()"
+            (ngModelChange)="frequency.set($event)"
+            name="frequency"
+          >
+            @for (freq of frequenciesList; track freq) {
+            <option [value]="freq">{{ freq }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-field flex-1">
+          <label class="field-label" for="schedule-time-input"
+            >Execution Time</label
+          >
+          <input
+            id="schedule-time-input"
+            type="text"
+            class="form-input"
+            [ngModel]="scheduleTime()"
+            (ngModelChange)="scheduleTime.set($event)"
+            name="scheduleTime"
+            placeholder="e.g. Jun 10, 2025 • 09:00 AM"
+          />
+        </div>
+      </div>
+
+      <!-- Email Destination -->
+      <div class="form-field">
+        <label class="field-label" for="delivery-email-input"
+          >Delivery Recipient Email</label
+        >
+        <input
+          id="delivery-email-input"
+          type="email"
+          class="form-input"
+          [ngModel]="deliveryEmail()"
+          (ngModelChange)="deliveryEmail.set($event)"
+          name="deliveryEmail"
+          placeholder="admin@institution.edu"
+        />
+      </div>
+
+      <!-- Notice -->
+      <div class="schedule-notice">
+        <i class="material-symbols-outlined">event_available</i>
+        <span
+          >Scheduled reports run automatically in the background and appear in
+          the queue.</span
+        >
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="!selectedReportId()"
+        >
+          <i class="material-symbols-outlined">calendar_month</i>
+          <span>Save Schedule</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+<div class="reports-container">
+  <!-- Toast Alert -->
+  @if (toastMessage()) {
+  <div class="toast-notification">
+    <i class="material-symbols-outlined">check_circle</i>
+    <span>{{ toastMessage() }}</span>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Reports</h1>
+      <p class="page-subtitle">
+        Generate and review platform-wide academic, operational, subscription,
+        and compliance reports across all institutions.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Date Range Dropdown -->
+      <div class="date-picker-wrap">
+        <button
+          type="button"
+          class="date-picker-btn"
+          (click)="toggleDatePicker()"
+          aria-label="Select date range"
+        >
+          <i class="material-symbols-outlined">calendar_today</i>
+          <span>{{ store.selectedReportsDateRange() }}</span>
+          <i class="material-symbols-outlined dropdown-caret"
+            >arrow_drop_down</i
+          >
+        </button>
+
+        @if (isDatePickerOpen()) {
+        <div class="date-picker-menu">
+          @for (opt of dateRangeOptions; track opt) {
+          <button
+            type="button"
+            class="date-option"
+            [class.selected]="store.selectedReportsDateRange() === opt"
+            (click)="selectDateRange(opt)"
+          >
+            <span>{{ opt }}</span>
+            @if (store.selectedReportsDateRange() === opt) {
+            <i class="material-symbols-outlined check-icon">check</i>
+            }
+          </button>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Notification Bell -->
+      <button type="button" class="bell-btn" aria-label="Notifications">
+        <i class="material-symbols-outlined">notifications</i>
+        <span class="bell-badge">12</span>
+      </button>
+
+      <!-- Super Admin Avatar -->
+      <div class="user-pill">
+        <div class="avatar-circle">SA</div>
+        <div class="user-text">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top 6 KPI Metric Cards -->
+  <section class="metrics-section">
+    <school-hub-reports-metrics [metrics]="store.reportMetrics()" />
+  </section>
+
+  <!-- Tabs Navigation Bar -->
+  <nav class="reports-tabs-bar" aria-label="Reports Categories Navigation">
+    @for (tab of tabs; track tab) {
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.selectedReportTab() === tab"
+      (click)="selectTab(tab)"
+    >
+      <span>{{ tab }}</span>
+    </button>
+    }
+  </nav>
+
+  <!-- Content Layout: Main Table Left, Sidebar Right -->
+  <div class="content-layout-grid">
+    <!-- Main Left Column -->
+    <main class="main-content-column">
+      <school-hub-reports-table
+        [reports]="store.paginatedPlatformReports()"
+        [totalCount]="store.totalPlatformReportsCount()"
+        [currentPage]="store.reportsCurrentPage()"
+        [totalPages]="store.totalPlatformReportsPages()"
+        [pageSize]="store.reportsPageSize()"
+        [searchQuery]="store.reportsSearchQuery()"
+        [selectedSchool]="store.selectedReportsSchoolFilter()"
+        [selectedType]="store.selectedReportsTypeFilter()"
+        [selectedStatus]="store.selectedReportsStatusFilter()"
+        [selectedDateRange]="store.selectedReportsDateRange()"
+        (searchChange)="onSearchChange($event)"
+        (schoolChange)="onSchoolChange($event)"
+        (typeChange)="onTypeChange($event)"
+        (statusChange)="onStatusChange($event)"
+        (pageChange)="onPageChange($event)"
+        (createReportClicked)="openCreateReportModal()"
+        (scheduleReportClicked)="openScheduleReportModal()"
+        (exportClicked)="onExportData()"
+        (viewReportDetails)="openReportDetail($event)"
+        (downloadReport)="onDownloadReport($event)"
+        (triggerGenerate)="onTriggerGenerate($event)"
+      />
+
+      <!-- Bottom 4 KPI Cards -->
+      <section class="bottom-metrics-section">
+        <school-hub-reports-bottom-metrics
+          [metrics]="store.reportBottomMetrics()"
+        />
+      </section>
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="sidebar-column">
+      <school-hub-reports-sidebar
+        [healthCategories]="store.reportHealthCategories()"
+        [scheduledQueue]="store.scheduledReportQueue()"
+        [recentActivity]="store.recentReportActivities()"
+        [quickTemplates]="store.quickReportTemplates()"
+        [selectedPeriod]="store.selectedReportHealthPeriod()"
+        (periodChange)="store.setReportHealthPeriod($event)"
+        (viewAllScheduled)="selectTab('Academic Reports')"
+        (viewAllActivity)="selectTab('Academic Reports')"
+        (viewAllTemplates)="openCreateReportModal()"
+        (templateSelected)="onQuickTemplateSelected($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- Modals -->
+  @if (isCreateReportModalOpen()) {
+  <school-hub-create-report-modal
+    (reportCreated)="onReportCreated($event)"
+    (closed)="closeCreateReportModal()"
+  />
+  } @if (isScheduleReportModalOpen()) {
+  <school-hub-schedule-report-modal
+    [reports]="store.platformReports()"
+    (reportScheduled)="onReportScheduled($event)"
+    (closed)="closeScheduleReportModal()"
+  />
+  } @if (selectedDetailReport()) {
+  <school-hub-report-detail-modal
+    [report]="selectedDetailReport()!"
+    (download)="onDownloadReport($event)"
+    (closed)="closeReportDetail()"
+  />
+  }
+</div>

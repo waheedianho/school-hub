@@ -1,0 +1,179 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="create-report-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-titles">
+        <h3 id="create-report-title" class="modal-title">
+          Create Custom Platform Report
+        </h3>
+        <p class="modal-subtitle">
+          Configure parameters to compile and generate a platform-wide report.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <form class="modal-form" (ngSubmit)="onSubmit()">
+      <!-- Report Name -->
+      <div class="form-field">
+        <label class="field-label" for="report-name-input">Report Name</label>
+        <input
+          id="report-name-input"
+          type="text"
+          class="form-input"
+          placeholder="e.g. Q2 Cross-Institutional Curriculum Benchmark"
+          [ngModel]="reportName()"
+          (ngModelChange)="reportName.set($event)"
+          name="reportName"
+          required
+        />
+      </div>
+
+      <!-- Description -->
+      <div class="form-field">
+        <label class="field-label" for="report-desc-input">Description</label>
+        <input
+          id="report-desc-input"
+          type="text"
+          class="form-input"
+          placeholder="Brief summary of the data and scope"
+          [ngModel]="description()"
+          (ngModelChange)="description.set($event)"
+          name="description"
+        />
+      </div>
+
+      <!-- Category & Scope -->
+      <div class="form-row">
+        <div class="form-field flex-1">
+          <label class="field-label" for="report-category-select"
+            >Report Category</label
+          >
+          <select
+            id="report-category-select"
+            class="form-select"
+            [ngModel]="category()"
+            (ngModelChange)="category.set($event)"
+            name="category"
+          >
+            @for (cat of categoriesList; track cat) {
+            <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-field flex-1">
+          <label class="field-label" for="report-scope-select"
+            >Institutional Scope</label
+          >
+          <select
+            id="report-scope-select"
+            class="form-select"
+            [ngModel]="scope()"
+            (ngModelChange)="scope.set($event)"
+            name="scope"
+          >
+            <option value="All Schools">All Schools (1,186 schools)</option>
+            <option value="International Schools">
+              International Schools Only
+            </option>
+            <option value="Public Schools">Public Schools Only</option>
+            <option value="Private Schools">Private Schools Only</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Frequency & Export Format -->
+      <div class="form-row">
+        <div class="form-field flex-1">
+          <label class="field-label" for="report-freq-select"
+            >Generation Frequency</label
+          >
+          <select
+            id="report-freq-select"
+            class="form-select"
+            [ngModel]="frequency()"
+            (ngModelChange)="frequency.set($event)"
+            name="frequency"
+          >
+            @for (freq of frequenciesList; track freq) {
+            <option [value]="freq">{{ freq }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-field flex-1">
+          <label class="field-label" for="report-format-select"
+            >Export Format</label
+          >
+          <select
+            id="report-format-select"
+            class="form-select"
+            [ngModel]="format()"
+            (ngModelChange)="format.set($event)"
+            name="format"
+          >
+            @for (fmt of formatsList; track fmt) {
+            <option [value]="fmt">{{ fmt }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <!-- Checkboxes -->
+      <div class="checkbox-group">
+        <div class="checkbox-item">
+          <input
+            type="checkbox"
+            id="include-charts-check"
+            [ngModel]="includeCharts()"
+            (ngModelChange)="includeCharts.set($event)"
+            name="includeCharts"
+          />
+          <label for="include-charts-check"
+            >Include visual graphs and performance charts</label
+          >
+        </div>
+
+        <div class="checkbox-item">
+          <input
+            type="checkbox"
+            id="notify-recipients-check"
+            [ngModel]="notifyRecipients()"
+            (ngModelChange)="notifyRecipients.set($event)"
+            name="notifyRecipients"
+          />
+          <label for="notify-recipients-check"
+            >Send notification email when generation completes</label
+          >
+        </div>
+      </div>
+
+      <!-- Modal Actions -->
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" (click)="onClose()">
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-submit"
+          [disabled]="!reportName().trim()"
+        >
+          <i class="material-symbols-outlined">add</i>
+          <span>Compile & Generate</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

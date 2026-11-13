@@ -1,0 +1,66 @@
+<div class="bottom-metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="bottom-card" [attr.data-testid]="'report-bottom-' + metric.id">
+    <div class="card-header">
+      <span class="card-label">{{ metric.label }}</span>
+      @if (metric.hasInfoTooltip) {
+      <i
+        class="material-symbols-outlined info-icon"
+        title="View metric breakdown"
+        >info</i
+      >
+      }
+    </div>
+
+    <div class="card-body">
+      @if (metric.isStatusCard) {
+      <div class="status-content">
+        <div class="icon-wrap-status">
+          <i class="material-symbols-outlined">verified_user</i>
+        </div>
+        <span class="status-headline">{{ metric.value }}</span>
+        <span class="badge-healthy">{{ metric.statusBadge }}</span>
+      </div>
+      } @else {
+      <div class="metric-main">
+        <span class="metric-val">{{ metric.value }}</span>
+        <div class="trend-wrap" [ngClass]="'trend-' + metric.trend">
+          <span class="trend-text">
+            @if (metric.trend === 'up') {
+            <i class="material-symbols-outlined">trending_up</i>
+            <span>↑ {{ metric.change }}</span>
+            } @else if (metric.trend === 'down') {
+            <i class="material-symbols-outlined">trending_down</i>
+            <span>↓ {{ metric.change }}</span>
+            }
+          </span>
+          @if (metric.comparisonPeriod) {
+          <span class="period-text">{{ metric.comparisonPeriod }}</span>
+          }
+        </div>
+      </div>
+
+      @if (metric.sparkline) {
+      <div class="sparkline-wrap">
+        <svg viewBox="0 0 80 28" class="sparkline-svg">
+          <polyline
+            fill="none"
+            [attr.stroke]="
+                    metric.tone === 'success'
+                      ? '#059669'
+                      : metric.tone === 'purple'
+                        ? '#7c3aed'
+                        : '#2563eb'
+                  "
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [attr.points]="getSparklinePoints(metric.sparkline)"
+          />
+        </svg>
+      </div>
+      } }
+    </div>
+  </div>
+  }
+</div>

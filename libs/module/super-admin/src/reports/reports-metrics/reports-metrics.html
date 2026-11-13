@@ -1,0 +1,30 @@
+<div class="metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="metric-card" [attr.data-testid]="'report-metric-' + metric.id">
+    <div class="metric-top">
+      <div class="icon-wrap" [ngClass]="'icon-' + metric.tone">
+        <i class="material-symbols-outlined">{{ metric.icon }}</i>
+      </div>
+      <div class="metric-content">
+        <span class="metric-label">{{ metric.label }}</span>
+        <span class="metric-value">{{ metric.value }}</span>
+      </div>
+    </div>
+    <div class="metric-trend" [ngClass]="'trend-' + metric.trend">
+      <span class="trend-indicator">
+        @if (metric.trend === 'up') {
+        <i class="material-symbols-outlined">trending_up</i>
+        <span>↑ {{ metric.change }}</span>
+        } @else if (metric.trend === 'down') {
+        <i class="material-symbols-outlined">trending_down</i>
+        <span>↘ {{ metric.change }}</span>
+        } @else {
+        <i class="material-symbols-outlined">trending_flat</i>
+        <span>{{ metric.change }}</span>
+        }
+      </span>
+      <span class="comparison-period">{{ metric.comparisonPeriod }}</span>
+    </div>
+  </div>
+  }
+</div>

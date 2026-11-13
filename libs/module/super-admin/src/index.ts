@@ -28,3 +28,6 @@ export * from './analytics/platform-analytics';
 export * from './data/super-admin-subscriptions.models';
 export * from './data/super-admin-subscriptions.data';
 export * from './subscriptions/subscriptions-billing';
+export * from './data/super-admin-reports.models';
+export * from './data/super-admin-reports.data';
+export * from './reports/reports';

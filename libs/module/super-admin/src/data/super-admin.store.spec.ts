@@ -427,4 +427,90 @@ describe('SuperAdminStore', () => {
     });
     expect(store.subscriptionPlans().length).toBe(initialPlans + 1);
   });
+
+  it('should initialize with reports data', () => {
+    expect(store.reportMetrics().length).toBe(6);
+    expect(store.platformReports().length).toBe(7);
+    expect(store.reportBottomMetrics().length).toBe(4);
+    expect(store.reportHealthCategories().length).toBe(4);
+    expect(store.scheduledReportQueue().length).toBe(4);
+    expect(store.recentReportActivities().length).toBe(3);
+    expect(store.quickReportTemplates().length).toBe(4);
+    expect(store.totalPlatformReportsCount()).toBe(7);
+  });
+
+  it('should filter reports by search query, tab, and filters', () => {
+    // Search filter
+    store.setReportsSearch('Curriculum');
+    expect(store.filteredPlatformReports().length).toBe(1);
+    expect(store.filteredPlatformReports()[0].name).toContain('Curriculum');
+
+    // Reset search
+    store.setReportsSearch('');
+    expect(store.filteredPlatformReports().length).toBe(7);
+
+    // Tab filter
+    store.setReportTab('School Performance');
+    expect(
+      store
+        .filteredPlatformReports()
+        .every((r) => r.category === 'School Performance'),
+    ).toBe(true);
+
+    // Status filter
+    store.setReportTab('Academic Reports');
+    store.setReportsStatusFilter('Ready');
+    expect(
+      store.filteredPlatformReports().every((r) => r.status === 'Ready'),
+    ).toBe(true);
+  });
+
+  it('should create custom report and schedule reports', () => {
+    store.setReportsStatusFilter('All Statuses');
+    const initialReports = store.platformReports().length;
+    const initialActivities = store.recentReportActivities().length;
+
+    const rep = store.createCustomReport({
+      reportName: 'New Test Custom Report',
+      description: 'Test description',
+      category: 'Custom Reports',
+      scope: 'All Schools',
+      frequency: 'Monthly',
+      format: 'PDF',
+      includeCharts: true,
+      notifyRecipients: true,
+    });
+
+    expect(store.platformReports().length).toBe(initialReports + 1);
+    expect(store.recentReportActivities().length).toBe(initialActivities + 1);
+    expect(rep.name).toBe('New Test Custom Report');
+
+    const initialQueue = store.scheduledReportQueue().length;
+    store.scheduleReport({
+      reportId: rep.id,
+      scheduleTime: 'Jun 10, 2025 • 09:00 AM',
+      frequency: 'Weekly',
+      deliveryEmail: 'admin@school.edu',
+      format: 'PDF',
+    });
+
+    expect(store.scheduledReportQueue().length).toBe(initialQueue + 1);
+    const updatedRep = store.platformReports().find((r) => r.id === rep.id);
+    expect(updatedRep?.status).toBe('Scheduled');
+  });
+
+  it('should trigger report generation and update periods', () => {
+    const firstRep = store.platformReports()[0];
+    const initialDownloads = firstRep.downloadCount ?? 0;
+
+    store.triggerReportGeneration(firstRep.id);
+    const updated = store.platformReports().find((r) => r.id === firstRep.id);
+    expect(updated?.downloadCount).toBe(initialDownloads + 1);
+
+    store.setReportsDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedReportsDateRange()).toBe('Jun 1 – Jun 30, 2025');
+
+    store.setReportHealthPeriod('This Quarter');
+    expect(store.selectedReportHealthPeriod()).toBe('This Quarter');
+  });
 });

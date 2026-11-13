@@ -1,0 +1,171 @@
+<div class="sidebar-container">
+  <!-- 1. Report Health Overview -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <div class="header-left">
+        <h3 class="card-title">Report Health Overview</h3>
+        <i
+          class="material-symbols-outlined info-icon"
+          title="Aggregated report run status"
+          >info</i
+        >
+      </div>
+
+      <div class="select-period-wrap">
+        <select
+          class="period-select"
+          [ngModel]="selectedPeriod()"
+          (ngModelChange)="onPeriodSelect($event)"
+          aria-label="Filter report health by period"
+        >
+          @for (p of periodsList; track p) {
+          <option [value]="p">{{ p }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-caret">expand_more</i>
+      </div>
+    </div>
+
+    <div class="health-body">
+      <!-- Donut Chart -->
+      <div class="donut-chart-wrap">
+        <svg viewBox="0 0 100 100" class="donut-svg">
+          <circle
+            cx="50"
+            cy="50"
+            r="38"
+            fill="transparent"
+            stroke="#f1f5f9"
+            stroke-width="12"
+          />
+          @for (cat of healthCategories(); track cat.name; let i = $index) {
+          <circle
+            cx="50"
+            cy="50"
+            r="38"
+            fill="transparent"
+            [attr.stroke]="cat.color"
+            stroke-width="12"
+            [attr.stroke-dasharray]="getStrokeDasharray(cat.percentage)"
+            [attr.stroke-dashoffset]="getStrokeOffset(i)"
+            transform="rotate(-90 50 50)"
+          />
+          }
+        </svg>
+        <div class="donut-center-text">
+          <span class="total-num">{{ totalHealthCount.toLocaleString() }}</span>
+          <span class="total-label">Total</span>
+        </div>
+      </div>
+
+      <!-- Categories Legend -->
+      <div class="health-legend">
+        @for (cat of healthCategories(); track cat.name) {
+        <div class="legend-row">
+          <div class="legend-left">
+            <span class="color-dot" [style.background-color]="cat.color"></span>
+            <span class="cat-name">{{ cat.name }}</span>
+          </div>
+          <span class="cat-stat">
+            {{ cat.count.toLocaleString() }} ({{ cat.percentage }}%)
+          </span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Scheduled Report Queue -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Scheduled Report Queue</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewAllScheduled.emit()"
+      >
+        View All
+      </button>
+    </div>
+
+    <div class="scheduled-list">
+      @for (item of scheduledQueue(); track item.id) {
+      <div class="scheduled-item">
+        <div class="scheduled-left">
+          <div class="scheduled-icon-box" [ngClass]="'tone-' + item.iconTone">
+            <i class="material-symbols-outlined">{{ item.icon }}</i>
+          </div>
+          <div class="scheduled-info">
+            <span class="scheduled-title">{{ item.title }}</span>
+            <span class="scheduled-time">{{ item.scheduledTime }}</span>
+          </div>
+        </div>
+        <span class="badge-upcoming">{{ item.badge }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- 3. Recent Report Activity -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Report Activity</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewAllActivity.emit()"
+      >
+        View All
+      </button>
+    </div>
+
+    <div class="activity-feed">
+      @for (act of recentActivity(); track act.id) {
+      <div class="activity-entry">
+        <div class="activity-circle-icon" [ngClass]="'tone-' + act.iconTone">
+          <i class="material-symbols-outlined">{{ act.icon }}</i>
+        </div>
+        <div class="activity-content">
+          <span class="activity-title">{{ act.title }}</span>
+          <span class="activity-sub">{{ act.actorAndTimestamp }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- 4. Quick Templates -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Quick Templates</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewAllTemplates.emit()"
+      >
+        View All
+      </button>
+    </div>
+
+    <div class="templates-list">
+      @for (tmpl of quickTemplates(); track tmpl.id) {
+      <button
+        type="button"
+        class="template-card-btn"
+        (click)="onSelectTemplate(tmpl)"
+      >
+        <div class="tmpl-left">
+          <div class="tmpl-icon-box" [ngClass]="'tone-' + tmpl.iconTone">
+            <i class="material-symbols-outlined">{{ tmpl.icon }}</i>
+          </div>
+          <div class="tmpl-info">
+            <span class="tmpl-title">{{ tmpl.title }}</span>
+            <span class="tmpl-desc">{{ tmpl.description }}</span>
+          </div>
+        </div>
+        <i class="material-symbols-outlined tmpl-arrow">chevron_right</i>
+      </button>
+      }
+    </div>
+  </div>
+</div>

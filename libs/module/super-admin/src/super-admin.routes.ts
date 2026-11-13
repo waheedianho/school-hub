@@ -93,6 +93,12 @@ export const superAdminRoutes: Routes = [
             (m) => m.SubscriptionsBillingComponent,
           ),
       },
+      {
+        path: 'reports',
+        title: 'Reports | Learno Super Admin',
+        loadComponent: () =>
+          import('./reports/reports').then((m) => m.ReportsComponent),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -101,7 +107,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'curriculum-content' &&
           page.path !== 'assessments-qb' &&
           page.path !== 'analytics' &&
-          page.path !== 'subscriptions-billing',
+          page.path !== 'subscriptions-billing' &&
+          page.path !== 'reports',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,

@@ -166,6 +166,26 @@ import {
   INITIAL_SUBSCRIPTION_METRICS,
   INITIAL_SUBSCRIPTION_PLANS,
 } from './super-admin-subscriptions.data';
+import {
+  CreateReportFormData,
+  PlatformReport,
+  QuickReportTemplate,
+  RecentReportActivity,
+  ReportBottomMetric,
+  ReportHealthCategory,
+  ReportMetric,
+  ScheduleReportFormData,
+  ScheduledReportQueueItem,
+} from './super-admin-reports.models';
+import {
+  INITIAL_PLATFORM_REPORTS,
+  INITIAL_QUICK_REPORT_TEMPLATES,
+  INITIAL_RECENT_REPORT_ACTIVITIES,
+  INITIAL_REPORT_BOTTOM_METRICS,
+  INITIAL_REPORT_HEALTH_CATEGORIES,
+  INITIAL_REPORT_METRICS,
+  INITIAL_SCHEDULED_REPORT_QUEUE,
+} from './super-admin-reports.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -381,6 +401,35 @@ export class SuperAdminStore {
   readonly selectedSubscriptionsDateRange = signal<string>(
     'May 12 – May 18, 2025',
   );
+
+  // Reports Signals
+  readonly reportMetrics = signal<ReportMetric[]>(INITIAL_REPORT_METRICS);
+  readonly platformReports = signal<PlatformReport[]>(INITIAL_PLATFORM_REPORTS);
+  readonly reportBottomMetrics = signal<ReportBottomMetric[]>(
+    INITIAL_REPORT_BOTTOM_METRICS,
+  );
+  readonly reportHealthCategories = signal<ReportHealthCategory[]>(
+    INITIAL_REPORT_HEALTH_CATEGORIES,
+  );
+  readonly scheduledReportQueue = signal<ScheduledReportQueueItem[]>(
+    INITIAL_SCHEDULED_REPORT_QUEUE,
+  );
+  readonly recentReportActivities = signal<RecentReportActivity[]>(
+    INITIAL_RECENT_REPORT_ACTIVITIES,
+  );
+  readonly quickReportTemplates = signal<QuickReportTemplate[]>(
+    INITIAL_QUICK_REPORT_TEMPLATES,
+  );
+
+  readonly selectedReportTab = signal<string>('Academic Reports');
+  readonly reportsSearchQuery = signal<string>('');
+  readonly selectedReportsSchoolFilter = signal<string>('All Schools');
+  readonly selectedReportsTypeFilter = signal<string>('All Report Types');
+  readonly selectedReportsDateRange = signal<string>('May 1 – May 31, 2025');
+  readonly selectedReportsStatusFilter = signal<string>('All Statuses');
+  readonly selectedReportHealthPeriod = signal<string>('This Month');
+  readonly reportsCurrentPage = signal<number>(1);
+  readonly reportsPageSize = signal<number>(7);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -816,6 +865,94 @@ export class SuperAdminStore {
       Math.ceil(
         this.filteredSubscriptions().length / this.subscriptionsPageSize(),
       ),
+    );
+  });
+
+  // Reports Computeds
+  readonly filteredPlatformReports = computed(() => {
+    const list = this.platformReports();
+    const tab = this.selectedReportTab();
+    const search = this.reportsSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedReportsSchoolFilter();
+    const typeFilter = this.selectedReportsTypeFilter();
+    const statusFilter = this.selectedReportsStatusFilter();
+
+    return list.filter((rep) => {
+      // Tab category filter
+      if (
+        tab === 'School Performance' &&
+        rep.category !== 'School Performance'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Subscription Reports' &&
+        rep.category !== 'Subscription Reports'
+      ) {
+        return false;
+      }
+      if (tab === 'Usage Reports' && rep.category !== 'Usage Reports') {
+        return false;
+      }
+      if (
+        tab === 'Safeguarding Reports' &&
+        rep.category !== 'Safeguarding Reports'
+      ) {
+        return false;
+      }
+      if (tab === 'Custom Reports' && rep.category !== 'Custom Reports') {
+        return false;
+      }
+
+      // School filter
+      if (schoolFilter !== 'All Schools' && rep.scope !== schoolFilter) {
+        return false;
+      }
+
+      // Type filter
+      if (typeFilter !== 'All Report Types') {
+        const matchesCategory = rep.category === typeFilter;
+        const matchesFormat = rep.format.includes(typeFilter);
+        if (!matchesCategory && !matchesFormat) {
+          return false;
+        }
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && rep.status !== statusFilter) {
+        return false;
+      }
+
+      // Search
+      if (search) {
+        const matchesName = rep.name.toLowerCase().includes(search);
+        const matchesDesc = rep.description.toLowerCase().includes(search);
+        const matchesOwner = rep.ownerName.toLowerCase().includes(search);
+        if (!matchesName && !matchesDesc && !matchesOwner) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalPlatformReportsCount = computed(
+    () => this.filteredPlatformReports().length,
+  );
+
+  readonly paginatedPlatformReports = computed(() => {
+    const list = this.filteredPlatformReports();
+    const page = this.reportsCurrentPage();
+    const size = this.reportsPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalPlatformReportsPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(this.filteredPlatformReports().length / this.reportsPageSize()),
     );
   });
 
@@ -1403,5 +1540,148 @@ export class SuperAdminStore {
     };
     this.subscriptionInvoices.update((list) => [newInvoice, ...list]);
     return newInvoice;
+  }
+
+  // Reports Actions
+  setReportTab(tab: string): void {
+    this.selectedReportTab.set(tab);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsSearch(query: string): void {
+    this.reportsSearchQuery.set(query);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsSchoolFilter(school: string): void {
+    this.selectedReportsSchoolFilter.set(school);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsTypeFilter(type: string): void {
+    this.selectedReportsTypeFilter.set(type);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsDateRange(range: string): void {
+    this.selectedReportsDateRange.set(range);
+  }
+
+  setReportsStatusFilter(status: string): void {
+    this.selectedReportsStatusFilter.set(status);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportHealthPeriod(period: string): void {
+    this.selectedReportHealthPeriod.set(period);
+  }
+
+  setReportsPage(page: number): void {
+    this.reportsCurrentPage.set(page);
+  }
+
+  createCustomReport(formData: CreateReportFormData): PlatformReport {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const newReport: PlatformReport = {
+      id: `rep-${Date.now().toString(36)}`,
+      name: formData.reportName,
+      description: formData.description,
+      category: formData.category,
+      icon: 'description',
+      iconTone: 'primary',
+      scope: formData.scope,
+      scopeSchoolsCount: 1186,
+      frequency: formData.frequency,
+      lastGeneratedDate: dateStr,
+      lastGeneratedTime: timeStr,
+      status: 'Ready',
+      format: formData.format,
+      ownerName: 'Super Admin',
+      ownerInitials: 'SA',
+      ownerRole: 'Super Admin',
+      fileSizeBytes: '1.5 MB',
+      downloadCount: 0,
+    };
+
+    this.platformReports.update((list) => [newReport, ...list]);
+
+    // Add to recent activity
+    const activity: RecentReportActivity = {
+      id: `act-${Date.now().toString(36)}`,
+      title: `${newReport.name} generated`,
+      actorAndTimestamp: `${dateStr}, ${timeStr} by Super Admin`,
+      icon: 'check_circle',
+      iconTone: 'success',
+    };
+    this.recentReportActivities.update((list) => [activity, ...list]);
+
+    return newReport;
+  }
+
+  scheduleReport(scheduleData: ScheduleReportFormData): void {
+    const report = this.platformReports().find(
+      (r) => r.id === scheduleData.reportId,
+    );
+    if (!report) return;
+
+    const queueItem: ScheduledReportQueueItem = {
+      id: `sq-${Date.now().toString(36)}`,
+      title: report.name,
+      scheduledTime: `${scheduleData.scheduleTime} • ${scheduleData.frequency}`,
+      icon: 'calendar_month',
+      iconTone: 'purple',
+      badge: 'Upcoming',
+    };
+
+    this.scheduledReportQueue.update((list) => [queueItem, ...list]);
+
+    this.platformReports.update((list) =>
+      list.map((r) =>
+        r.id === scheduleData.reportId
+          ? {
+              ...r,
+              status: 'Scheduled' as const,
+              scheduledDate: scheduleData.scheduleTime,
+            }
+          : r,
+      ),
+    );
+  }
+
+  triggerReportGeneration(id: string): void {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    this.platformReports.update((list) =>
+      list.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              status: 'Ready' as const,
+              lastGeneratedDate: dateStr,
+              lastGeneratedTime: timeStr,
+              downloadCount: (r.downloadCount ?? 0) + 1,
+            }
+          : r,
+      ),
+    );
   }
 }
