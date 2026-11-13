@@ -1,0 +1,436 @@
+<section
+  class="bg-white rounded-xl border border-slate-200 overflow-hidden"
+  aria-label="Curriculum Packs Directory"
+>
+  <!-- Search & Filter Bar -->
+  <div class="p-4 border-b border-slate-200 space-y-3">
+    <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <span
+          class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"
+          aria-hidden="true"
+        >
+          search
+        </span>
+        <input
+          type="text"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchChange.emit($event)"
+          placeholder="Search by subject, class, or topic..."
+          class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900 placeholder-slate-400"
+          aria-label="Search curriculum packs"
+          data-testid="curriculum-search-input"
+        />
+      </div>
+
+      <!-- Filters Row -->
+      <div class="flex flex-wrap items-center gap-2">
+        <!-- Curriculum Type -->
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label
+            for="curriculum-type-select"
+            class="text-xs text-slate-500 whitespace-nowrap"
+            >Curriculum Type:</label
+          >
+          <select
+            id="curriculum-type-select"
+            [ngModel]="selectedType()"
+            (ngModelChange)="typeChange.emit($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+            data-testid="type-filter-select"
+          >
+            @for (type of curriculumTypes; track type) {
+            <option [value]="type">{{ type }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Class Level -->
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label
+            for="class-level-select"
+            class="text-xs text-slate-500 whitespace-nowrap"
+            >Class Level:</label
+          >
+          <select
+            id="class-level-select"
+            [ngModel]="selectedClassLevel()"
+            (ngModelChange)="classLevelChange.emit($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+            data-testid="class-filter-select"
+          >
+            @for (level of classLevels; track level) {
+            <option [value]="level">{{ level }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Term -->
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label
+            for="term-select"
+            class="text-xs text-slate-500 whitespace-nowrap"
+            >Term:</label
+          >
+          <select
+            id="term-select"
+            [ngModel]="selectedTerm()"
+            (ngModelChange)="termChange.emit($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+            data-testid="term-filter-select"
+          >
+            @for (term of terms; track term) {
+            <option [value]="term">{{ term }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Status -->
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label
+            for="curriculum-status-select"
+            class="text-xs text-slate-500 whitespace-nowrap"
+            >Status:</label
+          >
+          <select
+            id="curriculum-status-select"
+            [ngModel]="selectedStatus()"
+            (ngModelChange)="statusChange.emit($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+            data-testid="status-filter-select"
+          >
+            @for (st of statuses; track st) {
+            <option [value]="st">{{ st }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Reset / Filter button -->
+        <button
+          type="button"
+          (click)="resetFilters.emit()"
+          class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors cursor-pointer"
+          data-testid="reset-filters-btn"
+        >
+          <span
+            class="material-symbols-outlined text-base text-slate-500"
+            aria-hidden="true"
+            >filter_alt</span
+          >
+          Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Body -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-left text-xs" aria-label="Curriculum Packs Table">
+      <thead
+        class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200"
+      >
+        <tr>
+          <th scope="col" class="py-3 px-4">Pack Name</th>
+          <th scope="col" class="py-3 px-3">Class Level</th>
+          <th scope="col" class="py-3 px-3">Subject</th>
+          <th scope="col" class="py-3 px-3">Term</th>
+          <th scope="col" class="py-3 px-3">Topics</th>
+          <th scope="col" class="py-3 px-3">Completion</th>
+          <th scope="col" class="py-3 px-3">Status</th>
+          <th scope="col" class="py-3 px-3">Version</th>
+          <th scope="col" class="py-3 px-4">Last Updated</th>
+          <th scope="col" class="py-3 px-4 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100 text-slate-700">
+        @for (pack of paginatedPacks(); track pack.id) {
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <!-- Pack Name -->
+          <td class="py-3 px-4">
+            <button
+              type="button"
+              class="flex items-center gap-2.5 text-left group cursor-pointer focus:outline-none"
+              (click)="viewPack.emit(pack)"
+            >
+              <div
+                class="w-7 h-7 rounded bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"
+              >
+                <span
+                  class="material-symbols-outlined text-base"
+                  aria-hidden="true"
+                  >menu_book</span
+                >
+              </div>
+              <div>
+                <div
+                  class="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-1"
+                >
+                  {{ pack.name }}
+                </div>
+                <div class="text-[11px] text-slate-400 font-normal">
+                  {{ pack.curriculumType }}
+                </div>
+              </div>
+            </button>
+          </td>
+
+          <!-- Class Level -->
+          <td class="py-3 px-3 whitespace-nowrap font-medium text-slate-800">
+            {{ pack.classLevel }}
+          </td>
+
+          <!-- Subject -->
+          <td class="py-3 px-3 whitespace-nowrap font-medium text-slate-800">
+            {{ pack.subject }}
+          </td>
+
+          <!-- Term -->
+          <td class="py-3 px-3 whitespace-nowrap text-slate-600">
+            {{ pack.term }}
+          </td>
+
+          <!-- Topics -->
+          <td class="py-3 px-3 whitespace-nowrap font-medium text-slate-800">
+            {{ pack.topicsCount }}
+          </td>
+
+          <!-- Completion -->
+          <td class="py-3 px-3 whitespace-nowrap">
+            <div class="flex items-center gap-2 w-28">
+              <div class="flex-1 h-2 rounded-full bg-slate-100 overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-300"
+                  [ngClass]="getCompletionColorClass(pack.completionPercentage)"
+                  [style.width.%]="pack.completionPercentage"
+                ></div>
+              </div>
+              <span class="text-xs font-semibold text-slate-700 w-8 text-right">
+                {{ pack.completionPercentage }}%
+              </span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="py-3 px-3 whitespace-nowrap">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold"
+              [ngClass]="{
+                  'bg-emerald-50 text-emerald-700 border border-emerald-200': pack.status === 'Approved',
+                  'bg-amber-50 text-amber-700 border border-amber-200': pack.status === 'Pending Review',
+                  'bg-orange-50 text-orange-700 border border-orange-200': pack.status === 'Needs Update',
+                  'bg-purple-50 text-purple-700 border border-purple-200': pack.status === 'Draft'
+                }"
+            >
+              {{ pack.status }}
+            </span>
+          </td>
+
+          <!-- Version -->
+          <td class="py-3 px-3 whitespace-nowrap">
+            <span
+              class="px-2 py-0.5 text-[11px] font-mono font-medium text-slate-600 bg-slate-100 rounded"
+            >
+              {{ pack.version }}
+            </span>
+          </td>
+
+          <!-- Last Updated -->
+          <td class="py-3 px-4 whitespace-nowrap">
+            <div class="text-xs text-slate-900 font-medium">
+              {{ pack.lastUpdated }}
+            </div>
+            <div class="text-[11px] text-slate-400">by {{ pack.author }}</div>
+          </td>
+
+          <!-- Actions -->
+          <td class="py-3 px-4 text-right whitespace-nowrap relative">
+            <button
+              type="button"
+              class="w-7 h-7 rounded hover:bg-slate-100 text-slate-500 flex items-center justify-center transition-colors cursor-pointer inline-flex"
+              (click)="toggleActionMenu(pack.id, $event)"
+              [attr.aria-expanded]="openActionMenuId() === pack.id"
+              aria-label="Actions for pack"
+              [attr.data-testid]="'action-btn-' + pack.id"
+            >
+              <span
+                class="material-symbols-outlined text-base"
+                aria-hidden="true"
+                >more_vert</span
+              >
+            </button>
+
+            <!-- Action Menu Dropdown -->
+            @if (openActionMenuId() === pack.id) {
+            <div
+              class="absolute right-4 top-10 w-44 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-30 text-left text-xs"
+              data-testid="pack-action-menu"
+            >
+              <button
+                type="button"
+                class="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 text-slate-700 cursor-pointer"
+                (click)="viewPack.emit(pack); closeActionMenu()"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-slate-400"
+                  aria-hidden="true"
+                  >visibility</span
+                >
+                View Details
+              </button>
+              <button
+                type="button"
+                class="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 text-slate-700 cursor-pointer"
+                (click)="editPack.emit(pack); closeActionMenu()"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-slate-400"
+                  aria-hidden="true"
+                  >edit</span
+                >
+                Edit Pack
+              </button>
+              <button
+                type="button"
+                class="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 text-slate-700 cursor-pointer"
+                (click)="statusUpdate.emit({ id: pack.id, status: 'Approved' }); closeActionMenu()"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-emerald-500"
+                  aria-hidden="true"
+                  >check_circle</span
+                >
+                Approve Pack
+              </button>
+              <button
+                type="button"
+                class="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-slate-50 text-slate-700 cursor-pointer"
+                (click)="statusUpdate.emit({ id: pack.id, status: 'Needs Update' }); closeActionMenu()"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-amber-500"
+                  aria-hidden="true"
+                  >published_with_changes</span
+                >
+                Request Updates
+              </button>
+              <div class="my-1 border-t border-slate-100"></div>
+              <button
+                type="button"
+                class="w-full px-3 py-1.5 flex items-center gap-2 hover:bg-rose-50 text-rose-600 cursor-pointer"
+                (click)="deletePack.emit(pack.id); closeActionMenu()"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-rose-500"
+                  aria-hidden="true"
+                  >delete</span
+                >
+                Delete Pack
+              </button>
+            </div>
+            }
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="py-12 text-center text-slate-400">
+            <span
+              class="material-symbols-outlined text-4xl mb-2 text-slate-300"
+              aria-hidden="true"
+              >search_off</span
+            >
+            <p class="text-sm font-medium text-slate-700">
+              No curriculum packs found
+            </p>
+            <p class="text-xs text-slate-400 mt-1">
+              Try adjusting your search terms or filter criteria
+            </p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div
+    class="px-4 py-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500"
+  >
+    <div>
+      Showing 1 to {{ paginatedPacks().length }} of {{ totalResultsCount() }}
+      results
+    </div>
+
+    <div class="flex items-center gap-3">
+      <!-- Page Navigation -->
+      <div class="flex items-center gap-1">
+        <button
+          type="button"
+          class="w-7 h-7 rounded border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          [disabled]="currentPage() === 1"
+          (click)="onPageChange(currentPage() - 1)"
+          aria-label="Previous page"
+        >
+          <span class="material-symbols-outlined text-sm" aria-hidden="true"
+            >chevron_left</span
+          >
+        </button>
+
+        @for (page of [1, 2, 3, 4, 5]; track page) { @if (page <= totalPages())
+        {
+        <button
+          type="button"
+          class="w-7 h-7 rounded flex items-center justify-center font-medium transition-colors cursor-pointer"
+          [ngClass]="currentPage() === page ? 'bg-blue-600 text-white' : 'border border-slate-200 text-slate-700 hover:bg-slate-50'"
+          (click)="onPageChange(page)"
+        >
+          {{ page }}
+        </button>
+        } } @if (totalPages() > 5) {
+        <span class="px-1 text-slate-400">...</span>
+        <button
+          type="button"
+          class="w-7 h-7 rounded border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-slate-50 cursor-pointer"
+          (click)="onPageChange(totalPages())"
+        >
+          {{ totalPages() }}
+        </button>
+        }
+
+        <button
+          type="button"
+          class="w-7 h-7 rounded border border-slate-200 flex items-center justify-center hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+          [disabled]="currentPage() === totalPages()"
+          (click)="onPageChange(currentPage() + 1)"
+          aria-label="Next page"
+        >
+          <span class="material-symbols-outlined text-sm" aria-hidden="true"
+            >chevron_right</span
+          >
+        </button>
+      </div>
+
+      <!-- Page Size Selector -->
+      <div class="flex items-center gap-1">
+        <select
+          [ngModel]="pageSize()"
+          (ngModelChange)="onPageSizeChange($event)"
+          class="border border-slate-200 rounded px-2 py-1 text-xs bg-white text-slate-700 focus:outline-none cursor-pointer"
+          aria-label="Items per page"
+        >
+          <option [value]="5">5 / page</option>
+          <option [value]="10">10 / page</option>
+          <option [value]="20">20 / page</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</section>

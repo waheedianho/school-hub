@@ -45,11 +45,28 @@ export const superAdminRoutes: Routes = [
             (m) => m.UsersRolesComponent,
           ),
       },
+      {
+        path: 'curriculum-content',
+        title: 'Curriculum & Content | Learno Super Admin',
+        loadComponent: () =>
+          import('./curriculum-content/curriculum-content').then(
+            (m) => m.CurriculumContentComponent,
+          ),
+      },
+      {
+        path: 'curriculum-content/create',
+        title: 'Create Curriculum Pack | Learno Super Admin',
+        loadComponent: () =>
+          import('./curriculum-content/create-pack/create-pack').then(
+            (m) => m.CreatePackComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
           page.path !== 'schools' &&
-          page.path !== 'users-roles',
+          page.path !== 'users-roles' &&
+          page.path !== 'curriculum-content',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -59,17 +76,8 @@ export const superAdminRoutes: Routes = [
       // Detail routes & sub-flows
       {
         path: 'curriculum/create',
-        component: SuperAdmin,
-        title: 'Create Curriculum Pack | Learno Super Admin',
-        data: {
-          page: {
-            path: 'curriculum/create',
-            label: 'Create Curriculum Pack',
-            icon: 'menu_book',
-            description:
-              'Build and publish a master curriculum pack for schools and institutions.',
-          },
-        },
+        redirectTo: 'curriculum-content/create',
+        pathMatch: 'full',
       },
       {
         path: 'assessments/create',

@@ -1,0 +1,374 @@
+<div class="space-y-6" aria-label="Curriculum & Content Management">
+  <!-- Toast Notification -->
+  @if (toastMessage(); as msg) {
+  <div
+    class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium border border-slate-700 animate-fade-in"
+    role="alert"
+  >
+    <span
+      class="material-symbols-outlined text-emerald-400 text-base"
+      aria-hidden="true"
+      >check_circle</span
+    >
+    <span>{{ msg }}</span>
+  </div>
+  }
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+        Curriculum & Content
+      </h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Manage master curriculum packs, content governance, and platform-wide
+        academic assets across all institutions.
+      </p>
+    </div>
+
+    <!-- Header Tools: Date Range, Notifications, Help -->
+    <div class="flex items-center gap-3">
+      <div
+        class="flex items-center gap-2 bg-white border border-slate-200 rounded-lg px-3 py-1.5 shadow-xs text-xs"
+      >
+        <span
+          class="material-symbols-outlined text-slate-400 text-base"
+          aria-hidden="true"
+          >calendar_today</span
+        >
+        <span class="font-medium text-slate-700">May 1 – May 31, 2025</span>
+        <span
+          class="material-symbols-outlined text-slate-400 text-sm"
+          aria-hidden="true"
+          >expand_more</span
+        >
+      </div>
+
+      <button
+        type="button"
+        class="relative w-8 h-8 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
+        aria-label="12 unread notifications"
+      >
+        <span class="material-symbols-outlined text-lg" aria-hidden="true"
+          >notifications</span
+        >
+        <span
+          class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center"
+        >
+          12
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="w-8 h-8 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 flex items-center justify-center text-slate-600 transition-colors cursor-pointer"
+        aria-label="Help & Documentation"
+      >
+        <span class="material-symbols-outlined text-lg" aria-hidden="true"
+          >help_outline</span
+        >
+      </button>
+    </div>
+  </div>
+
+  <!-- KPI Metrics Row -->
+  <school-hub-curriculum-metrics [metrics]="store.curriculumMetrics()" />
+
+  <!-- Navigation Tabs & Primary Actions Bar -->
+  <div
+    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200"
+  >
+    <!-- Tabs -->
+    <nav
+      class="flex items-center gap-6"
+      aria-label="Curriculum Navigation Tabs"
+    >
+      <button
+        type="button"
+        (click)="setTab('packs')"
+        class="pb-3 text-xs font-semibold transition-colors relative cursor-pointer"
+        [ngClass]="selectedTab() === 'packs' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-800'"
+        data-testid="tab-curriculum-packs"
+      >
+        Curriculum Packs @if (selectedTab() === 'packs') {
+        <span
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"
+        ></span>
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('review')"
+        class="pb-3 text-xs font-semibold transition-colors relative cursor-pointer flex items-center gap-1.5"
+        [ngClass]="selectedTab() === 'review' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-800'"
+        data-testid="tab-review-queue"
+      >
+        Review Queue
+        <span
+          class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"
+        >
+          {{ store.reviewQueueSummary().total }}
+        </span>
+        @if (selectedTab() === 'review') {
+        <span
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"
+        ></span>
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('library')"
+        class="pb-3 text-xs font-semibold transition-colors relative cursor-pointer"
+        [ngClass]="selectedTab() === 'library' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-800'"
+        data-testid="tab-content-library"
+      >
+        Content Library @if (selectedTab() === 'library') {
+        <span
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"
+        ></span>
+        }
+      </button>
+
+      <button
+        type="button"
+        (click)="setTab('templates')"
+        class="pb-3 text-xs font-semibold transition-colors relative cursor-pointer"
+        [ngClass]="selectedTab() === 'templates' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-800'"
+        data-testid="tab-templates-standards"
+      >
+        Templates & Standards @if (selectedTab() === 'templates') {
+        <span
+          class="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 rounded-t-full"
+        ></span>
+        }
+      </button>
+    </nav>
+
+    <!-- Top Right Action Buttons -->
+    <div class="flex items-center gap-2 pb-2 sm:pb-0">
+      <button
+        type="button"
+        (click)="navigateToCreatePack()"
+        class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+        data-testid="btn-create-pack-header"
+      >
+        <span class="material-symbols-outlined text-base" aria-hidden="true"
+          >add</span
+        >
+        Create Pack
+      </button>
+
+      <button
+        type="button"
+        (click)="triggerImport()"
+        class="px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+      >
+        <span
+          class="material-symbols-outlined text-base text-slate-500"
+          aria-hidden="true"
+          >file_upload</span
+        >
+        Import Content
+      </button>
+
+      <button
+        type="button"
+        (click)="exportCurriculumData()"
+        class="px-3 py-1.5 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5 transition-colors cursor-pointer"
+      >
+        <span
+          class="material-symbols-outlined text-base text-slate-500"
+          aria-hidden="true"
+          >file_download</span
+        >
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Tab 1: Curriculum Packs View -->
+  @if (selectedTab() === 'packs') {
+  <div class="space-y-6">
+    <!-- Quick Action Cards Banner -->
+    <school-hub-curriculum-quick-actions
+      [pendingReviewCount]="store.reviewQueueSummary().total"
+      [missingAssetsCount]="96"
+      (createPack)="navigateToCreatePack()"
+      (assignTemplate)="setTab('templates')"
+      (reviewQueue)="setTab('review')"
+      (missingAssets)="setTab('library')"
+    />
+
+    <!-- Main Layout: Table (2 cols) & Sidebar (1 col) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <school-hub-curriculum-table
+          [packs]="store.filteredCurriculumPacks()"
+          [searchQuery]="store.curriculumSearchQuery()"
+          [selectedType]="store.selectedCurriculumTypeFilter()"
+          [selectedClassLevel]="store.selectedClassLevelFilter()"
+          [selectedTerm]="store.selectedCurriculumTermFilter()"
+          [selectedStatus]="store.selectedCurriculumStatusFilter()"
+          [totalResultsCount]="store.totalCurriculumPacksCount()"
+          (searchChange)="store.setCurriculumSearch($event)"
+          (typeChange)="store.setCurriculumTypeFilter($event)"
+          (classLevelChange)="store.setClassLevelFilter($event)"
+          (termChange)="store.setCurriculumTermFilter($event)"
+          (statusChange)="store.setCurriculumStatusFilter($event)"
+          (resetFilters)="store.resetCurriculumFilters()"
+          (viewPack)="openPackDetail($event)"
+          (editPack)="openPackDetail($event)"
+          (statusUpdate)="handleStatusUpdate($event)"
+          (deletePack)="handleDeletePack($event)"
+        />
+      </div>
+
+      <div>
+        <school-hub-curriculum-sidebar
+          [contentHealth]="store.contentHealth()"
+          [reviewSummary]="store.reviewQueueSummary()"
+          [activities]="store.recentContentActivities()"
+          [standardsCoverage]="store.standardsCoverage()"
+          (openReviewQueue)="setTab('review')"
+          (viewAllActivities)="setTab('packs')"
+        />
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Tab 2: Review Queue View -->
+  @if (selectedTab() === 'review') {
+  <school-hub-review-queue-view
+    [queueItems]="store.reviewQueueItems()"
+    [summary]="store.reviewQueueSummary()"
+    (approve)="handleApproveReviewItem($event)"
+    (requestChanges)="handleRequestFixReviewItem($event)"
+    (viewItem)="setTab('packs')"
+  />
+  }
+
+  <!-- Tab 3: Content Library View -->
+  @if (selectedTab() === 'library') {
+  <school-hub-content-library-view
+    [assets]="store.contentLibraryAssets()"
+    (previewAsset)="showToast('Previewing: ' + $event.title)"
+    (downloadAsset)="showToast('Downloading: ' + $event.title)"
+  />
+  }
+
+  <!-- Tab 4: Templates & Standards View -->
+  @if (selectedTab() === 'templates') {
+  <school-hub-templates-standards-view
+    [templates]="store.curriculumTemplates()"
+    (applyTemplate)="showToast('Template ' + $event.title + ' applied to curriculum blueprint')"
+    (downloadTemplate)="showToast('Exporting ' + $event.title + ' specification')"
+  />
+  }
+
+  <!-- Bottom Platform Health & Storage Bar -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4">
+    <div
+      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 text-xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100"
+    >
+      <div class="flex items-center gap-3 pr-2">
+        <div
+          class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true"
+            >storage</span
+          >
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px]">Content Storage</span>
+          <span class="font-bold text-slate-900">1.24 TB / 2 TB</span>
+          <span class="text-[10px] text-slate-400 block">62% Used</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 sm:pl-4 pr-2 pt-2 sm:pt-0">
+        <div
+          class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true"
+            >verified_user</span
+          >
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px]">Review SLA</span>
+          <span class="font-bold text-slate-900">92% On Time</span>
+          <span class="text-[10px] text-emerald-600 block"
+            >↑ 5% vs Apr 2025</span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 sm:pl-4 pr-2 pt-2 sm:pt-0">
+        <div
+          class="w-9 h-9 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true"
+            >people</span
+          >
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px]">Active Editors</span>
+          <span class="font-bold text-slate-900">48</span>
+          <span class="text-[10px] text-emerald-600 block">● Online Now</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 sm:pl-4 pr-2 pt-2 sm:pt-0">
+        <div
+          class="w-9 h-9 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true"
+            >build</span
+          >
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px]">Pending Fixes</span>
+          <span class="font-bold text-slate-900">96</span>
+          <span class="text-[10px] text-emerald-600 block"
+            >↓ 4% vs Apr 2025</span
+          >
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 sm:pl-4 pt-2 sm:pt-0">
+        <div
+          class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg" aria-hidden="true"
+            >check_circle</span
+          >
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[11px]">System Status</span>
+          <span class="font-bold text-emerald-600 flex items-center gap-1">
+            <span
+              class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"
+            ></span>
+            Operational
+          </span>
+          <span class="text-[10px] text-slate-400 block"
+            >All Systems Healthy</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pack Detail Modal -->
+  @if (selectedPack(); as pack) {
+  <school-hub-pack-detail-modal
+    [pack]="pack"
+    (modalClose)="closePackDetail()"
+    (edit)="openPackDetail($event)"
+    (statusChange)="handleStatusUpdate($event)"
+    (delete)="handleDeletePack($event)"
+  />
+  }
+</div>

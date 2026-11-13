@@ -61,6 +61,33 @@ import {
   SAMPLE_PLATFORM_USERS,
   USERS_METRICS,
 } from './super-admin-users.data';
+import {
+  ContentActivity,
+  ContentComponentItem,
+  ContentHealthOverview,
+  ContentLibraryAsset,
+  CreateCurriculumPackData,
+  CurriculumMetric,
+  CurriculumPack,
+  CurriculumStatus,
+  CurriculumTab,
+  CurriculumTemplate,
+  ReviewQueueItem,
+  ReviewQueueSummary,
+  WeeklyTopicPlan,
+} from './super-admin-curriculum.models';
+import {
+  CONTENT_COMPONENTS_LIST,
+  CONTENT_HEALTH_DATA,
+  CURRICULUM_METRICS,
+  RECENT_CONTENT_ACTIVITIES,
+  REVIEW_QUEUE_SUMMARY,
+  SAMPLE_CONTENT_LIBRARY_ASSETS,
+  SAMPLE_CURRICULUM_PACKS,
+  SAMPLE_CURRICULUM_TEMPLATES,
+  SAMPLE_REVIEW_QUEUE_ITEMS,
+  SAMPLE_WEEKLY_TOPICS,
+} from './super-admin-curriculum.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -136,6 +163,37 @@ export class SuperAdminStore {
   readonly selectedUserStatusFilter = signal<string>('All');
   readonly selectedUserMfaFilter = signal<string>('All');
   readonly selectedUserRegionFilter = signal<string>('All');
+
+  // Curriculum & Content Signals
+  readonly curriculumPacks = signal<CurriculumPack[]>(SAMPLE_CURRICULUM_PACKS);
+  readonly curriculumMetrics = signal<CurriculumMetric[]>(CURRICULUM_METRICS);
+  readonly contentHealth = signal<ContentHealthOverview>(CONTENT_HEALTH_DATA);
+  readonly reviewQueueSummary =
+    signal<ReviewQueueSummary>(REVIEW_QUEUE_SUMMARY);
+  readonly recentContentActivities = signal<ContentActivity[]>(
+    RECENT_CONTENT_ACTIVITIES,
+  );
+  readonly weeklyTopics = signal<WeeklyTopicPlan[]>(SAMPLE_WEEKLY_TOPICS);
+  readonly contentComponents = signal<ContentComponentItem[]>(
+    CONTENT_COMPONENTS_LIST,
+  );
+  readonly reviewQueueItems = signal<ReviewQueueItem[]>(
+    SAMPLE_REVIEW_QUEUE_ITEMS,
+  );
+  readonly contentLibraryAssets = signal<ContentLibraryAsset[]>(
+    SAMPLE_CONTENT_LIBRARY_ASSETS,
+  );
+  readonly curriculumTemplates = signal<CurriculumTemplate[]>(
+    SAMPLE_CURRICULUM_TEMPLATES,
+  );
+
+  readonly selectedCurriculumTab = signal<CurriculumTab>('packs');
+  readonly curriculumSearchQuery = signal<string>('');
+  readonly selectedCurriculumTypeFilter = signal<string>('All');
+  readonly selectedClassLevelFilter = signal<string>('All');
+  readonly selectedCurriculumTermFilter = signal<string>('All');
+  readonly selectedCurriculumStatusFilter = signal<string>('All');
+  readonly standardsCoverage = signal<number>(81);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -311,6 +369,70 @@ export class SuperAdminStore {
         }
       }
 
+      return true;
+    });
+  });
+
+  // Curriculum Computeds
+  readonly totalCurriculumPacksCount = computed(
+    () => this.curriculumPacks().length,
+  );
+  readonly approvedPacksCount = computed(
+    () => this.curriculumPacks().filter((p) => p.status === 'Approved').length,
+  );
+  readonly pendingReviewPacksCount = computed(
+    () =>
+      this.curriculumPacks().filter((p) => p.status === 'Pending Review')
+        .length,
+  );
+  readonly draftPacksCount = computed(
+    () => this.curriculumPacks().filter((p) => p.status === 'Draft').length,
+  );
+  readonly needsUpdatePacksCount = computed(
+    () =>
+      this.curriculumPacks().filter((p) => p.status === 'Needs Update').length,
+  );
+
+  readonly filteredCurriculumPacks = computed(() => {
+    const list = this.curriculumPacks();
+    const query = this.curriculumSearchQuery().toLowerCase().trim();
+    const type = this.selectedCurriculumTypeFilter();
+    const classLevel = this.selectedClassLevelFilter();
+    const term = this.selectedCurriculumTermFilter();
+    const status = this.selectedCurriculumStatusFilter();
+
+    return list.filter((pack) => {
+      // Type
+      if (type !== 'All' && pack.curriculumType !== type) {
+        return false;
+      }
+      // Class Level
+      if (classLevel !== 'All' && pack.classLevel !== classLevel) {
+        return false;
+      }
+      // Term
+      if (term !== 'All' && pack.term !== term) {
+        return false;
+      }
+      // Status
+      if (status !== 'All' && pack.status !== status) {
+        return false;
+      }
+      // Search
+      if (query) {
+        const matchesName = pack.name.toLowerCase().includes(query);
+        const matchesSubject = pack.subject.toLowerCase().includes(query);
+        const matchesClass = pack.classLevel.toLowerCase().includes(query);
+        const matchesAuthor = pack.author.toLowerCase().includes(query);
+        if (
+          !matchesName &&
+          !matchesSubject &&
+          !matchesClass &&
+          !matchesAuthor
+        ) {
+          return false;
+        }
+      }
       return true;
     });
   });
@@ -538,6 +660,143 @@ export class SuperAdminStore {
               lastActive: 'Invite resent just now',
             }
           : u,
+      ),
+    );
+  }
+
+  // Curriculum Methods
+  setCurriculumTab(tab: CurriculumTab): void {
+    this.selectedCurriculumTab.set(tab);
+  }
+
+  setCurriculumSearch(query: string): void {
+    this.curriculumSearchQuery.set(query);
+  }
+
+  setCurriculumTypeFilter(type: string): void {
+    this.selectedCurriculumTypeFilter.set(type);
+  }
+
+  setClassLevelFilter(level: string): void {
+    this.selectedClassLevelFilter.set(level);
+  }
+
+  setCurriculumTermFilter(term: string): void {
+    this.selectedCurriculumTermFilter.set(term);
+  }
+
+  setCurriculumStatusFilter(status: string): void {
+    this.selectedCurriculumStatusFilter.set(status);
+  }
+
+  resetCurriculumFilters(): void {
+    this.curriculumSearchQuery.set('');
+    this.selectedCurriculumTypeFilter.set('All');
+    this.selectedClassLevelFilter.set('All');
+    this.selectedCurriculumTermFilter.set('All');
+    this.selectedCurriculumStatusFilter.set('All');
+  }
+
+  createCurriculumPack(packData: CreateCurriculumPackData): CurriculumPack {
+    const newPack: CurriculumPack = {
+      id: `CP-${(this.curriculumPacks().length + 1001).toString()}`,
+      name: packData.packName,
+      classLevel: packData.classLevel,
+      subject: packData.subject,
+      term: packData.term,
+      topicsCount: packData.weeklyTopics.length,
+      completionPercentage: 92,
+      status: (packData.publishStatus.includes('Draft')
+        ? 'Draft'
+        : 'Pending Review') as CurriculumStatus,
+      version: packData.version || 'v1.0',
+      lastUpdated: new Date().toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      author: 'Super Admin',
+      curriculumType: packData.curriculumType,
+      academicSession: packData.academicSession,
+      description: packData.description,
+      includedAssetsCount: 132,
+      componentsCount: `${packData.contentComponents.length} of 10`,
+      standardsCoverage: 92,
+    };
+
+    this.curriculumPacks.update((prev) => [newPack, ...prev]);
+
+    // Add activity
+    const activity: ContentActivity = {
+      id: `act-${Date.now()}`,
+      packName: newPack.name,
+      action: 'Curriculum pack created',
+      timeAgo: 'Just now',
+      type: 'uploaded',
+      icon: 'add_circle',
+    };
+    this.recentContentActivities.update((prev) => [activity, ...prev]);
+
+    return newPack;
+  }
+
+  updateCurriculumPackStatus(id: string, status: CurriculumStatus): void {
+    this.curriculumPacks.update((list) =>
+      list.map((p) => (p.id === id ? { ...p, status } : p)),
+    );
+  }
+
+  deleteCurriculumPack(id: string): void {
+    this.curriculumPacks.update((list) => list.filter((p) => p.id !== id));
+  }
+
+  addWeeklyTopic(topic: Omit<WeeklyTopicPlan, 'id'>): WeeklyTopicPlan {
+    const newTopic: WeeklyTopicPlan = {
+      ...topic,
+      id: `wt-${Date.now()}`,
+    };
+    this.weeklyTopics.update((prev) => [...prev, newTopic]);
+    return newTopic;
+  }
+
+  updateWeeklyTopic(id: string, updates: Partial<WeeklyTopicPlan>): void {
+    this.weeklyTopics.update((list) =>
+      list.map((t) => (t.id === id ? { ...t, ...updates } : t)),
+    );
+  }
+
+  deleteWeeklyTopic(id: string): void {
+    this.weeklyTopics.update((list) => list.filter((t) => t.id !== id));
+  }
+
+  toggleContentComponent(id: string): void {
+    this.contentComponents.update((list) =>
+      list.map((c) => (c.id === id ? { ...c, checked: !c.checked } : c)),
+    );
+  }
+
+  approveReviewQueueItem(id: string): void {
+    this.reviewQueueItems.update((list) =>
+      list.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: 'Under Review' as const,
+            }
+          : item,
+      ),
+    );
+  }
+
+  requestChangesReviewQueueItem(id: string): void {
+    this.reviewQueueItems.update((list) =>
+      list.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: 'Revision Requested' as const,
+            }
+          : item,
       ),
     );
   }

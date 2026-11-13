@@ -1,0 +1,275 @@
+<section class="space-y-4" aria-label="Curriculum Review Queue">
+  <!-- Queue Overview Counters -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+      class="bg-white rounded-xl border border-rose-200/80 p-4 flex items-center justify-between"
+    >
+      <div>
+        <span class="text-xs font-medium text-rose-600 block"
+          >High Priority</span
+        >
+        <span class="text-2xl font-bold text-slate-900"
+          >{{ summary().highPriority }}</span
+        >
+        <span class="text-[11px] text-slate-400 block mt-0.5"
+          >SLA deadline &lt; 24h</span
+        >
+      </div>
+      <div
+        class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >priority_high</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="bg-white rounded-xl border border-amber-200/80 p-4 flex items-center justify-between"
+    >
+      <div>
+        <span class="text-xs font-medium text-amber-600 block"
+          >Awaiting Academic Review</span
+        >
+        <span class="text-2xl font-bold text-slate-900"
+          >{{ summary().awaitingAcademicReview }}</span
+        >
+        <span class="text-[11px] text-slate-400 block mt-0.5"
+          >Subject specialists</span
+        >
+      </div>
+      <div
+        class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >school</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="bg-white rounded-xl border border-blue-200/80 p-4 flex items-center justify-between"
+    >
+      <div>
+        <span class="text-xs font-medium text-blue-600 block"
+          >Awaiting Media Upload</span
+        >
+        <span class="text-2xl font-bold text-slate-900"
+          >{{ summary().awaitingMediaUpload }}</span
+        >
+        <span class="text-[11px] text-slate-400 block mt-0.5"
+          >Videos & diagrams</span
+        >
+      </div>
+      <div
+        class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >video_library</span
+        >
+      </div>
+    </div>
+
+    <div
+      class="bg-white rounded-xl border border-purple-200/80 p-4 flex items-center justify-between"
+    >
+      <div>
+        <span class="text-xs font-medium text-purple-600 block"
+          >Requires Fixes</span
+        >
+        <span class="text-2xl font-bold text-slate-900"
+          >{{ summary().requiresFixes }}</span
+        >
+        <span class="text-[11px] text-slate-400 block mt-0.5"
+          >Author revisions needed</span
+        >
+      </div>
+      <div
+        class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >auto_fix_high</span
+        >
+      </div>
+    </div>
+  </div>
+
+  <!-- Queue Table Container -->
+  <div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <!-- Filter Bar -->
+    <div
+      class="p-4 border-b border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3"
+    >
+      <div class="relative flex-1 max-w-sm">
+        <span
+          class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg"
+          aria-hidden="true"
+          >search</span
+        >
+        <input
+          type="text"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchQuery.set($event)"
+          placeholder="Filter review queue..."
+          class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-900"
+        />
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label for="priority-filter-select" class="text-xs text-slate-500"
+            >Priority:</label
+          >
+          <select
+            id="priority-filter-select"
+            [ngModel]="priorityFilter()"
+            (ngModelChange)="priorityFilter.set($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+          >
+            <option value="All">All Priorities</option>
+            <option value="High">High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+
+        <div
+          class="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5"
+        >
+          <label for="category-filter-select" class="text-xs text-slate-500"
+            >Category:</label
+          >
+          <select
+            id="category-filter-select"
+            [ngModel]="categoryFilter()"
+            (ngModelChange)="categoryFilter.set($event)"
+            class="bg-transparent text-xs font-medium text-slate-700 focus:outline-none cursor-pointer"
+          >
+            <option value="All">All Categories</option>
+            <option value="Academic Review">Academic Review</option>
+            <option value="Media Assets">Media Assets</option>
+            <option value="Revision Required">Revision Required</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-x-auto">
+      <table class="w-full text-left text-xs" aria-label="Review Queue Items">
+        <thead
+          class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200"
+        >
+          <tr>
+            <th scope="col" class="py-3 px-4">Curriculum Pack</th>
+            <th scope="col" class="py-3 px-3">Class & Subject</th>
+            <th scope="col" class="py-3 px-3">Submitted By</th>
+            <th scope="col" class="py-3 px-3">Category</th>
+            <th scope="col" class="py-3 px-3">Priority</th>
+            <th scope="col" class="py-3 px-3">SLA Status</th>
+            <th scope="col" class="py-3 px-3">Queue Status</th>
+            <th scope="col" class="py-3 px-4 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">
+          @for (item of filteredItems(); track item.id) {
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="py-3 px-4">
+              <div class="font-semibold text-slate-900">
+                {{ item.packName }}
+              </div>
+              <div class="text-[11px] text-slate-400 font-mono">
+                {{ item.version }}
+              </div>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span class="font-medium text-slate-800"
+                >{{ item.classLevel }}</span
+              >
+              <span class="text-slate-500"> • {{ item.subject }}</span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <div class="text-slate-900 font-medium">
+                {{ item.submittedBy }}
+              </div>
+              <div class="text-[11px] text-slate-400">
+                {{ item.submittedDate }}
+              </div>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span
+                class="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700"
+              >
+                {{ item.category }}
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold"
+                [ngClass]="{
+                    'bg-rose-100 text-rose-800': item.priority === 'High',
+                    'bg-amber-100 text-amber-800': item.priority === 'Medium',
+                    'bg-slate-100 text-slate-800': item.priority === 'Low'
+                  }"
+              >
+                {{ item.priority }}
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span
+                class="inline-flex items-center gap-1 font-medium text-xs"
+                [ngClass]="item.slaHoursLeft < 12 ? 'text-rose-600 font-bold' : 'text-slate-600'"
+              >
+                <span
+                  class="material-symbols-outlined text-sm"
+                  aria-hidden="true"
+                  >hourglass_empty</span
+                >
+                {{ item.slaHoursLeft }}h left
+              </span>
+            </td>
+            <td class="py-3 px-3 whitespace-nowrap">
+              <span
+                class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold"
+                [ngClass]="{
+                    'bg-blue-50 text-blue-700 border border-blue-200': item.status === 'Awaiting Review',
+                    'bg-amber-50 text-amber-700 border border-amber-200': item.status === 'Under Review',
+                    'bg-orange-50 text-orange-700 border border-orange-200': item.status === 'Revision Requested'
+                  }"
+              >
+                {{ item.status }}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <div class="flex items-center justify-end gap-1.5">
+                <button
+                  type="button"
+                  (click)="approve.emit(item.id)"
+                  class="px-2.5 py-1 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded text-xs font-medium cursor-pointer"
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  (click)="requestChanges.emit(item.id)"
+                  class="px-2.5 py-1 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 rounded text-xs font-medium cursor-pointer"
+                >
+                  Request Fix
+                </button>
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="8" class="py-8 text-center text-slate-400">
+              No items currently match the queue filter.
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

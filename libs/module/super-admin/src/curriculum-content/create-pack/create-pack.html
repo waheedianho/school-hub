@@ -1,0 +1,993 @@
+<div class="space-y-6" aria-label="Create Curriculum Pack View">
+  <!-- Toast Notification -->
+  @if (toastMessage(); as msg) {
+  <div
+    class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium border border-slate-700 animate-fade-in"
+    role="alert"
+  >
+    <span
+      class="material-symbols-outlined text-emerald-400 text-base"
+      aria-hidden="true"
+      >check_circle</span
+    >
+    <span>{{ msg }}</span>
+  </div>
+  }
+
+  <!-- Header & Breadcrumbs -->
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div>
+      <nav
+        class="flex items-center gap-1.5 text-xs text-slate-500 mb-1"
+        aria-label="Breadcrumb"
+      >
+        <button
+          type="button"
+          (click)="cancel()"
+          class="hover:text-blue-600 transition-colors cursor-pointer"
+        >
+          Curriculum & Content
+        </button>
+        <span
+          class="material-symbols-outlined text-sm text-slate-400"
+          aria-hidden="true"
+          >chevron_right</span
+        >
+        <span class="text-slate-800 font-medium">Create Curriculum Pack</span>
+      </nav>
+      <h1 class="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
+        Create Curriculum Pack
+      </h1>
+      <p class="text-xs text-slate-500 mt-0.5">
+        Build and publish a master curriculum pack for schools and institutions.
+      </p>
+    </div>
+
+    <!-- Header Actions -->
+    <div class="flex items-center gap-2.5">
+      <button
+        type="button"
+        (click)="saveDraft()"
+        class="px-4 py-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-xs transition-colors cursor-pointer"
+        data-testid="save-draft-btn"
+      >
+        <span
+          class="material-symbols-outlined text-base text-slate-500"
+          aria-hidden="true"
+          >save</span
+        >
+        Save Draft
+      </button>
+
+      <button
+        type="button"
+        (click)="submitPack(false)"
+        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-colors cursor-pointer"
+        data-testid="create-pack-btn"
+      >
+        <span class="material-symbols-outlined text-base" aria-hidden="true"
+          >send</span
+        >
+        Create Pack
+      </button>
+    </div>
+  </div>
+
+  <!-- 5-Step Stepper Bar -->
+  <div class="bg-white rounded-xl border border-slate-200 p-4 overflow-x-auto">
+    <div class="flex items-center justify-between min-w-[700px]">
+      <!-- Step 1 -->
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold shrink-0"
+        >
+          1
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-900">Pack Details</div>
+          <div class="text-[11px] text-slate-400">Basic information</div>
+        </div>
+      </div>
+      <div class="flex-1 h-0.5 bg-blue-600 mx-4"></div>
+
+      <!-- Step 2 -->
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0"
+        >
+          2
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-900">
+            Curriculum Structure
+          </div>
+          <div class="text-[11px] text-slate-400">Topics & learning flow</div>
+        </div>
+      </div>
+      <div class="flex-1 h-0.5 bg-slate-200 mx-4"></div>
+
+      <!-- Step 3 -->
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0"
+        >
+          3
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-900">Content Components</div>
+          <div class="text-[11px] text-slate-400">Assets & resources</div>
+        </div>
+      </div>
+      <div class="flex-1 h-0.5 bg-slate-200 mx-4"></div>
+
+      <!-- Step 4 -->
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0"
+        >
+          4
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-900">Standards & Access</div>
+          <div class="text-[11px] text-slate-400">Workflow & visibility</div>
+        </div>
+      </div>
+      <div class="flex-1 h-0.5 bg-slate-200 mx-4"></div>
+
+      <!-- Step 5 -->
+      <div class="flex items-center gap-2.5">
+        <div
+          class="w-7 h-7 rounded-full bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center text-xs font-bold shrink-0"
+        >
+          5
+        </div>
+        <div>
+          <div class="text-xs font-bold text-slate-900">Review & Publish</div>
+          <div class="text-[11px] text-slate-400">Review and finalize</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form Layout: Left Form & Right Summary -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Main Column (2 spans) -->
+    <div class="lg:col-span-2 space-y-6">
+      <!-- 1. Pack Details Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+          <div
+            class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+          >
+            1
+          </div>
+          <h2 class="text-sm font-bold text-slate-900">Pack Details</h2>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs"
+        >
+          <!-- Pack Name -->
+          <div class="sm:col-span-2 md:col-span-1">
+            <label
+              for="pack-name-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Pack Name <span class="text-rose-500">*</span>
+            </label>
+            <input
+              id="pack-name-input"
+              type="text"
+              [ngModel]="packName()"
+              (ngModelChange)="packName.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              data-testid="input-pack-name"
+            />
+          </div>
+
+          <!-- Curriculum Type -->
+          <div>
+            <label
+              for="curriculum-type-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Curriculum Type <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="curriculum-type-input"
+              [ngModel]="curriculumType()"
+              (ngModelChange)="curriculumType.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Core Curriculum">Core Curriculum</option>
+              <option value="Elective">Elective</option>
+              <option value="Vocational">Vocational</option>
+              <option value="Specialized">Specialized</option>
+            </select>
+          </div>
+
+          <!-- Class Level -->
+          <div>
+            <label
+              for="class-level-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Class Level <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="class-level-input"
+              [ngModel]="classLevel()"
+              (ngModelChange)="classLevel.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="JSS 1 (Year 7)">JSS 1 (Year 7)</option>
+              <option value="JSS 2 (Year 8)">JSS 2 (Year 8)</option>
+              <option value="JSS 3 (Year 9)">JSS 3 (Year 9)</option>
+              <option value="SS 1 (Year 10)">SS 1 (Year 10)</option>
+              <option value="SS 2 (Year 11)">SS 2 (Year 11)</option>
+              <option value="SS 3 (Year 12)">SS 3 (Year 12)</option>
+            </select>
+          </div>
+
+          <!-- Subject -->
+          <div>
+            <label
+              for="subject-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Subject <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="subject-input"
+              [ngModel]="subject()"
+              (ngModelChange)="subject.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Mathematics">Mathematics</option>
+              <option value="English Language">English Language</option>
+              <option value="Basic Science">Basic Science</option>
+              <option value="Social Studies">Social Studies</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="Biology">Biology</option>
+              <option value="Further Mathematics">Further Mathematics</option>
+            </select>
+          </div>
+
+          <!-- Term -->
+          <div>
+            <label
+              for="term-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Term <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="term-input"
+              [ngModel]="term()"
+              (ngModelChange)="term.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="First Term">First Term</option>
+              <option value="Second Term">Second Term</option>
+              <option value="Third Term">Third Term</option>
+            </select>
+          </div>
+
+          <!-- Academic Session -->
+          <div>
+            <label
+              for="session-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Academic Session <span class="text-rose-500">*</span>
+            </label>
+            <div class="relative">
+              <span
+                class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"
+                aria-hidden="true"
+              >
+                calendar_today
+              </span>
+              <input
+                id="session-input"
+                type="text"
+                [ngModel]="academicSession()"
+                (ngModelChange)="academicSession.set($event)"
+                class="w-full pl-8 pr-3 py-2 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              />
+            </div>
+          </div>
+
+          <!-- Version -->
+          <div>
+            <label
+              for="version-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Version <span class="text-rose-500">*</span>
+            </label>
+            <input
+              id="version-input"
+              type="text"
+              [ngModel]="version()"
+              (ngModelChange)="version.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            />
+          </div>
+
+          <!-- Curriculum Source -->
+          <div class="sm:col-span-2">
+            <label
+              for="source-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Curriculum Source <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="source-input"
+              [ngModel]="curriculumSource()"
+              (ngModelChange)="curriculumSource.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Learno Master Curriculum">
+                Learno Master Curriculum
+              </option>
+              <option value="NERDC National Curriculum">
+                NERDC National Curriculum
+              </option>
+              <option value="Cambridge International Standard">
+                Cambridge International Standard
+              </option>
+              <option value="Institutional Customized Standard">
+                Institutional Customized Standard
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="text-xs">
+          <div class="flex items-center justify-between mb-1">
+            <label for="description-input" class="font-medium text-slate-700">
+              Description <span class="text-rose-500">*</span>
+            </label>
+            <span class="text-slate-400 text-[11px]"
+              >{{ characterCount() }} / 500</span
+            >
+          </div>
+          <textarea
+            id="description-input"
+            rows="3"
+            maxlength="500"
+            [ngModel]="description()"
+            (ngModelChange)="description.set($event)"
+            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none leading-relaxed"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- 2. Curriculum Structure (Weekly Topic Plan) Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div
+          class="flex items-center justify-between pb-3 border-b border-slate-100"
+        >
+          <div class="flex items-center gap-2">
+            <div
+              class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+            >
+              2
+            </div>
+            <h2 class="text-sm font-bold text-slate-900">
+              Curriculum Structure (Weekly Topic Plan)
+            </h2>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              (click)="openAddWeek()"
+              class="px-2.5 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 rounded-lg text-xs font-semibold flex items-center gap-1 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-sm" aria-hidden="true"
+                >add</span
+              >
+              Add Week
+            </button>
+            <button
+              type="button"
+              class="px-2.5 py-1.5 border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-lg text-xs font-medium flex items-center gap-1 cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-sm" aria-hidden="true"
+                >file_download</span
+              >
+              Import Plan
+            </button>
+          </div>
+        </div>
+
+        <!-- Weekly Topics Table -->
+        <div class="overflow-x-auto">
+          <table
+            class="w-full text-left text-xs"
+            aria-label="Weekly Topics Table"
+          >
+            <thead
+              class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200"
+            >
+              <tr>
+                <th scope="col" class="py-2.5 px-3 w-8"></th>
+                <th scope="col" class="py-2.5 px-3 whitespace-nowrap">Week</th>
+                <th scope="col" class="py-2.5 px-3 whitespace-nowrap">Topic</th>
+                <th scope="col" class="py-2.5 px-3">Learning Objective</th>
+                <th scope="col" class="py-2.5 px-3 whitespace-nowrap">
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  class="py-2.5 px-3 text-right whitespace-nowrap"
+                >
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 text-slate-700">
+              @for (week of visibleWeeks(); track week.id) {
+              <tr class="hover:bg-slate-50/80 transition-colors">
+                <td class="py-2.5 px-2 text-slate-400 cursor-grab">
+                  <span
+                    class="material-symbols-outlined text-base"
+                    aria-hidden="true"
+                    >drag_indicator</span
+                  >
+                </td>
+                <td
+                  class="py-2.5 px-3 font-semibold text-slate-900 whitespace-nowrap"
+                >
+                  {{ week.weekLabel }}
+                </td>
+                <td
+                  class="py-2.5 px-3 font-medium text-slate-800 whitespace-nowrap"
+                >
+                  {{ week.topic }}
+                </td>
+                <td class="py-2.5 px-3 text-slate-600 max-w-xs">
+                  {{ week.learningObjective }}
+                </td>
+                <td class="py-2.5 px-3 whitespace-nowrap">
+                  <span
+                    class="px-2 py-0.5 rounded text-[11px] font-semibold bg-purple-50 text-purple-700 border border-purple-200"
+                  >
+                    {{ week.status }}
+                  </span>
+                </td>
+                <td class="py-2.5 px-3 text-right whitespace-nowrap">
+                  <div class="flex items-center justify-end gap-1">
+                    <button
+                      type="button"
+                      class="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
+                      aria-label="Edit topic"
+                    >
+                      <span
+                        class="material-symbols-outlined text-sm"
+                        aria-hidden="true"
+                        >edit</span
+                      >
+                    </button>
+                    <button
+                      type="button"
+                      (click)="deleteWeek(week.id)"
+                      class="p-1 text-rose-400 hover:text-rose-600 rounded cursor-pointer"
+                      aria-label="Delete week"
+                    >
+                      <span
+                        class="material-symbols-outlined text-sm"
+                        aria-hidden="true"
+                        >delete</span
+                      >
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs text-slate-500"
+        >
+          <span
+            >Showing 1 to {{ visibleWeeks().length }} of {{
+            weeklyTopics().length }} weeks</span
+          >
+          <button
+            type="button"
+            (click)="toggleShowAllWeeks()"
+            class="text-blue-600 hover:text-blue-700 font-semibold cursor-pointer"
+          >
+            {{ showAllWeeks() ? 'Show Fewer Weeks' : 'View All Weeks →' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Content Components Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+          <div
+            class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+          >
+            3
+          </div>
+          <h2 class="text-sm font-bold text-slate-900">Content Components</h2>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+          @for (comp of contentComponents(); track comp.id) {
+          <label
+            class="flex items-start gap-3 p-3 rounded-lg border transition-all cursor-pointer select-none"
+            [ngClass]="comp.checked ? 'border-blue-400 bg-blue-50/30' : 'border-slate-200 bg-white hover:border-slate-300'"
+          >
+            <input
+              type="checkbox"
+              [checked]="comp.checked"
+              (change)="toggleComponent(comp.id)"
+              class="mt-1 rounded text-blue-600 focus:ring-blue-500 h-4 w-4"
+            />
+            <div class="flex-1 min-w-0">
+              <div
+                class="font-semibold text-xs text-slate-900 flex items-center gap-1.5"
+              >
+                <span
+                  class="material-symbols-outlined text-sm text-blue-600"
+                  aria-hidden="true"
+                  >{{ comp.icon }}</span
+                >
+                {{ comp.name }}
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5 leading-tight">
+                {{ comp.description }}
+              </div>
+            </div>
+          </label>
+          }
+        </div>
+      </div>
+
+      <!-- 4. Standards & Access Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+          <div
+            class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+          >
+            4
+          </div>
+          <h2 class="text-sm font-bold text-slate-900">Standards & Access</h2>
+        </div>
+
+        <div
+          class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-xs"
+        >
+          <!-- Approval Workflow -->
+          <div>
+            <label
+              for="workflow-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Approval Workflow <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="workflow-input"
+              [ngModel]="approvalWorkflow()"
+              (ngModelChange)="approvalWorkflow.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Curriculum Review Workflow">
+                Curriculum Review Workflow
+              </option>
+              <option value="Fast-Track Editorial">Fast-Track Editorial</option>
+              <option value="Strict Compliance Review">
+                Strict Compliance Review
+              </option>
+            </select>
+          </div>
+
+          <!-- Assigned Template -->
+          <div>
+            <label
+              for="template-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Assigned Template <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="template-input"
+              [ngModel]="assignedTemplate()"
+              (ngModelChange)="assignedTemplate.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Learno Curriculum Template">
+                Learno Curriculum Template
+              </option>
+              <option value="STEM Blueprint Template">
+                STEM Blueprint Template
+              </option>
+              <option value="Basic Education Template">
+                Basic Education Template
+              </option>
+            </select>
+          </div>
+
+          <!-- Schools / Institutions Access -->
+          <div>
+            <label
+              for="schools-access-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Schools / Institutions Access <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="schools-access-input"
+              [ngModel]="schoolsAccess()"
+              (ngModelChange)="schoolsAccess.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="All Schools">All Schools</option>
+              <option value="Selected Schools Only">
+                Selected Schools Only
+              </option>
+              <option value="Pilot Schools Group">Pilot Schools Group</option>
+            </select>
+          </div>
+
+          <!-- Subscription Tier -->
+          <div>
+            <label
+              for="sub-tier-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Subscription Tier <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="sub-tier-input"
+              [ngModel]="subscriptionTier()"
+              (ngModelChange)="subscriptionTier.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Standard & Premium">Standard & Premium</option>
+              <option value="Premium Only">Premium Only</option>
+              <option value="All Tiers (Free Included)">
+                All Tiers (Free Included)
+              </option>
+            </select>
+          </div>
+
+          <!-- Publish Status -->
+          <div class="sm:col-span-2">
+            <label
+              for="publish-status-input"
+              class="block font-medium text-slate-700 mb-1"
+            >
+              Publish Status <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="publish-status-input"
+              [ngModel]="publishStatus()"
+              (ngModelChange)="publishStatus.set($event)"
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            >
+              <option value="Draft (Not Visible)">Draft (Not Visible)</option>
+              <option value="Submit for Review">Submit for Review</option>
+              <option value="Publish Immediately">Publish Immediately</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar Column -->
+    <div class="space-y-6">
+      <!-- 5. Review Summary Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
+        <div class="flex items-center gap-2 pb-3 border-b border-slate-100">
+          <div
+            class="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-bold"
+          >
+            5
+          </div>
+          <h2 class="text-sm font-bold text-slate-900">Review Summary</h2>
+        </div>
+
+        <div class="space-y-2.5 text-xs text-slate-600">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Curriculum</span>
+            <span class="font-semibold text-slate-900 truncate max-w-[170px]"
+              >{{ packName() }}</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Total Weeks</span>
+            <span class="font-semibold text-slate-900"
+              >{{ weeklyTopics().length }}</span
+            >
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Total Topics</span>
+            <span class="font-semibold text-slate-900">48</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Included Assets</span>
+            <span class="font-semibold text-slate-900">132</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Content Components</span>
+            <span class="font-semibold text-slate-900"
+              >{{ selectedComponentsCount() }} of 10</span
+            >
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-100 space-y-2 text-xs">
+          <div class="flex items-center justify-between font-semibold">
+            <span class="text-slate-700">Completeness</span>
+            <span class="text-emerald-600"
+              >{{ completenessPercentage() }}%</span
+            >
+          </div>
+          <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div
+              class="h-full rounded-full bg-emerald-500 transition-all duration-300"
+              [style.width.%]="completenessPercentage()"
+            ></div>
+          </div>
+        </div>
+
+        <div class="pt-2 space-y-2 text-xs border-t border-slate-100">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Reviewer Status</span>
+            <span
+              class="inline-flex items-center gap-1 font-semibold text-amber-600"
+            >
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span>
+              Pending Review
+            </span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Estimated Time to Publish</span>
+            <span class="font-semibold text-slate-900">2–3 days</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Upload & Link Assets Card -->
+      <div class="bg-white rounded-xl border border-slate-200 p-5 space-y-3">
+        <h3 class="text-sm font-bold text-slate-900 mb-2">
+          Upload & Link Assets
+        </h3>
+
+        <button
+          type="button"
+          class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:border-blue-400 hover:bg-blue-50/20 text-left transition-colors cursor-pointer group"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="material-symbols-outlined text-blue-600 text-xl"
+              aria-hidden="true"
+              >cloud_upload</span
+            >
+            <div>
+              <div
+                class="text-xs font-semibold text-slate-900 group-hover:text-blue-600"
+              >
+                Upload Files
+              </div>
+              <div class="text-[11px] text-slate-400">
+                Upload documents, videos, images, PDFs
+              </div>
+            </div>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-400 group-hover:text-blue-600 text-sm"
+            aria-hidden="true"
+            >chevron_right</span
+          >
+        </button>
+
+        <button
+          type="button"
+          class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/20 text-left transition-colors cursor-pointer group"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="material-symbols-outlined text-emerald-600 text-xl"
+              aria-hidden="true"
+              >auto_awesome_motion</span
+            >
+            <div>
+              <div
+                class="text-xs font-semibold text-slate-900 group-hover:text-emerald-600"
+              >
+                Import from Template
+              </div>
+              <div class="text-[11px] text-slate-400">
+                Use a curriculum template to speed up
+              </div>
+            </div>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-400 group-hover:text-emerald-600 text-sm"
+            aria-hidden="true"
+            >chevron_right</span
+          >
+        </button>
+
+        <button
+          type="button"
+          class="w-full flex items-center justify-between p-3 rounded-lg border border-slate-200 hover:border-purple-400 hover:bg-purple-50/20 text-left transition-colors cursor-pointer group"
+        >
+          <div class="flex items-center gap-3">
+            <span
+              class="material-symbols-outlined text-purple-600 text-xl"
+              aria-hidden="true"
+              >link</span
+            >
+            <div>
+              <div
+                class="text-xs font-semibold text-slate-900 group-hover:text-purple-600"
+              >
+                Link Existing Assets
+              </div>
+              <div class="text-[11px] text-slate-400">
+                Link from existing asset library
+              </div>
+            </div>
+          </div>
+          <span
+            class="material-symbols-outlined text-slate-400 group-hover:text-purple-600 text-sm"
+            aria-hidden="true"
+            >chevron_right</span
+          >
+        </button>
+      </div>
+
+      <!-- Tips for a great curriculum pack -->
+      <div
+        class="bg-gradient-to-br from-blue-50 to-indigo-50/60 rounded-xl border border-blue-100 p-5 space-y-3"
+      >
+        <div class="flex items-center gap-2">
+          <span
+            class="material-symbols-outlined text-blue-600 text-xl"
+            aria-hidden="true"
+            >lightbulb</span
+          >
+          <h3 class="text-xs font-bold text-slate-900">
+            Tips for a great curriculum pack
+          </h3>
+        </div>
+
+        <ul class="space-y-2 text-xs text-slate-600">
+          <li class="flex items-start gap-2">
+            <span
+              class="material-symbols-outlined text-emerald-600 text-sm mt-0.5"
+              aria-hidden="true"
+              >check_circle</span
+            >
+            <span>Ensure learning objectives are measurable.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="material-symbols-outlined text-emerald-600 text-sm mt-0.5"
+              aria-hidden="true"
+              >check_circle</span
+            >
+            <span>Include varied content types for engagement.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="material-symbols-outlined text-emerald-600 text-sm mt-0.5"
+              aria-hidden="true"
+              >check_circle</span
+            >
+            <span>Align assessments with learning objectives.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span
+              class="material-symbols-outlined text-emerald-600 text-sm mt-0.5"
+              aria-hidden="true"
+              >check_circle</span
+            >
+            <span>Review for accuracy before publishing.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Week Modal Dialog -->
+  @if (isAddWeekModalOpen()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="add-week-modal-title"
+  >
+    <div
+      class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-md w-full p-5 space-y-4"
+    >
+      <div
+        class="flex items-center justify-between pb-3 border-b border-slate-100"
+      >
+        <h3 id="add-week-modal-title" class="text-sm font-bold text-slate-900">
+          Add Week to Topic Plan
+        </h3>
+        <button
+          type="button"
+          (click)="closeAddWeek()"
+          class="w-7 h-7 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center cursor-pointer"
+          aria-label="Close add week dialog"
+        >
+          <span class="material-symbols-outlined text-base" aria-hidden="true"
+            >close</span
+          >
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label
+            for="new-topic-title"
+            class="block font-medium text-slate-700 mb-1"
+          >
+            Topic Title <span class="text-rose-500">*</span>
+          </label>
+          <input
+            id="new-topic-title"
+            type="text"
+            [ngModel]="newWeekTopic()"
+            (ngModelChange)="newWeekTopic.set($event)"
+            placeholder="e.g. Ratio and Proportion"
+            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+          />
+        </div>
+
+        <div>
+          <label
+            for="new-topic-objective"
+            class="block font-medium text-slate-700 mb-1"
+          >
+            Learning Objective
+          </label>
+          <textarea
+            id="new-topic-objective"
+            rows="3"
+            [ngModel]="newWeekObjective()"
+            (ngModelChange)="newWeekObjective.set($event)"
+            placeholder="Describe measurable learner outcomes..."
+            class="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 resize-none"
+          ></textarea>
+        </div>
+      </div>
+
+      <div
+        class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 text-xs"
+      >
+        <button
+          type="button"
+          (click)="closeAddWeek()"
+          class="px-3 py-1.5 border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg cursor-pointer"
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          (click)="saveNewWeek()"
+          [disabled]="!newWeekTopic().trim()"
+          class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold cursor-pointer"
+        >
+          Save Week
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+</div>

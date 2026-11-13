@@ -1,0 +1,152 @@
+<section
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+  aria-label="Curriculum Quick Actions"
+>
+  <!-- Create Pack -->
+  <button
+    type="button"
+    class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-blue-400 hover:shadow-sm transition-all text-left group cursor-pointer"
+    (click)="createPack.emit()"
+    data-testid="quick-action-create-pack"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >post_add</span
+        >
+      </div>
+      <div>
+        <h4
+          class="text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors"
+        >
+          Create Pack
+        </h4>
+        <p class="text-xs text-slate-500">
+          Create a new curriculum pack from scratch
+        </p>
+      </div>
+    </div>
+    <span
+      class="material-symbols-outlined text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all text-lg shrink-0 ml-2"
+      aria-hidden="true"
+    >
+      chevron_right
+    </span>
+  </button>
+
+  <!-- Assign Template -->
+  <button
+    type="button"
+    class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-emerald-400 hover:shadow-sm transition-all text-left group cursor-pointer"
+    (click)="assignTemplate.emit()"
+    data-testid="quick-action-assign-template"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >auto_awesome_motion</span
+        >
+      </div>
+      <div>
+        <h4
+          class="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 transition-colors"
+        >
+          Assign Template
+        </h4>
+        <p class="text-xs text-slate-500">
+          Apply curriculum template to a class or subject
+        </p>
+      </div>
+    </div>
+    <span
+      class="material-symbols-outlined text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all text-lg shrink-0 ml-2"
+      aria-hidden="true"
+    >
+      chevron_right
+    </span>
+  </button>
+
+  <!-- Review Queue -->
+  <button
+    type="button"
+    class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-amber-400 hover:shadow-sm transition-all text-left group cursor-pointer"
+    (click)="reviewQueue.emit()"
+    data-testid="quick-action-review-queue"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >rule</span
+        >
+      </div>
+      <div>
+        <h4
+          class="text-sm font-semibold text-slate-900 group-hover:text-amber-600 transition-colors"
+        >
+          Review Queue
+        </h4>
+        <p class="text-xs text-slate-500">Review and approve pending content</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0 ml-2">
+      <span
+        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"
+      >
+        {{ pendingReviewCount() }}
+      </span>
+      <span
+        class="material-symbols-outlined text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all text-lg"
+        aria-hidden="true"
+      >
+        chevron_right
+      </span>
+    </div>
+  </button>
+
+  <!-- Missing Assets -->
+  <button
+    type="button"
+    class="flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl hover:border-rose-400 hover:shadow-sm transition-all text-left group cursor-pointer"
+    (click)="missingAssets.emit()"
+    data-testid="quick-action-missing-assets"
+  >
+    <div class="flex items-center gap-3">
+      <div
+        class="w-10 h-10 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:bg-rose-600 group-hover:text-white transition-colors"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >warning_amber</span
+        >
+      </div>
+      <div>
+        <h4
+          class="text-sm font-semibold text-slate-900 group-hover:text-rose-600 transition-colors"
+        >
+          Missing Assets
+        </h4>
+        <p class="text-xs text-slate-500">
+          Identify and fix missing content assets
+        </p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5 shrink-0 ml-2">
+      <span
+        class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800"
+      >
+        {{ missingAssetsCount() }}
+      </span>
+      <span
+        class="material-symbols-outlined text-slate-400 group-hover:text-rose-600 group-hover:translate-x-0.5 transition-all text-lg"
+        aria-hidden="true"
+      >
+        chevron_right
+      </span>
+    </div>
+  </button>
+</section>

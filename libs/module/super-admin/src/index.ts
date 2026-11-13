@@ -14,3 +14,7 @@ export * from './schools/school-onboard/school-onboard';
 export * from './data/super-admin-users.models';
 export * from './data/super-admin-users.data';
 export * from './users-roles/users-roles';
+export * from './data/super-admin-curriculum.models';
+export * from './data/super-admin-curriculum.data';
+export * from './curriculum-content/curriculum-content';
+export * from './curriculum-content/create-pack/create-pack';

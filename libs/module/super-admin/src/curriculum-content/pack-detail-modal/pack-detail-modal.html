@@ -1,0 +1,211 @@
+<div
+  class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs overflow-y-auto"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="pack-detail-title"
+>
+  <div
+    class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8"
+  >
+    <!-- Header -->
+    <div
+      class="flex items-start justify-between p-6 border-b border-slate-200 bg-slate-50/50"
+    >
+      <div class="flex items-center gap-3">
+        <div
+          class="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"
+        >
+          <span class="material-symbols-outlined text-2xl" aria-hidden="true"
+            >menu_book</span
+          >
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 id="pack-detail-title" class="text-lg font-bold text-slate-900">
+              {{ pack().name }}
+            </h2>
+            <span
+              class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold"
+              [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border border-emerald-200': pack().status === 'Approved',
+                'bg-amber-50 text-amber-700 border border-amber-200': pack().status === 'Pending Review',
+                'bg-orange-50 text-orange-700 border border-orange-200': pack().status === 'Needs Update',
+                'bg-purple-50 text-purple-700 border border-purple-200': pack().status === 'Draft'
+              }"
+            >
+              {{ pack().status }}
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 mt-0.5">
+            {{ pack().classLevel }} • {{ pack().subject }} • {{ pack().term }} •
+            Version {{ pack().version }}
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        (click)="modalClose.emit()"
+        class="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+        aria-label="Close dialog"
+      >
+        <span class="material-symbols-outlined text-xl" aria-hidden="true"
+          >close</span
+        >
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="p-6 space-y-5 max-h-[75vh] overflow-y-auto text-xs">
+      <!-- Key Metrics Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Completion</span>
+          <span class="text-base font-bold text-slate-900"
+            >{{ pack().completionPercentage }}%</span
+          >
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Weekly Topics</span>
+          <span class="text-base font-bold text-slate-900"
+            >{{ pack().topicsCount }}</span
+          >
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <span class="text-slate-400 block text-[11px]">Included Assets</span>
+          <span class="text-base font-bold text-slate-900"
+            >{{ pack().includedAssetsCount || 120 }}</span
+          >
+        </div>
+        <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+          <span class="text-slate-400 block text-[11px]"
+            >Standards Coverage</span
+          >
+          <span class="text-base font-bold text-emerald-600"
+            >{{ pack().standardsCoverage || 92 }}%</span
+          >
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div>
+        <h4
+          class="font-semibold text-slate-900 mb-1 text-xs uppercase tracking-wider"
+        >
+          Curriculum Description
+        </h4>
+        <p
+          class="text-slate-600 leading-relaxed bg-slate-50 p-3 rounded-lg border border-slate-100"
+        >
+          {{ pack().description || 'No detailed description provided for this
+          curriculum pack.' }}
+        </p>
+      </div>
+
+      <!-- Metadata & Governance -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <h4
+            class="font-semibold text-slate-900 mb-2 text-xs uppercase tracking-wider"
+          >
+            Curriculum Details
+          </h4>
+          <dl class="space-y-1.5 text-slate-600">
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Curriculum Type</dt>
+              <dd class="font-medium text-slate-900">
+                {{ pack().curriculumType }}
+              </dd>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Academic Session</dt>
+              <dd class="font-medium text-slate-900">
+                {{ pack().academicSession || '2024/2025' }}
+              </dd>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Components Ready</dt>
+              <dd class="font-medium text-slate-900">
+                {{ pack().componentsCount || '9 of 10' }}
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div>
+          <h4
+            class="font-semibold text-slate-900 mb-2 text-xs uppercase tracking-wider"
+          >
+            Author & Governance
+          </h4>
+          <dl class="space-y-1.5 text-slate-600">
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Lead Author</dt>
+              <dd class="font-medium text-slate-900">{{ pack().author }}</dd>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Last Updated</dt>
+              <dd class="font-medium text-slate-900">
+                {{ pack().lastUpdated }}
+              </dd>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-100">
+              <dt class="text-slate-400">Pack Identifier</dt>
+              <dd class="font-mono text-slate-900">{{ pack().id }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Actions -->
+    <div
+      class="p-4 bg-slate-50 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs"
+    >
+      <button
+        type="button"
+        (click)="delete.emit(pack().id)"
+        class="px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-medium flex items-center gap-1 cursor-pointer"
+      >
+        <span class="material-symbols-outlined text-base" aria-hidden="true"
+          >delete</span
+        >
+        Delete Pack
+      </button>
+
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          (click)="modalClose.emit()"
+          class="px-4 py-2 border border-slate-200 rounded-lg text-slate-700 hover:bg-white font-medium transition-colors cursor-pointer"
+        >
+          Close
+        </button>
+
+        @if (pack().status !== 'Approved') {
+        <button
+          type="button"
+          (click)="statusChange.emit({ id: pack().id, status: 'Approved' })"
+          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1 cursor-pointer shadow-sm"
+        >
+          <span class="material-symbols-outlined text-base" aria-hidden="true"
+            >check_circle</span
+          >
+          Approve Pack
+        </button>
+        }
+
+        <button
+          type="button"
+          (click)="edit.emit(pack())"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors flex items-center gap-1 cursor-pointer shadow-sm"
+        >
+          <span class="material-symbols-outlined text-base" aria-hidden="true"
+            >edit</span
+          >
+          Edit Pack
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
