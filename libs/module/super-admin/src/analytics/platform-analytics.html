@@ -1,0 +1,248 @@
+<div class="analytics-container">
+  <!-- Top Header / Filter Controls -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Platform Analytics</h1>
+      <p class="page-subtitle">
+        Monitor usage, adoption, academic activity, and platform performance
+        across all institutions.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <!-- Date Range Selector matching Dashboard Dropdown -->
+      <div class="date-picker-wrap">
+        <button
+          type="button"
+          class="date-picker-btn"
+          [attr.aria-expanded]="isDatePickerOpen()"
+          aria-haspopup="true"
+          (click)="toggleDatePicker()"
+          data-testid="date-picker-btn"
+        >
+          <i class="material-symbols-outlined icon-calendar">calendar_today</i>
+          <span>{{ store.selectedAnalyticsDateRange() }}</span>
+          <i class="material-symbols-outlined icon-chevron">expand_more</i>
+        </button>
+
+        @if (isDatePickerOpen()) {
+        <div class="date-picker-menu" role="menu">
+          @for (range of dateRanges; track range) {
+          <button
+            type="button"
+            class="date-option"
+            [class.selected]="store.selectedAnalyticsDateRange() === range"
+            role="menuitem"
+            (click)="selectDateRange(range)"
+          >
+            {{ range }}
+          </button>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Export Report Button -->
+      <button
+        type="button"
+        (click)="exportReport()"
+        class="btn-outline"
+        data-testid="export-btn"
+      >
+        <i class="material-symbols-outlined">file_download</i>
+        <span>Export Report</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- KPI Metrics Cards (6 metrics) -->
+  <school-hub-analytics-metrics [metrics]="store.analyticsMetrics()" />
+
+  <!-- Main Grid: Charts & Visuals (8 cols) + Right Sidebar (4 cols) -->
+  <div class="grid grid-cols-1 xl:grid-cols-12 gap-5 items-start">
+    <!-- Left Main Column (8 cols on XL) -->
+    <div class="xl:col-span-8 space-y-5">
+      <!-- Row 1: Cards 1 & 2 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <school-hub-usage-trend-chart
+          [points]="store.platformUsageTrendPoints()"
+          [period]="store.selectedUsageTrendPeriod()"
+          (periodChange)="store.setUsageTrendPeriod($event)"
+        />
+        <school-hub-active-institutions-chart
+          [institutions]="store.topActiveInstitutions()"
+          [period]="store.selectedActiveInstitutionsPeriod()"
+          (periodChange)="store.setActiveInstitutionsPeriod($event)"
+        />
+      </div>
+
+      <!-- Row 2: Cards 3, 4, 5 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <school-hub-usage-role-chart [roles]="store.roleUsage()" />
+        <school-hub-assessment-trend-chart
+          [points]="store.assessmentCompletionTrend()"
+          [period]="store.selectedAssessmentTrendPeriod()"
+          (periodChange)="store.setAssessmentTrendPeriod($event)"
+        />
+        <school-hub-subject-consumption-chart
+          [items]="store.subjectConsumption()"
+          [period]="store.selectedSubjectConsumptionPeriod()"
+          (periodChange)="store.setSubjectConsumptionPeriod($event)"
+        />
+      </div>
+
+      <!-- Row 3: Cards 6 & 7 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <school-hub-region-spread-card [regions]="store.regionSpread()" />
+        <school-hub-engagement-heatmap
+          [cells]="store.engagementHeatmap()"
+          [period]="store.selectedHeatmapPeriod()"
+          (periodChange)="store.setHeatmapPeriod($event)"
+        />
+      </div>
+    </div>
+
+    <!-- Right Sidebar Column (4 cols on XL) -->
+    <div class="xl:col-span-4">
+      <school-hub-analytics-sidebar
+        [attentionSchools]="store.attentionSchoolsList()"
+        [adoptionInsights]="store.adoptionInsights()"
+        [activities]="store.recentPlatformActivityItems()"
+        (viewAllSchools)="navigateToSchools()"
+        (selectSchool)="handleSchoolSelect($event)"
+        (viewFullInsights)="showToast('Opening Full Adoption Insights Report...')"
+        (viewAllActivities)="showToast('Showing all recent activity logs')"
+      />
+    </div>
+  </div>
+
+  <!-- Bottom Platform Performance Bar -->
+  <school-hub-analytics-performance-bar
+    [summary]="store.performanceSummary()"
+  />
+
+  <!-- Attention School Detail Modal -->
+  @if (selectedSchool(); as school) {
+  <div
+    class="fixed inset-0 z-50 overflow-y-auto bg-gray-900/50 backdrop-blur-xs flex items-center justify-center p-4"
+  >
+    <div
+      class="bg-white rounded-xl shadow-xl max-w-lg w-full overflow-hidden border border-gray-100"
+    >
+      <!-- Modal Header -->
+      <div
+        class="px-6 py-4 border-b border-gray-100 flex items-center justify-between"
+      >
+        <div class="flex items-center gap-3">
+          <div
+            class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm"
+          >
+            {{ school.name.charAt(0) }}
+          </div>
+          <div>
+            <h2 class="text-base font-semibold text-gray-900">
+              {{ school.name }}
+            </h2>
+            <p class="text-xs text-gray-500">
+              ID: {{ school.id }} &bull; Engagement Alert
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          (click)="closeSchoolModal()"
+          class="text-gray-400 hover:text-gray-600 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
+          aria-label="Close modal"
+        >
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3 text-center">
+          <div class="bg-red-50 p-3 rounded-lg border border-red-100">
+            <span class="text-xs font-medium text-red-600 block"
+              >Engagement Rate</span
+            >
+            <span class="text-xl font-bold text-red-700"
+              >{{ school.engagementRate }}%</span
+            >
+          </div>
+          <div class="bg-amber-50 p-3 rounded-lg border border-amber-100">
+            <span class="text-xs font-medium text-amber-600 block"
+              >Alert Severity</span
+            >
+            <span class="text-xl font-bold text-amber-800 capitalize"
+              >{{ school.status }}</span
+            >
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <h3
+            class="text-xs font-semibold text-gray-700 uppercase tracking-wider"
+          >
+            Identified Risk Factor
+          </h3>
+          <div
+            class="p-3 bg-amber-50/60 border border-amber-200/60 rounded-lg text-xs text-amber-800 flex items-start gap-2"
+          >
+            <span
+              class="material-symbols-outlined text-amber-500 text-sm mt-0.5"
+              >warning</span
+            >
+            <span>{{ school.reason }}</span>
+          </div>
+        </div>
+
+        <div class="space-y-1.5">
+          <h3
+            class="text-xs font-semibold text-gray-700 uppercase tracking-wider"
+          >
+            Recommended Interventions
+          </h3>
+          <ul class="text-xs text-gray-600 space-y-1 list-disc list-inside">
+            <li>
+              Schedule an onboarding re-engagement session with school
+              administration.
+            </li>
+            <li>
+              Assign regional education success specialist for teacher training.
+            </li>
+            <li>Verify sync connector status for student roster updates.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Modal Actions -->
+      <div
+        class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-end gap-3"
+      >
+        <button
+          type="button"
+          (click)="store.dismissAttentionSchool(school.id); closeSchoolModal()"
+          class="px-3.5 py-2 text-xs font-medium text-gray-700 hover:bg-gray-200/60 rounded-lg transition-colors cursor-pointer"
+        >
+          Dismiss Alert
+        </button>
+        <button
+          type="button"
+          (click)="closeSchoolModal(); navigateToSchools()"
+          class="px-4 py-2 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
+        >
+          View School Details
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- Toast Notification -->
+  @if (toastMessage()) {
+  <div class="toast-notification" role="status">
+    <i class="material-symbols-outlined text-emerald-400">check_circle</i>
+    <span>{{ toastMessage() }}</span>
+  </div>
+  }
+</div>

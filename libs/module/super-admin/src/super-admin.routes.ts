@@ -77,13 +77,22 @@ export const superAdminRoutes: Routes = [
             (m) => m.CreateAssessmentComponent,
           ),
       },
+      {
+        path: 'analytics',
+        title: 'Platform Analytics | Learno Super Admin',
+        loadComponent: () =>
+          import('./analytics/platform-analytics').then(
+            (m) => m.PlatformAnalyticsComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
           page.path !== 'schools' &&
           page.path !== 'users-roles' &&
           page.path !== 'curriculum-content' &&
-          page.path !== 'assessments-qb',
+          page.path !== 'assessments-qb' &&
+          page.path !== 'analytics',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,

@@ -1,0 +1,73 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="flex items-start gap-2.5">
+      <span class="badge-number">5</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h3 class="card-title">Content Consumption by Subject</h3>
+          <span
+            class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+            title="Total hours and lessons completed broken down by academic subjects"
+          >
+            info
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="shrink-0">
+      <select
+        id="subject-consumption-period"
+        aria-label="Filter content consumption by period"
+        [ngModel]="period()"
+        (ngModelChange)="onPeriodChange($event)"
+        class="period-select"
+        data-testid="subject-period-select"
+      >
+        @for (p of periods; track p) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Bars List -->
+  <div class="space-y-3.5 my-auto">
+    @for (item of items(); track item.subject) {
+    <div class="grid grid-cols-12 gap-2 items-center text-xs">
+      <!-- Subject Name -->
+      <div
+        class="col-span-4 font-medium text-slate-700 truncate"
+        [title]="item.subject"
+      >
+        {{ item.subject }}
+      </div>
+
+      <!-- Horizontal Progress Bar -->
+      <div class="col-span-5 flex items-center">
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div
+            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="item.percentage"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Value / Total Lessons or Hours -->
+      <div class="col-span-3 text-right font-mono font-semibold text-slate-700">
+        {{ item.value | number }}
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Bottom Details -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+  >
+    <span>STEM subjects represent 64%</span>
+    <span>Updated today</span>
+  </div>
+</div>

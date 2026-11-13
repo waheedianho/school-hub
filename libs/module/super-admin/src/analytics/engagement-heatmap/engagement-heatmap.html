@@ -1,0 +1,94 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="flex items-start gap-2.5">
+      <span class="badge-number">7</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h3 class="card-title">Engagement Heatmap</h3>
+          <span
+            class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+            title="Hourly and day-of-week engagement intensity across institutions"
+          >
+            info
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="shrink-0">
+      <select
+        id="heatmap-period"
+        aria-label="Filter engagement heatmap by period"
+        [ngModel]="period()"
+        (ngModelChange)="onPeriodChange($event)"
+        class="period-select"
+        data-testid="heatmap-period-select"
+      >
+        @for (p of periods; track p) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Heatmap Grid -->
+  <div class="overflow-x-auto my-auto">
+    <div class="min-w-[320px]">
+      <!-- Day Headers -->
+      <div
+        class="grid grid-cols-12 gap-1.5 mb-1.5 text-[10px] text-slate-400 font-medium text-center"
+      >
+        <div class="col-span-4 text-left"></div>
+        @for (d of days; track d) {
+        <div class="col-span-1">{{ d }}</div>
+        }
+      </div>
+
+      <!-- 4 Weeks Rows -->
+      @for (w of weeks; track w.key) {
+      <div class="grid grid-cols-12 gap-1.5 items-center mb-1.5 text-xs">
+        <!-- Week label -->
+        <div
+          class="col-span-4 text-[11px] font-medium text-slate-600 truncate"
+          [title]="w.label"
+        >
+          {{ w.label }}
+        </div>
+
+        <!-- 7 Days Intensity Squares -->
+        @for (d of days; track d) {
+        <div
+          class="col-span-1 aspect-square rounded-sm transition-all duration-150 hover:scale-110 cursor-pointer"
+          [ngClass]="{
+            'bg-blue-100/60': getCell(w.key, d)?.intensity === 1,
+            'bg-blue-200': getCell(w.key, d)?.intensity === 2,
+            'bg-blue-400': getCell(w.key, d)?.intensity === 3,
+            'bg-blue-600': getCell(w.key, d)?.intensity === 4,
+            'bg-blue-800': getCell(w.key, d)?.intensity === 5,
+            'bg-slate-50': !getCell(w.key, d)
+          }"
+          [title]="w.key + ' ' + d + ': ' + (getCell(w.key, d)?.value || 0) + ' active users'"
+        ></div>
+        }
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Legend Scale -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+  >
+    <span>Lower Activity</span>
+    <div class="flex items-center gap-1">
+      <span class="w-2.5 h-2.5 rounded-xs bg-blue-100/60"></span>
+      <span class="w-2.5 h-2.5 rounded-xs bg-blue-200"></span>
+      <span class="w-2.5 h-2.5 rounded-xs bg-blue-400"></span>
+      <span class="w-2.5 h-2.5 rounded-xs bg-blue-600"></span>
+      <span class="w-2.5 h-2.5 rounded-xs bg-blue-800"></span>
+    </div>
+    <span>Higher Activity</span>
+  </div>
+</div>

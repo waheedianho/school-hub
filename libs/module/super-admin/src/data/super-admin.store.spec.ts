@@ -294,4 +294,46 @@ describe('SuperAdminStore', () => {
         ?.status,
     ).toBe('Revisions Requested');
   });
+
+  it('should initialize platform analytics state and computeds', () => {
+    expect(store.analyticsMetrics().length).toBe(6);
+    expect(store.platformUsageTrendPoints().length).toBeGreaterThan(0);
+    expect(store.topActiveInstitutions().length).toBe(5);
+    expect(store.roleUsage().length).toBe(4);
+    expect(store.totalActiveLearnersCount()).toBe(12935);
+    expect(store.totalActiveSchoolsCount()).toBe(248);
+    expect(store.attentionSchoolsList().length).toBe(3);
+    expect(store.recentPlatformActivityItems().length).toBe(5);
+    expect(store.performanceSummary().avgSessionDuration).toBe('24m 36s');
+  });
+
+  it('should update analytics periods and date range', () => {
+    store.setAnalyticsDateRange('May 19 – May 25, 2025');
+    expect(store.selectedAnalyticsDateRange()).toBe('May 19 – May 25, 2025');
+
+    store.setUsageTrendPeriod('Last 7 Days');
+    expect(store.selectedUsageTrendPeriod()).toBe('Last 7 Days');
+
+    store.setActiveInstitutionsPeriod('This Term');
+    expect(store.selectedActiveInstitutionsPeriod()).toBe('This Term');
+
+    store.setAssessmentTrendPeriod('This Month');
+    expect(store.selectedAssessmentTrendPeriod()).toBe('This Month');
+
+    store.setSubjectConsumptionPeriod('This Year');
+    expect(store.selectedSubjectConsumptionPeriod()).toBe('This Year');
+
+    store.setHeatmapPeriod('Last 60 Days');
+    expect(store.selectedHeatmapPeriod()).toBe('Last 60 Days');
+  });
+
+  it('should dismiss attention school', () => {
+    const initialCount = store.attentionSchoolsList().length;
+    const firstId = store.attentionSchoolsList()[0].id;
+    store.dismissAttentionSchool(firstId);
+    expect(store.attentionSchoolsList().length).toBe(initialCount - 1);
+    expect(store.attentionSchoolsList().some((s) => s.id === firstId)).toBe(
+      false,
+    );
+  });
 });

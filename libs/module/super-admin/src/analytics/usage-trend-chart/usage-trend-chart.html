@@ -1,0 +1,203 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="flex items-start gap-2.5">
+      <span class="badge-number">1</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h3 class="card-title">Platform Usage Trend</h3>
+          <span
+            class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+            title="Aggregated daily active unique users authenticated across all school portals"
+          >
+            info
+          </span>
+        </div>
+        <p class="card-subtitle">
+          Daily active users (DAU) across the platform
+        </p>
+      </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="shrink-0">
+      <select
+        id="usage-trend-period"
+        aria-label="Filter usage trend by time period"
+        [ngModel]="period()"
+        (ngModelChange)="onPeriodChange($event)"
+        class="period-select"
+        data-testid="period-select"
+      >
+        @for (p of periods; track p) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Chart Area -->
+  <div class="relative w-full aspect-[2.6/1] min-h-[160px] max-h-[220px]">
+    <svg class="w-full h-full" viewBox="0 0 500 160" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="dauGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.25" />
+          <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.0" />
+        </linearGradient>
+      </defs>
+
+      <!-- Grid lines & Y-axis labels -->
+      <!-- 10K (y=20) -->
+      <line
+        x1="35"
+        y1="20"
+        x2="485"
+        y2="20"
+        stroke="#f1f5f9"
+        stroke-width="1"
+      />
+      <text
+        x="28"
+        y="23"
+        text-anchor="end"
+        class="text-[9px] fill-slate-400 font-sans"
+      >
+        10K
+      </text>
+
+      <!-- 7.5K (y=50) -->
+      <line
+        x1="35"
+        y1="50"
+        x2="485"
+        y2="50"
+        stroke="#f1f5f9"
+        stroke-width="1"
+      />
+      <text
+        x="28"
+        y="53"
+        text-anchor="end"
+        class="text-[9px] fill-slate-400 font-sans"
+      >
+        7.5K
+      </text>
+
+      <!-- 5K (y=80) -->
+      <line
+        x1="35"
+        y1="80"
+        x2="485"
+        y2="80"
+        stroke="#f1f5f9"
+        stroke-width="1"
+      />
+      <text
+        x="28"
+        y="83"
+        text-anchor="end"
+        class="text-[9px] fill-slate-400 font-sans"
+      >
+        5K
+      </text>
+
+      <!-- 2.5K (y=110) -->
+      <line
+        x1="35"
+        y1="110"
+        x2="485"
+        y2="110"
+        stroke="#f1f5f9"
+        stroke-width="1"
+      />
+      <text
+        x="28"
+        y="113"
+        text-anchor="end"
+        class="text-[9px] fill-slate-400 font-sans"
+      >
+        2.5K
+      </text>
+
+      <!-- 0 (y=140) -->
+      <line
+        x1="35"
+        y1="140"
+        x2="485"
+        y2="140"
+        stroke="#e2e8f0"
+        stroke-width="1"
+      />
+      <text
+        x="28"
+        y="143"
+        text-anchor="end"
+        class="text-[9px] fill-slate-400 font-sans"
+      >
+        0
+      </text>
+
+      <!-- Area fill below path -->
+      <path
+        d="M 35 95 C 90 90, 140 100, 200 70 C 260 40, 310 65, 360 46 C 410 30, 450 35, 485 30 L 485 140 L 35 140 Z"
+        fill="url(#dauGradient)"
+      />
+
+      <!-- Main blue curve line -->
+      <path
+        d="M 35 95 C 90 90, 140 100, 200 70 C 260 40, 310 65, 360 46 C 410 30, 450 35, 485 30"
+        fill="none"
+        stroke="#2563eb"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+
+      <!-- Interactive Data Dots -->
+      @for (pt of points(); track pt.date; let idx = $index) {
+      <circle
+        [attr.cx]="35 + (idx * (450 / (points().length - 1 || 1)))"
+        [attr.cy]="140 - (pt.dau / 10000) * 120"
+        r="3"
+        fill="#ffffff"
+        stroke="#2563eb"
+        stroke-width="2"
+        class="transition-all duration-150 hover:r-5 cursor-pointer"
+        (mouseenter)="setActiveIndex(idx)"
+      />
+      }
+
+      <!-- Highlighted Data Point (Wed, May 7: 7,842) -->
+      <circle
+        cx="360"
+        cy="46"
+        r="4.5"
+        fill="#ffffff"
+        stroke="#2563eb"
+        stroke-width="2.5"
+      />
+      <circle cx="360" cy="46" r="2" fill="#2563eb" />
+    </svg>
+
+    <!-- Floating Tooltip as specified in design -->
+    <div
+      class="absolute left-[72%] top-[12%] -translate-x-1/2 bg-slate-900 text-white text-[11px] font-medium py-1 px-2.5 rounded-md shadow-md pointer-events-none flex items-center gap-1.5 z-10"
+    >
+      <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+      <span>Wed, May 7: <strong>DAU 7,842</strong></span>
+    </div>
+  </div>
+
+  <!-- X-Axis Labels -->
+  <div
+    class="flex items-center justify-between text-[10px] text-slate-400 pl-8 pr-2 pt-1 border-t border-slate-100"
+  >
+    <span>Apr 19</span>
+    <span>Apr 24</span>
+    <span>Apr 29</span>
+    <span>May 4</span>
+    <span>May 9</span>
+    <span>May 14</span>
+    <span>May 18</span>
+  </div>
+</div>

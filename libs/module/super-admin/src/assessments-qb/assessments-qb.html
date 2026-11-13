@@ -1,141 +1,107 @@
-<div class="space-y-6 mx-auto pb-12">
+<div class="assessments-qb-container">
   <!-- Toast Notification -->
   @if (toastMessage()) {
   <div
-    class="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg border border-slate-700 flex items-center gap-2 text-xs animate-in slide-in-from-bottom-2 duration-200"
+    class="toast-notification"
+    role="status"
     data-testid="toast-notification"
   >
-    <span class="material-symbols-outlined text-emerald-400 text-base"
-      >check_circle</span
-    >
+    <i class="material-symbols-outlined text-emerald-400">check_circle</i>
     <span>{{ toastMessage() }}</span>
   </div>
   }
 
-  <!-- Header Section -->
-  <div
-    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200"
-  >
-    <div>
-      <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-        Assessments & Question Bank
-      </h1>
-      <p class="text-xs text-slate-500 mt-0.5">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Assessments & Question Bank</h1>
+      <p class="page-subtitle">
         Standardized examination packs, centralized item bank, and psychometric
         moderation governance
       </p>
     </div>
 
-    <div class="flex items-center gap-2">
+    <div class="header-actions">
       <button
         type="button"
-        (click)="exportAssessments()"
-        class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg shadow-xs transition-colors cursor-pointer"
-        data-testid="export-btn"
+        class="btn-primary"
+        (click)="navigateToCreateAssessment()"
+        data-testid="create-assessment-btn"
       >
-        <span class="material-symbols-outlined text-base">download</span>
-        Export Registry
+        <i class="material-symbols-outlined">add</i>
+        <span>Create Assessment</span>
       </button>
 
       <button
         type="button"
-        (click)="navigateToCreateAssessment()"
-        class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-xs transition-colors cursor-pointer"
-        data-testid="create-assessment-btn"
+        class="btn-outline"
+        (click)="exportAssessments()"
+        data-testid="export-btn"
       >
-        <span class="material-symbols-outlined text-base">add</span>
-        Create Assessment
+        <i class="material-symbols-outlined">file_download</i>
+        <span>Export Registry</span>
       </button>
     </div>
-  </div>
+  </header>
 
   <!-- 1. KPI Metric Cards (6 cards) -->
   <school-hub-assessment-metrics [metrics]="store.assessmentMetrics()" />
 
   <!-- 2. Navigation Tabs (4 tabs) -->
-  <div class="border-b border-slate-200 bg-white rounded-t-xl px-2">
-    <nav
-      class="flex gap-2 -mb-px overflow-x-auto"
-      aria-label="Assessment Destinations"
-    >
+  <nav class="assessments-tabs-bar" aria-label="Assessment views navigation">
+    <div class="tabs-list">
       <!-- Tab 1: Assessment Packs -->
       <button
         type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'packs'"
         (click)="setTab('packs')"
-        class="px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer"
-        [ngClass]="{
-          'border-blue-600 text-blue-600': selectedTab() === 'packs',
-          'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': selectedTab() !== 'packs'
-        }"
         data-testid="tab-packs"
       >
-        <span class="material-symbols-outlined text-base">assignment</span>
-        Assessment Packs
-        <span
-          class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600"
-        >
-          {{ store.assessmentPacks().length }}
-        </span>
+        <i class="material-symbols-outlined">assignment</i>
+        <span>Assessment Packs</span>
+        <span class="tab-badge">{{ store.assessmentPacks().length }}</span>
       </button>
 
       <!-- Tab 2: Question Bank -->
       <button
         type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'questions'"
         (click)="setTab('questions')"
-        class="px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer"
-        [ngClass]="{
-          'border-blue-600 text-blue-600': selectedTab() === 'questions',
-          'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': selectedTab() !== 'questions'
-        }"
         data-testid="tab-questions"
       >
-        <span class="material-symbols-outlined text-base">database</span>
-        Question Bank
-        <span
-          class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 text-slate-600"
-        >
-          {{ store.questionBank().length }}
-        </span>
+        <i class="material-symbols-outlined">database</i>
+        <span>Question Bank</span>
+        <span class="tab-badge">{{ store.questionBank().length }}</span>
       </button>
 
       <!-- Tab 3: Review Queue -->
       <button
         type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'review'"
         (click)="setTab('review')"
-        class="px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer"
-        [ngClass]="{
-          'border-blue-600 text-blue-600': selectedTab() === 'review',
-          'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': selectedTab() !== 'review'
-        }"
         data-testid="tab-review"
       >
-        <span class="material-symbols-outlined text-base">rate_review</span>
-        Review Queue
-        <span
-          class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"
-        >
-          84
-        </span>
+        <i class="material-symbols-outlined">rate_review</i>
+        <span>Review Queue</span>
+        <span class="tab-badge badge-warning">84</span>
       </button>
 
       <!-- Tab 4: Templates & Standards -->
       <button
         type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'templates'"
         (click)="setTab('templates')"
-        class="px-4 py-3 text-xs font-semibold border-b-2 transition-colors flex items-center gap-2 whitespace-nowrap cursor-pointer"
-        [ngClass]="{
-          'border-blue-600 text-blue-600': selectedTab() === 'templates',
-          'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300': selectedTab() !== 'templates'
-        }"
         data-testid="tab-templates"
       >
-        <span class="material-symbols-outlined text-base"
-          >assignment_turned_in</span
-        >
-        Templates & Standards
+        <i class="material-symbols-outlined">assignment_turned_in</i>
+        <span>Templates & Standards</span>
       </button>
-    </nav>
-  </div>
+    </div>
+  </nav>
 
   <!-- 3. Quick Actions Banner -->
   <school-hub-assessment-quick-actions
@@ -150,7 +116,7 @@
   <!-- 4. Dynamic Tab Views -->
   @if (selectedTab() === 'packs') {
   <div
-    class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
+    class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start"
     data-testid="packs-view"
   >
     <!-- Table Area (8 Cols) -->
@@ -218,33 +184,38 @@
   }
 
   <!-- 5. Bottom System Health Bar -->
-  <div
-    class="bg-white rounded-xl border border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs text-slate-500"
-  >
+  <div class="health-bar-container">
     <div class="flex flex-wrap items-center gap-4">
       <div class="flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-sm text-blue-500"
-          >cloud_done</span
+        <i class="material-symbols-outlined text-sm text-blue-500"
+          >cloud_done</i
         >
-        <span>Assessment Storage: <strong>68.4 GB / 250 GB</strong></span>
+        <span
+          >Assessment Storage:
+          <strong class="text-slate-800">68.4 GB / 250 GB</strong></span
+        >
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-sm text-amber-500"
-          >timer</span
+        <i class="material-symbols-outlined text-sm text-amber-500">timer</i>
+        <span
+          >Review SLA:
+          <strong class="text-slate-800">2.3 Days (On Target)</strong></span
         >
-        <span>Review SLA: <strong>2.3 Days (On Target)</strong></span>
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-sm text-emerald-500"
-          >verified_user</span
+        <i class="material-symbols-outlined text-sm text-emerald-500"
+          >verified_user</i
         >
-        <span>Moderators: <strong>18 Online</strong></span>
+        <span
+          >Moderators: <strong class="text-slate-800">18 Online</strong></span
+        >
       </div>
       <div class="flex items-center gap-1.5">
-        <span class="material-symbols-outlined text-sm text-rose-500"
-          >flag</span
+        <i class="material-symbols-outlined text-sm text-rose-500">flag</i>
+        <span
+          >Pending Fixes:
+          <strong class="text-slate-800">27 Flagged Questions</strong></span
         >
-        <span>Pending Fixes: <strong>27 Flagged Questions</strong></span>
       </div>
     </div>
 

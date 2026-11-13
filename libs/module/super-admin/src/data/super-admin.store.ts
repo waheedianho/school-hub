@@ -113,6 +113,34 @@ import {
   SAMPLE_QUESTION_BANK_ITEMS,
   SAMPLE_QUESTION_COMPOSITIONS,
 } from './super-admin-assessments.data';
+import {
+  ActiveInstitution,
+  AdoptionInsight,
+  AnalyticsMetric,
+  AnalyticsPerformanceSummary,
+  AssessmentCompletionPoint,
+  AttentionSchool,
+  HeatmapCell,
+  PlatformActivityItem,
+  PlatformUsagePoint,
+  RegionSpread,
+  RoleUsageBreakdown,
+  SubjectConsumption,
+} from './super-admin-analytics.models';
+import {
+  ADOPTION_INSIGHTS_DATA,
+  ANALYTICS_METRICS,
+  ASSESSMENT_COMPLETION_TREND_DATA,
+  ATTENTION_SCHOOLS_DATA,
+  ENGAGEMENT_HEATMAP_DATA,
+  PERFORMANCE_SUMMARY_DATA,
+  PLATFORM_USAGE_TREND_DATA,
+  RECENT_PLATFORM_ACTIVITIES,
+  REGION_SPREAD_DATA,
+  ROLE_USAGE_DATA,
+  SUBJECT_CONSUMPTION_DATA,
+  TOP_ACTIVE_INSTITUTIONS,
+} from './super-admin-analytics.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -253,6 +281,40 @@ export class SuperAdminStore {
   readonly selectedAssessmentTypeFilter = signal<string>('All');
   readonly selectedAssessmentStatusFilter = signal<string>('All');
   readonly assessmentStandardsCoverage = signal<number>(92);
+
+  // Platform Analytics Signals
+  readonly analyticsMetrics = signal<AnalyticsMetric[]>(ANALYTICS_METRICS);
+  readonly platformUsageTrendPoints = signal<PlatformUsagePoint[]>(
+    PLATFORM_USAGE_TREND_DATA,
+  );
+  readonly topActiveInstitutions = signal<ActiveInstitution[]>(
+    TOP_ACTIVE_INSTITUTIONS,
+  );
+  readonly roleUsage = signal<RoleUsageBreakdown[]>(ROLE_USAGE_DATA);
+  readonly assessmentCompletionTrend = signal<AssessmentCompletionPoint[]>(
+    ASSESSMENT_COMPLETION_TREND_DATA,
+  );
+  readonly subjectConsumption = signal<SubjectConsumption[]>(
+    SUBJECT_CONSUMPTION_DATA,
+  );
+  readonly regionSpread = signal<RegionSpread[]>(REGION_SPREAD_DATA);
+  readonly engagementHeatmap = signal<HeatmapCell[]>(ENGAGEMENT_HEATMAP_DATA);
+  readonly attentionSchoolsList = signal<AttentionSchool[]>(
+    ATTENTION_SCHOOLS_DATA,
+  );
+  readonly adoptionInsights = signal<AdoptionInsight[]>(ADOPTION_INSIGHTS_DATA);
+  readonly recentPlatformActivityItems = signal<PlatformActivityItem[]>(
+    RECENT_PLATFORM_ACTIVITIES,
+  );
+  readonly performanceSummary = signal<AnalyticsPerformanceSummary>(
+    PERFORMANCE_SUMMARY_DATA,
+  );
+  readonly selectedAnalyticsDateRange = signal<string>('May 12 – May 18, 2025');
+  readonly selectedUsageTrendPeriod = signal<string>('Last 30 Days');
+  readonly selectedActiveInstitutionsPeriod = signal<string>('Last 30 Days');
+  readonly selectedAssessmentTrendPeriod = signal<string>('Last 30 Days');
+  readonly selectedSubjectConsumptionPeriod = signal<string>('Last 30 Days');
+  readonly selectedHeatmapPeriod = signal<string>('Last 30 Days');
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -592,6 +654,16 @@ export class SuperAdminStore {
       }
       return true;
     });
+  });
+
+  // Platform Analytics Computeds
+  readonly totalActiveLearnersCount = computed(() => {
+    return this.roleUsage().find((r) => r.role === 'Learners')?.count ?? 12935;
+  });
+  readonly totalActiveSchoolsCount = computed(() => {
+    return (
+      this.regionSpread().find((r) => r.region === 'Total')?.institutions ?? 248
+    );
   });
 
   // Actions
@@ -1088,5 +1160,34 @@ export class SuperAdminStore {
           : item,
       ),
     );
+  }
+
+  // Platform Analytics Actions
+  setAnalyticsDateRange(range: string): void {
+    this.selectedAnalyticsDateRange.set(range);
+  }
+
+  setUsageTrendPeriod(period: string): void {
+    this.selectedUsageTrendPeriod.set(period);
+  }
+
+  setActiveInstitutionsPeriod(period: string): void {
+    this.selectedActiveInstitutionsPeriod.set(period);
+  }
+
+  setAssessmentTrendPeriod(period: string): void {
+    this.selectedAssessmentTrendPeriod.set(period);
+  }
+
+  setSubjectConsumptionPeriod(period: string): void {
+    this.selectedSubjectConsumptionPeriod.set(period);
+  }
+
+  setHeatmapPeriod(period: string): void {
+    this.selectedHeatmapPeriod.set(period);
+  }
+
+  dismissAttentionSchool(id: string): void {
+    this.attentionSchoolsList.update((list) => list.filter((s) => s.id !== id));
   }
 }

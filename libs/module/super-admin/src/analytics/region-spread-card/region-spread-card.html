@@ -1,0 +1,128 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <span class="badge-number">6</span>
+    <div>
+      <div class="flex items-center gap-1.5">
+        <h3 class="card-title">Institution Spread by Region</h3>
+        <span
+          class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+          title="Geographical adoption and learner distribution across administrative territories"
+        >
+          info
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content: Map on Left + Table on Right -->
+  <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center my-auto">
+    <!-- Map Illustration (5 Cols) -->
+    <div
+      class="sm:col-span-5 flex items-center justify-center p-2 bg-blue-50/40 rounded-xl border border-blue-100/60"
+    >
+      <svg
+        class="w-full max-h-[140px] text-blue-200"
+        viewBox="0 0 240 140"
+        fill="currentColor"
+      >
+        <!-- Stylized world/region continents -->
+        <path
+          d="M20,40 Q40,20 80,35 Q100,25 110,45 Q120,70 95,85 Q70,95 40,80 Q15,75 20,40 Z"
+          fill="#dbeafe"
+          opacity="0.8"
+        />
+        <path
+          d="M130,30 Q160,15 200,25 Q220,45 210,75 Q180,95 150,85 Q130,65 130,30 Z"
+          fill="#dbeafe"
+          opacity="0.8"
+        />
+        <path
+          d="M50,90 Q70,85 85,105 Q80,125 55,130 Q35,120 50,90 Z"
+          fill="#dbeafe"
+          opacity="0.8"
+        />
+
+        <!-- Regional Markers -->
+        <!-- North (78) -->
+        <circle cx="85" cy="40" r="5" fill="#2563eb" />
+        <circle cx="85" cy="40" r="10" fill="#2563eb" opacity="0.2" />
+
+        <!-- South (64) -->
+        <circle cx="165" cy="80" r="5" fill="#10b981" />
+        <circle cx="165" cy="80" r="9" fill="#10b981" opacity="0.2" />
+
+        <!-- East (52) -->
+        <circle cx="190" cy="45" r="4.5" fill="#8b5cf6" />
+        <circle cx="190" cy="45" r="8" fill="#8b5cf6" opacity="0.2" />
+
+        <!-- West (54) -->
+        <circle cx="45" cy="65" r="4.5" fill="#f59e0b" />
+        <circle cx="45" cy="65" r="8" fill="#f59e0b" opacity="0.2" />
+      </svg>
+    </div>
+
+    <!-- Data Table (7 Cols) -->
+    <div class="sm:col-span-7 overflow-x-auto">
+      <table class="w-full text-xs text-left">
+        <thead>
+          <tr
+            class="border-b border-slate-100 text-[11px] font-semibold text-slate-400"
+          >
+            <th class="pb-2 font-normal">Region</th>
+            <th class="pb-2 text-center font-normal">Institutions</th>
+            <th class="pb-2 text-right font-normal">Learners</th>
+            <th class="pb-2 text-right font-normal">Growth</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100/80">
+          @for (reg of regions(); track reg.region) {
+          <tr
+            class="hover:bg-slate-50/60 transition-colors"
+            [ngClass]="{ 'font-bold text-slate-900 bg-slate-50/40': reg.region === 'Total' }"
+          >
+            <td
+              class="py-1.5 font-medium text-slate-800 flex items-center gap-1.5"
+            >
+              @if (reg.region !== 'Total') {
+              <span
+                class="w-2 h-2 rounded-full"
+                [ngClass]="{
+                  'bg-blue-600': reg.region === 'North',
+                  'bg-emerald-500': reg.region === 'South',
+                  'bg-purple-500': reg.region === 'East',
+                  'bg-amber-500': reg.region === 'West'
+                }"
+              ></span>
+              }
+              <span>{{ reg.region }}</span>
+            </td>
+            <td class="py-1.5 text-center font-mono text-slate-600">
+              {{ reg.institutions }}
+            </td>
+            <td class="py-1.5 text-right font-mono text-slate-600">
+              {{ reg.activeLearners | number }}
+            </td>
+            <td class="py-1.5 text-right font-mono">
+              <span
+                class="text-emerald-600 font-semibold inline-flex items-center gap-0.5"
+              >
+                <i class="material-symbols-outlined text-[11px]">north_east</i>
+                {{ reg.growth }}
+              </span>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bottom Details -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+  >
+    <span>Balanced geographical spread</span>
+    <span>4 administrative regions</span>
+  </div>
+</div>
