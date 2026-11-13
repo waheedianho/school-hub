@@ -1,0 +1,1085 @@
+<div class="onboard-container">
+  <!-- Header -->
+  <header class="onboard-header">
+    <div class="header-titles">
+      <h1 class="page-title">Onboard School</h1>
+      <p class="page-subtitle">
+        Create a new institution and configure access, subscription, and
+        onboarding details.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <button type="button" class="btn-outline" (click)="saveDraft()">
+        <i class="material-symbols-outlined">description</i>
+        <span>Save Draft</span>
+      </button>
+
+      @if (currentStep() === 1) {
+      <button type="button" class="btn-primary" (click)="proceedToReview()">
+        <i class="material-symbols-outlined">add</i>
+        <span>Create School</span>
+      </button>
+      } @else if (currentStep() === 2) {
+      <button type="button" class="btn-primary" (click)="launchSchool()">
+        <i class="material-symbols-outlined">rocket_launch</i>
+        <span>Confirm & Launch</span>
+      </button>
+      }
+    </div>
+  </header>
+
+  <!-- Notification Banner -->
+  @if (notificationMessage()) {
+  <div class="toast-banner" role="alert">
+    <i class="material-symbols-outlined">info</i>
+    <span>{{ notificationMessage() }}</span>
+  </div>
+  }
+
+  <!-- Stepper Header -->
+  <nav class="stepper-bar" aria-label="Onboarding Steps">
+    <div class="stepper-steps">
+      <div
+        class="step-item"
+        [class.active]="currentStep() === 1"
+        [class.completed]="currentStep() > 1"
+      >
+        <div class="step-indicator">
+          @if (currentStep() > 1) {
+          <i class="material-symbols-outlined">check</i>
+          } @else {
+          <span>1</span>
+          }
+        </div>
+        <div class="step-text">
+          <span class="step-name">Institution & Setup</span>
+          <span class="step-desc">Basic details and configuration</span>
+        </div>
+      </div>
+
+      <div class="step-divider" [class.active]="currentStep() > 1"></div>
+
+      <div
+        class="step-item"
+        [class.active]="currentStep() === 2"
+        [class.completed]="currentStep() > 2"
+      >
+        <div class="step-indicator">
+          @if (currentStep() > 2) {
+          <i class="material-symbols-outlined">check</i>
+          } @else {
+          <span>2</span>
+          }
+        </div>
+        <div class="step-text">
+          <span class="step-name">Review & Confirm</span>
+          <span class="step-desc">Validate information</span>
+        </div>
+      </div>
+
+      <div class="step-divider" [class.active]="currentStep() === 3"></div>
+
+      <div class="step-item" [class.active]="currentStep() === 3">
+        <div class="step-indicator">
+          <span>3</span>
+        </div>
+        <div class="step-text">
+          <span class="step-name">Launch</span>
+          <span class="step-desc">Create and send invites</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-counter">Step {{ currentStep() }} of 3</div>
+  </nav>
+
+  <!-- Layout: Main Content + Right Sidebar -->
+  <div class="onboard-layout">
+    <!-- Main Left Column -->
+    <main class="onboard-main">
+      <!-- STEP 1: All 5 Configuration Cards -->
+      @if (currentStep() === 1) {
+      <form class="cards-stack" (ngSubmit)="proceedToReview()">
+        <!-- 1. Institution Details -->
+        <section class="form-card">
+          <div class="form-card-header">
+            <i class="material-symbols-outlined header-icon">apartment</i>
+            <h2 class="card-title">1. Institution Details</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group col-span-2">
+              <label for="schoolName" class="form-label"
+                >School Name <span class="required">*</span></label
+              >
+              <input
+                id="schoolName"
+                type="text"
+                class="form-input"
+                placeholder="Enter school name"
+                [ngModel]="formData().schoolName"
+                (ngModelChange)="updateField('schoolName', $event)"
+                name="schoolName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="schoolType" class="form-label"
+                >School Type <span class="required">*</span></label
+              >
+              <select
+                id="schoolType"
+                class="form-select"
+                [ngModel]="formData().schoolType"
+                (ngModelChange)="updateField('schoolType', $event)"
+                name="schoolType"
+              >
+                @for (type of schoolTypes; track type) {
+                <option [value]="type">{{ type }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="schoolCode" class="form-label"
+                >School Code <span class="required">*</span></label
+              >
+              <input
+                id="schoolCode"
+                type="text"
+                class="form-input"
+                placeholder="e.g., SCH-2025-001"
+                [ngModel]="formData().schoolCode"
+                (ngModelChange)="updateField('schoolCode', $event)"
+                name="schoolCode"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="country" class="form-label"
+                >Country <span class="required">*</span></label
+              >
+              <select
+                id="country"
+                class="form-select"
+                [ngModel]="formData().country"
+                (ngModelChange)="updateField('country', $event)"
+                name="country"
+              >
+                @for (c of countries; track c) {
+                <option [value]="c">{{ c }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="stateRegion" class="form-label"
+                >State / Region <span class="required">*</span></label
+              >
+              <input
+                id="stateRegion"
+                type="text"
+                class="form-input"
+                placeholder="Enter state or region"
+                [ngModel]="formData().stateRegion"
+                (ngModelChange)="updateField('stateRegion', $event)"
+                name="stateRegion"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="schoolEmail" class="form-label"
+                >School Email <span class="required">*</span></label
+              >
+              <div class="input-with-icon">
+                <i class="material-symbols-outlined input-icon">mail</i>
+                <input
+                  id="schoolEmail"
+                  type="email"
+                  class="form-input"
+                  placeholder="school@example.com"
+                  [ngModel]="formData().schoolEmail"
+                  (ngModelChange)="updateField('schoolEmail', $event)"
+                  name="schoolEmail"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="schoolPhone" class="form-label"
+                >School Phone <span class="required">*</span></label
+              >
+              <div class="input-with-icon">
+                <i class="material-symbols-outlined input-icon">call</i>
+                <input
+                  id="schoolPhone"
+                  type="tel"
+                  class="form-input"
+                  placeholder="+1 (555) 123-4567"
+                  [ngModel]="formData().schoolPhone"
+                  (ngModelChange)="updateField('schoolPhone', $event)"
+                  name="schoolPhone"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="website" class="form-label">Website</label>
+              <div class="input-with-icon">
+                <i class="material-symbols-outlined input-icon">language</i>
+                <input
+                  id="website"
+                  type="url"
+                  class="form-input"
+                  placeholder="https://www.school.edu"
+                  [ngModel]="formData().website"
+                  (ngModelChange)="updateField('website', $event)"
+                  name="website"
+                />
+              </div>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label for="address" class="form-label"
+                >Address <span class="required">*</span></label
+              >
+              <input
+                id="address"
+                type="text"
+                class="form-input"
+                placeholder="Enter complete address"
+                [ngModel]="formData().address"
+                (ngModelChange)="updateField('address', $event)"
+                name="address"
+              />
+            </div>
+
+            <div class="form-group">
+              <span class="form-label">Logo Upload</span>
+              <div class="upload-dropzone">
+                <i class="material-symbols-outlined upload-icon"
+                  >cloud_upload</i
+                >
+                <span class="upload-text">Upload logo</span>
+                <span class="upload-sub">PNG, JPG or SVG (max. 2MB)</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="brandColor" class="form-label"
+                >Primary Brand Color <span class="required">*</span></label
+              >
+              <div class="color-picker-input">
+                <span
+                  class="color-preview-box"
+                  [style.background-color]="formData().primaryBrandColor"
+                ></span>
+                <input
+                  id="brandColor"
+                  type="text"
+                  class="form-input"
+                  [ngModel]="formData().primaryBrandColor"
+                  (ngModelChange)="updateField('primaryBrandColor', $event)"
+                  name="brandColor"
+                />
+              </div>
+              <span class="form-helper"
+                >Used across the school portal and communications.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. School Admin Account -->
+        <section class="form-card">
+          <div class="form-card-header">
+            <i class="material-symbols-outlined header-icon">shield_person</i>
+            <h2 class="card-title">2. School Admin Account</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="adminFirstName" class="form-label"
+                >Admin First Name <span class="required">*</span></label
+              >
+              <input
+                id="adminFirstName"
+                type="text"
+                class="form-input"
+                placeholder="Enter first name"
+                [ngModel]="formData().adminFirstName"
+                (ngModelChange)="updateField('adminFirstName', $event)"
+                name="adminFirstName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="adminLastName" class="form-label"
+                >Admin Last Name <span class="required">*</span></label
+              >
+              <input
+                id="adminLastName"
+                type="text"
+                class="form-input"
+                placeholder="Enter last name"
+                [ngModel]="formData().adminLastName"
+                (ngModelChange)="updateField('adminLastName', $event)"
+                name="adminLastName"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="adminEmail" class="form-label"
+                >Admin Email <span class="required">*</span></label
+              >
+              <div class="input-with-icon">
+                <i class="material-symbols-outlined input-icon">mail</i>
+                <input
+                  id="adminEmail"
+                  type="email"
+                  class="form-input"
+                  placeholder="admin@example.com"
+                  [ngModel]="formData().adminEmail"
+                  (ngModelChange)="updateField('adminEmail', $event)"
+                  name="adminEmail"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="adminPhone" class="form-label"
+                >Phone Number <span class="required">*</span></label
+              >
+              <div class="input-with-icon">
+                <i class="material-symbols-outlined input-icon">call</i>
+                <input
+                  id="adminPhone"
+                  type="tel"
+                  class="form-input"
+                  placeholder="+1 (555) 123-4567"
+                  [ngModel]="formData().adminPhone"
+                  (ngModelChange)="updateField('adminPhone', $event)"
+                  name="adminPhone"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="temporaryPassword" class="form-label"
+                >Temporary Password <span class="required">*</span></label
+              >
+              <div class="input-with-action">
+                <i class="material-symbols-outlined input-icon">lock</i>
+                <input
+                  id="temporaryPassword"
+                  [type]="showPassword() ? 'text' : 'password'"
+                  class="form-input"
+                  [ngModel]="formData().temporaryPassword"
+                  (ngModelChange)="updateField('temporaryPassword', $event)"
+                  name="temporaryPassword"
+                />
+                <button
+                  type="button"
+                  class="toggle-pw-btn"
+                  (click)="togglePasswordVisibility()"
+                  aria-label="Toggle password view"
+                >
+                  <i class="material-symbols-outlined"
+                    >{{ showPassword() ? 'visibility_off' : 'visibility' }}</i
+                  >
+                </button>
+              </div>
+              <span class="form-helper"
+                >Minimum 8 characters with letters and numbers.</span
+              >
+            </div>
+
+            <div class="form-group toggle-group">
+              <span class="form-label">Send Invite</span>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  [ngModel]="formData().sendInvite"
+                  (ngModelChange)="updateField('sendInvite', $event)"
+                  name="sendInvite"
+                />
+                <span class="slider"></span>
+              </label>
+              <span class="form-helper"
+                >Send an email invite to the admin with login details.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Academic Setup -->
+        <section class="form-card">
+          <div class="form-card-header">
+            <i class="material-symbols-outlined header-icon">school</i>
+            <h2 class="card-title">3. Academic Setup</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="namingConvention" class="form-label"
+                >Naming Convention <span class="required">*</span></label
+              >
+              <select
+                id="namingConvention"
+                class="form-select"
+                [ngModel]="formData().namingConvention"
+                (ngModelChange)="updateField('namingConvention', $event)"
+                name="namingConvention"
+              >
+                @for (nc of namingConventions; track nc) {
+                <option [value]="nc">{{ nc }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="academicSession" class="form-label"
+                >Academic Session <span class="required">*</span></label
+              >
+              <select
+                id="academicSession"
+                class="form-select"
+                [ngModel]="formData().academicSession"
+                (ngModelChange)="updateField('academicSession', $event)"
+                name="academicSession"
+              >
+                @for (sess of academicSessions; track sess) {
+                <option [value]="sess">{{ sess }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="currentTerm" class="form-label"
+                >Current Term <span class="required">*</span></label
+              >
+              <select
+                id="currentTerm"
+                class="form-select"
+                [ngModel]="formData().currentTerm"
+                (ngModelChange)="updateField('currentTerm', $event)"
+                name="currentTerm"
+              >
+                @for (term of terms; track term) {
+                <option [value]="term">{{ term }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="curriculumType" class="form-label"
+                >Curriculum Type <span class="required">*</span></label
+              >
+              <select
+                id="curriculumType"
+                class="form-select"
+                [ngModel]="formData().curriculumType"
+                (ngModelChange)="updateField('curriculumType', $event)"
+                name="curriculumType"
+              >
+                @for (curr of curriculumTypes; track curr) {
+                <option [value]="curr">{{ curr }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group col-span-2">
+              <label for="defaultTemplate" class="form-label"
+                >Default Report Card Template
+                <span class="required">*</span></label
+              >
+              <select
+                id="defaultTemplate"
+                class="form-select"
+                [ngModel]="formData().defaultReportCardTemplate"
+                (ngModelChange)="updateField('defaultReportCardTemplate', $event)"
+                name="defaultTemplate"
+              >
+                @for (tmpl of reportCardTemplates; track tmpl) {
+                <option [value]="tmpl">{{ tmpl }}</option>
+                }
+              </select>
+              <span class="form-helper"
+                >These settings can be modified later from School
+                Settings.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Subscription & Access -->
+        <section class="form-card">
+          <div class="form-card-header">
+            <i class="material-symbols-outlined header-icon">credit_card</i>
+            <h2 class="card-title">4. Subscription & Access</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="plan" class="form-label"
+                >Plan <span class="required">*</span></label
+              >
+              <select
+                id="plan"
+                class="form-select"
+                [ngModel]="formData().plan"
+                (ngModelChange)="updateField('plan', $event)"
+                name="plan"
+              >
+                @for (p of subscriptionPlans; track p) {
+                <option [value]="p">{{ p }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="startDate" class="form-label"
+                >Start Date <span class="required">*</span></label
+              >
+              <input
+                id="startDate"
+                type="date"
+                class="form-input"
+                [ngModel]="formData().startDate"
+                (ngModelChange)="updateField('startDate', $event)"
+                name="startDate"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="renewalDate" class="form-label"
+                >Renewal Date <span class="required">*</span></label
+              >
+              <input
+                id="renewalDate"
+                type="date"
+                class="form-input"
+                [ngModel]="formData().renewalDate"
+                (ngModelChange)="updateField('renewalDate', $event)"
+                name="renewalDate"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="learnerLimit" class="form-label"
+                >Learner Limit <span class="required">*</span></label
+              >
+              <input
+                id="learnerLimit"
+                type="number"
+                class="form-input"
+                [ngModel]="formData().learnerLimit"
+                (ngModelChange)="updateField('learnerLimit', +$event)"
+                name="learnerLimit"
+              />
+              <span class="form-helper">Maximum number of learners.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="teacherLimit" class="form-label"
+                >Teacher Limit <span class="required">*</span></label
+              >
+              <input
+                id="teacherLimit"
+                type="number"
+                class="form-input"
+                [ngModel]="formData().teacherLimit"
+                (ngModelChange)="updateField('teacherLimit', +$event)"
+                name="teacherLimit"
+              />
+              <span class="form-helper">Maximum number of teachers.</span>
+            </div>
+
+            <div class="form-group col-span-2">
+              <span class="form-label"
+                >Enabled Modules <span class="required">*</span></span
+              >
+              <div class="modules-checkbox-grid">
+                @for (mod of allAvailableModules; track mod) {
+                <label class="module-check-item">
+                  <input
+                    type="checkbox"
+                    [checked]="isModuleEnabled(mod)"
+                    (change)="toggleModule(mod)"
+                  />
+                  <span>{{ mod }}</span>
+                </label>
+                }
+              </div>
+              <span class="form-helper"
+                >ⓘ Module access can be adjusted anytime from
+                Subscriptions.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Safeguarding & Compliance -->
+        <section class="form-card">
+          <div class="form-card-header">
+            <i class="material-symbols-outlined header-icon">verified_user</i>
+            <h2 class="card-title">5. Safeguarding & Compliance</h2>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group toggle-group">
+              <span class="form-label">Parent consent required</span>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  [ngModel]="formData().parentConsentRequired"
+                  (ngModelChange)="updateField('parentConsentRequired', $event)"
+                  name="parentConsentRequired"
+                />
+                <span class="slider"></span>
+              </label>
+              <span class="form-helper"
+                >Require parental consent for data processing.</span
+              >
+            </div>
+
+            <div class="form-group toggle-group">
+              <span class="form-label">Tutor verification required</span>
+              <label class="toggle-switch">
+                <input
+                  type="checkbox"
+                  [ngModel]="formData().tutorVerificationRequired"
+                  (ngModelChange)="updateField('tutorVerificationRequired', $event)"
+                  name="tutorVerificationRequired"
+                />
+                <span class="slider"></span>
+              </label>
+              <span class="form-helper"
+                >Verify tutor identity before granting access.</span
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="mediaPermissions" class="form-label"
+                >Media upload permissions <span class="required">*</span></label
+              >
+              <select
+                id="mediaPermissions"
+                class="form-select"
+                [ngModel]="formData().mediaUploadPermissions"
+                (ngModelChange)="updateField('mediaUploadPermissions', $event)"
+                name="mediaPermissions"
+              >
+                @for (perm of mediaPermissions; track perm) {
+                <option [value]="perm">{{ perm }}</option>
+                }
+              </select>
+              <span class="form-helper"
+                >Control who can upload photos/videos.</span
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="communicationVisibility" class="form-label"
+                >Communication visibility <span class="required">*</span></label
+              >
+              <select
+                id="communicationVisibility"
+                class="form-select"
+                [ngModel]="formData().communicationVisibility"
+                (ngModelChange)="updateField('communicationVisibility', $event)"
+                name="communicationVisibility"
+              >
+                @for (vis of visibilityOptions; track vis) {
+                <option [value]="vis">{{ vis }}</option>
+                }
+              </select>
+              <span class="form-helper"
+                >Who can view school communications.</span
+              >
+            </div>
+
+            <div class="form-group col-span-2">
+              <label for="dataRetention" class="form-label"
+                >Data retention policy <span class="required">*</span></label
+              >
+              <select
+                id="dataRetention"
+                class="form-select"
+                [ngModel]="formData().dataRetentionPolicy"
+                (ngModelChange)="updateField('dataRetentionPolicy', $event)"
+                name="dataRetention"
+              >
+                @for (ret of retentionPolicies; track ret) {
+                <option [value]="ret">{{ ret }}</option>
+                }
+              </select>
+              <span class="form-helper"
+                >Define how long student & staff data is retained.</span
+              >
+            </div>
+          </div>
+        </section>
+
+        <!-- Bottom Actions -->
+        <div class="form-bottom-actions">
+          <p class="required-note">
+            ⓘ Fields marked with <span class="required">*</span> are required.
+            You can save a draft at any time and complete onboarding later.
+          </p>
+          <div class="btn-group">
+            <button type="button" class="btn-outline" (click)="saveDraft()">
+              Save Draft
+            </button>
+            <button type="submit" class="btn-primary">
+              Continue to Review & Confirm →
+            </button>
+          </div>
+        </div>
+      </form>
+      }
+
+      <!-- STEP 2: Review & Confirm -->
+      @if (currentStep() === 2) {
+      <div class="review-view">
+        <div class="review-card">
+          <div class="review-header">
+            <i class="material-symbols-outlined review-icon text-blue-600"
+              >rate_review</i
+            >
+            <div>
+              <h2 class="card-title">Review Institution Information</h2>
+              <p class="page-subtitle">
+                Please inspect all configured details before creating the school
+                account.
+              </p>
+            </div>
+          </div>
+
+          <div class="review-sections-grid">
+            <div class="review-box">
+              <h3 class="review-heading">1. Institution Details</h3>
+              <div class="review-row">
+                <span class="rk">School Name:</span>
+                <span class="rv font-semibold"
+                  >{{ formData().schoolName }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Type & Code:</span>
+                <span class="rv"
+                  >{{ formData().schoolType }} ({{ formData().schoolCode
+                  }})</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Location:</span>
+                <span class="rv"
+                  >{{ formData().stateRegion }}, {{ formData().country }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Email & Phone:</span>
+                <span class="rv"
+                  >{{ formData().schoolEmail }} • {{ formData().schoolPhone
+                  }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Brand Color:</span>
+                <span class="rv flex items-center gap-2">
+                  <span
+                    class="color-dot"
+                    [style.background-color]="formData().primaryBrandColor"
+                  ></span>
+                  {{ formData().primaryBrandColor }}
+                </span>
+              </div>
+            </div>
+
+            <div class="review-box">
+              <h3 class="review-heading">2. Administrator Account</h3>
+              <div class="review-row">
+                <span class="rk">Admin Name:</span>
+                <span class="rv font-semibold"
+                  >{{ formData().adminFirstName }} {{ formData().adminLastName
+                  }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Email:</span>
+                <span class="rv">{{ formData().adminEmail }}</span>
+              </div>
+              <div class="review-row">
+                <span class="rk">Phone:</span>
+                <span class="rv">{{ formData().adminPhone }}</span>
+              </div>
+              <div class="review-row">
+                <span class="rk">Send Invite:</span>
+                <span class="rv"
+                  >{{ formData().sendInvite ? 'Yes, send credentials' : 'No'
+                  }}</span
+                >
+              </div>
+            </div>
+
+            <div class="review-box">
+              <h3 class="review-heading">3. Academic Setup</h3>
+              <div class="review-row">
+                <span class="rk">Academic Session:</span>
+                <span class="rv"
+                  >{{ formData().academicSession }} ({{ formData().currentTerm
+                  }})</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Curriculum:</span>
+                <span class="rv">{{ formData().curriculumType }}</span>
+              </div>
+              <div class="review-row">
+                <span class="rk">Report Card:</span>
+                <span class="rv"
+                  >{{ formData().defaultReportCardTemplate }}</span
+                >
+              </div>
+            </div>
+
+            <div class="review-box">
+              <h3 class="review-heading">4. Subscription & Access</h3>
+              <div class="review-row">
+                <span class="rk">Plan Tier:</span>
+                <span class="rv font-semibold text-primary"
+                  >{{ formData().plan }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Capacity Limits:</span>
+                <span class="rv"
+                  >{{ formData().learnerLimit | number }} Learners • {{
+                  formData().teacherLimit | number }} Teachers</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Dates:</span>
+                <span class="rv"
+                  >{{ formData().startDate }} to {{ formData().renewalDate
+                  }}</span
+                >
+              </div>
+              <div class="review-row">
+                <span class="rk">Modules:</span>
+                <span class="rv"
+                  >{{ formData().enabledModules.length }} modules enabled</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="review-footer-actions">
+            <button type="button" class="btn-outline" (click)="goToStep(1)">
+              ← Back to Edit
+            </button>
+            <button type="button" class="btn-primary" (click)="launchSchool()">
+              <i class="material-symbols-outlined">rocket_launch</i>
+              Confirm & Launch School
+            </button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- STEP 3: Launch / Success Screen -->
+      @if (currentStep() === 3 && createdSchool(); as school) {
+      <div class="launch-success-card">
+        <div class="success-icon-wrap">
+          <i class="material-symbols-outlined success-icon">check_circle</i>
+        </div>
+
+        <h2 class="success-title">School Successfully Onboarded!</h2>
+        <p class="success-subtitle">
+          {{ school.name }} has been registered and initialized on the Learno
+          platform.
+        </p>
+
+        <div class="credentials-box">
+          <div class="cred-row">
+            <span class="cred-label">School Identifier:</span>
+            <span class="cred-value font-mono">{{ school.code }}</span>
+          </div>
+          <div class="cred-row">
+            <span class="cred-label">Admin Email:</span>
+            <span class="cred-value font-mono">{{ school.adminEmail }}</span>
+          </div>
+          <div class="cred-row">
+            <span class="cred-label">Temporary Password:</span>
+            <span class="cred-value font-mono"
+              >{{ formData().temporaryPassword }}</span
+            >
+          </div>
+          <div class="cred-row">
+            <span class="cred-label">Invite Status:</span>
+            <span class="cred-value text-emerald-600 font-semibold">
+              <i class="material-symbols-outlined text-sm align-middle"
+                >check</i
+              >
+              Invitation email dispatched
+            </span>
+          </div>
+        </div>
+
+        <div class="launch-actions">
+          <button
+            type="button"
+            class="btn-primary"
+            (click)="navigateDirectory()"
+          >
+            <i class="material-symbols-outlined">apartment</i>
+            View in Schools Directory
+          </button>
+          <button type="button" class="btn-outline" (click)="onboardAnother()">
+            <i class="material-symbols-outlined">add_circle</i>
+            Onboard Another School
+          </button>
+        </div>
+      </div>
+      }
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="onboard-sidebar">
+      <!-- 1. Onboarding Progress Widget -->
+      <section class="sidebar-card">
+        <h3 class="sidebar-title">Onboarding Progress</h3>
+        <ol class="progress-steps-list">
+          <li
+            class="p-step"
+            [class.done]="currentStep() >= 2"
+            [class.active]="currentStep() === 1"
+          >
+            <div class="p-dot">1</div>
+            <div class="p-info">
+              <span class="p-title">Institution Details</span>
+              <span class="p-sub">Add school information</span>
+            </div>
+          </li>
+          <li
+            class="p-step"
+            [class.done]="currentStep() >= 2"
+            [class.active]="currentStep() === 1"
+          >
+            <div class="p-dot">2</div>
+            <div class="p-info">
+              <span class="p-title">Admin Account</span>
+              <span class="p-sub">Create admin access</span>
+            </div>
+          </li>
+          <li
+            class="p-step"
+            [class.done]="currentStep() >= 2"
+            [class.active]="currentStep() === 1"
+          >
+            <div class="p-dot">3</div>
+            <div class="p-info">
+              <span class="p-title">Academic Setup</span>
+              <span class="p-sub">Configure academic structure</span>
+            </div>
+          </li>
+          <li
+            class="p-step"
+            [class.done]="currentStep() >= 2"
+            [class.active]="currentStep() === 1"
+          >
+            <div class="p-dot">4</div>
+            <div class="p-info">
+              <span class="p-title">Subscription</span>
+              <span class="p-sub">Set plan and access</span>
+            </div>
+          </li>
+          <li
+            class="p-step"
+            [class.done]="currentStep() >= 2"
+            [class.active]="currentStep() === 1"
+          >
+            <div class="p-dot">5</div>
+            <div class="p-info">
+              <span class="p-title">Safeguarding</span>
+              <span class="p-sub">Set compliance preferences</span>
+            </div>
+          </li>
+          <li
+            class="p-step"
+            [class.done]="currentStep() === 3"
+            [class.active]="currentStep() === 2"
+          >
+            <div class="p-dot">6</div>
+            <div class="p-info">
+              <span class="p-title">Review & Launch</span>
+              <span class="p-sub">Review and launch school</span>
+            </div>
+          </li>
+        </ol>
+      </section>
+
+      <!-- 2. Setup Summary Widget -->
+      <section class="sidebar-card">
+        <h3 class="sidebar-title">Setup Summary</h3>
+        <div class="summary-items">
+          <div class="summary-item">
+            <div class="summary-icon-wrap bg-blue-50 text-blue-600">
+              <i class="material-symbols-outlined">schedule</i>
+            </div>
+            <div class="summary-details">
+              <span class="summary-label">Estimated setup time</span>
+              <span class="summary-val">~ 10–15 minutes</span>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <div class="summary-icon-wrap bg-emerald-50 text-emerald-600">
+              <i class="material-symbols-outlined">apartment</i>
+            </div>
+            <div class="summary-details">
+              <span class="summary-label">Schools onboarded this month</span>
+              <span class="summary-val">63</span>
+            </div>
+          </div>
+
+          <div class="summary-item">
+            <div class="summary-icon-wrap bg-purple-50 text-purple-600">
+              <i class="material-symbols-outlined">groups</i>
+            </div>
+            <div class="summary-details">
+              <span class="summary-label">Total schools</span>
+              <span class="summary-val">1,248</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Compliance Note Widget -->
+      <section class="sidebar-card compliance-card">
+        <div class="compliance-header">
+          <i class="material-symbols-outlined text-emerald-600"
+            >verified_user</i
+          >
+          <h3 class="sidebar-title">Compliance Note</h3>
+        </div>
+        <p class="compliance-text">
+          Learno is committed to student safety and data privacy. All schools
+          are onboarded in line with our safeguarding and data protection
+          policies.
+        </p>
+        <a routerLink="/super-admin/safeguarding" class="compliance-link">
+          <span>View Compliance Policy</span>
+          <i class="material-symbols-outlined link-icon">arrow_forward</i>
+        </a>
+      </section>
+    </aside>
+  </div>
+</div>

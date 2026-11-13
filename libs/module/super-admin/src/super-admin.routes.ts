@@ -21,29 +21,31 @@ export const superAdminRoutes: Routes = [
             (m) => m.SuperAdminDashboardComponent,
           ),
       },
-      ...SUPER_ADMIN_PAGES.filter((page) => page.path !== 'dashboard').map(
-        (page) => ({
-          path: page.path,
-          component: SuperAdmin,
-          title: `${page.label} | Learno Super Admin`,
-          data: { page },
-        }),
-      ),
-      // Detail routes & sub-flows
+      {
+        path: 'schools',
+        title: 'Schools / Institutions | Learno Super Admin',
+        loadComponent: () =>
+          import('./schools/schools-list/schools-list').then(
+            (m) => m.SchoolsListComponent,
+          ),
+      },
       {
         path: 'schools/onboard',
-        component: SuperAdmin,
         title: 'Onboard School | Learno Super Admin',
-        data: {
-          page: {
-            path: 'schools/onboard',
-            label: 'Onboard School',
-            icon: 'apartment',
-            description:
-              'Create a new institution and configure access, subscription, and onboarding details.',
-          },
-        },
+        loadComponent: () =>
+          import('./schools/school-onboard/school-onboard').then(
+            (m) => m.SchoolOnboardComponent,
+          ),
       },
+      ...SUPER_ADMIN_PAGES.filter(
+        (page) => page.path !== 'dashboard' && page.path !== 'schools',
+      ).map((page) => ({
+        path: page.path,
+        component: SuperAdmin,
+        title: `${page.label} | Learno Super Admin`,
+        data: { page },
+      })),
+      // Detail routes & sub-flows
       {
         path: 'curriculum/create',
         component: SuperAdmin,

@@ -1,0 +1,348 @@
+<div class="table-container">
+  <!-- Filter & Search Toolbar -->
+  <div class="table-toolbar">
+    <div class="search-box">
+      <i class="material-symbols-outlined search-icon">search</i>
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Search by school name, email, or domain..."
+        [value]="searchQuery()"
+        (input)="onSearchInput($any($event.target).value)"
+        aria-label="Search schools"
+      />
+    </div>
+
+    <div class="filters-group">
+      <div class="filter-item">
+        <label for="status-filter" class="filter-label">Status</label>
+        <select
+          id="status-filter"
+          class="filter-select"
+          [value]="statusFilter()"
+          (change)="onStatusSelect($any($event.target).value)"
+        >
+          @for (opt of statusOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="plan-filter" class="filter-label">Plan</label>
+        <select
+          id="plan-filter"
+          class="filter-select"
+          [value]="planFilter()"
+          (change)="onPlanSelect($any($event.target).value)"
+        >
+          @for (opt of planOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="region-filter" class="filter-label">Region</label>
+        <select
+          id="region-filter"
+          class="filter-select"
+          [value]="regionFilter()"
+          (change)="onRegionSelect($any($event.target).value)"
+        >
+          @for (opt of regionOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="filter-item">
+        <label for="onboarding-filter" class="filter-label"
+          >Onboarding Status</label
+        >
+        <select
+          id="onboarding-filter"
+          class="filter-select"
+          [value]="onboardingFilter()"
+          (change)="onOnboardingSelect($any($event.target).value)"
+        >
+          @for (opt of onboardingOptions; track opt) {
+          <option [value]="opt">{{ opt }}</option>
+          }
+        </select>
+      </div>
+
+      <button type="button" class="btn-more-filters" title="Additional Filters">
+        <i class="material-symbols-outlined">filter_list</i>
+        <span>Filters</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Content -->
+  <div class="table-responsive">
+    <table class="schools-data-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-school">School Name</th>
+          <th scope="col" class="th-type">Type</th>
+          <th scope="col" class="th-admin">Admin Contact</th>
+          <th scope="col" class="th-location">Location</th>
+          <th scope="col" class="th-num">Learners</th>
+          <th scope="col" class="th-num">Teachers</th>
+          <th scope="col" class="th-plan">Subscription Plan</th>
+          <th scope="col" class="th-status">Status</th>
+          <th scope="col" class="th-activity">Last Activity</th>
+          <th scope="col" class="th-actions text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (school of paginatedSchools(); track school.id) {
+        <tr class="table-row">
+          <!-- School Name -->
+          <td class="td-school">
+            <div class="school-cell">
+              <div
+                class="school-avatar"
+                [style.background-color]="school.brandColor"
+                [attr.aria-label]="school.name"
+              >
+                {{ school.initials }}
+              </div>
+              <div class="school-info">
+                <span class="school-name" [title]="school.name"
+                  >{{ school.name }}</span
+                >
+                <span class="school-domain">{{ school.domain }}</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Type -->
+          <td class="td-type">
+            <span class="type-pill" [ngClass]="getTypeBadgeClass(school.type)">
+              {{ school.type }}
+            </span>
+          </td>
+
+          <!-- Admin Contact -->
+          <td class="td-admin">
+            <div class="admin-cell">
+              <span class="admin-name">{{ school.adminName }}</span>
+              <span class="admin-email">{{ school.adminEmail }}</span>
+            </div>
+          </td>
+
+          <!-- Location -->
+          <td class="td-location">
+            <span class="location-text">{{ school.location }}</span>
+          </td>
+
+          <!-- Learners -->
+          <td class="td-num">
+            <span class="num-text">{{ school.learnersCount | number }}</span>
+          </td>
+
+          <!-- Teachers -->
+          <td class="td-num">
+            <span class="num-text">{{ school.teachersCount | number }}</span>
+          </td>
+
+          <!-- Subscription Plan -->
+          <td class="td-plan">
+            <span class="plan-text">{{ school.plan }}</span>
+          </td>
+
+          <!-- Status -->
+          <td class="td-status">
+            <span
+              class="status-pill"
+              [ngClass]="getStatusBadgeClass(school.status)"
+            >
+              {{ school.status }}
+            </span>
+          </td>
+
+          <!-- Last Activity -->
+          <td class="td-activity">
+            <span class="activity-text">{{ school.lastActivity }}</span>
+          </td>
+
+          <!-- Actions -->
+          <td class="td-actions">
+            <div class="actions-group">
+              <button
+                type="button"
+                class="btn-icon"
+                title="View School Details"
+                (click)="onView(school)"
+              >
+                <i class="material-symbols-outlined">visibility</i>
+              </button>
+
+              <button
+                type="button"
+                class="btn-icon"
+                title="Edit School"
+                (click)="onEdit(school)"
+              >
+                <i class="material-symbols-outlined">edit</i>
+              </button>
+
+              <button
+                type="button"
+                class="btn-icon"
+                title="Manage Subscription"
+                (click)="onManageSubscription(school)"
+              >
+                <i class="material-symbols-outlined">credit_card</i>
+              </button>
+
+              <button
+                type="button"
+                class="btn-icon"
+                title="Manage Users & Access"
+                (click)="onManageUsers(school)"
+              >
+                <i class="material-symbols-outlined">manage_accounts</i>
+              </button>
+
+              <div class="action-menu-wrap">
+                <button
+                  type="button"
+                  class="btn-icon"
+                  title="More Options"
+                  (click)="toggleActionsMenu(school.id)"
+                >
+                  <i class="material-symbols-outlined">more_vert</i>
+                </button>
+
+                @if (activeMenuSchoolId() === school.id) {
+                <div class="dropdown-menu">
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onStatusChange(school, 'Active')"
+                  >
+                    <i class="material-symbols-outlined text-emerald-600"
+                      >check_circle</i
+                    >
+                    <span>Set Active</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onStatusChange(school, 'Suspended')"
+                  >
+                    <i class="material-symbols-outlined text-rose-600">block</i>
+                    <span>Suspend School</span>
+                  </button>
+                  <div class="menu-divider"></div>
+                  <button
+                    type="button"
+                    class="menu-item text-danger"
+                    (click)="onDelete(school)"
+                  >
+                    <i class="material-symbols-outlined">delete</i>
+                    <span>Delete Record</span>
+                  </button>
+                </div>
+                }
+              </div>
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="empty-state">
+            <div class="empty-wrap">
+              <i class="material-symbols-outlined empty-icon">apartment</i>
+              <p class="empty-title">No institutions found</p>
+              <p class="empty-desc">
+                Try adjusting your search query or filter criteria.
+              </p>
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Bar -->
+  <div class="table-pagination">
+    <div class="pagination-info">
+      Showing {{ rangeStart() }} to {{ rangeEnd() }} of {{ totalCount() ||
+      schools().length }} results
+    </div>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(1)"
+        title="First Page"
+      >
+        <i class="material-symbols-outlined">first_page</i>
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === 1"
+        (click)="goToPage(currentPage() - 1)"
+        title="Previous Page"
+      >
+        <i class="material-symbols-outlined">chevron_left</i>
+      </button>
+
+      @for (pg of displayedPages(); track $index) { @if (pg === '...') {
+      <span class="pagination-ellipsis">...</span>
+      } @else {
+      <button
+        type="button"
+        class="pagination-page-btn"
+        [class.active]="currentPage() === pg"
+        (click)="goToPage(pg)"
+      >
+        {{ pg }}
+      </button>
+      } }
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(currentPage() + 1)"
+        title="Next Page"
+      >
+        <i class="material-symbols-outlined">chevron_right</i>
+      </button>
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="goToPage(totalPages())"
+        title="Last Page"
+      >
+        <i class="material-symbols-outlined">last_page</i>
+      </button>
+
+      <div class="per-page-select-wrap">
+        <select
+          class="per-page-select"
+          [value]="itemsPerPage()"
+          (change)="onItemsPerPageChange(+$any($event.target).value)"
+          aria-label="Items per page"
+        >
+          <option [value]="5">5 / page</option>
+          <option [value]="10">10 / page</option>
+          <option [value]="25">25 / page</option>
+          <option [value]="50">50 / page</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

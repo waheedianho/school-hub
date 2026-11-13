@@ -1,0 +1,190 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="modal-title"
+>
+  <div class="modal-dialog">
+    <!-- Header -->
+    <div class="modal-header">
+      <div class="school-header-info">
+        <div
+          class="school-avatar-lg"
+          [style.background-color]="school().brandColor"
+        >
+          {{ school().initials }}
+        </div>
+        <div class="header-text">
+          <div class="title-row">
+            <h2 id="modal-title" class="school-title">{{ school().name }}</h2>
+            <span class="school-code">{{ school().code }}</span>
+          </div>
+          <div class="badges-row">
+            <span class="domain-tag">{{ school().domain }}</span>
+            <span class="type-tag">{{ school().type }}</span>
+            <span
+              class="status-tag"
+              [class]="'status-' + school().status.toLowerCase().replace(' ', '-')"
+            >
+              {{ school().status }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="btn-close"
+        (click)="onClose()"
+        aria-label="Close dialog"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <!-- Quick Stats Strip -->
+      <div class="quick-stats-strip">
+        <div class="stat-box">
+          <span class="stat-label">Learners</span>
+          <span class="stat-value">{{ school().learnersCount | number }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Teachers</span>
+          <span class="stat-value">{{ school().teachersCount | number }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Subscription</span>
+          <span class="stat-value text-primary">{{ school().plan }}</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Academic Session</span>
+          <span class="stat-value">{{ school().academicSession }}</span>
+        </div>
+      </div>
+
+      <!-- Detail Sections Grid -->
+      <div class="sections-grid">
+        <!-- Contact & Admin Info -->
+        <div class="section-card">
+          <h4 class="section-heading">
+            <i class="material-symbols-outlined">person</i>
+            Administrator & Location
+          </h4>
+          <dl class="details-list">
+            <div class="detail-row">
+              <dt>Administrator:</dt>
+              <dd>{{ school().adminName }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Email Address:</dt>
+              <dd>
+                <a [href]="'mailto:' + school().adminEmail" class="link-item">
+                  {{ school().adminEmail }}
+                </a>
+              </dd>
+            </div>
+            <div class="detail-row">
+              <dt>Phone Number:</dt>
+              <dd>{{ school().adminPhone }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Location:</dt>
+              <dd>{{ school().location }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Onboarding:</dt>
+              <dd>
+                <span class="onboarding-pill"
+                  >{{ school().onboardingStatus }}</span
+                >
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Academic & Curriculum -->
+        <div class="section-card">
+          <h4 class="section-heading">
+            <i class="material-symbols-outlined">school</i>
+            Academic & Curriculum
+          </h4>
+          <dl class="details-list">
+            <div class="detail-row">
+              <dt>Curriculum Type:</dt>
+              <dd>{{ school().curriculumType }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Current Term:</dt>
+              <dd>{{ school().currentTerm }}</dd>
+            </div>
+            <div class="detail-row">
+              <dt>Parent Consent:</dt>
+              <dd>
+                <span
+                  [class]="school().parentConsentRequired ? 'badge-yes' : 'badge-no'"
+                >
+                  {{ school().parentConsentRequired ? 'Mandatory' : 'Optional'
+                  }}
+                </span>
+              </dd>
+            </div>
+            <div class="detail-row">
+              <dt>Tutor Verification:</dt>
+              <dd>
+                <span
+                  [class]="school().tutorVerificationRequired ? 'badge-yes' : 'badge-no'"
+                >
+                  {{ school().tutorVerificationRequired ? 'Required' :
+                  'Disabled' }}
+                </span>
+              </dd>
+            </div>
+            <div class="detail-row">
+              <dt>Created Date:</dt>
+              <dd>{{ school().createdAt }}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+
+      <!-- Enabled Modules -->
+      <div class="modules-section">
+        <h4 class="section-heading">
+          <i class="material-symbols-outlined">extension</i>
+          Enabled Platform Modules
+        </h4>
+        <div class="modules-tags">
+          @for (mod of school().enabledModules; track mod) {
+          <span class="module-chip">
+            <i class="material-symbols-outlined check-icon">check_circle</i>
+            {{ mod }}
+          </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="modal-footer">
+      <button type="button" class="btn-secondary" (click)="onClose()">
+        Close
+      </button>
+      <div class="footer-actions">
+        <button
+          type="button"
+          class="btn-outline"
+          (click)="onManageSubscription()"
+        >
+          <i class="material-symbols-outlined">credit_card</i>
+          Manage Subscription
+        </button>
+        <button type="button" class="btn-primary" (click)="onEdit()">
+          <i class="material-symbols-outlined">edit</i>
+          Edit Details
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

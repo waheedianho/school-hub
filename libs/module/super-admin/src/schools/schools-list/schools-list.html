@@ -1,0 +1,177 @@
+<div class="schools-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-titles">
+      <h1 class="page-title">Schools / Institutions</h1>
+      <p class="page-subtitle">
+        Onboard, manage, and monitor all schools and institutions on the
+        platform.
+      </p>
+    </div>
+
+    <div class="header-actions">
+      <a routerLink="/super-admin/schools/onboard" class="btn-primary">
+        <i class="material-symbols-outlined">add</i>
+        <span>Onboard School</span>
+      </a>
+
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="onImportInstitutions()"
+      >
+        <i class="material-symbols-outlined">file_upload</i>
+        <span>Import Institutions</span>
+      </button>
+
+      <div class="export-dropdown-wrap">
+        <button
+          type="button"
+          class="btn-outline"
+          (click)="toggleExport()"
+          aria-haspopup="true"
+          [attr.aria-expanded]="isExportOpen()"
+        >
+          <i class="material-symbols-outlined">file_download</i>
+          <span>Export</span>
+          <i class="material-symbols-outlined">keyboard_arrow_down</i>
+        </button>
+
+        @if (isExportOpen()) {
+        <div class="export-menu">
+          <button type="button" class="export-item" (click)="exportData('csv')">
+            <i class="material-symbols-outlined">table_view</i>
+            <span>Export as CSV</span>
+          </button>
+          <button
+            type="button"
+            class="export-item"
+            (click)="exportData('xlsx')"
+          >
+            <i class="material-symbols-outlined">grid_on</i>
+            <span>Export as Excel (.xlsx)</span>
+          </button>
+          <button type="button" class="export-item" (click)="exportData('pdf')">
+            <i class="material-symbols-outlined">picture_as_pdf</i>
+            <span>Export as PDF Report</span>
+          </button>
+        </div>
+        }
+      </div>
+    </div>
+  </header>
+
+  <!-- Action Toast / Notification -->
+  @if (actionNotification()) {
+  <div class="toast-notification" role="status">
+    <i class="material-symbols-outlined text-emerald-600">check_circle</i>
+    <span>{{ actionNotification() }}</span>
+  </div>
+  }
+
+  <!-- 1. Key Performance Indicators -->
+  <section class="section-metrics">
+    <school-hub-schools-metrics [metrics]="metrics()" />
+  </section>
+
+  <!-- 2. Navigation Tabs -->
+  <nav class="schools-tabs-bar" aria-label="Schools views navigation">
+    <div class="tabs-list">
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'all'"
+        (click)="setTab('all')"
+      >
+        <span>All Institutions</span>
+        <span class="tab-badge">{{ allCount() | number }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'onboarding'"
+        (click)="setTab('onboarding')"
+      >
+        <span>New Onboarding</span>
+        <span class="tab-badge">{{ onboardingCount() }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'pending'"
+        (click)="setTab('pending')"
+      >
+        <span>Pending Verification</span>
+        <span class="tab-badge">{{ pendingCount() }}</span>
+      </button>
+
+      <button
+        type="button"
+        class="tab-btn"
+        [class.active]="selectedTab() === 'archived'"
+        (click)="setTab('archived')"
+      >
+        <span>Archived</span>
+        <span class="tab-badge">{{ archivedCount() }}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- 3. Main Content Grid (Directory + Right Sidebar) -->
+  <div class="main-content-layout">
+    <!-- Left Column: Quick Actions + Schools Table -->
+    <main class="primary-column">
+      <school-hub-schools-quick-actions
+        (actionTriggered)="onQuickAction($event)"
+      />
+
+      <school-hub-schools-table
+        [schools]="filteredSchools()"
+        [searchQuery]="searchQuery()"
+        [statusFilter]="statusFilter()"
+        [planFilter]="planFilter()"
+        [regionFilter]="regionFilter()"
+        [onboardingFilter]="onboardingStatusFilter()"
+        [totalCount]="1248"
+        (searchChange)="onSearch($event)"
+        (statusChange)="onStatusFilter($event)"
+        (planChange)="onPlanFilter($event)"
+        (regionChange)="onRegionFilter($event)"
+        (onboardingChange)="onOnboardingFilter($event)"
+        (viewSchool)="onViewSchool($event)"
+        (editSchool)="onEditSchool($event)"
+        (manageSubscription)="onManageSubscription($event)"
+        (manageUsers)="onManageUsers($event)"
+        (updateStatus)="onUpdateSchoolStatus($event)"
+        (deleteSchool)="onDeleteSchool($event)"
+      />
+    </main>
+
+    <!-- Right Column: Sidebar Statistics -->
+    <aside class="sidebar-column">
+      <school-hub-schools-sidebar
+        [onboardingBreakdown]="onboardingBreakdown()"
+        [recentActivities]="recentActivities()"
+        [attentionStats]="attentionStats()"
+        (filterByAttention)="onFilterByAttention($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- 4. Platform Health Bar -->
+  <footer class="footer-health">
+    <school-hub-platform-health-bar [health]="platformHealth()" />
+  </footer>
+
+  <!-- Detail Modal -->
+  @if (selectedSchoolForModal(); as selectedSchool) {
+  <school-hub-school-detail-modal
+    [school]="selectedSchool"
+    (closeModal)="closeModal()"
+    (editSchool)="onEditSchool($event)"
+    (manageSubscription)="onManageSubscription($event)"
+  />
+  }
+</div>

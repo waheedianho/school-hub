@@ -1,0 +1,180 @@
+<aside
+  class="sidebar-container"
+  aria-label="Schools statistics and recent activity"
+>
+  <!-- 1. Onboarding Progress Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Onboarding Progress</h3>
+    </div>
+
+    <div class="onboarding-content">
+      <div class="chart-wrap">
+        <svg
+          class="donut-chart"
+          viewBox="0 0 100 100"
+          width="100"
+          height="100"
+          role="img"
+          aria-label="Onboarding Progress Donut Chart"
+        >
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f1f5f9"
+            stroke-width="16"
+          />
+          <!-- Completed 69% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#10b981"
+            stroke-width="16"
+            stroke-dasharray="173.4 251.3"
+            stroke-dashoffset="0"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- In Progress 16% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#2563eb"
+            stroke-width="16"
+            stroke-dasharray="40.2 251.3"
+            stroke-dashoffset="-173.4"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- Pending Verification 10% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f59e0b"
+            stroke-width="16"
+            stroke-dasharray="25.1 251.3"
+            stroke-dashoffset="-213.6"
+            transform="rotate(-90 50 50)"
+          />
+          <!-- Incomplete 5% -->
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#94a3b8"
+            stroke-width="16"
+            stroke-dasharray="12.6 251.3"
+            stroke-dashoffset="-238.7"
+            transform="rotate(-90 50 50)"
+          />
+        </svg>
+      </div>
+
+      <div class="legend-list">
+        <div class="legend-item">
+          <span class="legend-dot bg-emerald-500"></span>
+          <span class="legend-label">Completed</span>
+          <span class="legend-val"
+            >{{ onboardingBreakdown().completedCount }} ({{
+            onboardingBreakdown().completedPercent }}%)</span
+          >
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot bg-blue-600"></span>
+          <span class="legend-label">In Progress</span>
+          <span class="legend-val"
+            >{{ onboardingBreakdown().inProgressCount }} ({{
+            onboardingBreakdown().inProgressPercent }}%)</span
+          >
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot bg-amber-500"></span>
+          <span class="legend-label">Pending Verification</span>
+          <span class="legend-val"
+            >{{ onboardingBreakdown().pendingVerificationCount }} ({{
+            onboardingBreakdown().pendingVerificationPercent }}%)</span
+          >
+        </div>
+        <div class="legend-item">
+          <span class="legend-dot bg-slate-400"></span>
+          <span class="legend-label">Incomplete</span>
+          <span class="legend-val"
+            >{{ onboardingBreakdown().incompleteCount }} ({{
+            onboardingBreakdown().incompletePercent }}%)</span
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="total-row">
+      <span class="total-label">Total Institutions</span>
+      <span class="total-value"
+        >{{ onboardingBreakdown().totalInstitutions | number }}</span
+      >
+    </div>
+  </section>
+
+  <!-- 2. Recent Institution Activity Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Institution Activity</h3>
+    </div>
+
+    <ul class="activity-list">
+      @for (activity of recentActivities(); track activity.id) {
+      <li class="activity-item">
+        <div class="activity-icon-wrap">
+          <i class="material-symbols-outlined">{{ activity.icon }}</i>
+        </div>
+        <div class="activity-details">
+          <h4 class="activity-school">{{ activity.schoolName }}</h4>
+          <p class="activity-action">{{ activity.action }}</p>
+        </div>
+        <span class="activity-time">{{ activity.timeAgo }}</span>
+      </li>
+      }
+    </ul>
+
+    <button type="button" class="view-link" (click)="viewAllActivity.emit()">
+      <span>View all activity</span>
+      <i class="material-symbols-outlined link-icon">arrow_forward</i>
+    </button>
+  </section>
+
+  <!-- 3. Schools Needing Attention Widget -->
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Schools Needing Attention</h3>
+    </div>
+
+    <div class="attention-list">
+      @for (item of attentionStats(); track item.id) {
+      <button
+        type="button"
+        class="attention-item"
+        (click)="onAttentionClick(item.id)"
+      >
+        <div class="attention-icon-wrap" [ngClass]="getAttentionBg(item.tone)">
+          <i class="material-symbols-outlined"
+            >{{ getAttentionIcon(item.id) }}</i
+          >
+        </div>
+        <span class="attention-count">{{ item.count }}</span>
+        <span class="attention-label">{{ item.label }}</span>
+      </button>
+      }
+    </div>
+
+    <button type="button" class="view-link" (click)="viewAllAttention.emit()">
+      <span>View all</span>
+      <i class="material-symbols-outlined link-icon">arrow_forward</i>
+    </button>
+  </section>
+</aside>
