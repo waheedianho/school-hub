@@ -1,0 +1,425 @@
+<div class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+  <!-- Filter Toolbar -->
+  <div class="p-4 border-b border-slate-200 space-y-3">
+    <div
+      class="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between"
+    >
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <span
+          class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg pointer-events-none"
+          aria-hidden="true"
+          >search</span
+        >
+        <input
+          type="text"
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          placeholder="Search assessment packs by title, subject, code or author..."
+          class="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all duration-150"
+          data-testid="assessment-search-input"
+        />
+      </div>
+
+      <!-- Reset Filters Button -->
+      <button
+        type="button"
+        (click)="resetFilters.emit()"
+        class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors duration-150 self-start lg:self-auto cursor-pointer"
+        data-testid="reset-filters-btn"
+      >
+        <span class="material-symbols-outlined text-sm" aria-hidden="true"
+          >restart_alt</span
+        >
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- 5 Filter Dropdowns -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5 pt-1">
+      <!-- Subject Filter -->
+      <div class="space-y-1">
+        <label
+          for="filter-subject-select"
+          class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider"
+          >Subject</label
+        >
+        <select
+          id="filter-subject-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="onSubjectChange($event)"
+          class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700"
+          data-testid="filter-subject"
+        >
+          @for (sub of subjects; track sub) {
+          <option [value]="sub">{{ sub }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Class Level Filter -->
+      <div class="space-y-1">
+        <label
+          for="filter-class-select"
+          class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider"
+          >Class Level</label
+        >
+        <select
+          id="filter-class-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="onClassChange($event)"
+          class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700"
+          data-testid="filter-class"
+        >
+          @for (lvl of classLevels; track lvl) {
+          <option [value]="lvl">{{ lvl }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Term Filter -->
+      <div class="space-y-1">
+        <label
+          for="filter-term-select"
+          class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider"
+          >Term</label
+        >
+        <select
+          id="filter-term-select"
+          [ngModel]="selectedTerm()"
+          (ngModelChange)="onTermChange($event)"
+          class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700"
+          data-testid="filter-term"
+        >
+          @for (t of terms; track t) {
+          <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Assessment Type Filter -->
+      <div class="space-y-1">
+        <label
+          for="filter-type-select"
+          class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider"
+          >Type</label
+        >
+        <select
+          id="filter-type-select"
+          [ngModel]="selectedType()"
+          (ngModelChange)="onTypeChange($event)"
+          class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700"
+          data-testid="filter-type"
+        >
+          @for (at of assessmentTypes; track at) {
+          <option [value]="at">{{ at }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="space-y-1">
+        <label
+          for="filter-status-select"
+          class="block text-[11px] font-semibold text-slate-500 uppercase tracking-wider"
+          >Status</label
+        >
+        <select
+          id="filter-status-select"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="onStatusChange($event)"
+          class="w-full px-2.5 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white text-slate-700"
+          data-testid="filter-status"
+        >
+          @for (st of statuses; track st) {
+          <option [value]="st">{{ st }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse text-xs">
+      <thead>
+        <tr
+          class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider text-[11px]"
+        >
+          <th scope="col" class="py-3 px-4">Assessment Pack</th>
+          <th scope="col" class="py-3 px-3">Class</th>
+          <th scope="col" class="py-3 px-3">Subject</th>
+          <th scope="col" class="py-3 px-3">Type</th>
+          <th scope="col" class="py-3 px-3">Questions & Marks</th>
+          <th scope="col" class="py-3 px-3">Completion</th>
+          <th scope="col" class="py-3 px-3">Status</th>
+          <th scope="col" class="py-3 px-2">Ver</th>
+          <th scope="col" class="py-3 px-3">Last Updated</th>
+          <th scope="col" class="py-3 px-3 text-right">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        @for (pack of paginatedPacks(); track pack.id) {
+        <tr class="hover:bg-slate-50/80 transition-colors duration-150 group">
+          <!-- Pack Name & Code -->
+          <td class="py-3.5 px-4">
+            <button
+              type="button"
+              (click)="onView(pack)"
+              class="text-left font-semibold text-slate-900 group-hover:text-blue-600 transition-colors text-xs block cursor-pointer"
+            >
+              {{ pack.name }}
+            </button>
+            <div class="text-[11px] text-slate-400 font-mono mt-0.5">
+              {{ pack.code || pack.id }} • {{ pack.deliveryMode || 'Online CBT'
+              }}
+            </div>
+          </td>
+
+          <!-- Class Level -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700"
+            >
+              {{ pack.classLevel }}
+            </span>
+          </td>
+
+          <!-- Subject -->
+          <td class="py-3.5 px-3 whitespace-nowrap text-slate-700 font-medium">
+            {{ pack.subject }}
+          </td>
+
+          <!-- Type -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
+              [ngClass]="{
+                'bg-blue-50 text-blue-700': pack.type === 'Quiz',
+                'bg-indigo-50 text-indigo-700': pack.type === 'Topic Test',
+                'bg-purple-50 text-purple-700': pack.type === 'Assessment',
+                'bg-teal-50 text-teal-700': pack.type === 'Practical Test',
+                'bg-rose-50 text-rose-700': pack.type === 'Mock Exam',
+                'bg-amber-50 text-amber-700': pack.type === 'Term Assessment'
+              }"
+            >
+              {{ pack.type }}
+            </span>
+          </td>
+
+          <!-- Questions & Marks -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <div class="font-medium text-slate-900">
+              {{ pack.questionsCount }} items
+            </div>
+            <div class="text-[11px] text-slate-400">
+              {{ pack.totalMarks || pack.questionsCount * 2 }} marks
+            </div>
+          </td>
+
+          <!-- Completion Progress -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <div class="flex items-center gap-2">
+              <div class="w-16 h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  class="h-full rounded-full transition-all duration-300"
+                  [style.width.%]="pack.completionPercentage"
+                  [ngClass]="{
+                    'bg-emerald-500': pack.completionPercentage === 100,
+                    'bg-blue-500': pack.completionPercentage >= 70 && pack.completionPercentage < 100,
+                    'bg-amber-500': pack.completionPercentage < 70
+                  }"
+                ></div>
+              </div>
+              <span class="text-[11px] font-medium text-slate-600"
+                >{{ pack.completionPercentage }}%</span
+              >
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
+              [ngClass]="{
+                'bg-emerald-50 text-emerald-700 border border-emerald-200': pack.status === 'Approved',
+                'bg-amber-50 text-amber-700 border border-amber-200': pack.status === 'Pending Review',
+                'bg-rose-50 text-rose-700 border border-rose-200': pack.status === 'Needs Update',
+                'bg-slate-100 text-slate-700 border border-slate-200': pack.status === 'Draft'
+              }"
+            >
+              {{ pack.status }}
+            </span>
+          </td>
+
+          <!-- Version -->
+          <td
+            class="py-3.5 px-2 whitespace-nowrap text-slate-500 font-mono text-[11px]"
+          >
+            {{ pack.version }}
+          </td>
+
+          <!-- Last Updated -->
+          <td class="py-3.5 px-3 whitespace-nowrap">
+            <div class="text-slate-800">{{ pack.lastUpdated }}</div>
+            <div class="text-[11px] text-slate-400">by {{ pack.author }}</div>
+          </td>
+
+          <!-- Actions -->
+          <td class="py-3.5 px-3 whitespace-nowrap text-right relative">
+            <div class="inline-flex items-center gap-1">
+              <!-- View Icon Button -->
+              <button
+                type="button"
+                (click)="onView(pack)"
+                class="w-7 h-7 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 flex items-center justify-center transition-colors cursor-pointer"
+                title="View Pack Details"
+                [attr.data-testid]="'view-pack-' + pack.id"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >visibility</span
+                >
+              </button>
+
+              <!-- 3-Dots Menu Trigger -->
+              <button
+                type="button"
+                (click)="toggleActionMenu(pack.id, $event)"
+                class="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors cursor-pointer"
+                title="More Actions"
+                [attr.data-testid]="'action-menu-btn-' + pack.id"
+              >
+                <span class="material-symbols-outlined text-base"
+                  >more_vert</span
+                >
+              </button>
+            </div>
+
+            <!-- Dropdown Menu -->
+            @if (openActionMenuId() === pack.id) {
+            <div
+              class="absolute right-3 top-10 w-44 bg-white rounded-xl shadow-lg border border-slate-200 py-1.5 z-20 text-left"
+              data-testid="action-dropdown"
+            >
+              <button
+                type="button"
+                (click)="onView(pack)"
+                class="w-full px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm text-slate-400"
+                  >visibility</span
+                >
+                View Details
+              </button>
+              <button
+                type="button"
+                (click)="onEdit(pack)"
+                class="w-full px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm text-slate-400"
+                  >edit</span
+                >
+                Edit Assessment
+              </button>
+              <div class="h-px bg-slate-100 my-1"></div>
+              <div
+                class="px-3 py-1 text-[10px] font-semibold text-slate-400 uppercase tracking-wider"
+              >
+                Status
+              </div>
+              <button
+                type="button"
+                (click)="onUpdateStatus(pack.id, 'Approved')"
+                class="w-full px-3 py-1.5 text-xs text-emerald-700 hover:bg-emerald-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm"
+                  >check_circle</span
+                >
+                Mark Approved
+              </button>
+              <button
+                type="button"
+                (click)="onUpdateStatus(pack.id, 'Pending Review')"
+                class="w-full px-3 py-1.5 text-xs text-amber-700 hover:bg-amber-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm">schedule</span>
+                Send to Review
+              </button>
+              <button
+                type="button"
+                (click)="onUpdateStatus(pack.id, 'Needs Update')"
+                class="w-full px-3 py-1.5 text-xs text-rose-700 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm">warning</span>
+                Needs Update
+              </button>
+              <div class="h-px bg-slate-100 my-1"></div>
+              <button
+                type="button"
+                (click)="onDelete(pack.id)"
+                class="w-full px-3 py-1.5 text-xs text-rose-600 hover:bg-rose-50 flex items-center gap-2 cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-sm">delete</span>
+                Delete Pack
+              </button>
+            </div>
+            }
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="10" class="py-12 text-center text-slate-500">
+            <span
+              class="material-symbols-outlined text-4xl text-slate-300 block mb-2"
+              aria-hidden="true"
+              >assignment_late</span
+            >
+            <p class="text-sm font-medium text-slate-700">
+              No assessment packs found
+            </p>
+            <p class="text-xs text-slate-400 mt-1">
+              Try adjusting your search criteria or filters
+            </p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div
+    class="p-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between text-xs text-slate-500"
+  >
+    <div>
+      Showing
+      <span class="font-semibold text-slate-700">{{ showingStart() }}</span> to
+      <span class="font-semibold text-slate-700">{{ showingEnd() }}</span> of
+      <span class="font-semibold text-slate-700">{{ packs().length }}</span>
+      assessment packs
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button
+        type="button"
+        (click)="prevPage()"
+        [disabled]="currentPage() === 1"
+        class="px-2.5 py-1 rounded border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        data-testid="prev-page-btn"
+      >
+        Previous
+      </button>
+      <span class="px-2 font-medium text-slate-700"
+        >Page {{ currentPage() }} of {{ totalPages() }}</span
+      >
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage() >= totalPages()"
+        class="px-2.5 py-1 rounded border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors cursor-pointer"
+        data-testid="next-page-btn"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+</div>

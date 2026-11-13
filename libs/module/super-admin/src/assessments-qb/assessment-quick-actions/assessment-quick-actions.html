@@ -1,0 +1,115 @@
+<section
+  class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+  aria-label="Quick action shortcuts"
+>
+  <!-- 1. Create Assessment -->
+  <button
+    type="button"
+    class="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-sm transition-all duration-200 text-left group cursor-pointer"
+    (click)="createAssessment.emit()"
+    data-testid="action-create-assessment"
+  >
+    <div
+      class="w-10 h-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-200"
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true"
+        >add_circle</span
+      >
+    </div>
+    <div class="min-w-0">
+      <div
+        class="text-sm font-semibold text-slate-900 group-hover:text-blue-600"
+      >
+        Create Assessment
+      </div>
+      <div class="text-xs text-slate-500 truncate">
+        Build pack or CBT test blueprint
+      </div>
+    </div>
+  </button>
+
+  <!-- 2. Import Questions -->
+  <button
+    type="button"
+    class="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200 hover:border-emerald-400 hover:shadow-sm transition-all duration-200 text-left group cursor-pointer"
+    (click)="importQuestions.emit()"
+    data-testid="action-import-questions"
+  >
+    <div
+      class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-200"
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true"
+        >upload_file</span
+      >
+    </div>
+    <div class="min-w-0">
+      <div
+        class="text-sm font-semibold text-slate-900 group-hover:text-emerald-600"
+      >
+        Import Questions
+      </div>
+      <div class="text-xs text-slate-500 truncate">
+        Upload CSV, GIFT, or QTI files
+      </div>
+    </div>
+  </button>
+
+  <!-- 3. Review Queue -->
+  <button
+    type="button"
+    class="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200 hover:border-amber-400 hover:shadow-sm transition-all duration-200 text-left group cursor-pointer"
+    (click)="reviewQueue.emit()"
+    data-testid="action-review-queue"
+  >
+    <div
+      class="w-10 h-10 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-200"
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true"
+        >rate_review</span
+      >
+    </div>
+    <div class="min-w-0 flex-1">
+      <div class="flex items-center justify-between gap-1">
+        <span
+          class="text-sm font-semibold text-slate-900 group-hover:text-amber-600"
+        >
+          Review Queue
+        </span>
+        <span
+          class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"
+        >
+          {{ pendingReviewCount() }}
+        </span>
+      </div>
+      <div class="text-xs text-slate-500 truncate">
+        Moderate questions & blueprints
+      </div>
+    </div>
+  </button>
+
+  <!-- 4. Moderation Rules -->
+  <button
+    type="button"
+    class="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-200 hover:border-purple-400 hover:shadow-sm transition-all duration-200 text-left group cursor-pointer"
+    (click)="moderationRules.emit()"
+    data-testid="action-moderation-rules"
+  >
+    <div
+      class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 group-hover:bg-purple-600 group-hover:text-white transition-colors duration-200"
+    >
+      <span class="material-symbols-outlined text-xl" aria-hidden="true"
+        >rule</span
+      >
+    </div>
+    <div class="min-w-0">
+      <div
+        class="text-sm font-semibold text-slate-900 group-hover:text-purple-600"
+      >
+        Moderation Rules
+      </div>
+      <div class="text-xs text-slate-500 truncate">
+        Configure SLAs & marking standards
+      </div>
+    </div>
+  </button>
+</section>

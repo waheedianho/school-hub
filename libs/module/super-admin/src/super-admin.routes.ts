@@ -61,12 +61,29 @@ export const superAdminRoutes: Routes = [
             (m) => m.CreatePackComponent,
           ),
       },
+      {
+        path: 'assessments-qb',
+        title: 'Assessments & Question Bank | Learno Super Admin',
+        loadComponent: () =>
+          import('./assessments-qb/assessments-qb').then(
+            (m) => m.AssessmentsQbComponent,
+          ),
+      },
+      {
+        path: 'assessments-qb/create',
+        title: 'Create Assessment Pack | Learno Super Admin',
+        loadComponent: () =>
+          import('./assessments-qb/create-assessment/create-assessment').then(
+            (m) => m.CreateAssessmentComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
           page.path !== 'schools' &&
           page.path !== 'users-roles' &&
-          page.path !== 'curriculum-content',
+          page.path !== 'curriculum-content' &&
+          page.path !== 'assessments-qb',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -81,17 +98,8 @@ export const superAdminRoutes: Routes = [
       },
       {
         path: 'assessments/create',
-        component: SuperAdmin,
-        title: 'Create Assessment | Learno Super Admin',
-        data: {
-          page: {
-            path: 'assessments/create',
-            label: 'Create Assessment',
-            icon: 'fact_check',
-            description:
-              'Build and publish a platform-wide assessment pack for schools and institutions.',
-          },
-        },
+        redirectTo: 'assessments-qb/create',
+        pathMatch: 'full',
       },
       {
         path: 'safeguarding/create-case',

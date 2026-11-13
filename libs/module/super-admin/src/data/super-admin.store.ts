@@ -88,6 +88,31 @@ import {
   SAMPLE_REVIEW_QUEUE_ITEMS,
   SAMPLE_WEEKLY_TOPICS,
 } from './super-admin-curriculum.data';
+import {
+  AssessmentActivity,
+  AssessmentHealthOverview,
+  AssessmentMetric,
+  AssessmentPack,
+  AssessmentReviewQueueItem,
+  AssessmentReviewQueueSummary,
+  AssessmentStatus,
+  AssessmentTab,
+  AssessmentTemplate,
+  CreateAssessmentData,
+  QuestionBankItem,
+  QuestionCompositionItem,
+} from './super-admin-assessments.models';
+import {
+  ASSESSMENT_HEALTH_DATA,
+  ASSESSMENT_METRICS,
+  ASSESSMENT_REVIEW_SUMMARY,
+  RECENT_ASSESSMENT_ACTIVITIES,
+  SAMPLE_ASSESSMENT_PACKS,
+  SAMPLE_ASSESSMENT_REVIEW_ITEMS,
+  SAMPLE_ASSESSMENT_TEMPLATES,
+  SAMPLE_QUESTION_BANK_ITEMS,
+  SAMPLE_QUESTION_COMPOSITIONS,
+} from './super-admin-assessments.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -194,6 +219,40 @@ export class SuperAdminStore {
   readonly selectedCurriculumTermFilter = signal<string>('All');
   readonly selectedCurriculumStatusFilter = signal<string>('All');
   readonly standardsCoverage = signal<number>(81);
+
+  // Assessments & Question Bank Signals
+  readonly assessmentPacks = signal<AssessmentPack[]>(SAMPLE_ASSESSMENT_PACKS);
+  readonly assessmentMetrics = signal<AssessmentMetric[]>(ASSESSMENT_METRICS);
+  readonly assessmentHealth = signal<AssessmentHealthOverview>(
+    ASSESSMENT_HEALTH_DATA,
+  );
+  readonly assessmentReviewSummary = signal<AssessmentReviewQueueSummary>(
+    ASSESSMENT_REVIEW_SUMMARY,
+  );
+  readonly recentAssessmentActivities = signal<AssessmentActivity[]>(
+    RECENT_ASSESSMENT_ACTIVITIES,
+  );
+  readonly questionBank = signal<QuestionBankItem[]>(
+    SAMPLE_QUESTION_BANK_ITEMS,
+  );
+  readonly assessmentReviewQueue = signal<AssessmentReviewQueueItem[]>(
+    SAMPLE_ASSESSMENT_REVIEW_ITEMS,
+  );
+  readonly assessmentTemplates = signal<AssessmentTemplate[]>(
+    SAMPLE_ASSESSMENT_TEMPLATES,
+  );
+  readonly questionCompositions = signal<QuestionCompositionItem[]>(
+    SAMPLE_QUESTION_COMPOSITIONS,
+  );
+
+  readonly selectedAssessmentTab = signal<AssessmentTab>('packs');
+  readonly assessmentSearchQuery = signal<string>('');
+  readonly selectedAssessmentSubjectFilter = signal<string>('All');
+  readonly selectedAssessmentClassFilter = signal<string>('All');
+  readonly selectedAssessmentTermFilter = signal<string>('All');
+  readonly selectedAssessmentTypeFilter = signal<string>('All');
+  readonly selectedAssessmentStatusFilter = signal<string>('All');
+  readonly assessmentStandardsCoverage = signal<number>(92);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -430,6 +489,104 @@ export class SuperAdminStore {
           !matchesClass &&
           !matchesAuthor
         ) {
+          return false;
+        }
+      }
+      return true;
+    });
+  });
+
+  // Assessments & Question Bank Computeds
+  readonly totalAssessmentPacksCount = computed(
+    () => this.assessmentPacks().length,
+  );
+  readonly approvedAssessmentPacksCount = computed(
+    () => this.assessmentPacks().filter((p) => p.status === 'Approved').length,
+  );
+  readonly pendingReviewAssessmentPacksCount = computed(
+    () =>
+      this.assessmentPacks().filter((p) => p.status === 'Pending Review')
+        .length,
+  );
+  readonly draftAssessmentPacksCount = computed(
+    () => this.assessmentPacks().filter((p) => p.status === 'Draft').length,
+  );
+  readonly needsUpdateAssessmentPacksCount = computed(
+    () =>
+      this.assessmentPacks().filter((p) => p.status === 'Needs Update').length,
+  );
+
+  readonly filteredAssessmentPacks = computed(() => {
+    const list = this.assessmentPacks();
+    const query = this.assessmentSearchQuery().toLowerCase().trim();
+    const subject = this.selectedAssessmentSubjectFilter();
+    const classLevel = this.selectedAssessmentClassFilter();
+    const term = this.selectedAssessmentTermFilter();
+    const type = this.selectedAssessmentTypeFilter();
+    const status = this.selectedAssessmentStatusFilter();
+
+    return list.filter((pack) => {
+      // Subject
+      if (subject !== 'All' && pack.subject !== subject) {
+        return false;
+      }
+      // Class Level
+      if (classLevel !== 'All' && pack.classLevel !== classLevel) {
+        return false;
+      }
+      // Term
+      if (term !== 'All' && pack.term && pack.term !== term) {
+        return false;
+      }
+      // Type
+      if (type !== 'All' && pack.type !== type) {
+        return false;
+      }
+      // Status
+      if (status !== 'All' && pack.status !== status) {
+        return false;
+      }
+      // Search
+      if (query) {
+        const matchesName = pack.name.toLowerCase().includes(query);
+        const matchesSubject = pack.subject.toLowerCase().includes(query);
+        const matchesClass = pack.classLevel.toLowerCase().includes(query);
+        const matchesAuthor = pack.author.toLowerCase().includes(query);
+        const matchesCode = pack.code?.toLowerCase().includes(query) ?? false;
+        if (
+          !matchesName &&
+          !matchesSubject &&
+          !matchesClass &&
+          !matchesAuthor &&
+          !matchesCode
+        ) {
+          return false;
+        }
+      }
+      return true;
+    });
+  });
+
+  readonly filteredQuestionBank = computed(() => {
+    const list = this.questionBank();
+    const query = this.assessmentSearchQuery().toLowerCase().trim();
+    const subject = this.selectedAssessmentSubjectFilter();
+    const classLevel = this.selectedAssessmentClassFilter();
+
+    return list.filter((item) => {
+      if (subject !== 'All' && item.subject !== subject) {
+        return false;
+      }
+      if (classLevel !== 'All' && item.classLevel !== classLevel) {
+        return false;
+      }
+      if (query) {
+        const matchesText = item.questionText.toLowerCase().includes(query);
+        const matchesCode = item.code.toLowerCase().includes(query);
+        const matchesTopic = item.topic.toLowerCase().includes(query);
+        const matchesTag =
+          item.misconceptionTag?.toLowerCase().includes(query) ?? false;
+        if (!matchesText && !matchesCode && !matchesTopic && !matchesTag) {
           return false;
         }
       }
@@ -795,6 +952,138 @@ export class SuperAdminStore {
           ? {
               ...item,
               status: 'Revision Requested' as const,
+            }
+          : item,
+      ),
+    );
+  }
+
+  // Assessments Actions
+  setAssessmentTab(tab: AssessmentTab): void {
+    this.selectedAssessmentTab.set(tab);
+  }
+
+  setAssessmentSearch(query: string): void {
+    this.assessmentSearchQuery.set(query);
+  }
+
+  setAssessmentSubjectFilter(subject: string): void {
+    this.selectedAssessmentSubjectFilter.set(subject);
+  }
+
+  setAssessmentClassFilter(classLevel: string): void {
+    this.selectedAssessmentClassFilter.set(classLevel);
+  }
+
+  setAssessmentTermFilter(term: string): void {
+    this.selectedAssessmentTermFilter.set(term);
+  }
+
+  setAssessmentTypeFilter(type: string): void {
+    this.selectedAssessmentTypeFilter.set(type);
+  }
+
+  setAssessmentStatusFilter(status: string): void {
+    this.selectedAssessmentStatusFilter.set(status);
+  }
+
+  resetAssessmentFilters(): void {
+    this.assessmentSearchQuery.set('');
+    this.selectedAssessmentSubjectFilter.set('All');
+    this.selectedAssessmentClassFilter.set('All');
+    this.selectedAssessmentTermFilter.set('All');
+    this.selectedAssessmentTypeFilter.set('All');
+    this.selectedAssessmentStatusFilter.set('All');
+  }
+
+  createAssessmentPack(data: CreateAssessmentData): AssessmentPack {
+    const newPack: AssessmentPack = {
+      id: 'AP-' + Date.now().toString().slice(-4),
+      name: data.assessmentName,
+      classLevel: data.classLevel,
+      subject: data.subject,
+      type: data.assessmentType,
+      questionsCount: data.numberOfQuestions,
+      totalMarks: data.totalMarks,
+      completionPercentage: data.publishStatus === 'Publish' ? 100 : 72,
+      status:
+        data.publishStatus === 'Publish'
+          ? 'Approved'
+          : data.publishStatus === 'Submit for Review'
+            ? 'Pending Review'
+            : 'Draft',
+      version: data.version || 'v1.0',
+      lastUpdated: 'Just now',
+      author: 'Super Admin',
+      term: data.term,
+      academicSession: data.academicSession,
+      code: data.assessmentCode,
+      durationMins: data.durationMins,
+      deliveryMode: data.deliveryMode,
+      description: data.description,
+    };
+    this.assessmentPacks.update((prev) => [newPack, ...prev]);
+    return newPack;
+  }
+
+  updateAssessmentStatus(id: string, status: AssessmentStatus): void {
+    this.assessmentPacks.update((list) =>
+      list.map((p) => (p.id === id ? { ...p, status } : p)),
+    );
+  }
+
+  deleteAssessmentPack(id: string): void {
+    this.assessmentPacks.update((list) => list.filter((p) => p.id !== id));
+  }
+
+  addQuestionBankItem(
+    item: Omit<QuestionBankItem, 'id' | 'code' | 'usageCount' | 'lastModified'>,
+  ): QuestionBankItem {
+    const newItem: QuestionBankItem = {
+      ...item,
+      id: 'qb-' + Date.now(),
+      code: 'QB-' + Math.floor(1000 + Math.random() * 9000),
+      usageCount: 0,
+      lastModified: 'Just now',
+    };
+    this.questionBank.update((prev) => [newItem, ...prev]);
+    return newItem;
+  }
+
+  flagQuestionBankItem(id: string): void {
+    this.questionBank.update((list) =>
+      list.map((q) => (q.id === id ? { ...q, status: 'Flagged' as const } : q)),
+    );
+  }
+
+  approveQuestionBankItem(id: string): void {
+    this.questionBank.update((list) =>
+      list.map((q) =>
+        q.id === id ? { ...q, status: 'Approved' as const } : q,
+      ),
+    );
+  }
+
+  approveAssessmentReviewItem(id: string): void {
+    this.assessmentReviewQueue.update((list) =>
+      list.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: 'Awaiting Approval' as const,
+            }
+          : item,
+      ),
+    );
+  }
+
+  requestRevisionAssessmentReviewItem(id: string): void {
+    this.assessmentReviewQueue.update((list) =>
+      list.map((item) =>
+        item.id === id
+          ? {
+              ...item,
+              status: 'Revisions Requested' as const,
             }
           : item,
       ),
