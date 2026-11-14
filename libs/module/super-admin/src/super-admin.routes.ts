@@ -147,6 +147,14 @@ export const superAdminRoutes: Routes = [
             (m) => m.UploadResourceComponent,
           ),
       },
+      {
+        path: 'system-settings',
+        title: 'System Settings | Learno Super Admin',
+        loadComponent: () =>
+          import('./system-settings/system-settings').then(
+            (m) => m.SystemSettingsComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -159,7 +167,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'reports' &&
           page.path !== 'safeguarding-compliance' &&
           page.path !== 'support-centre' &&
-          page.path !== 'resources-library',
+          page.path !== 'resources-library' &&
+          page.path !== 'system-settings',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,

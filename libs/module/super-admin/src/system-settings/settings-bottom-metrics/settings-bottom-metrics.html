@@ -1,0 +1,39 @@
+<div class="bottom-metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="bottom-card">
+    <div class="card-left">
+      <span class="card-title">{{ metric.title }}</span>
+      <span class="card-value">{{ metric.value }}</span>
+      <div class="change-indicator" [class.positive]="metric.isPositive">
+        <span>{{ metric.changeText }}</span>
+      </div>
+    </div>
+
+    <div class="card-right">
+      <svg
+        class="sparkline-svg"
+        viewBox="0 0 120 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <path
+          [attr.d]="getSparklinePath(metric.sparklineData)"
+          [attr.stroke]="metric.color"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        @for (pt of getSparklinePoints(metric.sparklineData); track $index) {
+        <circle
+          [attr.cx]="pt.x"
+          [attr.cy]="pt.y"
+          r="2.5"
+          [attr.fill]="metric.color"
+        />
+        }
+      </svg>
+    </div>
+  </div>
+  }
+</div>

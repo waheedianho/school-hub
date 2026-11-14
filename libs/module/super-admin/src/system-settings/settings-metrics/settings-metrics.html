@@ -1,0 +1,49 @@
+<div class="metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div
+    class="metric-card"
+    [class.clickable]="metric.id === 'maintenance-mode'"
+    (click)="onMetricAction(metric)"
+    (keydown.enter)="onMetricAction(metric)"
+    [attr.tabindex]="metric.id === 'maintenance-mode' ? 0 : null"
+    [attr.role]="metric.id === 'maintenance-mode' ? 'button' : null"
+    [attr.aria-label]="metric.id === 'maintenance-mode' ? 'Toggle maintenance mode' : null"
+  >
+    <div class="metric-top">
+      <div class="icon-wrap" [style.color]="metric.iconColor">
+        <span class="material-symbols-outlined">{{ metric.icon }}</span>
+      </div>
+      <div class="metric-details">
+        <span class="metric-title">{{ metric.title }}</span>
+        <span
+          class="metric-value"
+          [class.status-green]="metric.id === 'security-status' || (metric.id === 'maintenance-mode' && metric.value === 'Off')"
+          [class.status-red]="metric.id === 'maintenance-mode' && metric.value === 'On'"
+        >
+          {{ metric.value }}
+        </span>
+      </div>
+    </div>
+
+    <div class="metric-bottom">
+      @if (metric.hasProgressBar) {
+      <div class="progress-bar-wrap">
+        <div
+          class="progress-fill"
+          [style.width.%]="metric.progressPercentage || 0"
+        ></div>
+      </div>
+      <span class="metric-subtext">{{ metric.subtext }}</span>
+      } @else {
+      <div class="status-indicator">
+        <span
+          class="status-dot"
+          [style.background-color]="metric.statusColor || '#10b981'"
+        ></span>
+        <span class="status-text">{{ metric.subtext }}</span>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

@@ -872,4 +872,92 @@ describe('SuperAdminStore', () => {
     store.setResourceDateRange('Jun 1 – Jun 30, 2025');
     expect(store.selectedResourceDateRange()).toBe('Jun 1 – Jun 30, 2025');
   });
+
+  it('should initialize and manage system settings state', () => {
+    expect(store.settingsTopMetrics().length).toBe(6);
+    expect(store.settingsTabs().length).toBe(10);
+    expect(store.activeSettingsTab()).toBe('general');
+    expect(store.systemHealthItems().length).toBe(5);
+    expect(store.recentConfigChanges().length).toBe(5);
+    expect(store.settingsBottomMetrics().length).toBe(4);
+    expect(store.systemSettings().platformIdentity.platformName).toBe('Learno');
+
+    // Test tab change
+    store.setActiveSettingsTab('security');
+    expect(store.activeSettingsTab()).toBe('security');
+
+    // Test updating identity
+    store.updatePlatformIdentity({ platformName: 'Learno Education Hub' });
+    expect(store.systemSettings().platformIdentity.platformName).toBe(
+      'Learno Education Hub',
+    );
+
+    // Test updating academic defaults
+    store.updateAcademicDefaults({
+      gradingScaleTemplate: 'GPA (4.0 Scale)',
+    });
+    expect(store.systemSettings().academicDefaults.gradingScaleTemplate).toBe(
+      'GPA (4.0 Scale)',
+    );
+
+    // Test updating access & security
+    store.updateAccessSecurity({ sessionTimeout: '15 minutes' });
+    expect(store.systemSettings().accessSecurity.sessionTimeout).toBe(
+      '15 minutes',
+    );
+
+    // Test updating notifications
+    store.updateNotifications({ emailAlerts: false });
+    expect(store.systemSettings().notifications.emailAlerts).toBe(false);
+
+    // Test updating file & storage
+    store.updateFileStorage({ maxUploadSize: '500 MB' });
+    expect(store.systemSettings().fileStorage.maxUploadSize).toBe('500 MB');
+
+    // Test updating integrations
+    store.updateIntegrations({ videoPlatform: 'Google Meet' });
+    expect(store.systemSettings().integrations.videoPlatform).toBe(
+      'Google Meet',
+    );
+
+    // Test updating feature controls
+    store.updateFeatureControls({ liveClasses: false });
+    expect(store.systemSettings().featureControls.liveClasses).toBe(false);
+
+    // Test updating backup maintenance
+    store.updateBackupMaintenance({ backupCadence: 'Hourly' });
+    expect(store.systemSettings().backupMaintenance.backupCadence).toBe(
+      'Hourly',
+    );
+
+    // Test save system settings
+    const initialChangesCount = store.recentConfigChanges().length;
+    store.saveSystemSettings('Custom security audit update');
+    expect(store.recentConfigChanges().length).toBe(
+      Math.min(9, initialChangesCount + 1),
+    );
+    expect(store.recentConfigChanges()[0].action).toBe(
+      'Custom security audit update',
+    );
+    expect(store.lastSavedTimestamp()).toBeTruthy();
+
+    // Test restore defaults
+    store.restoreDefaultSettings();
+    expect(store.systemSettings().platformIdentity.platformName).toBe('Learno');
+    expect(store.recentConfigChanges()[0].action).toBe(
+      'Restored system default configuration',
+    );
+
+    // Test maintenance mode toggle
+    expect(store.maintenanceModeEnabled()).toBe(false);
+    store.toggleMaintenanceMode(true);
+    expect(store.maintenanceModeEnabled()).toBe(true);
+    const maintMetric = store
+      .settingsTopMetrics()
+      .find((m) => m.id === 'maintenance-mode');
+    expect(maintMetric?.value).toBe('On');
+
+    store.toggleMaintenanceMode();
+    expect(store.maintenanceModeEnabled()).toBe(false);
+  });
 });

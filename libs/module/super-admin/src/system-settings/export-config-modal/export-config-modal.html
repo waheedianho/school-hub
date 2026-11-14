@@ -1,0 +1,103 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="exportModalTitle"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="header-left">
+        <span class="material-symbols-outlined modal-icon">download</span>
+        <div>
+          <h2 id="exportModalTitle" class="modal-title">
+            Export Platform Configuration
+          </h2>
+          <p class="modal-subtitle">
+            Download snapshot of all platform defaults and runtime variables.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close export modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="form-row">
+        <label for="exportFormatSelect" class="form-label">Export Format</label>
+        <select
+          id="exportFormatSelect"
+          name="exportFormat"
+          class="form-select"
+          [(ngModel)]="selectedFormat"
+        >
+          <option value="json">JSON (Structured Object)</option>
+          <option value="yaml">YAML (Deployment Manifest)</option>
+          <option value="csv">CSV (Key-Value Table)</option>
+        </select>
+      </div>
+
+      <div class="options-grid">
+        <label class="checkbox-label" for="maskSecretsCheck">
+          <input
+            type="checkbox"
+            id="maskSecretsCheck"
+            name="maskSecrets"
+            [(ngModel)]="maskSecrets"
+          />
+          <span>Mask API keys and confidential credentials</span>
+        </label>
+
+        <label class="checkbox-label" for="auditHashCheck">
+          <input
+            type="checkbox"
+            id="auditHashCheck"
+            name="auditHash"
+            [(ngModel)]="includeAuditHash"
+          />
+          <span>Include SHA-256 integrity checksum & audit signature</span>
+        </label>
+
+        <label class="checkbox-label" for="prettyPrintCheck">
+          <input
+            type="checkbox"
+            id="prettyPrintCheck"
+            name="prettyPrint"
+            [(ngModel)]="prettyPrint"
+          />
+          <span>Format with 2-space indentation (Pretty Print)</span>
+        </label>
+      </div>
+
+      <div class="preview-section">
+        <div class="preview-header">
+          <span class="preview-title">Configuration Payload Preview</span>
+          <button type="button" class="copy-btn" (click)="copyPreview()">
+            <span class="material-symbols-outlined copy-icon">
+              {{ copiedToClipboard ? 'done' : 'content_copy' }}
+            </span>
+            <span>{{ copiedToClipboard ? 'Copied!' : 'Copy' }}</span>
+          </button>
+        </div>
+        <pre class="preview-box"><code>{{ previewJson }}</code></pre>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onClose()">
+        Cancel
+      </button>
+      <button type="button" class="btn btn-primary" (click)="onDownload()">
+        <span class="material-symbols-outlined">download</span>
+        Download {{ selectedFormat.toUpperCase() }}
+      </button>
+    </div>
+  </div>
+</div>
+}

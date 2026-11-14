@@ -1,0 +1,20 @@
+<nav class="settings-nav" aria-label="Settings categories">
+  <div class="tabs-list" role="tablist">
+    @for (tab of tabs(); track tab.id) {
+    <button
+      type="button"
+      role="tab"
+      class="tab-btn"
+      [class.active]="activeTab() === tab.id"
+      [attr.aria-selected]="activeTab() === tab.id"
+      (click)="selectTab(tab.id)"
+    >
+      <span class="material-symbols-outlined tab-icon">{{ tab.icon }}</span>
+      <span class="tab-label">{{ tab.label }}</span>
+      @if (tab.badge) {
+      <span class="tab-badge">{{ tab.badge }}</span>
+      }
+    </button>
+    }
+  </div>
+</nav>

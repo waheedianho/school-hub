@@ -1,0 +1,799 @@
+<div class="settings-grid">
+  <!-- Card 1: Platform Identity -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'general'">
+    <div class="card-header">
+      <span class="badge-num">1</span>
+      <h3 class="card-title">Platform Identity</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="platformNameInput" class="form-label">Platform Name</label>
+        <input
+          id="platformNameInput"
+          name="platformName"
+          type="text"
+          class="form-control"
+          [(ngModel)]="settings().platformIdentity.platformName"
+          (ngModelChange)="onSettingChange()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="supportEmailInput" class="form-label">Support Email</label>
+        <input
+          id="supportEmailInput"
+          name="supportEmail"
+          type="email"
+          class="form-control"
+          [(ngModel)]="settings().platformIdentity.supportEmail"
+          (ngModelChange)="onSettingChange()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="defaultTimezoneSelect" class="form-label"
+          >Default Timezone</label
+        >
+        <select
+          id="defaultTimezoneSelect"
+          name="defaultTimezone"
+          class="form-select"
+          [(ngModel)]="settings().platformIdentity.defaultTimezone"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="(UTC+05:30) Asia/Kolkata">
+            (UTC+05:30) Asia/Kolkata
+          </option>
+          <option value="(UTC+00:00) UTC">(UTC+00:00) UTC</option>
+          <option value="(UTC+01:00) London / Lagos">
+            (UTC+01:00) London / Lagos
+          </option>
+          <option value="(UTC-05:00) Eastern Time">
+            (UTC-05:00) Eastern Time
+          </option>
+          <option value="(UTC+08:00) Singapore">(UTC+08:00) Singapore</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="regionalFormatSelect" class="form-label"
+          >Regional Format</label
+        >
+        <select
+          id="regionalFormatSelect"
+          name="regionalFormat"
+          class="form-select"
+          [(ngModel)]="settings().platformIdentity.regionalFormat"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="DD MMM YYYY">DD MMM YYYY</option>
+          <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+          <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+          <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="academicNamingSelect" class="form-label"
+          >Academic Naming Convention</label
+        >
+        <select
+          id="academicNamingSelect"
+          name="academicNaming"
+          class="form-select"
+          [(ngModel)]="settings().platformIdentity.academicNamingConvention"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="International (e.g., Grade 5)">
+            International (e.g., Grade 5)
+          </option>
+          <option value="British (e.g., Year 6)">British (e.g., Year 6)</option>
+          <option value="Nigerian (e.g., SSS 2)">Nigerian (e.g., SSS 2)</option>
+          <option value="American (e.g., 5th Grade)">
+            American (e.g., 5th Grade)
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 2: Academic Defaults -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'academic'">
+    <div class="card-header">
+      <span class="badge-num">2</span>
+      <h3 class="card-title">Academic Defaults</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="termStructureSelect" class="form-label"
+          >Term Structure</label
+        >
+        <select
+          id="termStructureSelect"
+          name="termStructure"
+          class="form-select"
+          [(ngModel)]="settings().academicDefaults.termStructure"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="3 Terms (Trimester)">3 Terms (Trimester)</option>
+          <option value="2 Semesters">2 Semesters</option>
+          <option value="4 Quarters">4 Quarters</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="gradingScaleSelect" class="form-label"
+          >Grading Scale Template</label
+        >
+        <select
+          id="gradingScaleSelect"
+          name="gradingScale"
+          class="form-select"
+          [(ngModel)]="settings().academicDefaults.gradingScaleTemplate"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Percentage (0–100)">Percentage (0–100)</option>
+          <option value="Letter Grades (A–F)">Letter Grades (A–F)</option>
+          <option value="GPA (4.0 Scale)">GPA (4.0 Scale)</option>
+          <option value="WAEC Standard (A1–F9)">WAEC Standard (A1–F9)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="reportCardSelect" class="form-label"
+          >Report Card Default</label
+        >
+        <select
+          id="reportCardSelect"
+          name="reportCard"
+          class="form-select"
+          [(ngModel)]="settings().academicDefaults.reportCardDefault"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Detailed Report">Detailed Report</option>
+          <option value="Summary Card">Summary Card</option>
+          <option value="Standard Term Report">Standard Term Report</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="curriculumSourceSelect" class="form-label"
+          >Curriculum Source</label
+        >
+        <select
+          id="curriculumSourceSelect"
+          name="curriculumSource"
+          class="form-select"
+          [(ngModel)]="settings().academicDefaults.curriculumSource"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Cambridge International">
+            Cambridge International
+          </option>
+          <option value="National Curriculum (NERDC)">
+            National Curriculum (NERDC)
+          </option>
+          <option value="IB Diploma">IB Diploma</option>
+          <option value="Custom School Pack">Custom School Pack</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="classNamingSelect" class="form-label"
+          >Class Naming Convention</label
+        >
+        <select
+          id="classNamingSelect"
+          name="classNaming"
+          class="form-select"
+          [(ngModel)]="settings().academicDefaults.classNamingConvention"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Grade + Section (e.g., Grade 5 - A)">
+            Grade + Section (e.g., Grade 5 - A)
+          </option>
+          <option value="Year + Arm (e.g., Year 7 Blue)">
+            Year + Arm (e.g., Year 7 Blue)
+          </option>
+          <option value="Standard (e.g., JSS 1A)">
+            Standard (e.g., JSS 1A)
+          </option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 3: Access & Security -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'security'">
+    <div class="card-header">
+      <span class="badge-num">3</span>
+      <h3 class="card-title">Access & Security</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="passwordPolicySelect" class="form-label"
+          >Password Policy</label
+        >
+        <select
+          id="passwordPolicySelect"
+          name="passwordPolicy"
+          class="form-select"
+          [(ngModel)]="settings().accessSecurity.passwordPolicy"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Strong (8+ chars, mixed, numbers)">
+            Strong (8+ chars, mixed, numbers)
+          </option>
+          <option value="Strict (12+ chars, special characters)">
+            Strict (12+ chars, special characters)
+          </option>
+          <option value="Standard (8+ characters)">
+            Standard (8+ characters)
+          </option>
+        </select>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Two-Factor Authentication</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="twoFactorToggle"
+            name="twoFactor"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().accessSecurity.twoFactorAuthentication"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="twoFactorToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().accessSecurity.twoFactorAuthentication ? 'Enabled'
+              : 'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="sessionTimeoutSelect" class="form-label"
+          >Session Timeout</label
+        >
+        <select
+          id="sessionTimeoutSelect"
+          name="sessionTimeout"
+          class="form-select"
+          [(ngModel)]="settings().accessSecurity.sessionTimeout"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="15 minutes">15 minutes</option>
+          <option value="30 minutes">30 minutes</option>
+          <option value="60 minutes">60 minutes</option>
+          <option value="4 hours">4 hours</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="ipRestrictionsSelect" class="form-label"
+          >IP Restrictions</label
+        >
+        <select
+          id="ipRestrictionsSelect"
+          name="ipRestrictions"
+          class="form-select"
+          [(ngModel)]="settings().accessSecurity.ipRestrictions"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Allowlist IPs">Allowlist IPs</option>
+          <option value="Off / Any IP">Off / Any IP</option>
+          <option value="Strict Geo-Fencing">Strict Geo-Fencing</option>
+        </select>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Role-Based Access Control</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="rbacToggle"
+            name="rbac"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().accessSecurity.roleBasedAccessControl"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="rbacToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().accessSecurity.roleBasedAccessControl ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 4: Notifications -->
+  <div
+    class="config-card"
+    [class.highlighted]="activeTab() === 'notifications'"
+  >
+    <div class="card-header">
+      <span class="badge-num">4</span>
+      <h3 class="card-title">Notifications</h3>
+    </div>
+    <div class="card-body">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Email Alerts</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="emailAlertsToggle"
+            name="emailAlerts"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().notifications.emailAlerts"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="emailAlertsToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().notifications.emailAlerts ? 'Enabled' : 'Disabled'
+              }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">In-App Alerts</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="inAppAlertsToggle"
+            name="inAppAlerts"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().notifications.inAppAlerts"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="inAppAlertsToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().notifications.inAppAlerts ? 'Enabled' : 'Disabled'
+              }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Escalation Notices</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="escalationNoticesToggle"
+            name="escalationNotices"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().notifications.escalationNotices"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="escalationNoticesToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().notifications.escalationNotices ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">School Onboarding Alerts</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="schoolOnboardingToggle"
+            name="schoolOnboarding"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().notifications.schoolOnboardingAlerts"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="schoolOnboardingToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().notifications.schoolOnboardingAlerts ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="footer-action">
+        <button
+          type="button"
+          class="link-action-btn"
+          (click)="onTabRequest('notifications')"
+        >
+          Manage Templates
+          <span class="material-symbols-outlined link-icon">arrow_outward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 5: File & Storage -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'storage'">
+    <div class="card-header">
+      <span class="badge-num">5</span>
+      <h3 class="card-title">File & Storage</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="maxUploadSizeSelect" class="form-label"
+          >Max Upload Size</label
+        >
+        <select
+          id="maxUploadSizeSelect"
+          name="maxUploadSize"
+          class="form-select"
+          [(ngModel)]="settings().fileStorage.maxUploadSize"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="50 MB">50 MB</option>
+          <option value="100 MB">100 MB</option>
+          <option value="200 MB">200 MB</option>
+          <option value="500 MB">500 MB</option>
+          <option value="1 GB">1 GB</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="allowedFileTypesInput" class="form-label"
+          >Allowed File Types</label
+        >
+        <input
+          id="allowedFileTypesInput"
+          name="allowedFileTypes"
+          type="text"
+          class="form-control"
+          [(ngModel)]="settings().fileStorage.allowedFileTypes"
+          (ngModelChange)="onSettingChange()"
+        />
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Low-Data Compression</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="lowDataToggle"
+            name="lowData"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().fileStorage.lowDataCompression"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="lowDataToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().fileStorage.lowDataCompression ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="mediaRetentionSelect" class="form-label"
+          >Media Retention Rule</label
+        >
+        <select
+          id="mediaRetentionSelect"
+          name="mediaRetention"
+          class="form-select"
+          [(ngModel)]="settings().fileStorage.mediaRetentionRule"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Retain for 12 months">Retain for 12 months</option>
+          <option value="Retain for 24 months">Retain for 24 months</option>
+          <option value="Retain for 36 months">Retain for 36 months</option>
+          <option value="Indefinite">Indefinite</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 6: Integrations -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'integrations'">
+    <div class="card-header">
+      <span class="badge-num">6</span>
+      <h3 class="card-title">Integrations</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="paymentGatewaySelect" class="form-label"
+          >Payment Gateway</label
+        >
+        <select
+          id="paymentGatewaySelect"
+          name="paymentGateway"
+          class="form-select"
+          [(ngModel)]="settings().integrations.paymentGateway"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Razorpay">Razorpay</option>
+          <option value="Paystack">Paystack</option>
+          <option value="Stripe">Stripe</option>
+          <option value="Flutterwave">Flutterwave</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="emailServiceSelect" class="form-label">Email Service</label>
+        <select
+          id="emailServiceSelect"
+          name="emailService"
+          class="form-select"
+          [(ngModel)]="settings().integrations.emailService"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="SendGrid">SendGrid</option>
+          <option value="Amazon SES">Amazon SES</option>
+          <option value="Mailgun">Mailgun</option>
+          <option value="Postmark">Postmark</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="videoPlatformSelect" class="form-label"
+          >Video Platform</label
+        >
+        <select
+          id="videoPlatformSelect"
+          name="videoPlatform"
+          class="form-select"
+          [(ngModel)]="settings().integrations.videoPlatform"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Zoom">Zoom</option>
+          <option value="Google Meet">Google Meet</option>
+          <option value="Microsoft Teams">Microsoft Teams</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="analyticsIntegrationSelect" class="form-label"
+          >Analytics Integration</label
+        >
+        <select
+          id="analyticsIntegrationSelect"
+          name="analyticsIntegration"
+          class="form-select"
+          [(ngModel)]="settings().integrations.analyticsIntegration"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Google Analytics 4">Google Analytics 4</option>
+          <option value="Mixpanel">Mixpanel</option>
+          <option value="PostHog">PostHog</option>
+        </select>
+      </div>
+
+      <div class="status-row">
+        <span class="status-label">API Status</span>
+        <div class="status-indicator">
+          <span class="status-dot green"></span>
+          <span class="status-val"
+            >{{ settings().integrations.apiStatus }}</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 7: Feature Controls -->
+  <div
+    class="config-card"
+    [class.highlighted]="activeTab() === 'feature-flags'"
+  >
+    <div class="card-header">
+      <span class="badge-num">7</span>
+      <h3 class="card-title">Feature Controls</h3>
+    </div>
+    <div class="card-body">
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Parent Portal</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="parentPortalToggle"
+            name="parentPortal"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().featureControls.parentPortal"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="parentPortalToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().featureControls.parentPortal ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Live Classes</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="liveClassesToggle"
+            name="liveClasses"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().featureControls.liveClasses"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="liveClassesToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().featureControls.liveClasses ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Portfolio Module</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="portfolioModuleToggle"
+            name="portfolioModule"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().featureControls.portfolioModule"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="portfolioModuleToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().featureControls.portfolioModule ? 'Enabled' :
+              'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="toggle-row">
+        <div class="toggle-info">
+          <span class="toggle-title">Safeguarding Case Module</span>
+        </div>
+        <div class="toggle-wrapper">
+          <input
+            type="checkbox"
+            id="safeguardingCaseToggle"
+            name="safeguardingCase"
+            role="switch"
+            class="toggle-input"
+            [(ngModel)]="settings().featureControls.safeguardingCaseModule"
+            (ngModelChange)="onSettingChange()"
+          />
+          <label for="safeguardingCaseToggle" class="toggle-label">
+            <span class="toggle-slider"></span>
+            <span class="toggle-state-text"
+              >{{ settings().featureControls.safeguardingCaseModule ? 'Enabled'
+              : 'Disabled' }}</span
+            >
+          </label>
+        </div>
+      </div>
+
+      <div class="footer-action">
+        <button
+          type="button"
+          class="link-action-btn"
+          (click)="onTabRequest('feature-flags')"
+        >
+          Manage Feature Flags
+          <span class="material-symbols-outlined link-icon">arrow_outward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Card 8: Backup & Maintenance -->
+  <div class="config-card" [class.highlighted]="activeTab() === 'maintenance'">
+    <div class="card-header">
+      <span class="badge-num">8</span>
+      <h3 class="card-title">Backup & Maintenance</h3>
+    </div>
+    <div class="card-body">
+      <div class="form-group">
+        <label for="lastBackupInput" class="form-label">Last Backup</label>
+        <input
+          id="lastBackupInput"
+          name="lastBackup"
+          type="text"
+          class="form-control"
+          [(ngModel)]="settings().backupMaintenance.lastBackup"
+          (ngModelChange)="onSettingChange()"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="backupCadenceSelect" class="form-label"
+          >Backup Cadence</label
+        >
+        <select
+          id="backupCadenceSelect"
+          name="backupCadence"
+          class="form-select"
+          [(ngModel)]="settings().backupMaintenance.backupCadence"
+          (ngModelChange)="onSettingChange()"
+        >
+          <option value="Hourly">Hourly</option>
+          <option value="Daily">Daily</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Monthly">Monthly</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="maintenanceWindowInput" class="form-label"
+          >Maintenance Window</label
+        >
+        <input
+          id="maintenanceWindowInput"
+          name="maintenanceWindow"
+          type="text"
+          class="form-control"
+          [(ngModel)]="settings().backupMaintenance.maintenanceWindow"
+          (ngModelChange)="onSettingChange()"
+        />
+      </div>
+
+      <div class="status-row">
+        <span class="status-label">System Status</span>
+        <div class="status-indicator">
+          <span class="status-dot green"></span>
+          <span class="status-val"
+            >{{ settings().backupMaintenance.systemStatus }}</span
+          >
+        </div>
+      </div>
+
+      <div class="footer-action">
+        <button type="button" class="link-action-btn" (click)="onViewHistory()">
+          View Maintenance History
+          <span class="material-symbols-outlined link-icon">arrow_outward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<aside class="settings-sidebar" aria-label="System status and quick actions">
+  <!-- Widget 1: System Health -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <div class="header-title-wrap">
+        <span class="material-symbols-outlined header-icon health-icon"
+          >monitor_heart</span
+        >
+        <h3 class="card-title">System Health</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="health-list">
+        @for (item of healthItems(); track item.name) {
+        <li class="health-row">
+          <span class="service-name">{{ item.name }}</span>
+          <div class="service-status">
+            <span class="status-label">{{ item.status }}</span>
+            <span class="material-symbols-outlined check-icon"
+              >check_circle</span
+            >
+          </div>
+        </li>
+        }
+      </ul>
+      <div class="card-footer-action">
+        <button
+          type="button"
+          class="sidebar-link-btn"
+          (click)="onHealthDetails()"
+        >
+          View Health Details
+          <span class="material-symbols-outlined link-icon">arrow_outward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 2: Recent Configuration Changes -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <div class="header-title-wrap">
+        <span class="material-symbols-outlined header-icon history-icon"
+          >history</span
+        >
+        <h3 class="card-title">Recent Configuration Changes</h3>
+      </div>
+    </div>
+    <div class="card-body">
+      <ul class="changes-list">
+        @for (change of recentChanges(); track change.id) {
+        <li class="change-item">
+          <div class="change-content">
+            <span class="change-action">{{ change.action }}</span>
+            <span class="change-author">by {{ change.author }}</span>
+          </div>
+          <span class="change-time">{{ change.timeAgo }}</span>
+        </li>
+        }
+      </ul>
+      <div class="card-footer-action">
+        <button
+          type="button"
+          class="sidebar-link-btn"
+          (click)="onAuditHistory()"
+        >
+          View All Changes
+          <span class="material-symbols-outlined link-icon">arrow_outward</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 3: Quick Actions -->
+  <div class="sidebar-card quick-actions-card">
+    <div class="card-header">
+      <div class="header-title-wrap">
+        <span class="material-symbols-outlined header-icon actions-icon"
+          >bolt</span
+        >
+        <h3 class="card-title">Quick Actions</h3>
+      </div>
+    </div>
+    <div class="card-body actions-body">
+      <button
+        type="button"
+        class="action-btn primary-btn"
+        [disabled]="isSaving()"
+        (click)="onSave()"
+      >
+        <span class="material-symbols-outlined btn-icon">save</span>
+        <span>{{ isSaving() ? 'Saving...' : 'Save Settings' }}</span>
+      </button>
+
+      <button type="button" class="action-btn outline-btn" (click)="onExport()">
+        <span class="material-symbols-outlined btn-icon">download</span>
+        <span>Export Config</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn outline-btn"
+        (click)="onAuditHistory()"
+      >
+        <span class="material-symbols-outlined btn-icon">receipt_long</span>
+        <span>View Audit History</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-btn outline-btn danger-hover"
+        (click)="onRestore()"
+      >
+        <span class="material-symbols-outlined btn-icon">restart_alt</span>
+        <span>Restore Defaults</span>
+      </button>
+    </div>
+  </div>
+</aside>

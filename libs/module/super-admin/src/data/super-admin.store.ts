@@ -253,6 +253,31 @@ import {
   INITIAL_RESOURCES,
   INITIAL_UPLOAD_BOTTOM_METRICS,
 } from './super-admin-resources.data';
+import {
+  AcademicDefaultsSettings,
+  AccessSecuritySettings,
+  BackupMaintenanceSettings,
+  FeatureControlsSettings,
+  FileStorageSettings,
+  IntegrationsSettings,
+  NotificationSettings,
+  PlatformIdentitySettings,
+  RecentConfigChange,
+  SettingsBottomMetric,
+  SettingsTab,
+  SettingsTabId,
+  SettingsTopMetric,
+  SystemHealthItem,
+  SystemSettingsState,
+} from './super-admin-settings.models';
+import {
+  DEFAULT_SYSTEM_SETTINGS,
+  RECENT_CONFIG_CHANGES,
+  SETTINGS_BOTTOM_METRICS,
+  SYSTEM_HEALTH_ITEMS,
+  SYSTEM_SETTINGS_TABS,
+  SYSTEM_SETTINGS_TOP_METRICS,
+} from './super-admin-settings.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -596,6 +621,26 @@ export class SuperAdminStore {
   readonly selectedResourceDateRange = signal<string>('May 1 – May 31, 2025');
   readonly resourceCurrentPage = signal<number>(1);
   readonly resourcePageSize = signal<number>(10);
+
+  // System Settings Signals
+  readonly settingsTopMetrics = signal<SettingsTopMetric[]>(
+    SYSTEM_SETTINGS_TOP_METRICS,
+  );
+  readonly settingsTabs = signal<SettingsTab[]>(SYSTEM_SETTINGS_TABS);
+  readonly activeSettingsTab = signal<SettingsTabId>('general');
+  readonly systemSettings = signal<SystemSettingsState>(
+    DEFAULT_SYSTEM_SETTINGS,
+  );
+  readonly systemHealthItems = signal<SystemHealthItem[]>(SYSTEM_HEALTH_ITEMS);
+  readonly recentConfigChanges = signal<RecentConfigChange[]>(
+    RECENT_CONFIG_CHANGES,
+  );
+  readonly settingsBottomMetrics = signal<SettingsBottomMetric[]>(
+    SETTINGS_BOTTOM_METRICS,
+  );
+  readonly isSettingsSaving = signal<boolean>(false);
+  readonly lastSavedTimestamp = signal<string | null>(null);
+  readonly maintenanceModeEnabled = signal<boolean>(false);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -2721,6 +2766,143 @@ export class SuperAdminStore {
   deleteResource(resourceId: string): void {
     this.allResources.update((resources) =>
       resources.filter((r) => r.id !== resourceId),
+    );
+  }
+
+  // System Settings Actions
+  setActiveSettingsTab(tabId: SettingsTabId): void {
+    this.activeSettingsTab.set(tabId);
+  }
+
+  updateSystemSettings(updates: Partial<SystemSettingsState>): void {
+    this.systemSettings.update((curr) => ({ ...curr, ...updates }));
+  }
+
+  updatePlatformIdentity(updates: Partial<PlatformIdentitySettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      platformIdentity: { ...curr.platformIdentity, ...updates },
+    }));
+  }
+
+  updateAcademicDefaults(updates: Partial<AcademicDefaultsSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      academicDefaults: { ...curr.academicDefaults, ...updates },
+    }));
+  }
+
+  updateAccessSecurity(updates: Partial<AccessSecuritySettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      accessSecurity: { ...curr.accessSecurity, ...updates },
+    }));
+  }
+
+  updateNotifications(updates: Partial<NotificationSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      notifications: { ...curr.notifications, ...updates },
+    }));
+  }
+
+  updateFileStorage(updates: Partial<FileStorageSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      fileStorage: { ...curr.fileStorage, ...updates },
+    }));
+  }
+
+  updateIntegrations(updates: Partial<IntegrationsSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      integrations: { ...curr.integrations, ...updates },
+    }));
+  }
+
+  updateFeatureControls(updates: Partial<FeatureControlsSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      featureControls: { ...curr.featureControls, ...updates },
+    }));
+  }
+
+  updateBackupMaintenance(updates: Partial<BackupMaintenanceSettings>): void {
+    this.systemSettings.update((curr) => ({
+      ...curr,
+      backupMaintenance: { ...curr.backupMaintenance, ...updates },
+    }));
+  }
+
+  saveSystemSettings(customChangeDescription?: string): void {
+    this.isSettingsSaving.set(true);
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    this.isSettingsSaving.set(false);
+    this.lastSavedTimestamp.set(`${dateStr} at ${timeStr}`);
+
+    const newChange: RecentConfigChange = {
+      id: `cfg-${Date.now()}`,
+      action:
+        customChangeDescription || 'Updated platform system configuration',
+      author: 'Super Admin',
+      timeAgo: 'Just now',
+      timestamp: now.toISOString(),
+      category: 'System',
+      details: 'Configuration saved and broadcast to all platform services.',
+    };
+
+    this.recentConfigChanges.update((changes) => [
+      newChange,
+      ...changes.slice(0, 8),
+    ]);
+  }
+
+  restoreDefaultSettings(): void {
+    this.systemSettings.set(
+      JSON.parse(JSON.stringify(DEFAULT_SYSTEM_SETTINGS)),
+    );
+    const now = new Date();
+    const newChange: RecentConfigChange = {
+      id: `cfg-${Date.now()}`,
+      action: 'Restored system default configuration',
+      author: 'Super Admin',
+      timeAgo: 'Just now',
+      timestamp: now.toISOString(),
+      category: 'System',
+      details:
+        'All non-critical configuration values reset to factory defaults.',
+    };
+    this.recentConfigChanges.update((changes) => [
+      newChange,
+      ...changes.slice(0, 8),
+    ]);
+  }
+
+  toggleMaintenanceMode(enabled?: boolean): void {
+    const nextVal =
+      enabled !== undefined ? enabled : !this.maintenanceModeEnabled();
+    this.maintenanceModeEnabled.set(nextVal);
+    this.settingsTopMetrics.update((metrics) =>
+      metrics.map((m) =>
+        m.id === 'maintenance-mode'
+          ? {
+              ...m,
+              value: nextVal ? 'On' : 'Off',
+              subtext: nextVal ? 'Platform in maintenance' : 'Platform is live',
+              statusColor: nextVal ? '#ef4444' : '#10b981',
+            }
+          : m,
+      ),
     );
   }
 }

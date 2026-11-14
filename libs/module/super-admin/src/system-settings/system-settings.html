@@ -1,0 +1,98 @@
+<div class="system-settings-container">
+  <!-- Toast Notification Banner -->
+  @if (toastMessage()) {
+  <div class="toast-banner" role="status" aria-live="polite">
+    <span class="material-symbols-outlined toast-icon">check_circle</span>
+    <span class="toast-text">{{ toastMessage() }}</span>
+    <button
+      type="button"
+      class="toast-close"
+      (click)="toastMessage.set(null)"
+      aria-label="Dismiss notification"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1 class="page-title">System Settings</h1>
+      <p class="page-subtitle">
+        Configure global platform defaults, security, branding, notifications,
+        integrations, and operational controls.
+      </p>
+    </div>
+    @if (lastSavedTimestamp()) {
+    <div class="last-saved-pill">
+      <span class="material-symbols-outlined saved-icon">cloud_done</span>
+      <span>Saved {{ lastSavedTimestamp() }}</span>
+    </div>
+    }
+  </header>
+
+  <!-- 6 Top Metrics Cards -->
+  <school-hub-settings-metrics
+    [metrics]="topMetrics()"
+    (maintenanceToggled)="onToggleMaintenance()"
+  ></school-hub-settings-metrics>
+
+  <!-- 10 Navigation Tabs -->
+  <school-hub-settings-tabs
+    [tabs]="tabs()"
+    [activeTab]="activeTab()"
+    (tabChange)="onTabChange($event)"
+  ></school-hub-settings-tabs>
+
+  <!-- Main Settings Layout: Config Grid + Right Sidebar -->
+  <div class="main-layout">
+    <section class="content-area" aria-label="Configuration settings">
+      <school-hub-settings-grid
+        [settings]="settings()"
+        [activeTab]="activeTab()"
+        (settingsChange)="onSettingsChange($event)"
+        (tabRequested)="onTabChange($event)"
+        (viewHistoryRequested)="onViewHealthDetails()"
+      ></school-hub-settings-grid>
+    </section>
+
+    <aside class="sidebar-area" aria-label="Health and actions">
+      <school-hub-settings-sidebar
+        [healthItems]="healthItems()"
+        [recentChanges]="recentChanges()"
+        [isSaving]="isSaving()"
+        (saveSettings)="onSaveSettings()"
+        (exportConfig)="onExportConfig()"
+        (restoreDefaults)="onRestoreDefaults()"
+        (viewHealthDetails)="onViewHealthDetails()"
+        (viewAuditHistory)="onViewAuditHistory()"
+      ></school-hub-settings-sidebar>
+    </aside>
+  </div>
+
+  <!-- 4 Bottom KPI Metric Cards with Sparklines -->
+  <school-hub-settings-bottom-metrics
+    [metrics]="bottomMetrics()"
+  ></school-hub-settings-bottom-metrics>
+
+  <!-- Modals -->
+  <school-hub-export-config-modal
+    [isOpen]="isExportModalOpen()"
+    [settings]="settings()"
+    (closeModal)="onCloseExportModal()"
+    (exportExecuted)="onExportExecuted($event)"
+  ></school-hub-export-config-modal>
+
+  <school-hub-restore-defaults-modal
+    [isOpen]="isRestoreModalOpen()"
+    (closeModal)="onCloseRestoreModal()"
+    (confirmed)="onRestoreConfirmed()"
+  ></school-hub-restore-defaults-modal>
+
+  <school-hub-system-health-modal
+    [isOpen]="isHealthModalOpen()"
+    [healthItems]="healthItems()"
+    (closeModal)="onCloseHealthModal()"
+  ></school-hub-system-health-modal>
+</div>

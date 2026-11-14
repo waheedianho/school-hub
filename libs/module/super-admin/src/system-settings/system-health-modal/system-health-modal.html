@@ -1,0 +1,99 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="healthModalTitle"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="header-left">
+        <span class="material-symbols-outlined modal-icon">monitor_heart</span>
+        <div>
+          <h2 id="healthModalTitle" class="modal-title">
+            Platform Infrastructure & Service Health
+          </h2>
+          <p class="modal-subtitle">
+            Real-time status, network latency, CPU load, and availability
+            metrics.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close health details modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="summary-cards">
+        <div class="summary-card">
+          <span class="summary-label">Overall Platform Uptime</span>
+          <span class="summary-val text-green">99.98%</span>
+          <span class="summary-sub">Last 30 days</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Average API Latency</span>
+          <span class="summary-val text-blue">23ms</span>
+          <span class="summary-sub">Global edge benchmark</span>
+        </div>
+        <div class="summary-card">
+          <span class="summary-label">Active Cluster Nodes</span>
+          <span class="summary-val">8 / 8</span>
+          <span class="summary-sub">Healthy & synchronized</span>
+        </div>
+      </div>
+
+      <div class="services-table-wrap">
+        <table class="services-table">
+          <thead>
+            <tr>
+              <th>Service / Subsystem</th>
+              <th>Status</th>
+              <th>Latency</th>
+              <th>Uptime (30d)</th>
+              <th>CPU Load</th>
+              <th>Memory</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of healthItems(); track item.name) {
+            <tr>
+              <td class="service-name-cell">
+                <span class="service-bullet"></span>
+                <span class="name-text">{{ item.name }}</span>
+              </td>
+              <td>
+                <span
+                  class="status-badge"
+                  [class.healthy]="item.status === 'Healthy'"
+                >
+                  <span class="material-symbols-outlined status-icon"
+                    >check_circle</span
+                  >
+                  {{ item.status }}
+                </span>
+              </td>
+              <td class="metric-cell">{{ item.latency }}</td>
+              <td class="metric-cell">{{ item.uptime }}</td>
+              <td class="metric-cell">{{ item.cpuLoad || '24%' }}</td>
+              <td class="metric-cell">{{ item.memoryUsage || '45%' }}</td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="onClose()">
+        Close Diagnostics
+      </button>
+    </div>
+  </div>
+</div>
+}

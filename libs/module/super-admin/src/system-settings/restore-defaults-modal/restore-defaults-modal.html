@@ -1,0 +1,80 @@
+@if (isOpen()) {
+<div
+  class="modal-backdrop"
+  role="alertdialog"
+  aria-modal="true"
+  aria-labelledby="restoreModalTitle"
+>
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <div class="header-left">
+        <span class="material-symbols-outlined modal-icon danger">warning</span>
+        <div>
+          <h2 id="restoreModalTitle" class="modal-title">
+            Restore System Defaults
+          </h2>
+          <p class="modal-subtitle">
+            Reset all configuration variables to factory defaults.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close restore defaults modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <div class="warning-banner">
+        <span class="material-symbols-outlined warning-icon">report</span>
+        <div class="warning-text">
+          <strong
+            >Warning: This action will overwrite existing platform
+            configurations.</strong
+          >
+          <span
+            >All customized branding, default academic rules, notification
+            preferences, and storage limits will be reverted to initial
+            defaults. Institution data and user accounts will remain
+            untouched.</span
+          >
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="restoreConfirmationInput" class="form-label">
+          Type <strong>RESTORE</strong> to confirm this action:
+        </label>
+        <input
+          id="restoreConfirmationInput"
+          name="confirmationText"
+          type="text"
+          class="form-control"
+          placeholder="RESTORE"
+          [(ngModel)]="confirmationInput"
+          (keydown.enter)="onConfirm()"
+        />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline" (click)="onClose()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger"
+        [disabled]="!canConfirm"
+        (click)="onConfirm()"
+      >
+        <span class="material-symbols-outlined">restart_alt</span>
+        Restore Factory Defaults
+      </button>
+    </div>
+  </div>
+</div>
+}
