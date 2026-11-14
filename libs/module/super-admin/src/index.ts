@@ -35,3 +35,7 @@ export * from './data/super-admin-safeguarding.models';
 export * from './data/super-admin-safeguarding.data';
 export * from './safeguarding/safeguarding-compliance';
 export * from './safeguarding/create-case/create-case';
+export * from './data/super-admin-support.models';
+export * from './data/super-admin-support.data';
+export * from './support-centre/support-centre';
+export * from './support-centre/ticket-detail/ticket-detail';

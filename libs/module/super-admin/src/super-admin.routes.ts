@@ -115,6 +115,22 @@ export const superAdminRoutes: Routes = [
             (m) => m.CreateCaseComponent,
           ),
       },
+      {
+        path: 'support-centre',
+        title: 'Support Centre | Learno Super Admin',
+        loadComponent: () =>
+          import('./support-centre/support-centre').then(
+            (m) => m.SupportCentreComponent,
+          ),
+      },
+      {
+        path: 'support-centre/:id',
+        title: 'Ticket Details | Learno Super Admin',
+        loadComponent: () =>
+          import('./support-centre/ticket-detail/ticket-detail').then(
+            (m) => m.TicketDetailComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -125,7 +141,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'analytics' &&
           page.path !== 'subscriptions-billing' &&
           page.path !== 'reports' &&
-          page.path !== 'safeguarding-compliance',
+          page.path !== 'safeguarding-compliance' &&
+          page.path !== 'support-centre',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -174,17 +191,8 @@ export const superAdminRoutes: Routes = [
       },
       {
         path: 'support/ticket',
-        component: SuperAdmin,
-        title: 'Support Ticket Details | Learno Super Admin',
-        data: {
-          page: {
-            path: 'support-centre',
-            label: 'Support Ticket',
-            icon: 'headset_mic',
-            description:
-              'Review incident details, communications, SLA tracking, and ticket status.',
-          },
-        },
+        redirectTo: 'support-centre/TKT-2025-5128',
+        pathMatch: 'full',
       },
       // Convenience navigation aliases
       { path: 'onboard', redirectTo: 'schools/onboard', pathMatch: 'full' },
@@ -192,7 +200,7 @@ export const superAdminRoutes: Routes = [
       { path: 'institutions', redirectTo: 'schools', pathMatch: 'full' },
       {
         path: 'support-centre/ticket',
-        redirectTo: 'support/ticket',
+        redirectTo: 'support-centre/TKT-2025-5128',
         pathMatch: 'full',
       },
       { path: 'users', redirectTo: 'users-roles', pathMatch: 'full' },

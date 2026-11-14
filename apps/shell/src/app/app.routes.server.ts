@@ -20,6 +20,10 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'teacher/assignments/:id', renderMode: RenderMode.Server },
   { path: 'teacher/reports/:id', renderMode: RenderMode.Server },
   {
+    path: 'super-admin/support-centre/:id',
+    renderMode: RenderMode.Server,
+  },
+  {
     path: '**',
     renderMode: RenderMode.Prerender,
   },

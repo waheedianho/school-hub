@@ -209,6 +209,28 @@ import {
   INITIAL_SAFEGUARDING_METRICS,
   INITIAL_URGENT_ESCALATIONS,
 } from './super-admin-safeguarding.data';
+import {
+  CreateTicketFormData,
+  RecentSupportActivity,
+  SLAQueueBreakdown,
+  SupportBottomMetric,
+  SupportHealthCategory,
+  SupportMetric,
+  SupportTab,
+  SupportTicket,
+  SupportUrgentEscalation,
+  TicketStatus,
+  TimelineEntry,
+} from './super-admin-support.models';
+import {
+  INITIAL_RECENT_SUPPORT_ACTIVITIES,
+  INITIAL_SLA_QUEUE_BREAKDOWN,
+  INITIAL_SUPPORT_BOTTOM_METRICS,
+  INITIAL_SUPPORT_HEALTH_CATEGORIES,
+  INITIAL_SUPPORT_METRICS,
+  INITIAL_SUPPORT_TICKETS,
+  INITIAL_SUPPORT_URGENT_ESCALATIONS,
+} from './super-admin-support.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -492,6 +514,35 @@ export class SuperAdminStore {
   readonly selectedCompliancePeriod = signal<string>('This Month');
   readonly safeguardingCurrentPage = signal<number>(1);
   readonly safeguardingPageSize = signal<number>(8);
+
+  // Support Centre Signals
+  readonly supportMetrics = signal<SupportMetric[]>(INITIAL_SUPPORT_METRICS);
+  readonly allSupportTickets = signal<SupportTicket[]>(INITIAL_SUPPORT_TICKETS);
+  readonly supportBottomMetrics = signal<SupportBottomMetric[]>(
+    INITIAL_SUPPORT_BOTTOM_METRICS,
+  );
+  readonly supportHealthCategories = signal<SupportHealthCategory[]>(
+    INITIAL_SUPPORT_HEALTH_CATEGORIES,
+  );
+  readonly supportUrgentEscalations = signal<SupportUrgentEscalation[]>(
+    INITIAL_SUPPORT_URGENT_ESCALATIONS,
+  );
+  readonly slaQueueBreakdown = signal<SLAQueueBreakdown>(
+    INITIAL_SLA_QUEUE_BREAKDOWN,
+  );
+  readonly recentSupportActivities = signal<RecentSupportActivity[]>(
+    INITIAL_RECENT_SUPPORT_ACTIVITIES,
+  );
+
+  readonly selectedSupportTab = signal<SupportTab>('All Tickets');
+  readonly supportSearchQuery = signal<string>('');
+  readonly selectedSupportSchoolFilter = signal<string>('All Schools');
+  readonly selectedSupportCategoryFilter = signal<string>('All Categories');
+  readonly selectedSupportPriorityFilter = signal<string>('All Priorities');
+  readonly selectedSupportStatusFilter = signal<string>('All Statuses');
+  readonly selectedSupportDateRange = signal<string>('May 1 – May 31, 2025');
+  readonly supportCurrentPage = signal<number>(1);
+  readonly supportPageSize = signal<number>(10);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -1129,6 +1180,131 @@ export class SuperAdminStore {
       Math.ceil(
         this.filteredSafeguardingCases().length / this.safeguardingPageSize(),
       ),
+    );
+  });
+
+  // Support Centre Computeds
+  readonly filteredSupportTickets = computed(() => {
+    const list = this.allSupportTickets();
+    const tab = this.selectedSupportTab();
+    const search = this.supportSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedSupportSchoolFilter();
+    const categoryFilter = this.selectedSupportCategoryFilter();
+    const priorityFilter = this.selectedSupportPriorityFilter();
+    const statusFilter = this.selectedSupportStatusFilter();
+
+    return list.filter((ticket) => {
+      // Tab filter
+      if (
+        tab === 'Escalations' &&
+        ticket.status !== 'Escalated' &&
+        ticket.priority !== 'Critical'
+      ) {
+        return false;
+      }
+      if (tab === 'Onboarding' && ticket.issueType !== 'Onboarding Support') {
+        return false;
+      }
+      if (
+        tab === 'Billing Issues' &&
+        ticket.issueType !== 'Billing Issue' &&
+        ticket.issueType !== 'Billing Invoice Error'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Bugs & Technical' &&
+        ticket.issueType !== 'Login Problem' &&
+        ticket.issueType !== 'Content Upload Error' &&
+        ticket.issueType !== 'Report Generation Bug' &&
+        ticket.issueType !== 'Live Class Failure'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Feature Requests' &&
+        ticket.issueType !== 'Feature Request'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Resolved' &&
+        ticket.status !== 'Resolved' &&
+        ticket.status !== 'Closed'
+      ) {
+        return false;
+      }
+
+      // School filter
+      if (schoolFilter !== 'All Schools' && ticket.school !== schoolFilter) {
+        return false;
+      }
+
+      // Category filter
+      if (
+        categoryFilter !== 'All Categories' &&
+        ticket.issueType !== categoryFilter
+      ) {
+        return false;
+      }
+
+      // Priority filter
+      if (
+        priorityFilter !== 'All Priorities' &&
+        ticket.priority !== priorityFilter
+      ) {
+        return false;
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && ticket.status !== statusFilter) {
+        return false;
+      }
+
+      // Search keyword
+      if (search) {
+        const matchesId = ticket.id.toLowerCase().includes(search);
+        const matchesTitle = ticket.title.toLowerCase().includes(search);
+        const matchesSchool = ticket.school.toLowerCase().includes(search);
+        const matchesIssue = ticket.issueType.toLowerCase().includes(search);
+        const matchesRaised = ticket.raisedBy.name
+          .toLowerCase()
+          .includes(search);
+        const matchesAssigned = ticket.assignedTo.name
+          .toLowerCase()
+          .includes(search);
+        if (
+          !matchesId &&
+          !matchesTitle &&
+          !matchesSchool &&
+          !matchesIssue &&
+          !matchesRaised &&
+          !matchesAssigned
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalSupportTicketsCount = computed(
+    () => this.filteredSupportTickets().length,
+  );
+
+  readonly paginatedSupportTickets = computed(() => {
+    const list = this.filteredSupportTickets();
+    const page = this.supportCurrentPage();
+    const size = this.supportPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalSupportPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(this.filteredSupportTickets().length / this.supportPageSize()),
     );
   });
 
@@ -1998,6 +2174,266 @@ export class SuperAdminStore {
             }
           : c,
       ),
+    );
+  }
+
+  // Support Centre Actions
+  setSupportTab(tab: SupportTab): void {
+    this.selectedSupportTab.set(tab);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportSearch(query: string): void {
+    this.supportSearchQuery.set(query);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportSchoolFilter(school: string): void {
+    this.selectedSupportSchoolFilter.set(school);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportCategoryFilter(category: string): void {
+    this.selectedSupportCategoryFilter.set(category);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportPriorityFilter(priority: string): void {
+    this.selectedSupportPriorityFilter.set(priority);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportStatusFilter(status: string): void {
+    this.selectedSupportStatusFilter.set(status);
+    this.supportCurrentPage.set(1);
+  }
+
+  setSupportDateRange(range: string): void {
+    this.selectedSupportDateRange.set(range);
+  }
+
+  setSupportPage(page: number): void {
+    if (page >= 1 && page <= this.totalSupportPages()) {
+      this.supportCurrentPage.set(page);
+    }
+  }
+
+  setSupportPageSize(size: number): void {
+    this.supportPageSize.set(size);
+    this.supportCurrentPage.set(1);
+  }
+
+  createSupportTicket(formData: CreateTicketFormData): SupportTicket {
+    const ticketNum = Math.floor(5100 + Math.random() * 900);
+    const newId = `TKT-2025-${ticketNum}`;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const newTicket: SupportTicket = {
+      id: newId,
+      school: formData.school,
+      title: formData.title,
+      issueType: formData.issueType,
+      priority: formData.priority,
+      raisedBy: {
+        name: formData.raisedBy || 'Priya Sharma',
+        role: 'School Admin',
+        avatar: 'PS',
+      },
+      assignedTo: {
+        name: formData.assignedAgent || 'Neha Verma',
+        role: 'Support Agent',
+        avatar: 'NV',
+      },
+      status: 'Open',
+      lastUpdated: dateStr,
+      lastUpdatedTime: timeStr,
+      slaStatus: '4h 00m Remaining',
+      slaLevel: 'on-track',
+      createdAt: `${dateStr} ${timeStr}`,
+      summary: formData.description,
+      affectedUsers: formData.affectedUsers || 'All School Users',
+      impact: 'Standard Operational Impact',
+      occurrence: `Reported on ${dateStr}`,
+      probableCause: 'Under Investigation',
+      affectedModule: formData.issueType,
+      environment: 'Web',
+      affectedRoles: ['School Admin', 'Teachers'],
+      schoolContact: {
+        name: formData.raisedBy || 'Priya Sharma',
+        role: 'School Admin',
+        schoolName: formData.school,
+        email: `admin@${formData.school.toLowerCase().replace(/[^a-z0-9]/g, '')}.edu`,
+        phone: '+91 98765 43210',
+        location: 'Bengaluru, India',
+      },
+      attachments: [],
+      timeline: [
+        {
+          id: `tl-${Date.now()}`,
+          type: 'message',
+          authorName: formData.raisedBy || 'Priya Sharma',
+          authorRole: 'School Admin',
+          authorAvatar: 'PS',
+          content: formData.description,
+          timestamp: `${dateStr} ${timeStr}`,
+        },
+      ],
+      resolutionChecklist: [
+        { label: 'Root cause identified', completed: false },
+        { label: 'Fix deployed', completed: false },
+        { label: 'Verified with school', completed: false },
+        { label: 'Ticket resolved & communicated', completed: false },
+      ],
+    };
+
+    this.allSupportTickets.update((tickets) => [newTicket, ...tickets]);
+
+    // Update recent activity
+    const activity: RecentSupportActivity = {
+      id: `act-${Date.now()}`,
+      title: `Ticket ${newId} created: ${newTicket.title}`,
+      timestamp: 'Just now',
+      icon: 'confirmation_number',
+      iconClass: 'act-primary',
+    };
+    this.recentSupportActivities.update((list) => [
+      activity,
+      ...list.slice(0, 4),
+    ]);
+
+    return newTicket;
+  }
+
+  updateTicketStatus(ticketId: string, status: TicketStatus): void {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    this.allSupportTickets.update((tickets) =>
+      tickets.map((t) => {
+        if (t.id !== ticketId) return t;
+
+        const updatedTimeline = [
+          ...(t.timeline || []),
+          {
+            id: `tl-${Date.now()}`,
+            type: 'status_change' as const,
+            authorName: 'Super Admin',
+            authorRole: 'Super Admin',
+            authorAvatar: 'SA',
+            content: `Status updated to ${status} by Super Admin`,
+            timestamp: `Today ${timeStr}`,
+          },
+        ];
+
+        return {
+          ...t,
+          status,
+          lastUpdated: 'Today',
+          lastUpdatedTime: timeStr,
+          timeline: updatedTimeline,
+        };
+      }),
+    );
+  }
+
+  assignTicketAgent(
+    ticketId: string,
+    agentName: string,
+    agentRole: string,
+  ): void {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const initials = agentName
+      .split(' ')
+      .map((w) => w[0])
+      .join('')
+      .substring(0, 2)
+      .toUpperCase();
+
+    this.allSupportTickets.update((tickets) =>
+      tickets.map((t) => {
+        if (t.id !== ticketId) return t;
+
+        const updatedTimeline = [
+          ...(t.timeline || []),
+          {
+            id: `tl-${Date.now()}`,
+            type: 'status_change' as const,
+            authorName: 'Super Admin',
+            authorRole: 'Super Admin',
+            authorAvatar: 'SA',
+            content: `Assigned to ${agentName} (${agentRole})`,
+            timestamp: `Today ${timeStr}`,
+          },
+        ];
+
+        return {
+          ...t,
+          assignedTo: {
+            name: agentName,
+            role: agentRole,
+            avatar: initials,
+          },
+          lastUpdated: 'Today',
+          lastUpdatedTime: timeStr,
+          timeline: updatedTimeline,
+        };
+      }),
+    );
+  }
+
+  addTicketTimelineEntry(
+    ticketId: string,
+    entry: Omit<TimelineEntry, 'id'>,
+  ): void {
+    this.allSupportTickets.update((tickets) =>
+      tickets.map((t) => {
+        if (t.id !== ticketId) return t;
+
+        const newEntry: TimelineEntry = {
+          ...entry,
+          id: `tl-${Date.now()}`,
+        };
+
+        return {
+          ...t,
+          timeline: [...(t.timeline || []), newEntry],
+          lastUpdated: 'Today',
+          lastUpdatedTime: 'Just now',
+        };
+      }),
+    );
+  }
+
+  toggleResolutionChecklistItem(ticketId: string, index: number): void {
+    this.allSupportTickets.update((tickets) =>
+      tickets.map((t) => {
+        if (t.id !== ticketId || !t.resolutionChecklist) return t;
+
+        const updatedChecklist = t.resolutionChecklist.map((item, i) =>
+          i === index ? { ...item, completed: !item.completed } : item,
+        );
+
+        return {
+          ...t,
+          resolutionChecklist: updatedChecklist,
+        };
+      }),
     );
   }
 }

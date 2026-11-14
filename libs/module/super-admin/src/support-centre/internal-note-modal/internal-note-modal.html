@@ -1,0 +1,75 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="internal-note-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="header-icon-wrap">
+          <span class="material-symbols-outlined">edit_note</span>
+        </div>
+        <div>
+          <h2 id="internal-note-title" class="modal-title">
+            Add Internal Note
+          </h2>
+          <p class="modal-subtitle">
+            Private engineering or support communication for {{ ticketId() }}.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form class="modal-body" (ngSubmit)="onSubmit()">
+      <div class="internal-banner">
+        <span class="material-symbols-outlined banner-icon">lock</span>
+        <span
+          >Internal notes are visible ONLY to Super Admins and Support staff.
+          They are never shown to the school.</span
+        >
+      </div>
+
+      <div class="form-group">
+        <label for="internal-note-textarea" class="form-label"
+          >Note Content *</label
+        >
+        <textarea
+          id="internal-note-textarea"
+          class="form-control textarea"
+          rows="4"
+          placeholder="Enter investigation updates, deployment notes, or root cause findings..."
+          [value]="noteText()"
+          (input)="noteText.set($any($event.target).value)"
+          required
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!noteText().trim()"
+        >
+          <span class="material-symbols-outlined btn-icon">add</span>
+          Add Note
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -37,7 +37,7 @@ describe('SubscriptionsSidebarComponent', () => {
     expect(component).toBeTruthy();
     const compiled = fixture.nativeElement as HTMLElement;
     const cards = compiled.querySelectorAll('.sidebar-card');
-    expect(cards.length).toBe(4); // Revenue, Renewal, Activity, and 2 half cards = 4
+    expect(cards.length).toBe(5);
   });
 
   it('should display revenue overview and calculation values correctly', () => {
