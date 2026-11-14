@@ -1,0 +1,52 @@
+<div class="bottom-metrics-grid">
+  @for (metric of metrics(); track metric.id) {
+  <div class="bottom-card" [attr.data-testid]="'bottom-metric-' + metric.id">
+    <div class="card-header">
+      <div class="icon-wrap" [ngClass]="'icon-' + metric.tone">
+        <i class="material-symbols-outlined">{{ metric.icon }}</i>
+      </div>
+      <div class="header-titles">
+        <span class="card-label">{{ metric.label }}</span>
+        <span class="card-value">{{ metric.value }}</span>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      @if (metric.statusBadge) {
+      <div class="status-wrap">
+        <span class="badge-healthy">{{ metric.statusBadge }}</span>
+      </div>
+      } @else {
+      <div class="trend-wrap" [ngClass]="'trend-' + metric.trend">
+        <span class="trend-text">
+          @if (metric.trend === 'up') {
+          <i class="material-symbols-outlined">trending_up</i>
+          <span>↑ {{ metric.change }}</span>
+          } @else if (metric.trend === 'down') {
+          <i class="material-symbols-outlined">trending_down</i>
+          <span>↘ {{ metric.change }}</span>
+          }
+        </span>
+        @if (metric.comparisonPeriod) {
+        <span class="period-text">{{ metric.comparisonPeriod }}</span>
+        }
+      </div>
+
+      @if (metric.sparkline) {
+      <div class="sparkline-wrap">
+        <svg viewBox="0 0 80 28" class="sparkline-svg">
+          <polyline
+            fill="none"
+            [attr.stroke]="metric.trend === 'down' ? '#dc2626' : '#2563eb'"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [attr.points]="getSparklinePoints(metric.sparkline)"
+          />
+        </svg>
+      </div>
+      } }
+    </div>
+  </div>
+  }
+</div>

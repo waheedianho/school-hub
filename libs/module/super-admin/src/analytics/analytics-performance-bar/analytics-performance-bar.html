@@ -1,0 +1,110 @@
+<div class="performance-card">
+  <div
+    class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 items-center text-xs divide-y sm:divide-y-0 sm:divide-x divide-slate-100"
+  >
+    <!-- 1. Average Session Duration -->
+    <div class="flex items-center gap-3 pt-2 sm:pt-0 sm:pr-2">
+      <div
+        class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"
+      >
+        <i class="material-symbols-outlined text-xl">schedule</i>
+      </div>
+      <div>
+        <div class="text-[11px] text-slate-500 font-medium">
+          Average Session Duration
+        </div>
+        <div class="text-base font-bold text-slate-900 leading-tight mt-0.5">
+          {{ summary().avgSessionDuration }}
+        </div>
+        <div
+          class="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5"
+        >
+          <span>{{ summary().sessionDurationChange }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Retention Rate (30 Days) -->
+    <div class="flex items-center gap-3 pt-3 sm:pt-0 sm:px-3">
+      <div
+        class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0"
+      >
+        <i class="material-symbols-outlined text-xl">group</i>
+      </div>
+      <div>
+        <div class="text-[11px] text-slate-500 font-medium">
+          Retention Rate (30 Days)
+        </div>
+        <div class="text-base font-bold text-slate-900 leading-tight mt-0.5">
+          {{ summary().retentionRate }}
+        </div>
+        <div
+          class="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5"
+        >
+          <span>{{ summary().retentionChange }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Support Ticket Volume -->
+    <div class="flex items-center gap-3 pt-3 sm:pt-0 sm:px-3">
+      <div
+        class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center shrink-0"
+      >
+        <i class="material-symbols-outlined text-xl">confirmation_number</i>
+      </div>
+      <div>
+        <div class="text-[11px] text-slate-500 font-medium">
+          Support Ticket Volume
+        </div>
+        <div class="text-base font-bold text-slate-900 leading-tight mt-0.5">
+          {{ summary().ticketVolume }}
+        </div>
+        <div
+          class="text-[10px] text-emerald-600 font-semibold flex items-center gap-0.5 mt-0.5"
+        >
+          <span>{{ summary().ticketVolumeChange }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. System Status -->
+    <div class="flex items-center gap-3 pt-3 sm:pt-0 sm:px-3">
+      <div
+        class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0"
+      >
+        <i class="material-symbols-outlined text-xl">check_circle</i>
+      </div>
+      <div>
+        <div class="text-[11px] text-slate-500 font-medium">System Status</div>
+        <div class="text-xs font-bold text-emerald-700 leading-tight mt-0.5">
+          {{ summary().systemStatus }}
+        </div>
+        <div class="text-[10px] text-slate-400 mt-0.5 flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>Latency: 28ms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Data Sync Health -->
+    <div class="flex items-center gap-3 pt-3 sm:pt-0 sm:pl-3">
+      <div
+        class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0"
+      >
+        <i class="material-symbols-outlined text-xl">sync</i>
+      </div>
+      <div>
+        <div class="text-[11px] text-slate-500 font-medium">
+          Data Sync Health
+        </div>
+        <div class="text-xs font-bold text-slate-900 leading-tight mt-0.5">
+          {{ summary().dataSyncHealth }}
+        </div>
+        <div class="text-[10px] text-slate-400 mt-0.5 truncate">
+          {{ summary().lastSynced }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

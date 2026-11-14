@@ -1,0 +1,121 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <span class="badge-number">3</span>
+    <div>
+      <div class="flex items-center gap-1.5">
+        <h3 class="card-title">Usage by Role</h3>
+        <span
+          class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+          title="Distribution of active platform users categorized by role permissions"
+        >
+          info
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Donut & Legend Container -->
+  <div
+    class="flex flex-col sm:flex-row items-center justify-center gap-6 my-auto"
+  >
+    <!-- SVG Donut Chart -->
+    <div class="relative w-36 h-36 shrink-0 flex items-center justify-center">
+      <svg class="w-full h-full -rotate-90" viewBox="0 0 140 140">
+        <!-- Background Track -->
+        <circle
+          cx="70"
+          cy="70"
+          r="50"
+          stroke="#f1f5f9"
+          stroke-width="16"
+          fill="none"
+        />
+
+        <!-- Learners (70.2%) - Blue -->
+        <circle
+          cx="70"
+          cy="70"
+          r="50"
+          stroke="#2563eb"
+          stroke-width="16"
+          stroke-dasharray="220.4 314.16"
+          stroke-dashoffset="0"
+          fill="none"
+        />
+
+        <!-- Teachers (20.9%) - Green -->
+        <circle
+          cx="70"
+          cy="70"
+          r="50"
+          stroke="#10b981"
+          stroke-width="16"
+          stroke-dasharray="65.6 314.16"
+          stroke-dashoffset="-220.4"
+          fill="none"
+        />
+
+        <!-- School Admins (6.1%) - Purple -->
+        <circle
+          cx="70"
+          cy="70"
+          r="50"
+          stroke="#8b5cf6"
+          stroke-width="16"
+          stroke-dasharray="19.1 314.16"
+          stroke-dashoffset="-286"
+          fill="none"
+        />
+
+        <!-- Parents (2.8%) - Amber -->
+        <circle
+          cx="70"
+          cy="70"
+          r="50"
+          stroke="#f59e0b"
+          stroke-width="16"
+          stroke-dasharray="8.8 314.16"
+          stroke-dashoffset="-305.1"
+          fill="none"
+        />
+      </svg>
+
+      <!-- Center Text: 18,432 Total Users -->
+      <div
+        class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"
+      >
+        <span class="text-xs font-bold text-slate-800 leading-none">
+          {{ totalUsers() | number }}
+        </span>
+        <span class="text-[9px] text-slate-400 mt-0.5">Total Users</span>
+      </div>
+    </div>
+
+    <!-- Legend List -->
+    <div class="space-y-2 text-xs w-full sm:w-auto">
+      @for (item of roles(); track item.role) {
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center gap-2">
+          <span
+            class="w-2.5 h-2.5 rounded-full shrink-0"
+            [style.backgroundColor]="item.color"
+          ></span>
+          <span class="text-slate-600 font-medium">{{ item.role }}</span>
+        </div>
+        <span class="font-bold text-slate-800 font-mono"
+          >{{ item.percentage }}%</span
+        >
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Bottom Details -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+  >
+    <span>Learners primary group</span>
+    <span>Updated today</span>
+  </div>
+</div>

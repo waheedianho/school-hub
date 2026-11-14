@@ -1,0 +1,224 @@
+<div class="sidebar-container">
+  <!-- 1. Revenue Overview (MTD) -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Revenue Overview (MTD)</h3>
+    </div>
+
+    <div class="revenue-body">
+      <!-- Donut Chart -->
+      <div class="donut-chart-wrap">
+        <svg viewBox="0 0 100 100" class="donut-svg">
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            stroke="#f1f5f9"
+            stroke-width="12"
+          />
+          @for (cat of revenueOverview(); track cat.name; let i = $index) {
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            fill="transparent"
+            [attr.stroke]="cat.color"
+            stroke-width="12"
+            [attr.stroke-dasharray]="getRevenueStrokeDasharray(cat.percentage)"
+            [attr.stroke-dashoffset]="getRevenueStrokeOffset(i)"
+            transform="rotate(-90 50 50)"
+          />
+          }
+        </svg>
+        <div class="donut-center-text">
+          <span class="mrr-amount">$129,359</span>
+          <span class="mrr-label">MRR</span>
+        </div>
+      </div>
+
+      <!-- Categories Breakdown -->
+      <div class="revenue-legend">
+        @for (cat of revenueOverview(); track cat.name) {
+        <div class="legend-row">
+          <div class="legend-left">
+            <span class="color-dot" [style.background-color]="cat.color"></span>
+            <span class="cat-name">{{ cat.name }}</span>
+            <span class="cat-pct">{{ cat.percentage }}%</span>
+          </div>
+          <span class="cat-amount">{{ cat.amountFormatted }}</span>
+        </div>
+        }
+        <div class="legend-total-row">
+          <span class="total-label">Total</span>
+          <span class="total-val">{{ totalRevenueFormatted }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Renewal Queue -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Renewal Queue</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewAllRenewals.emit()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="renewal-list">
+      @for (item of renewalQueue(); track item.id) {
+      <div class="renewal-item">
+        <div class="renewal-left">
+          <span class="renewal-icon-wrap" [ngClass]="'tone-' + item.tone">
+            <i class="material-symbols-outlined">{{ item.icon }}</i>
+          </span>
+          <span class="renewal-label">{{ item.periodLabel }}</span>
+        </div>
+        <span
+          class="renewal-count-badge"
+          [class.badge-danger]="item.tone === 'danger'"
+          [class.badge-primary]="item.tone === 'primary'"
+          [class.badge-info]="item.tone === 'info'"
+          [class.badge-success]="item.tone === 'success'"
+        >
+          {{ item.count }}
+        </span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- 3. Recent Billing Activity -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Billing Activity</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewAllActivity.emit()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="activity-feed">
+      @for (act of recentActivity(); track act.id) {
+      <div class="activity-entry">
+        <div class="activity-icon-box" [ngClass]="'tone-' + act.tone">
+          <i class="material-symbols-outlined">{{ act.icon }}</i>
+        </div>
+        <div class="activity-content">
+          <span class="activity-title">{{ act.title }}</span>
+          <span class="activity-school">{{ act.schoolName }}</span>
+          <span class="activity-time">{{ act.timestamp }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- 4. Bottom Split Row: Plan Distribution & Billing Health -->
+  <div class="sidebar-split-row">
+    <!-- Plan Distribution -->
+    <div class="sidebar-card half-card">
+      <div class="card-header">
+        <h3 class="card-title">Plan Distribution</h3>
+      </div>
+
+      <div class="plans-distribution-body">
+        <div class="plan-donut-wrap">
+          <svg viewBox="0 0 80 80" class="plan-donut-svg">
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="transparent"
+              stroke="#f1f5f9"
+              stroke-width="9"
+            />
+            @for (plan of planDistribution(); track plan.plan; let i = $index) {
+            <circle
+              cx="40"
+              cy="40"
+              r="34"
+              fill="transparent"
+              [attr.stroke]="plan.color"
+              stroke-width="9"
+              [attr.stroke-dasharray]="getPlanStrokeDasharray(plan.percentage)"
+              [attr.stroke-dashoffset]="getPlanStrokeOffset(i)"
+              transform="rotate(-90 40 40)"
+            />
+            }
+          </svg>
+          <div class="plan-center-text">
+            <span class="plan-total-num">{{ totalPlansCount }}</span>
+            <span class="plan-total-label">Total</span>
+          </div>
+        </div>
+
+        <div class="plan-legend">
+          @for (item of planDistribution(); track item.plan) {
+          <div class="plan-legend-row">
+            <span
+              class="color-dot"
+              [style.background-color]="item.color"
+            ></span>
+            <span class="plan-name">{{ item.plan }}</span>
+            <span class="plan-stat"
+              >{{ item.percentage }}% ({{ item.count }})</span
+            >
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Billing Health -->
+    <div class="sidebar-card half-card">
+      <div class="card-header">
+        <h3 class="card-title">Billing Health</h3>
+      </div>
+
+      <div class="health-gauge-body">
+        <div class="gauge-wrap">
+          <svg viewBox="0 0 100 60" class="gauge-svg">
+            <!-- Background arc -->
+            <path
+              d="M 10 50 A 40 40 0 0 1 90 50"
+              fill="none"
+              stroke="#e2e8f0"
+              stroke-width="8"
+              stroke-linecap="round"
+            />
+            <!-- Foreground health arc -->
+            <path
+              d="M 10 50 A 40 40 0 0 1 90 50"
+              fill="none"
+              stroke="#059669"
+              stroke-width="8"
+              stroke-linecap="round"
+              [attr.stroke-dasharray]="getHealthGaugeDasharray(billingHealth().percentage)"
+            />
+          </svg>
+          <div class="gauge-center-text">
+            <span class="gauge-val">{{ billingHealth().percentage }}%</span>
+            <span class="gauge-status">{{ billingHealth().statusLabel }}</span>
+          </div>
+        </div>
+
+        <div class="health-footer">
+          <span class="comp-text">{{ billingHealth().comparison }}</span>
+          <span class="change-text">
+            <i class="material-symbols-outlined">trending_up</i>
+            <span>↑ {{ billingHealth().change }}</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

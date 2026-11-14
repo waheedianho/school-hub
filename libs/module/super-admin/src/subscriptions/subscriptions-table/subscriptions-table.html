@@ -1,0 +1,349 @@
+<div class="table-card">
+  <!-- Filter & Action Bar -->
+  <div class="toolbar-section">
+    <div class="filter-group">
+      <!-- Search Input -->
+      <div class="search-wrap">
+        <i class="material-symbols-outlined search-icon">search</i>
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search schools or institutions..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="onSearchInput($event)"
+          aria-label="Search schools or institutions"
+        />
+        @if (searchQuery()) {
+        <button
+          type="button"
+          class="clear-btn"
+          (click)="onSearchInput('')"
+          aria-label="Clear search"
+        >
+          <i class="material-symbols-outlined">close</i>
+        </button>
+        }
+      </div>
+
+      <!-- Plan Filter -->
+      <div class="select-wrap">
+        <select
+          class="filter-select"
+          [ngModel]="selectedPlan()"
+          (ngModelChange)="onPlanSelect($event)"
+          aria-label="Filter by plan"
+        >
+          @for (plan of plansList; track plan) {
+          <option [value]="plan">{{ plan }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-arrow">expand_more</i>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="select-wrap">
+        <select
+          class="filter-select"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="onStatusSelect($event)"
+          aria-label="Filter by billing status"
+        >
+          @for (status of statusesList; track status) {
+          <option [value]="status">{{ status }}</option>
+          }
+        </select>
+        <i class="material-symbols-outlined select-arrow">expand_more</i>
+      </div>
+
+      <!-- Renewal Date Sort / Filter -->
+      <button
+        type="button"
+        class="date-filter-btn"
+        (click)="onSortClick()"
+        [class.active]="renewalSort() !== 'none'"
+        aria-label="Sort by renewal date"
+      >
+        <i class="material-symbols-outlined">calendar_today</i>
+        <span>Renewal Date</span>
+        @if (renewalSort() === 'asc') {
+        <i class="material-symbols-outlined sort-icon">arrow_upward</i>
+        } @else if (renewalSort() === 'desc') {
+        <i class="material-symbols-outlined sort-icon">arrow_downward</i>
+        }
+      </button>
+    </div>
+
+    <!-- Right Header Actions -->
+    <div class="action-buttons-group">
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="createPlanClicked.emit()"
+      >
+        <i class="material-symbols-outlined">add</i>
+        <span>Create Plan</span>
+      </button>
+
+      <button
+        type="button"
+        class="btn-outline"
+        (click)="generateInvoiceClicked.emit()"
+      >
+        <i class="material-symbols-outlined">receipt_long</i>
+        <span>Generate Invoice</span>
+      </button>
+
+      <button type="button" class="btn-outline" (click)="exportClicked.emit()">
+        <i class="material-symbols-outlined">download</i>
+        <span>Export</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Subscriptions Table -->
+  <div class="table-responsive">
+    <table class="subscriptions-table">
+      <thead>
+        <tr>
+          <th class="col-school">School / Institution</th>
+          <th class="col-plan">Plan</th>
+          <th class="col-cycle">Billing Cycle</th>
+          <th class="col-renewal">
+            <button
+              type="button"
+              class="sortable-header"
+              (click)="onSortClick()"
+            >
+              <span>Renewal Date</span>
+              <i class="material-symbols-outlined sort-caret">
+                {{ renewalSort() === 'desc' ? 'arrow_downward' : 'arrow_upward'
+                }}
+              </i>
+            </button>
+          </th>
+          <th class="col-amount">Amount</th>
+          <th class="col-status">Status</th>
+          <th class="col-last-payment">Last Payment</th>
+          <th class="col-actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (sub of subscriptions(); track sub.id) {
+        <tr class="table-row">
+          <!-- School / Institution -->
+          <td class="col-school">
+            <div class="school-cell">
+              <div
+                class="school-logo"
+                [style.background-color]="sub.logoBg"
+                [style.color]="sub.logoColor"
+              >
+                <i class="material-symbols-outlined">{{ sub.logoIcon }}</i>
+              </div>
+              <div class="school-info">
+                <span class="school-name">{{ sub.schoolName }}</span>
+                <span class="school-domain">{{ sub.domain }}</span>
+              </div>
+            </div>
+          </td>
+
+          <!-- Plan -->
+          <td class="col-plan">
+            <span class="plan-label">{{ sub.plan }}</span>
+          </td>
+
+          <!-- Billing Cycle -->
+          <td class="col-cycle">
+            <span class="cycle-label">{{ sub.billingCycle }}</span>
+          </td>
+
+          <!-- Renewal Date -->
+          <td class="col-renewal">
+            <div class="renewal-cell">
+              <span class="renewal-date">{{ sub.renewalDate }}</span>
+              <span
+                class="renewal-badge"
+                [class.text-danger]="sub.isExpired"
+                [class.text-amber]="!sub.isExpired && sub.renewalRemainingDays <= 30"
+                [class.text-muted]="!sub.isExpired && sub.renewalRemainingDays > 30"
+              >
+                {{ sub.renewalLabel }}
+              </span>
+            </div>
+          </td>
+
+          <!-- Amount -->
+          <td class="col-amount">
+            <div class="amount-cell">
+              <span class="amount-val">{{ sub.amountFormatted }}</span>
+              <span class="rate-val">{{ sub.cycleRate }}</span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="col-status">
+            <span
+              class="status-pill"
+              [ngClass]="{
+                  'badge-active': sub.status === 'Active',
+                  'badge-expiring': sub.status === 'Expiring Soon',
+                  'badge-failed': sub.status === 'Payment Failed',
+                  'badge-trial': sub.status === 'Trial',
+                  'badge-suspended': sub.status === 'Suspended'
+                }"
+            >
+              {{ sub.status }}
+            </span>
+          </td>
+
+          <!-- Last Payment -->
+          <td class="col-last-payment">
+            <div class="payment-cell">
+              <span class="payment-date">{{ sub.lastPaymentDate }}</span>
+              @if (sub.lastPaymentStatus === 'Success') {
+              <span class="payment-amount text-success"
+                >{{ sub.lastPaymentAmount }}</span
+              >
+              } @else if (sub.lastPaymentStatus === 'Failed') {
+              <span class="payment-amount text-danger"
+                >{{ sub.lastPaymentAmount }}</span
+              >
+              } @else {
+              <span class="payment-amount text-muted"
+                >{{ sub.lastPaymentAmount }}</span
+              >
+              }
+            </div>
+          </td>
+
+          <!-- Actions -->
+          <td class="col-actions">
+            <div class="actions-wrapper">
+              <button
+                type="button"
+                class="action-menu-trigger"
+                (click)="toggleActionMenu(sub.id, $event)"
+                aria-label="Actions menu"
+              >
+                <i class="material-symbols-outlined">more_vert</i>
+              </button>
+
+              @if (openActionMenuId() === sub.id) {
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onViewDetails(sub)"
+                >
+                  <i class="material-symbols-outlined">visibility</i>
+                  <span>View Details</span>
+                </button>
+                @if (sub.status !== 'Active') {
+                <button
+                  type="button"
+                  class="dropdown-item"
+                  (click)="onUpdateStatus(sub, 'Active')"
+                >
+                  <i class="material-symbols-outlined">check_circle</i>
+                  <span>Activate Subscription</span>
+                </button>
+                } @if (sub.status !== 'Suspended') {
+                <button
+                  type="button"
+                  class="dropdown-item text-danger"
+                  (click)="onUpdateStatus(sub, 'Suspended')"
+                >
+                  <i class="material-symbols-outlined">pause_circle</i>
+                  <span>Suspend Subscription</span>
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="empty-state">
+            <i class="material-symbols-outlined empty-icon"
+              >sentiment_dissatisfied</i
+            >
+            <p class="empty-text">
+              No subscriptions found matching the selected criteria.
+            </p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Bar -->
+  <div class="pagination-bar">
+    <span class="pagination-info">
+      Showing {{ startItemIndex }} to {{ endItemIndex }} of {{ totalCount() }}
+      results
+    </span>
+
+    <div class="pagination-controls">
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="currentPage() === 1"
+        (click)="onPageSelect(currentPage() - 1)"
+        aria-label="Previous page"
+      >
+        <i class="material-symbols-outlined">chevron_left</i>
+      </button>
+
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 1"
+        (click)="onPageSelect(1)"
+      >
+        1
+      </button>
+
+      @if (totalPages() >= 2) {
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 2"
+        (click)="onPageSelect(2)"
+      >
+        2
+      </button>
+      } @if (totalPages() >= 3) {
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === 3"
+        (click)="onPageSelect(3)"
+      >
+        3
+      </button>
+      } @if (totalPages() > 4) {
+      <span class="page-ellipsis">...</span>
+      <button
+        type="button"
+        class="page-number-btn"
+        [class.active]="currentPage() === totalPages()"
+        (click)="onPageSelect(totalPages())"
+      >
+        {{ totalPages() }}
+      </button>
+      }
+
+      <button
+        type="button"
+        class="page-nav-btn"
+        [disabled]="currentPage() === totalPages() || totalPages() === 0"
+        (click)="onPageSelect(currentPage() + 1)"
+        aria-label="Next page"
+      >
+        <i class="material-symbols-outlined">chevron_right</i>
+      </button>
+    </div>
+  </div>
+</div>

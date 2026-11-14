@@ -1,16 +1,17 @@
-<aside class="space-y-4" aria-label="Assessment Insights and Governance">
+<aside
+  class="sidebar-container"
+  aria-label="Assessment Insights and Governance"
+>
   <!-- 1. Assessment Health Overview (Donut Chart) -->
-  <div class="bg-white rounded-xl border border-slate-200 p-4">
-    <div class="flex items-center justify-between mb-4">
-      <h3 class="text-sm font-semibold text-slate-900">
-        Assessment Health Overview
-      </h3>
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Assessment Health Overview</h3>
       <span class="text-xs text-slate-400">Quality Index</span>
     </div>
 
     <!-- Donut Chart -->
     <div
-      class="relative w-44 h-44 mx-auto mb-4 flex items-center justify-center"
+      class="relative w-40 h-40 mx-auto mb-4 flex items-center justify-center"
     >
       <svg
         class="w-full h-full -rotate-90"
@@ -71,7 +72,7 @@
 
     <!-- Health Breakdown Legend -->
     <div
-      class="grid grid-cols-2 gap-2.5 pt-2 border-t border-slate-100 text-xs"
+      class="grid grid-cols-2 gap-2.5 pt-3 border-t border-slate-100 text-xs"
     >
       <div class="flex items-center gap-2">
         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
@@ -102,12 +103,12 @@
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   <!-- 2. Review Queue Summary -->
-  <div class="bg-white rounded-xl border border-slate-200 p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-sm font-semibold text-slate-900">Review Queue</h3>
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Review Queue</h3>
       <span
         class="px-2 py-0.5 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"
       >
@@ -115,7 +116,7 @@
       </span>
     </div>
 
-    <div class="space-y-2.5 mb-4 text-xs">
+    <div class="space-y-2 mb-4 text-xs">
       <div class="flex items-center justify-between p-2 rounded-lg bg-slate-50">
         <span class="text-slate-600 font-medium">Pending Academic Review</span>
         <span class="font-bold text-amber-600"
@@ -151,14 +152,14 @@
       data-testid="open-moderation-queue-btn"
     >
       <span>Open Moderation Queue</span>
-      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+      <i class="material-symbols-outlined text-sm">arrow_forward</i>
     </button>
-  </div>
+  </section>
 
   <!-- 3. Standards Coverage Card -->
-  <div class="bg-white rounded-xl border border-slate-200 p-4">
-    <div class="flex items-center justify-between mb-2">
-      <h3 class="text-sm font-semibold text-slate-900">Standards Coverage</h3>
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Standards Coverage</h3>
       <span class="text-xs font-bold text-emerald-600"
         >{{ standardsCoverage() }}%</span
       >
@@ -177,19 +178,17 @@
 
     <div class="flex items-center justify-between text-[11px] text-slate-400">
       <span class="flex items-center gap-1 text-emerald-600 font-medium">
-        <span class="material-symbols-outlined text-sm">check_circle</span>
+        <i class="material-symbols-outlined text-sm">check_circle</i>
         24/24 Verified
       </span>
       <span>Target: 95%</span>
     </div>
-  </div>
+  </section>
 
   <!-- 4. Recent Assessment Activity -->
-  <div class="bg-white rounded-xl border border-slate-200 p-4">
-    <div class="flex items-center justify-between mb-3">
-      <h3 class="text-sm font-semibold text-slate-900">
-        Recent Assessment Activity
-      </h3>
+  <section class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Assessment Activity</h3>
       <button
         type="button"
         (click)="viewAllActivities.emit()"
@@ -211,9 +210,9 @@
             'bg-amber-50 text-amber-600': activity.type === 'updated'
           }"
         >
-          <span class="material-symbols-outlined text-sm leading-none">
+          <i class="material-symbols-outlined text-sm leading-none">
             {{ activity.icon }}
-          </span>
+          </i>
         </div>
         <div class="min-w-0 flex-1">
           <div class="font-medium text-slate-800 line-clamp-1">
@@ -229,5 +228,5 @@
       </div>
       }
     </div>
-  </div>
+  </section>
 </aside>

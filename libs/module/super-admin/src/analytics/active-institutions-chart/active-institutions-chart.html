@@ -1,0 +1,77 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="flex items-start gap-2.5">
+      <span class="badge-number">2</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h3 class="card-title">Top Active Institutions</h3>
+          <span
+            class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+            title="Institutions ranked by concurrent unique active students"
+          >
+            info
+          </span>
+        </div>
+        <p class="card-subtitle">By active learners</p>
+      </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="shrink-0">
+      <select
+        id="active-inst-period"
+        aria-label="Filter active institutions by period"
+        [ngModel]="period()"
+        (ngModelChange)="onPeriodChange($event)"
+        class="period-select"
+        data-testid="inst-period-select"
+      >
+        @for (p of periods; track p) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Bars List -->
+  <div class="space-y-3 my-auto">
+    @for (inst of institutions(); track inst.name) {
+    <div class="grid grid-cols-12 gap-2 items-center text-xs">
+      <!-- School Name -->
+      <div
+        class="col-span-5 font-medium text-slate-800 truncate"
+        [title]="inst.name"
+      >
+        {{ inst.name }}
+      </div>
+
+      <!-- Horizontal Progress Bar -->
+      <div class="col-span-5 flex items-center">
+        <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+          <div
+            class="bg-blue-600 h-2 rounded-full transition-all duration-300"
+            [style.width.%]="inst.capacityPercentage"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Value / Active Learners -->
+      <div class="col-span-2 text-right font-mono font-semibold text-slate-700">
+        {{ inst.activeLearners | number }}
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Bottom Axis Scale -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400 px-1"
+  >
+    <span>0</span>
+    <span>600</span>
+    <span>1.2K</span>
+    <span>1.8K</span>
+    <span>2.4K</span>
+  </div>
+</div>

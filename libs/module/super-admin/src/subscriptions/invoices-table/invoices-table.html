@@ -1,0 +1,80 @@
+<div class="invoices-card">
+  <div class="invoices-toolbar">
+    <div class="toolbar-left">
+      <h3 class="invoices-title">Platform Billing Invoices</h3>
+      <span class="invoices-count"
+        >Showing {{ invoices().length }} generated invoices</span
+      >
+    </div>
+    <button type="button" class="btn-primary" (click)="generateInvoice.emit()">
+      <i class="material-symbols-outlined">receipt_long</i>
+      <span>Generate New Invoice</span>
+    </button>
+  </div>
+
+  <div class="table-responsive">
+    <table class="invoices-table">
+      <thead>
+        <tr>
+          <th>Invoice #</th>
+          <th>Institution</th>
+          <th>Plan Tier</th>
+          <th>Issue Date</th>
+          <th>Due Date</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th class="text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (inv of invoices(); track inv.id) {
+        <tr class="invoice-row">
+          <td class="col-num font-mono">
+            <span class="inv-num">{{ inv.invoiceNumber }}</span>
+          </td>
+          <td class="col-school">
+            <div class="school-wrap">
+              <span class="school-name">{{ inv.schoolName }}</span>
+              <span class="school-domain">{{ inv.schoolDomain }}</span>
+            </div>
+          </td>
+          <td class="col-plan">
+            <span class="plan-pill">{{ inv.plan }}</span>
+          </td>
+          <td class="col-date">{{ inv.issueDate }}</td>
+          <td class="col-date">{{ inv.dueDate }}</td>
+          <td class="col-amount font-semibold">{{ inv.amountFormatted }}</td>
+          <td class="col-status">
+            <span
+              class="status-pill"
+              [class.badge-paid]="inv.status === 'Paid'"
+              [class.badge-pending]="inv.status === 'Pending'"
+              [class.badge-overdue]="inv.status === 'Overdue'"
+              [class.badge-failed]="inv.status === 'Failed'"
+            >
+              {{ inv.status }}
+            </span>
+          </td>
+          <td class="col-action text-right">
+            <button
+              type="button"
+              class="btn-download"
+              (click)="onDownload(inv)"
+              aria-label="Download receipt"
+            >
+              <i class="material-symbols-outlined">download</i>
+              <span>Receipt</span>
+            </button>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="8" class="empty-state">
+            <p>No invoices found.</p>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

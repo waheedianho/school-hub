@@ -1,0 +1,110 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="subscription-detail-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="school-header-wrap">
+        <div
+          class="school-avatar"
+          [style.background-color]="subscription().logoBg"
+          [style.color]="subscription().logoColor"
+        >
+          <i class="material-symbols-outlined">{{ subscription().logoIcon }}</i>
+        </div>
+        <div class="school-titles">
+          <h3 id="subscription-detail-title" class="modal-title">
+            {{ subscription().schoolName }}
+          </h3>
+          <span class="modal-subtitle">{{ subscription().domain }}</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <!-- Status Banner -->
+      <div class="status-banner">
+        <span class="info-label">Current Status:</span>
+        <span
+          class="status-pill"
+          [ngClass]="{
+            'badge-active': subscription().status === 'Active',
+            'badge-expiring': subscription().status === 'Expiring Soon',
+            'badge-failed': subscription().status === 'Payment Failed',
+            'badge-trial': subscription().status === 'Trial',
+            'badge-suspended': subscription().status === 'Suspended'
+          }"
+        >
+          {{ subscription().status }}
+        </span>
+      </div>
+
+      <!-- Detail Grid -->
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Subscription Plan</span>
+          <span class="detail-val">{{ subscription().plan }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Billing Cycle</span>
+          <span class="detail-val">{{ subscription().billingCycle }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Renewal Date</span>
+          <span class="detail-val"
+            >{{ subscription().renewalDate }} ({{ subscription().renewalLabel
+            }})</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Rate & Amount</span>
+          <span class="detail-val"
+            >{{ subscription().amountFormatted }} {{ subscription().cycleRate
+            }}</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Allocated Seats</span>
+          <span class="detail-val"
+            >{{ subscription().seatsAllocated }} learners</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Active Learners Used</span>
+          <span class="detail-val"
+            >{{ subscription().seatsUsed }} / {{ subscription().seatsAllocated
+            }}</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Last Payment Date</span>
+          <span class="detail-val">{{ subscription().lastPaymentDate }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Last Payment Status</span>
+          <span
+            class="detail-val"
+            [class.text-danger]="subscription().lastPaymentStatus === 'Failed'"
+          >
+            {{ subscription().lastPaymentAmount }} ({{
+            subscription().lastPaymentStatus }})
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-close" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</div>

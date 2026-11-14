@@ -1,0 +1,70 @@
+<section
+  class="metrics-grid"
+  aria-label="Platform Analytics Key Performance Indicators"
+>
+  @for (metric of metrics(); track metric.label) {
+  <article
+    class="metric-card"
+    [attr.data-testid]="'metric-' + metric.label.toLowerCase().replace(' ', '-')"
+  >
+    <!-- Top Row: Icon & Content -->
+    <div class="metric-top">
+      <div
+        class="metric-icon-wrap"
+        [ngClass]="{
+          'bg-blue-50 text-blue-600': metric.tone === 'primary',
+          'bg-emerald-50 text-emerald-600': metric.tone === 'success',
+          'bg-purple-50 text-purple-600': metric.tone === 'purple',
+          'bg-orange-50 text-orange-600': metric.tone === 'orange',
+          'bg-indigo-50 text-indigo-600': metric.tone === 'indigo',
+          'bg-rose-50 text-rose-600': metric.tone === 'danger'
+        }"
+      >
+        <i class="material-symbols-outlined">{{ metric.icon }}</i>
+      </div>
+
+      <div class="metric-content">
+        <span class="metric-label">{{ metric.label }}</span>
+        <h3 class="metric-value">{{ metric.value }}</h3>
+      </div>
+    </div>
+
+    <!-- Bottom Row: Trend & Sparkline -->
+    <div class="metric-bottom">
+      <div>
+        <p
+          class="metric-trend"
+          [class.trend-up]="metric.trend === 'up'"
+          [class.trend-down]="metric.trend === 'down'"
+        >
+          <i class="material-symbols-outlined trend-icon"
+            >{{ metric.trend === 'up' ? 'north_east' : 'south_east' }}</i
+          >
+          <span>{{ metric.change }}</span>
+        </p>
+        <span class="comparison-text">vs {{ metric.comparisonPeriod }}</span>
+      </div>
+
+      <!-- Sparkline SVG -->
+      @if (metric.sparkline && metric.sparkline.length > 0) {
+      <div class="w-16 h-6 shrink-0">
+        <svg
+          class="w-full h-full"
+          viewBox="0 0 80 24"
+          preserveAspectRatio="none"
+        >
+          <polyline
+            fill="none"
+            [attr.stroke]="metric.trend === 'up' ? '#10b981' : '#f43f5e'"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            [attr.points]="getSparklinePoints(metric.sparkline)"
+          />
+        </svg>
+      </div>
+      }
+    </div>
+  </article>
+  }
+</section>

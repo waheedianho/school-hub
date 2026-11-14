@@ -1,0 +1,134 @@
+<div class="chart-card">
+  <!-- Card Header -->
+  <div class="card-header">
+    <div class="flex items-start gap-2.5">
+      <span class="badge-number">4</span>
+      <div>
+        <div class="flex items-center gap-1.5">
+          <h3 class="card-title">Assessment Completion Trend</h3>
+          <span
+            class="material-symbols-outlined text-slate-400 text-sm cursor-help"
+            title="Aggregated test completion and student progression rates over time"
+          >
+            info
+          </span>
+        </div>
+
+        <!-- Legend Pills -->
+        <div class="flex items-center gap-3 mt-1 text-[11px]">
+          <span class="flex items-center gap-1 text-slate-600 font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+            Completed
+          </span>
+          <span class="flex items-center gap-1 text-slate-600 font-medium">
+            <span class="w-2 h-2 rounded-full bg-blue-600"></span>
+            In Progress
+          </span>
+          <span class="flex items-center gap-1 text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+            Not Started
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Period Filter -->
+    <div class="shrink-0">
+      <select
+        id="assessment-trend-period"
+        aria-label="Filter assessment trend by period"
+        [ngModel]="period()"
+        (ngModelChange)="onPeriodChange($event)"
+        class="period-select"
+        data-testid="assessment-period-select"
+      >
+        @for (p of periods; track p) {
+        <option [value]="p">{{ p }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <!-- Stacked Bar Chart Visual Area -->
+  <div
+    class="relative w-full aspect-[2.6/1] min-h-[140px] max-h-[190px] my-auto"
+  >
+    <!-- Horizontal Grid Guidelines -->
+    <div
+      class="absolute inset-0 flex flex-col justify-between pointer-events-none text-[9px] text-slate-300"
+    >
+      <div
+        class="w-full border-b border-dashed border-slate-100 flex items-center justify-between pr-1"
+      >
+        <span>8K</span>
+      </div>
+      <div
+        class="w-full border-b border-dashed border-slate-100 flex items-center justify-between pr-1"
+      >
+        <span>6K</span>
+      </div>
+      <div
+        class="w-full border-b border-dashed border-slate-100 flex items-center justify-between pr-1"
+      >
+        <span>4K</span>
+      </div>
+      <div
+        class="w-full border-b border-dashed border-slate-100 flex items-center justify-between pr-1"
+      >
+        <span>2K</span>
+      </div>
+      <div
+        class="w-full border-b border-slate-200 flex items-center justify-between pr-1"
+      >
+        <span>0</span>
+      </div>
+    </div>
+
+    <!-- Stacked Columns -->
+    <div
+      class="absolute inset-x-6 bottom-0 top-3 flex items-end justify-between gap-1.5 px-2"
+    >
+      @for (pt of points(); track pt.date) {
+      <div
+        class="flex-1 flex flex-col items-center h-full justify-end group cursor-pointer max-w-[28px]"
+      >
+        <!-- Stack container with tooltip hover -->
+        <div
+          class="w-full rounded-t-sm flex flex-col-reverse overflow-hidden transition-all duration-150 group-hover:opacity-90"
+        >
+          <!-- Completed (Green) -->
+          <div
+            class="w-full bg-emerald-500 transition-all duration-300"
+            [style.height.px]="getBarHeights(pt).completedH"
+            title="Completed: {{ pt.completed | number }}"
+          ></div>
+          <!-- In Progress (Blue) -->
+          <div
+            class="w-full bg-blue-600 transition-all duration-300"
+            [style.height.px]="getBarHeights(pt).inProgressH"
+            title="In Progress: {{ pt.inProgress | number }}"
+          ></div>
+          <!-- Not Started (Slate) -->
+          <div
+            class="w-full bg-slate-300 transition-all duration-300"
+            [style.height.px]="getBarHeights(pt).notStartedH"
+            title="Not Started: {{ pt.notStarted | number }}"
+          ></div>
+        </div>
+
+        <span class="text-[9px] text-slate-400 mt-1 truncate font-mono">
+          {{ pt.date }}
+        </span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Bottom Details -->
+  <div
+    class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400"
+  >
+    <span>Completion rate: <strong>68.4%</strong></span>
+    <span>Updated today</span>
+  </div>
+</div>
