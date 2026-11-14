@@ -1,0 +1,150 @@
+<div class="resources-container">
+  <!-- Toast Notification -->
+  @if (actionToast(); as msg) {
+  <div class="toast-banner" role="status">
+    <span class="material-symbols-outlined icon">check_circle</span>
+    <span class="toast-text">{{ msg }}</span>
+    <button
+      type="button"
+      class="close-toast"
+      (click)="actionToast.set(null)"
+      aria-label="Dismiss toast"
+    >
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  }
+
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Resources Library</h1>
+      <p class="page-subtitle">
+        Manage platform-wide academic resources, curriculum assets, templates,
+        worksheets, lesson notes, videos, and downloadable files across
+        institutions.
+      </p>
+    </div>
+
+    <div class="header-right">
+      <div class="date-picker-badge">
+        <span class="material-symbols-outlined icon">calendar_today</span>
+        <span class="date-text">{{ store.selectedResourceDateRange() }}</span>
+        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+      </div>
+
+      <div class="notification-wrap" title="12 notifications">
+        <span class="material-symbols-outlined icon">notifications</span>
+        <span class="notification-badge">12</span>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">SA</div>
+        <div class="user-info">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top 6 KPI Metric Cards -->
+  <section class="metrics-section">
+    <school-hub-resources-metrics [metrics]="store.resourceMetrics()" />
+  </section>
+
+  <!-- Navigation Tabs with Badges -->
+  <nav class="tabs-nav" aria-label="Resource Category Views">
+    @for (tab of tabs; track tab.id) {
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.selectedResourceTab() === tab.id"
+      (click)="onTabChange(tab.id)"
+    >
+      <span class="tab-label">{{ tab.label }}</span>
+      @if (tab.badge) {
+      <span class="tab-badge" [ngClass]="tab.badgeClass">{{ tab.badge }}</span>
+      }
+    </button>
+    }
+  </nav>
+
+  <!-- Main Body Layout: Table & Bottom Metrics (Left) + Sidebar (Right) -->
+  <div class="content-layout">
+    <!-- Left Column (Table & Bottom Metrics) -->
+    <main class="main-column">
+      <school-hub-resources-table
+        [resources]="store.paginatedResources()"
+        [totalCount]="store.totalResourcesCount()"
+        [currentPage]="store.resourceCurrentPage()"
+        [totalPages]="store.totalResourcePages()"
+        [pageSize]="store.resourcePageSize()"
+        [searchQuery]="store.resourceSearchQuery()"
+        [selectedSchool]="store.selectedResourceSchoolFilter()"
+        [selectedSubject]="store.selectedResourceSubjectFilter()"
+        [selectedClass]="store.selectedResourceClassFilter()"
+        [selectedType]="store.selectedResourceTypeFilter()"
+        [selectedStatus]="store.selectedResourceStatusFilter()"
+        [dateRange]="store.selectedResourceDateRange()"
+        (searchChange)="store.setResourceSearch($event)"
+        (schoolChange)="store.setResourceSchoolFilter($event)"
+        (subjectChange)="store.setResourceSubjectFilter($event)"
+        (classChange)="store.setResourceClassFilter($event)"
+        (typeChange)="store.setResourceTypeFilter($event)"
+        (statusChange)="store.setResourceStatusFilter($event)"
+        (clearFilters)="clearFilters()"
+        (pageChange)="store.setResourcePage($event)"
+        (pageSizeChange)="store.setResourcePageSize($event)"
+        (bulkImport)="openBulkImport()"
+        (createFolder)="openCreateFolder()"
+        (viewResource)="openResourceDetail($event)"
+        (approveResource)="onApproveResource($event)"
+        (rejectResource)="onRejectResource($event)"
+        (deleteResource)="onDeleteResource($event)"
+        (downloadResource)="onDownloadResource($event)"
+      />
+
+      <!-- Bottom 4 KPI Cards -->
+      <section class="bottom-metrics-section">
+        <school-hub-resources-bottom-metrics
+          [bottomMetrics]="store.resourceBottomMetrics()"
+        />
+      </section>
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="sidebar-column">
+      <school-hub-resources-sidebar
+        [healthCategories]="store.resourceHealthCategories()"
+        [approvalQueue]="store.approvalQueue()"
+        [mostUsedTypes]="store.mostUsedResourceTypes()"
+        [recentActivities]="store.recentUploadActivities()"
+        (bulkImportAction)="openBulkImport()"
+        (createFolderAction)="openCreateFolder()"
+        (downloadReportAction)="showToast('Generating and downloading resource usage report...')"
+        (selectQueueItem)="onQueueItemSelect($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- Modals -->
+  @if (activeModal() === 'folder') {
+  <school-hub-create-folder-modal
+    (closeModal)="closeModal()"
+    (folderCreated)="onFolderCreated($event)"
+  />
+  } @if (activeModal() === 'import') {
+  <school-hub-bulk-import-modal
+    (closeModal)="closeModal()"
+    (imported)="onBulkImported($event)"
+  />
+  } @if (activeModal() === 'detail' && selectedResourceForDetail(); as res) {
+  <school-hub-resource-detail-modal
+    [resource]="res"
+    (closeModal)="closeModal()"
+    (statusChanged)="onStatusChanged($event)"
+    (downloadRequested)="onDownloadResource($event)"
+  />
+  }
+</div>

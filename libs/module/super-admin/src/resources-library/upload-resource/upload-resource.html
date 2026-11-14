@@ -1,0 +1,843 @@
+<div class="upload-container">
+  <!-- Toast Notification -->
+  @if (toastMessage(); as msg) {
+  <div class="toast-banner" role="status">
+    <span class="material-symbols-outlined icon">check_circle</span>
+    <span class="toast-text">{{ msg }}</span>
+  </div>
+  }
+
+  <!-- Header Navigation -->
+  <header class="upload-header">
+    <div class="header-left">
+      <a
+        routerLink="/super-admin/resources-library"
+        class="back-btn"
+        title="Back to Resources Library"
+      >
+        <span class="material-symbols-outlined">arrow_back</span>
+      </a>
+      <div class="header-titles">
+        <h1 class="page-title">Upload Resource</h1>
+        <p class="page-subtitle">
+          Upload and organize platform-wide academic resources for schools and
+          learners.
+        </p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="date-picker-badge">
+        <span class="material-symbols-outlined icon">calendar_today</span>
+        <span class="date-text">May 1 – May 31, 2025</span>
+        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+      </div>
+
+      <div class="notification-wrap" title="12 notifications">
+        <span class="material-symbols-outlined icon">notifications</span>
+        <span class="notification-badge">12</span>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">SA</div>
+        <div class="user-info">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Upload Body Layout: Main Form (Left) + Sidebar (Right) -->
+  <div class="upload-body-layout">
+    <!-- Left Main Column (Form Sections) -->
+    <main class="form-main-column">
+      <!-- Section 1: Resource Details -->
+      <section class="form-section-card">
+        <div class="section-header">
+          <div class="step-num">1</div>
+          <h2 class="section-title">Resource Details</h2>
+          <span class="material-symbols-outlined toggle-icon">expand_less</span>
+        </div>
+
+        <div class="section-body">
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="resourceTitleInput" class="form-label">
+                Resource Title <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="resourceTitleInput"
+                class="form-control"
+                placeholder="Enter a clear and descriptive title"
+                [ngModel]="title()"
+                (ngModelChange)="title.set($event)"
+              />
+            </div>
+            <div class="form-group flex-1">
+              <label for="resourceDescInput" class="form-label">
+                Description <span class="text-danger">*</span>
+              </label>
+              <input
+                type="text"
+                id="resourceDescInput"
+                class="form-control"
+                placeholder="Describe the purpose and contents of this resource"
+                [ngModel]="description()"
+                (ngModelChange)="description.set($event)"
+              />
+            </div>
+            <div class="form-group flex-1">
+              <label for="resourceTypeSelect" class="form-label">
+                Resource Type <span class="text-danger">*</span>
+              </label>
+              <select
+                id="resourceTypeSelect"
+                class="form-select"
+                [ngModel]="resourceType()"
+                (ngModelChange)="resourceType.set($event)"
+              >
+                <option value="Lesson Notes">Lesson Notes</option>
+                <option value="Videos">Videos</option>
+                <option value="Worksheets">Worksheets</option>
+                <option value="Assessments">Assessments</option>
+                <option value="Question Banks">Question Banks</option>
+                <option value="Portfolio Tasks">Portfolio Tasks</option>
+                <option value="Templates">Templates</option>
+                <option value="Policy Documents">Policy Documents</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="linkedPackSelect" class="form-label">
+                Linked Pack / Topic <span class="text-danger">*</span>
+              </label>
+              <select
+                id="linkedPackSelect"
+                class="form-select"
+                [ngModel]="linkedPack()"
+                (ngModelChange)="linkedPack.set($event)"
+              >
+                <option value="JSS1 Mathematics Pack">
+                  JSS1 Mathematics Pack
+                </option>
+                <option value="JSS1 English Language Pack">
+                  JSS1 English Language Pack
+                </option>
+                <option value="JSS2 Basic Science Pack">
+                  JSS2 Basic Science Pack
+                </option>
+                <option value="JSS3 Business Studies Pack">
+                  JSS3 Business Studies Pack
+                </option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="linkedSubjectSelect" class="form-label">
+                Linked Subject <span class="text-danger">*</span>
+              </label>
+              <select
+                id="linkedSubjectSelect"
+                class="form-select"
+                [ngModel]="linkedSubject()"
+                (ngModelChange)="linkedSubject.set($event)"
+              >
+                <option value="Mathematics">Mathematics</option>
+                <option value="English">English</option>
+                <option value="Basic Science">Basic Science</option>
+                <option value="Business Studies">Business Studies</option>
+                <option value="Computer Studies">Computer Studies</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="classLevelSelect" class="form-label">
+                Class Level <span class="text-danger">*</span>
+              </label>
+              <select
+                id="classLevelSelect"
+                class="form-select"
+                [ngModel]="classLevel()"
+                (ngModelChange)="classLevel.set($event)"
+              >
+                <option value="JSS1">JSS1</option>
+                <option value="JSS2">JSS2</option>
+                <option value="JSS3">JSS3</option>
+                <option value="SSS1">SSS1</option>
+                <option value="SSS2">SSS2</option>
+                <option value="SSS3">SSS3</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="termWeekSelect" class="form-label">Term / Week</label>
+              <select
+                id="termWeekSelect"
+                class="form-select"
+                [ngModel]="termWeek()"
+                (ngModelChange)="termWeek.set($event)"
+              >
+                <option value="Term 1, Week 1">Term 1, Week 1</option>
+                <option value="Term 2, Week 4">Term 2, Week 4</option>
+                <option value="Term 3, Week 6">Term 3, Week 6</option>
+                <option value="Annual">Annual / General</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="form-group">
+            <label for="resourceTagsInput" class="form-label"
+              >Tags / Keywords</label
+            >
+            <div class="tag-input-container">
+              @for (tag of tags(); track tag) {
+              <span class="tag-chip">
+                #{{ tag }}
+                <button
+                  type="button"
+                  class="remove-tag"
+                  (click)="removeTag(tag)"
+                >
+                  ×
+                </button>
+              </span>
+              }
+              <input
+                id="resourceTagsInput"
+                type="text"
+                class="tag-input"
+                placeholder="Add tags and press Enter"
+                [ngModel]="tagInput()"
+                (ngModelChange)="tagInput.set($event)"
+                (keydown.enter)="$event.preventDefault(); addTag()"
+              />
+            </div>
+            <span class="field-hint text-muted"
+              >Use tags to improve discoverability (e.g., algebra,
+              photosynthesis, essay-writing)</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: File Upload -->
+      <section class="form-section-card">
+        <div class="section-header">
+          <div class="step-num">2</div>
+          <h2 class="section-title">File Upload</h2>
+        </div>
+
+        <div class="section-body">
+          <div class="upload-dropzone">
+            <div class="dropzone-icon">
+              <span class="material-symbols-outlined">cloud_upload</span>
+            </div>
+            <div class="dropzone-text">
+              <span class="drag-text font-semibold"
+                >Drag & drop your file here</span
+              >
+              <span class="browse-link text-primary font-semibold">
+                or click to browse</span
+              >
+            </div>
+            <span class="dropzone-sub text-muted">
+              Supported formats: PDF, DOCX, PPTX, MP4, JPG, PNG, ZIP. Maximum
+              file size: 2 GB
+            </span>
+          </div>
+
+          <!-- Upload Item Progress Card -->
+          @if (isUploading()) {
+          <div class="upload-progress-item">
+            <div class="file-icon-box fmt-pdf">
+              <span class="material-symbols-outlined">description</span>
+            </div>
+            <div class="upload-progress-info">
+              <div class="file-row">
+                <span class="upload-filename font-medium"
+                  >{{ uploadedFileName() }}</span
+                >
+                <span class="upload-percent font-semibold text-primary"
+                  >{{ uploadProgress() }}%</span
+                >
+              </div>
+              <div class="progress-bar-track">
+                <div
+                  class="progress-bar-fill"
+                  [style.width.%]="uploadProgress()"
+                ></div>
+              </div>
+              <span class="file-size-meta text-muted"
+                >{{ uploadedFileSize() }}</span
+              >
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm cancel-upload-btn"
+              (click)="cancelUpload()"
+            >
+              Cancel
+            </button>
+          </div>
+          }
+        </div>
+      </section>
+
+      <!-- Section 3 & 4 Grid (Audience + Metadata) -->
+      <div class="sections-two-col">
+        <!-- Section 3: Audience & Access -->
+        <section class="form-section-card col-section">
+          <div class="section-header">
+            <div class="step-num">3</div>
+            <h2 class="section-title">Audience & Access</h2>
+          </div>
+
+          <div class="section-body">
+            <!-- Visibility Radios -->
+            <div class="radio-options-row">
+              <label class="radio-label">
+                <input
+                  type="radio"
+                  name="visibilityOption"
+                  value="All Schools"
+                  [checked]="visibility() === 'All Schools'"
+                  (change)="visibility.set('All Schools')"
+                />
+                <span>Visible to all schools</span>
+              </label>
+              <label class="radio-label">
+                <input
+                  type="radio"
+                  name="visibilityOption"
+                  value="Selected Schools"
+                  [checked]="visibility() === 'Selected Schools'"
+                  (change)="visibility.set('Selected Schools')"
+                />
+                <span>Visible to selected schools</span>
+              </label>
+            </div>
+
+            <!-- Audience Checkboxes -->
+            <div class="form-group">
+              <span class="form-label">Audience (Select all that apply)</span>
+              <div class="checkboxes-grid">
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="audienceLearners()"
+                    (change)="audienceLearners.set($any($event.target).checked)"
+                  />
+                  <span>Learners</span>
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="audienceTeachers()"
+                    (change)="audienceTeachers.set($any($event.target).checked)"
+                  />
+                  <span>Teachers</span>
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="audienceSchoolAdmins()"
+                    (change)="audienceSchoolAdmins.set($any($event.target).checked)"
+                  />
+                  <span>School Admins</span>
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="audienceSuperAdmins()"
+                    (change)="audienceSuperAdmins.set($any($event.target).checked)"
+                  />
+                  <span>Super Admins</span>
+                </label>
+                <label class="checkbox-label">
+                  <input
+                    type="checkbox"
+                    [checked]="audienceParents()"
+                    (change)="audienceParents.set($any($event.target).checked)"
+                  />
+                  <span>Parents</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Download Permission & Low-Data Toggle -->
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="downloadPermissionSelect" class="form-label"
+                  >Download Permission</label
+                >
+                <select
+                  id="downloadPermissionSelect"
+                  class="form-select"
+                  [ngModel]="downloadPermission()"
+                  (ngModelChange)="downloadPermission.set($event)"
+                >
+                  <option value="Allow authenticated users to download">
+                    Allow authenticated users to download
+                  </option>
+                  <option value="View only (No download)">
+                    View only (No download)
+                  </option>
+                  <option value="Admins and Teachers only">
+                    Admins and Teachers only
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-group flex-1 toggle-group">
+                <span class="form-label">Low-Data Version</span>
+                <label class="toggle-switch-label">
+                  <input
+                    type="checkbox"
+                    class="toggle-checkbox"
+                    [checked]="lowDataVersion()"
+                    (change)="lowDataVersion.set($any($event.target).checked)"
+                  />
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-text text-muted"
+                    >Generate low-data version (compressed PDF / MP4)</span
+                  >
+                </label>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Section 4: Metadata & Quality -->
+        <section class="form-section-card col-section">
+          <div class="section-header">
+            <div class="step-num">4</div>
+            <h2 class="section-title">Metadata & Quality</h2>
+          </div>
+
+          <div class="section-body">
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="resourceLangSelect" class="form-label">
+                  Language <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="resourceLangSelect"
+                  class="form-select"
+                  [ngModel]="language()"
+                  (ngModelChange)="language.set($event)"
+                >
+                  <option value="English">English</option>
+                  <option value="French">French</option>
+                  <option value="Spanish">Spanish</option>
+                  <option value="Arabic">Arabic</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="studyTimeSelect" class="form-label"
+                  >Estimated Study Time</label
+                >
+                <select
+                  id="studyTimeSelect"
+                  class="form-select"
+                  [ngModel]="estimatedStudyTime()"
+                  (ngModelChange)="estimatedStudyTime.set($event)"
+                >
+                  <option value="15–30 minutes">15–30 minutes</option>
+                  <option value="30–60 minutes">30–60 minutes</option>
+                  <option value="1–2 hours">1–2 hours</option>
+                  <option value="2+ hours">2+ hours</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="versionInput" class="form-label">Version</label>
+                <input
+                  type="text"
+                  id="versionInput"
+                  class="form-control"
+                  [ngModel]="version()"
+                  (ngModelChange)="version.set($event)"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="authorSourceInput" class="form-label">
+                  Author / Source <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="authorSourceInput"
+                  class="form-control"
+                  [ngModel]="author()"
+                  (ngModelChange)="author.set($event)"
+                />
+              </div>
+              <div class="form-group flex-1">
+                <label for="copyrightSelect" class="form-label">
+                  Copyright / License <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="copyrightSelect"
+                  class="form-select"
+                  [ngModel]="license()"
+                  (ngModelChange)="license.set($event)"
+                >
+                  <option value="All rights reserved">
+                    All rights reserved
+                  </option>
+                  <option value="Creative Commons (CC BY)">
+                    Creative Commons (CC BY)
+                  </option>
+                  <option value="Public Domain">Public Domain</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group flex-1">
+                <label for="approvalStatusSelect" class="form-label">
+                  Approval Status <span class="text-danger">*</span>
+                </label>
+                <select
+                  id="approvalStatusSelect"
+                  class="form-select"
+                  [ngModel]="approvalStatus()"
+                  (ngModelChange)="approvalStatus.set($event)"
+                >
+                  <option value="Draft">Draft</option>
+                  <option value="Pending Review">Pending Review</option>
+                  <option value="Approved">Approved</option>
+                </select>
+              </div>
+              <div class="form-group flex-1">
+                <label for="publishDateInput" class="form-label"
+                  >Publish Date</label
+                >
+                <input
+                  type="text"
+                  id="publishDateInput"
+                  class="form-control"
+                  [ngModel]="publishDate()"
+                  (ngModelChange)="publishDate.set($event)"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reviewNotesTextarea" class="form-label"
+                >Review Notes</label
+              >
+              <textarea
+                id="reviewNotesTextarea"
+                class="form-control"
+                rows="2"
+                placeholder="Add any notes for reviewers (optional)"
+                [ngModel]="reviewNotes()"
+                (ngModelChange)="reviewNotes.set($event)"
+              ></textarea>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Form Actions Toolbar -->
+      <div class="upload-actions-bar">
+        <div class="left-actions">
+          <button
+            type="button"
+            class="btn btn-secondary action-btn"
+            (click)="saveDraft()"
+          >
+            <span class="material-symbols-outlined">save</span>
+            Save Draft
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary action-btn"
+            (click)="submitForReview()"
+          >
+            <span class="material-symbols-outlined">send</span>
+            Submit for Review
+          </button>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-primary publish-btn"
+          (click)="publishResource()"
+        >
+          <span class="material-symbols-outlined">cloud_done</span>
+          Publish Resource
+        </button>
+      </div>
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="sidebar-column">
+      <!-- 1. Resource Preview Card -->
+      <section class="sidebar-card preview-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">visibility</span>
+            Resource Preview
+          </h3>
+        </div>
+
+        <!-- Thumbnail Mockup -->
+        <div class="preview-thumbnail">
+          <div class="thumb-header">
+            <span class="thumb-pack">JSS1 Mathematics</span>
+            <span class="thumb-title">Linear Equations</span>
+            <span class="thumb-sub">Notes & Examples</span>
+          </div>
+          <div class="thumb-graphic">
+            <span class="math-eq">x + y = 5</span>
+            <span class="material-symbols-outlined math-icon">calculate</span>
+          </div>
+        </div>
+
+        <div class="preview-file-pill">
+          <span class="material-symbols-outlined file-pill-icon"
+            >picture_as_pdf</span
+          >
+          <span class="file-pill-name">{{ uploadedFileName() }}</span>
+        </div>
+
+        <div class="preview-meta-list">
+          <div class="p-item">
+            <span class="p-label">File Type</span>
+            <span class="p-val font-medium">PDF Document</span>
+          </div>
+          <div class="p-item">
+            <span class="p-label">File Size</span>
+            <span class="p-val">{{ uploadedFileSize() }}</span>
+          </div>
+          <div class="p-item">
+            <span class="p-label">Pages</span>
+            <span class="p-val">24</span>
+          </div>
+          <div class="p-item">
+            <span class="p-label">Uploaded By</span>
+            <span class="p-val">Super Admin</span>
+          </div>
+          <div class="p-item">
+            <span class="p-label">Uploaded On</span>
+            <span class="p-val">May 1, 2025, 10:35 AM</span>
+          </div>
+        </div>
+
+        <div class="preview-taxonomy">
+          <div class="tax-row">
+            <span class="tax-label">Linked Curriculum</span>
+            <span class="badge badge-purple">{{ linkedPack() }}</span>
+          </div>
+          <div class="tax-row">
+            <span class="tax-label">Linked Topic</span>
+            <span class="tax-val">{{ linkedTopic() }}</span>
+          </div>
+          <div class="tax-row">
+            <span class="tax-label">Subject</span>
+            <span class="tax-val">{{ linkedSubject() }}</span>
+          </div>
+          <div class="tax-row">
+            <span class="tax-label">Class Level</span>
+            <span class="tax-val">{{ classLevel() }}</span>
+          </div>
+        </div>
+
+        <!-- Usage Readiness Checklist -->
+        <div class="readiness-section">
+          <h4 class="readiness-title">Usage Readiness Checklist</h4>
+          <div class="checklist">
+            <div class="chk-item checked">
+              <span class="material-symbols-outlined chk-icon"
+                >check_circle</span
+              >
+              <span>Title and description provided</span>
+            </div>
+            <div class="chk-item checked">
+              <span class="material-symbols-outlined chk-icon"
+                >check_circle</span
+              >
+              <span>File uploaded successfully</span>
+            </div>
+            <div class="chk-item checked">
+              <span class="material-symbols-outlined chk-icon"
+                >check_circle</span
+              >
+              <span>Metadata complete</span>
+            </div>
+            <div class="chk-item warning">
+              <span class="material-symbols-outlined chk-icon">warning</span>
+              <span>Awaiting review</span>
+            </div>
+            <div class="chk-item pending">
+              <span class="material-symbols-outlined chk-icon"
+                >radio_button_unchecked</span
+              >
+              <span>Pending publication</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Upload Checklist -->
+      <section class="sidebar-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">checklist</span>
+            Upload Checklist
+          </h3>
+        </div>
+        <div class="checklist">
+          <div class="chk-item checked">
+            <span>Resource details</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >check_circle</span
+            >
+          </div>
+          <div class="chk-item checked">
+            <span>File uploaded</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >check_circle</span
+            >
+          </div>
+          <div class="chk-item checked">
+            <span>Audience & access</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >check_circle</span
+            >
+          </div>
+          <div class="chk-item checked">
+            <span>Metadata & quality</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >check_circle</span
+            >
+          </div>
+          <div class="chk-item pending">
+            <span>Submit for review</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >radio_button_unchecked</span
+            >
+          </div>
+          <div class="chk-item pending">
+            <span>Publish & notify</span>
+            <span class="material-symbols-outlined chk-icon ml-auto"
+              >radio_button_unchecked</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Metadata Tips -->
+      <section class="sidebar-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">lightbulb</span>
+            Metadata Tips
+          </h3>
+        </div>
+        <ul class="tips-list text-muted">
+          <li>Use a clear and descriptive title.</li>
+          <li>Add relevant tags for better search.</li>
+          <li>Select the most accurate subject and class level.</li>
+          <li>Provide estimated study time to help learners plan.</li>
+          <li>Ensure copyright compliance before publishing.</li>
+        </ul>
+      </section>
+
+      <!-- 4. Recent Resource Standards -->
+      <section class="sidebar-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">verified_user</span>
+            Recent Resource Standards
+          </h3>
+        </div>
+        <div class="standards-list">
+          <div class="std-item">
+            <div class="std-name">
+              <span class="material-symbols-outlined std-icon">school</span>
+              Curriculum Alignment
+            </div>
+            <span class="badge badge-green">Required</span>
+          </div>
+          <div class="std-item">
+            <div class="std-name">
+              <span class="material-symbols-outlined std-icon">grade</span>
+              Quality of Content
+            </div>
+            <span class="badge badge-green">Required</span>
+          </div>
+          <div class="std-item">
+            <div class="std-name">
+              <span class="material-symbols-outlined std-icon"
+                >accessibility</span
+              >
+              Accessibility
+            </div>
+            <span class="badge badge-green">Required</span>
+          </div>
+          <div class="std-item">
+            <div class="std-name">
+              <span class="material-symbols-outlined std-icon">security</span>
+              Data Privacy
+            </div>
+            <span class="badge badge-green">Required</span>
+          </div>
+          <div class="std-item">
+            <div class="std-name">
+              <span class="material-symbols-outlined std-icon">copyright</span>
+              Copyright Compliance
+            </div>
+            <span class="badge badge-green">Required</span>
+          </div>
+        </div>
+        <a href="javascript:void(0)" class="standards-link">
+          View full standards guide
+          <span class="material-symbols-outlined">open_in_new</span>
+        </a>
+      </section>
+
+      <!-- 5. Access Summary -->
+      <section class="sidebar-card">
+        <div class="card-header">
+          <h3 class="card-title">
+            <span class="material-symbols-outlined">vpn_key</span>
+            Access Summary
+          </h3>
+        </div>
+        <div class="access-summary-grid">
+          <div class="acc-row">
+            <span class="acc-label text-muted">Visibility</span>
+            <span class="acc-val font-medium">{{ visibility() }}</span>
+          </div>
+          <div class="acc-row">
+            <span class="acc-label text-muted">Audience</span>
+            <span class="acc-val font-medium">4 Roles Selected</span>
+          </div>
+          <div class="acc-row">
+            <span class="acc-label text-muted">Download</span>
+            <span class="acc-val font-medium">Authenticated Users</span>
+          </div>
+          <div class="acc-row">
+            <span class="acc-label text-muted">Low-Data Version</span>
+            <span class="acc-val font-medium text-success"
+              >{{ lowDataVersion() ? 'Enabled' : 'Disabled' }}</span
+            >
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Bottom 4 KPI Cards (Upload Screen) -->
+  <section class="upload-bottom-section">
+    <school-hub-resources-bottom-metrics
+      [bottomMetrics]="store.uploadBottomMetrics()"
+    />
+  </section>
+</div>

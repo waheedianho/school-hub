@@ -759,4 +759,117 @@ describe('SuperAdminStore', () => {
     store.setSupportDateRange('Jun 1 – Jun 30, 2025');
     expect(store.selectedSupportDateRange()).toBe('Jun 1 – Jun 30, 2025');
   });
+
+  it('should initialize Resources Library state with authentic metrics and datasets', () => {
+    expect(store.resourceMetrics().length).toBe(6);
+    expect(store.allResources().length).toBeGreaterThanOrEqual(10);
+    expect(store.resourceBottomMetrics().length).toBe(4);
+    expect(store.uploadBottomMetrics().length).toBe(4);
+    expect(store.resourceHealthCategories().length).toBe(5);
+    expect(store.approvalQueue().length).toBe(4);
+    expect(store.mostUsedResourceTypes().length).toBe(6);
+    expect(store.recentUploadActivities().length).toBe(3);
+    expect(store.selectedResourceTab()).toBe('All Resources');
+    expect(store.selectedResourceSchoolFilter()).toBe('All Schools');
+  });
+
+  it('should filter resources by search query, tab, subject, class, and status', () => {
+    // Search query
+    store.setResourceSearch('Photosynthesis');
+    expect(store.filteredResources().length).toBe(1);
+    expect(store.filteredResources()[0].title).toContain('Photosynthesis');
+
+    // Reset search
+    store.setResourceSearch('');
+    expect(store.filteredResources().length).toBe(10);
+
+    // Tab filter
+    store.setResourceTab('Videos');
+    expect(
+      store.filteredResources().every((r) => r.category === 'Videos'),
+    ).toBe(true);
+
+    // Subject filter
+    store.setResourceTab('All Resources');
+    store.setResourceSubjectFilter('Mathematics');
+    expect(
+      store.filteredResources().every((r) => r.subject === 'Mathematics'),
+    ).toBe(true);
+
+    // Class level filter
+    store.setResourceSubjectFilter('All Subjects');
+    store.setResourceClassFilter('JSS1');
+    expect(
+      store.filteredResources().every((r) => r.classLevel === 'JSS1'),
+    ).toBe(true);
+
+    // Status filter
+    store.setResourceClassFilter('All Class Levels');
+    store.setResourceStatusFilter('Pending Review');
+    expect(
+      store.filteredResources().every((r) => r.status === 'Pending Review'),
+    ).toBe(true);
+
+    // Reset status filter
+    store.setResourceStatusFilter('All Statuses');
+    expect(store.filteredResources().length).toBe(10);
+  });
+
+  it('should paginate resources accurately', () => {
+    store.setResourcePageSize(4);
+    store.setResourcePage(1);
+    expect(store.paginatedResources().length).toBe(4);
+    expect(store.totalResourcePages()).toBe(3);
+
+    store.setResourcePage(2);
+    expect(store.paginatedResources().length).toBe(4);
+
+    store.setResourcePage(3);
+    expect(store.paginatedResources().length).toBe(2);
+
+    store.setResourcePageSize(10);
+    store.setResourcePage(1);
+  });
+
+  it('should create, update status, and delete resource items', () => {
+    const initialCount = store.allResources().length;
+
+    store.createResource({
+      title: 'Advanced Organic Chemistry Guide',
+      description: 'Comprehensive reactions guide for senior students',
+      resourceType: 'Lesson Notes',
+      linkedPack: 'SSS2 Chemistry Pack',
+      linkedTopic: 'Hydrocarbons',
+      linkedSubject: 'Chemistry',
+      classLevel: 'SSS2',
+      tags: ['chemistry', 'hydrocarbons', 'sss2'],
+      fileFormat: 'PDF',
+      fileSize: '3.4 MB',
+      visibility: 'All Schools',
+      audience: ['Learners', 'Teachers'],
+      downloadPermission: 'Allow authenticated users to download',
+      lowDataVersion: true,
+      language: 'English',
+      estimatedStudyTime: '60 minutes',
+      version: '1.0',
+      author: 'Dr. Jane Smith',
+      license: 'All rights reserved',
+      approvalStatus: 'Draft',
+    });
+
+    expect(store.allResources().length).toBe(initialCount + 1);
+    const created = store.allResources()[0];
+    expect(created.title).toBe('Advanced Organic Chemistry Guide');
+    expect(created.status).toBe('Draft');
+
+    store.updateResourceStatus(created.id, 'Approved');
+    const updated = store.allResources().find((r) => r.id === created.id);
+    expect(updated?.status).toBe('Approved');
+
+    store.deleteResource(created.id);
+    expect(store.allResources().length).toBe(initialCount);
+
+    store.setResourceDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedResourceDateRange()).toBe('Jun 1 – Jun 30, 2025');
+  });
 });

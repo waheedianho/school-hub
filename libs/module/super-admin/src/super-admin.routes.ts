@@ -131,6 +131,22 @@ export const superAdminRoutes: Routes = [
             (m) => m.TicketDetailComponent,
           ),
       },
+      {
+        path: 'resources-library',
+        title: 'Resources Library | Learno Super Admin',
+        loadComponent: () =>
+          import('./resources-library/resources-library').then(
+            (m) => m.ResourcesLibraryComponent,
+          ),
+      },
+      {
+        path: 'resources-library/upload',
+        title: 'Upload Resource | Learno Super Admin',
+        loadComponent: () =>
+          import('./resources-library/upload-resource/upload-resource').then(
+            (m) => m.UploadResourceComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -142,7 +158,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'subscriptions-billing' &&
           page.path !== 'reports' &&
           page.path !== 'safeguarding-compliance' &&
-          page.path !== 'support-centre',
+          page.path !== 'support-centre' &&
+          page.path !== 'resources-library',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -177,17 +194,13 @@ export const superAdminRoutes: Routes = [
       },
       {
         path: 'resources/upload',
-        component: SuperAdmin,
-        title: 'Upload Resource | Learno Super Admin',
-        data: {
-          page: {
-            path: 'resources/upload',
-            label: 'Upload Resource',
-            icon: 'folder_shared',
-            description:
-              'Upload and organize platform-wide academic resources for schools and learners.',
-          },
-        },
+        redirectTo: 'resources-library/upload',
+        pathMatch: 'full',
+      },
+      {
+        path: 'resources-library/create',
+        redirectTo: 'resources-library/upload',
+        pathMatch: 'full',
       },
       {
         path: 'support/ticket',

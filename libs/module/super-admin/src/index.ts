@@ -39,3 +39,7 @@ export * from './data/super-admin-support.models';
 export * from './data/super-admin-support.data';
 export * from './support-centre/support-centre';
 export * from './support-centre/ticket-detail/ticket-detail';
+export * from './data/super-admin-resources.models';
+export * from './data/super-admin-resources.data';
+export * from './resources-library/resources-library';
+export * from './resources-library/upload-resource/upload-resource';

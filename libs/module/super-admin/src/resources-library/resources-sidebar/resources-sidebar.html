@@ -1,0 +1,221 @@
+<div class="sidebar-widgets">
+  <!-- Widget 1: Resource Health Overview -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Resource Health Overview</h3>
+    </div>
+
+    <div class="donut-chart-container">
+      <div class="donut-wrapper">
+        <svg class="donut-svg" viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f1f5f9"
+            stroke-width="14"
+            fill="transparent"
+          />
+          <!-- Approved: 82.6% (stroke-dashoffset ~ 282.74 * (1 - 0.826) = 49.19) -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#10b981"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="49.19"
+            stroke-linecap="round"
+            transform="rotate(-90 60 60)"
+          />
+          <!-- Pending: 4.7% (offset 282.74 * (1 - 0.047) = 269.45) rot: 207 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f59e0b"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="269.45"
+            stroke-linecap="round"
+            transform="rotate(207 60 60)"
+          />
+          <!-- Draft: 9.5% (offset 282.74 * (1 - 0.095) = 255.88) rot: 224 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#64748b"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="255.88"
+            stroke-linecap="round"
+            transform="rotate(224 60 60)"
+          />
+        </svg>
+        <div class="donut-center-text">
+          <span class="donut-total">8,742</span>
+          <span class="donut-sub">Total</span>
+        </div>
+      </div>
+
+      <div class="donut-legend">
+        @for (item of healthCategories(); track item.label) {
+        <div class="legend-row">
+          <span class="legend-dot" [style.background-color]="item.color"></span>
+          <span class="legend-label">{{ item.label }}</span>
+          <span class="legend-count"
+            >{{ item.count.toLocaleString() }} ({{ item.percentage }}%)</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 2: Approval Queue -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Approval Queue</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewApprovalQueue.emit()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="queue-list">
+      @for (item of approvalQueue(); track item.id) {
+      <div
+        class="queue-item"
+        role="button"
+        tabindex="0"
+        (click)="selectQueueItem.emit(item.title)"
+        (keydown.enter)="selectQueueItem.emit(item.title)"
+        (keydown.space)="selectQueueItem.emit(item.title)"
+      >
+        <div class="queue-left">
+          <div class="queue-title-row">
+            <span class="queue-title font-medium">{{ item.title }}</span>
+          </div>
+          <span class="queue-meta text-muted">{{ item.timestamp }}</span>
+        </div>
+        <span
+          class="priority-badge"
+          [class.priority-high]="item.priority === 'High'"
+          [class.priority-medium]="item.priority === 'Medium'"
+          [class.priority-low]="item.priority === 'Low'"
+        >
+          {{ item.priority }}
+        </span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 3: Most Used Resource Types -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Most Used Resource Types</h3>
+      <span class="card-sub text-muted">This Month</span>
+    </div>
+
+    <div class="progress-list">
+      @for (usage of mostUsedTypes(); track usage.type) {
+      <div class="progress-item">
+        <div class="progress-info">
+          <span class="usage-type">{{ usage.type }}</span>
+          <span class="usage-count font-medium">
+            {{ usage.count.toLocaleString() }} ({{ usage.percentage }}%)
+          </span>
+        </div>
+        <div class="progress-bar-track">
+          <div
+            class="progress-bar-fill"
+            [style.width.%]="usage.percentage * 3.5"
+          ></div>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 4: Recent Upload Activity -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Upload Activity</h3>
+      <button
+        type="button"
+        class="header-action-link"
+        (click)="viewRecentActivities.emit()"
+      >
+        View all
+      </button>
+    </div>
+
+    <div class="activity-list">
+      @for (activity of recentActivities(); track activity.id) {
+      <div class="activity-item">
+        <div class="activity-icon-wrap" [ngClass]="activity.iconClass">
+          <span class="material-symbols-outlined">{{ activity.icon }}</span>
+        </div>
+        <div class="activity-info">
+          <span class="activity-filename font-medium"
+            >{{ activity.fileName }}</span
+          >
+          <span class="activity-meta text-muted"
+            >by {{ activity.uploadedBy }}</span
+          >
+        </div>
+        <span class="activity-time text-muted">{{ activity.timeAgo }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 5: Quick Actions -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Quick Actions</h3>
+    </div>
+
+    <div class="actions-list">
+      <a
+        routerLink="/super-admin/resources-library/upload"
+        class="quick-action-btn"
+      >
+        <span class="material-symbols-outlined">upload_file</span>
+        Upload Resource
+      </a>
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="bulkImportAction.emit()"
+      >
+        <span class="material-symbols-outlined">publish</span>
+        Bulk Import Resources
+      </button>
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="createFolderAction.emit()"
+      >
+        <span class="material-symbols-outlined">create_new_folder</span>
+        Create Resource Folder
+      </button>
+      <button
+        type="button"
+        class="quick-action-btn"
+        (click)="downloadReportAction.emit()"
+      >
+        <span class="material-symbols-outlined">download</span>
+        Download Usage Report
+      </button>
+    </div>
+  </div>
+</div>

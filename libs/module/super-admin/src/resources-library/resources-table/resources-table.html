@@ -1,0 +1,448 @@
+<div class="resources-table-container">
+  <!-- Filter & Action Controls -->
+  <div class="filters-panel">
+    <!-- Row 1: Search, Dropdowns, and Action Buttons -->
+    <div class="filters-row-primary">
+      <div class="search-input-wrap">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <label for="resourcesSearchInput" class="sr-only"
+          >Search resources</label
+        >
+        <input
+          id="resourcesSearchInput"
+          type="text"
+          class="search-input"
+          placeholder="Search resources by title, keyword, or description..."
+          [ngModel]="searchQuery()"
+          (ngModelChange)="searchChange.emit($event)"
+        />
+      </div>
+
+      <div class="dropdowns-group">
+        <label for="schoolFilterSelect" class="sr-only">Filter by School</label>
+        <select
+          id="schoolFilterSelect"
+          class="filter-select"
+          [ngModel]="selectedSchool()"
+          (ngModelChange)="schoolChange.emit($event)"
+        >
+          <option value="All Schools">All Schools</option>
+          <option value="Bright Future School">Bright Future School</option>
+          <option value="Greenfield Academy">Greenfield Academy</option>
+          <option value="Sunrise International School">
+            Sunrise International School
+          </option>
+          <option value="Oxford Global School">Oxford Global School</option>
+          <option value="Maple Leaf School">Maple Leaf School</option>
+          <option value="Silverline High School">Silverline High School</option>
+          <option value="DPS North">DPS North</option>
+        </select>
+
+        <label for="subjectFilterSelect" class="sr-only"
+          >Filter by Subject</label
+        >
+        <select
+          id="subjectFilterSelect"
+          class="filter-select"
+          [ngModel]="selectedSubject()"
+          (ngModelChange)="subjectChange.emit($event)"
+        >
+          <option value="All Subjects">All Subjects</option>
+          <option value="Mathematics">Mathematics</option>
+          <option value="English">English</option>
+          <option value="Basic Science">Basic Science</option>
+          <option value="Business Studies">Business Studies</option>
+          <option value="Computer Studies">Computer Studies</option>
+        </select>
+
+        <label for="classFilterSelect" class="sr-only"
+          >Filter by Class Level</label
+        >
+        <select
+          id="classFilterSelect"
+          class="filter-select"
+          [ngModel]="selectedClass()"
+          (ngModelChange)="classChange.emit($event)"
+        >
+          <option value="All Class Levels">All Class Levels</option>
+          <option value="JSS1">JSS1</option>
+          <option value="JSS2">JSS2</option>
+          <option value="JSS3">JSS3</option>
+          <option value="SSS1">SSS1</option>
+          <option value="SSS2">SSS2</option>
+          <option value="SSS3">SSS3</option>
+        </select>
+      </div>
+
+      <div class="actions-group">
+        <a
+          routerLink="/super-admin/resources-library/upload"
+          class="btn btn-primary"
+        >
+          <span class="material-symbols-outlined">upload_file</span>
+          Upload Resource
+        </a>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="bulkImport.emit()"
+        >
+          <span class="material-symbols-outlined">publish</span>
+          Bulk Import
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="createFolder.emit()"
+        >
+          <span class="material-symbols-outlined">create_new_folder</span>
+          Create Folder
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: Secondary Filters & Clear -->
+    <div class="filters-row-secondary">
+      <div class="secondary-dropdowns">
+        <label for="typeFilterSelect" class="sr-only"
+          >Filter by Resource Type</label
+        >
+        <select
+          id="typeFilterSelect"
+          class="filter-select-sm"
+          [ngModel]="selectedType()"
+          (ngModelChange)="typeChange.emit($event)"
+        >
+          <option value="All Resource Types">All Resource Types</option>
+          <option value="Lesson Notes">Lesson Notes</option>
+          <option value="Videos">Videos</option>
+          <option value="Worksheets">Worksheets</option>
+          <option value="Assessments">Assessments</option>
+          <option value="Question Banks">Question Banks</option>
+          <option value="Portfolio Tasks">Portfolio Tasks</option>
+          <option value="Templates">Templates</option>
+          <option value="Policy Documents">Policy Documents</option>
+        </select>
+
+        <label for="statusFilterSelect" class="sr-only">Filter by Status</label>
+        <select
+          id="statusFilterSelect"
+          class="filter-select-sm"
+          [ngModel]="selectedStatus()"
+          (ngModelChange)="statusChange.emit($event)"
+        >
+          <option value="All Statuses">All Statuses</option>
+          <option value="Approved">Approved</option>
+          <option value="Pending Review">Pending Review</option>
+          <option value="Rejected">Rejected</option>
+          <option value="Draft">Draft</option>
+        </select>
+
+        <div class="date-badge">
+          <span class="material-symbols-outlined icon">calendar_today</span>
+          <span>{{ dateRange() }}</span>
+        </div>
+
+        <button
+          type="button"
+          class="clear-filters-btn"
+          (click)="clearFilters.emit()"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Container -->
+  <div class="table-card">
+    <div class="table-responsive">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-checkbox">
+              <label class="sr-only" for="selectAllResources"
+                >Select all resources</label
+              >
+              <input
+                id="selectAllResources"
+                type="checkbox"
+                class="form-check-input"
+                [checked]="areAllSelected()"
+                (change)="toggleSelectAll($any($event.target).checked)"
+              />
+            </th>
+            <th class="col-title">Resource Title</th>
+            <th class="col-category">Category</th>
+            <th class="col-pack">Linked Pack / Topic</th>
+            <th class="col-class">Class / Subject</th>
+            <th class="col-source">Source / Owner</th>
+            <th class="col-status">Status</th>
+            <th class="col-updated">Last Updated</th>
+            <th class="col-usage">Usage Count</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (res of resources(); track res.id) {
+          <tr
+            class="table-row"
+            [class.row-selected]="isResourceSelected(res.id)"
+            (click)="onViewResource(res)"
+          >
+            <td class="col-checkbox" (click)="$event.stopPropagation()">
+              <label class="sr-only" [for]="'selectRes-' + res.id"
+                >Select resource {{ res.title }}</label
+              >
+              <input
+                [id]="'selectRes-' + res.id"
+                type="checkbox"
+                class="form-check-input"
+                [checked]="isResourceSelected(res.id)"
+                (change)="toggleSelectResource(res.id)"
+              />
+            </td>
+
+            <!-- Title & File Format -->
+            <td class="col-title">
+              <div class="resource-title-cell">
+                <div
+                  class="file-icon-box"
+                  [ngClass]="'fmt-' + res.fileFormat.toLowerCase()"
+                >
+                  <span class="material-symbols-outlined">
+                    {{ res.fileFormat === 'MP4' ? 'play_circle' : res.fileFormat
+                    === 'ZIP' ? 'folder_zip' : res.fileFormat === 'DOCX' ?
+                    'article' : 'description' }}
+                  </span>
+                </div>
+                <div class="title-meta">
+                  <span class="res-title font-medium" [title]="res.title">
+                    {{ res.title }}
+                  </span>
+                  <span class="res-format text-muted">
+                    {{ res.fileFormat }} • {{ res.fileSize }}
+                  </span>
+                </div>
+              </div>
+            </td>
+
+            <!-- Category -->
+            <td class="col-category">
+              <span
+                class="badge category-badge"
+                [ngClass]="'cat-' + res.category.toLowerCase().replace(' ', '-')"
+              >
+                {{ res.category }}
+              </span>
+            </td>
+
+            <!-- Linked Pack / Topic -->
+            <td class="col-pack">
+              <div class="pack-cell">
+                <span class="pack-name font-medium">{{ res.linkedPack }}</span>
+                <span class="topic-name text-muted">{{ res.linkedTopic }}</span>
+              </div>
+            </td>
+
+            <!-- Class / Subject -->
+            <td class="col-class">
+              <div class="class-cell">
+                <span class="class-level font-medium"
+                  >{{ res.classLevel }}</span
+                >
+                <span class="subject-name text-muted">{{ res.subject }}</span>
+              </div>
+            </td>
+
+            <!-- Source / Owner -->
+            <td class="col-source">
+              <div class="source-cell">
+                <span class="source-name font-medium">{{ res.source }}</span>
+                <span class="owner-name text-muted">{{ res.owner }}</span>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="col-status">
+              <span
+                class="badge status-badge"
+                [class.status-approved]="res.status === 'Approved'"
+                [class.status-pending]="res.status === 'Pending Review'"
+                [class.status-rejected]="res.status === 'Rejected'"
+                [class.status-draft]="res.status === 'Draft'"
+              >
+                {{ res.status }}
+              </span>
+            </td>
+
+            <!-- Last Updated -->
+            <td class="col-updated">
+              <div class="updated-cell">
+                <span class="updated-date">{{ res.lastUpdated }}</span>
+                <span class="updated-time text-muted"
+                  >{{ res.lastUpdatedTime }}</span
+                >
+              </div>
+            </td>
+
+            <!-- Usage Count -->
+            <td class="col-usage">
+              <span class="usage-text">
+                {{ res.usageCount > 0 ? res.usageCount.toLocaleString() : '—' }}
+              </span>
+            </td>
+
+            <!-- Actions Dropdown -->
+            <td class="col-actions" (click)="$event.stopPropagation()">
+              <div class="action-menu-wrap">
+                <button
+                  type="button"
+                  class="action-dots-btn"
+                  (click)="toggleActionMenu(res.id, $event)"
+                  aria-label="More actions for this resource"
+                >
+                  <span class="material-symbols-outlined">more_vert</span>
+                </button>
+
+                @if (openActionMenuId() === res.id) {
+                <div class="action-dropdown-menu">
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onViewResource(res)"
+                  >
+                    <span class="material-symbols-outlined">visibility</span>
+                    View Details
+                  </button>
+
+                  @if (res.status === 'Pending Review' || res.status ===
+                  'Draft') {
+                  <button
+                    type="button"
+                    class="menu-item text-success"
+                    (click)="onApprove(res.id)"
+                  >
+                    <span class="material-symbols-outlined">check_circle</span>
+                    Approve Resource
+                  </button>
+                  <button
+                    type="button"
+                    class="menu-item text-danger"
+                    (click)="onReject(res.id)"
+                  >
+                    <span class="material-symbols-outlined">cancel</span>
+                    Reject Resource
+                  </button>
+                  }
+
+                  <button
+                    type="button"
+                    class="menu-item"
+                    (click)="onDownload(res.id)"
+                  >
+                    <span class="material-symbols-outlined">download</span>
+                    Download File
+                  </button>
+
+                  <button
+                    type="button"
+                    class="menu-item text-danger"
+                    (click)="onDelete(res.id)"
+                  >
+                    <span class="material-symbols-outlined">delete</span>
+                    Delete
+                  </button>
+                </div>
+                }
+              </div>
+            </td>
+          </tr>
+          } @empty {
+          <tr>
+            <td colspan="10" class="empty-state-cell">
+              <div class="empty-state">
+                <span class="material-symbols-outlined empty-icon"
+                  >folder_off</span
+                >
+                <p class="empty-title">
+                  No resources match the selected criteria
+                </p>
+                <button
+                  type="button"
+                  class="btn btn-secondary btn-sm"
+                  (click)="clearFilters.emit()"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Table Footer / Pagination -->
+    <div class="table-footer">
+      <div class="footer-left">
+        <span class="pagination-count text-muted">
+          Showing 1 to {{ resources().length }} of {{
+          totalCount().toLocaleString() }} resources
+        </span>
+      </div>
+
+      <div class="footer-right">
+        <div class="pagination-controls">
+          <button
+            type="button"
+            class="page-btn nav-btn"
+            [disabled]="currentPage() <= 1"
+            (click)="goToPage(currentPage() - 1)"
+            aria-label="Previous Page"
+          >
+            <span class="material-symbols-outlined">chevron_left</span>
+          </button>
+
+          @for (p of getPageNumbers(); track $index) { @if (p === '...') {
+          <span class="ellipsis-btn">...</span>
+          } @else {
+          <button
+            type="button"
+            class="page-btn"
+            [class.active]="p === currentPage()"
+            (click)="goToPage(+p)"
+          >
+            {{ p }}
+          </button>
+          } }
+
+          <button
+            type="button"
+            class="page-btn nav-btn"
+            [disabled]="currentPage() >= totalPages()"
+            (click)="goToPage(currentPage() + 1)"
+            aria-label="Next Page"
+          >
+            <span class="material-symbols-outlined">chevron_right</span>
+          </button>
+        </div>
+
+        <div class="page-size-selector">
+          <label for="pageSizeSelect" class="sr-only">Items per page</label>
+          <select
+            id="pageSizeSelect"
+            class="form-select-sm"
+            [value]="pageSize()"
+            (change)="onPageSizeSelect(+$any($event.target).value)"
+          >
+            <option [value]="5">5 / page</option>
+            <option [value]="10">10 / page</option>
+            <option [value]="25">25 / page</option>
+            <option [value]="50">50 / page</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

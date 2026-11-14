@@ -1,0 +1,166 @@
+.bottom-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.bottom-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border-color: #cbd5e1;
+  }
+}
+
+.card-header {
+  margin-bottom: 0.75rem;
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+  }
+
+  .info-icon {
+    font-size: 16px;
+    color: #94a3b8;
+    cursor: help;
+  }
+}
+
+.metric-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.metric-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.big-value {
+  font-size: 1.625rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.trend-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 11px;
+}
+
+.trend {
+  font-weight: 600;
+
+  &.positive {
+    color: #10b981;
+  }
+
+  &.negative {
+    color: #ef4444;
+  }
+}
+
+.subtext {
+  color: #94a3b8;
+}
+
+.sparkline-wrapper {
+  width: 140px;
+  height: 38px;
+  flex-shrink: 0;
+
+  .sparkline {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+}
+
+// Storage Card
+.storage-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+
+  .storage-value-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+
+    .storage-subtext {
+      font-size: 12px;
+      color: #10b981;
+      font-weight: 600;
+    }
+  }
+
+  .storage-bar-track {
+    width: 100%;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 9999px;
+    overflow: hidden;
+
+    .storage-bar-fill {
+      height: 100%;
+      background: #10b981;
+      border-radius: 9999px;
+    }
+  }
+
+  .storage-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+
+    .usage-label {
+      color: #64748b;
+    }
+
+    .view-usage-link {
+      background: none;
+      border: none;
+      padding: 0;
+      color: #2563eb;
+      font-weight: 500;
+      cursor: pointer;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}

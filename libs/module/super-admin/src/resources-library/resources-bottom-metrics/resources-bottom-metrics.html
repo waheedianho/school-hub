@@ -1,0 +1,70 @@
+<div class="bottom-metrics-grid">
+  @for (metric of bottomMetrics(); track metric.id) {
+  <div class="bottom-card" [class.storage-card]="metric.type === 'storage'">
+    <div class="card-header">
+      <div class="title-row">
+        <span class="card-title">{{ metric.label }}</span>
+        <span class="material-symbols-outlined info-icon" title="Information"
+          >info</span
+        >
+      </div>
+    </div>
+
+    <div class="card-body">
+      @if (metric.type === 'storage') {
+      <div class="storage-content">
+        <div class="storage-value-row">
+          <span class="big-value">{{ metric.value }}</span>
+          <span class="storage-subtext">{{ metric.subtext }}</span>
+        </div>
+        <div class="storage-bar-track">
+          <div
+            class="storage-bar-fill"
+            [style.width.%]="metric.storagePercentage || 49.7"
+          ></div>
+        </div>
+        <div class="storage-footer">
+          <span class="usage-label">Cloud Storage Quota</span>
+          <button type="button" class="view-usage-link">View Usage</button>
+        </div>
+      </div>
+      } @else {
+      <div class="metric-row">
+        <div class="metric-left">
+          <span class="big-value">{{ metric.value }}</span>
+          @if (metric.trend) {
+          <div class="trend-sub">
+            <span
+              class="trend"
+              [class.positive]="metric.trendDirection === 'up' || metric.id === 'approval-turnaround' || metric.id === 'avg-approval-time-upload'"
+              [class.negative]="metric.trendDirection === 'down' && metric.id !== 'approval-turnaround' && metric.id !== 'avg-approval-time-upload'"
+            >
+              {{ metric.trendDirection === 'up' ? '▲' : '▼' }} {{ metric.trend
+              }}
+            </span>
+            <span class="subtext">{{ metric.subtext }}</span>
+          </div>
+          }
+        </div>
+        <div class="sparkline-wrapper">
+          <svg
+            class="sparkline"
+            viewBox="0 0 160 40"
+            preserveAspectRatio="none"
+          >
+            <polyline
+              fill="none"
+              [attr.stroke]="metric.sparklineColor || '#2563eb'"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              [attr.points]="metric.sparklinePoints"
+            />
+          </svg>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

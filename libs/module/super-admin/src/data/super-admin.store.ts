@@ -231,6 +231,28 @@ import {
   INITIAL_SUPPORT_TICKETS,
   INITIAL_SUPPORT_URGENT_ESCALATIONS,
 } from './super-admin-support.data';
+import {
+  ApprovalQueueItem,
+  CreateResourceFormData,
+  MostUsedResourceType,
+  RecentUploadActivity,
+  ResourceBottomMetric,
+  ResourceCategoryTab,
+  ResourceHealthCategory,
+  ResourceItem,
+  ResourceMetric,
+  ResourceStatus,
+} from './super-admin-resources.models';
+import {
+  INITIAL_APPROVAL_QUEUE,
+  INITIAL_MOST_USED_TYPES,
+  INITIAL_RECENT_UPLOAD_ACTIVITIES,
+  INITIAL_RESOURCE_BOTTOM_METRICS,
+  INITIAL_RESOURCE_HEALTH,
+  INITIAL_RESOURCE_METRICS,
+  INITIAL_RESOURCES,
+  INITIAL_UPLOAD_BOTTOM_METRICS,
+} from './super-admin-resources.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -543,6 +565,37 @@ export class SuperAdminStore {
   readonly selectedSupportDateRange = signal<string>('May 1 – May 31, 2025');
   readonly supportCurrentPage = signal<number>(1);
   readonly supportPageSize = signal<number>(10);
+
+  // Resources Library Signals
+  readonly resourceMetrics = signal<ResourceMetric[]>(INITIAL_RESOURCE_METRICS);
+  readonly allResources = signal<ResourceItem[]>(INITIAL_RESOURCES);
+  readonly resourceBottomMetrics = signal<ResourceBottomMetric[]>(
+    INITIAL_RESOURCE_BOTTOM_METRICS,
+  );
+  readonly uploadBottomMetrics = signal<ResourceBottomMetric[]>(
+    INITIAL_UPLOAD_BOTTOM_METRICS,
+  );
+  readonly resourceHealthCategories = signal<ResourceHealthCategory[]>(
+    INITIAL_RESOURCE_HEALTH,
+  );
+  readonly approvalQueue = signal<ApprovalQueueItem[]>(INITIAL_APPROVAL_QUEUE);
+  readonly mostUsedResourceTypes = signal<MostUsedResourceType[]>(
+    INITIAL_MOST_USED_TYPES,
+  );
+  readonly recentUploadActivities = signal<RecentUploadActivity[]>(
+    INITIAL_RECENT_UPLOAD_ACTIVITIES,
+  );
+
+  readonly selectedResourceTab = signal<ResourceCategoryTab>('All Resources');
+  readonly resourceSearchQuery = signal<string>('');
+  readonly selectedResourceSchoolFilter = signal<string>('All Schools');
+  readonly selectedResourceSubjectFilter = signal<string>('All Subjects');
+  readonly selectedResourceClassFilter = signal<string>('All Class Levels');
+  readonly selectedResourceTypeFilter = signal<string>('All Resource Types');
+  readonly selectedResourceStatusFilter = signal<string>('All Statuses');
+  readonly selectedResourceDateRange = signal<string>('May 1 – May 31, 2025');
+  readonly resourceCurrentPage = signal<number>(1);
+  readonly resourcePageSize = signal<number>(10);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -1305,6 +1358,111 @@ export class SuperAdminStore {
     return Math.max(
       1,
       Math.ceil(this.filteredSupportTickets().length / this.supportPageSize()),
+    );
+  });
+
+  // Resources Library Computeds
+  readonly filteredResources = computed(() => {
+    const tab = this.selectedResourceTab();
+    const query = this.resourceSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedResourceSchoolFilter();
+    const subjectFilter = this.selectedResourceSubjectFilter();
+    const classFilter = this.selectedResourceClassFilter();
+    const typeFilter = this.selectedResourceTypeFilter();
+    const statusFilter = this.selectedResourceStatusFilter();
+
+    return this.allResources().filter((res) => {
+      // Category Tab
+      if (tab !== 'All Resources' && res.category !== tab) {
+        return false;
+      }
+
+      // School Filter
+      if (schoolFilter !== 'All Schools') {
+        const matchesSchool =
+          res.source.toLowerCase().includes(schoolFilter.toLowerCase()) ||
+          (res.owner &&
+            res.owner.toLowerCase().includes(schoolFilter.toLowerCase()));
+        if (!matchesSchool) return false;
+      }
+
+      // Subject Filter
+      if (
+        subjectFilter !== 'All Subjects' &&
+        res.subject.toLowerCase() !== subjectFilter.toLowerCase()
+      ) {
+        return false;
+      }
+
+      // Class Filter
+      if (
+        classFilter !== 'All Class Levels' &&
+        res.classLevel.toLowerCase() !== classFilter.toLowerCase()
+      ) {
+        return false;
+      }
+
+      // Resource Type Filter
+      if (
+        typeFilter !== 'All Resource Types' &&
+        res.category.toLowerCase() !== typeFilter.toLowerCase()
+      ) {
+        return false;
+      }
+
+      // Status Filter
+      if (
+        statusFilter !== 'All Statuses' &&
+        res.status.toLowerCase() !== statusFilter.toLowerCase()
+      ) {
+        return false;
+      }
+
+      // Search Query
+      if (query) {
+        const matchesTitle = res.title.toLowerCase().includes(query);
+        const matchesDesc = res.description.toLowerCase().includes(query);
+        const matchesTopic = res.linkedTopic.toLowerCase().includes(query);
+        const matchesPack = res.linkedPack.toLowerCase().includes(query);
+        const matchesOwner = res.owner.toLowerCase().includes(query);
+        const matchesSource = res.source.toLowerCase().includes(query);
+        const matchesTags = res.tags
+          ? res.tags.some((t) => t.toLowerCase().includes(query))
+          : false;
+
+        if (
+          !matchesTitle &&
+          !matchesDesc &&
+          !matchesTopic &&
+          !matchesPack &&
+          !matchesOwner &&
+          !matchesSource &&
+          !matchesTags
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalResourcesCount = computed(
+    () => this.filteredResources().length,
+  );
+
+  readonly paginatedResources = computed(() => {
+    const list = this.filteredResources();
+    const page = this.resourceCurrentPage();
+    const size = this.resourcePageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalResourcePages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(this.filteredResources().length / this.resourcePageSize()),
     );
   });
 
@@ -2434,6 +2592,135 @@ export class SuperAdminStore {
           resolutionChecklist: updatedChecklist,
         };
       }),
+    );
+  }
+
+  // Resources Library Actions
+  setResourceTab(tab: ResourceCategoryTab): void {
+    this.selectedResourceTab.set(tab);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceSearch(query: string): void {
+    this.resourceSearchQuery.set(query);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceSchoolFilter(school: string): void {
+    this.selectedResourceSchoolFilter.set(school);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceSubjectFilter(subject: string): void {
+    this.selectedResourceSubjectFilter.set(subject);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceClassFilter(cls: string): void {
+    this.selectedResourceClassFilter.set(cls);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceTypeFilter(type: string): void {
+    this.selectedResourceTypeFilter.set(type);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceStatusFilter(status: string): void {
+    this.selectedResourceStatusFilter.set(status);
+    this.resourceCurrentPage.set(1);
+  }
+
+  setResourceDateRange(range: string): void {
+    this.selectedResourceDateRange.set(range);
+  }
+
+  setResourcePage(page: number): void {
+    this.resourceCurrentPage.set(page);
+  }
+
+  setResourcePageSize(size: number): void {
+    this.resourcePageSize.set(size);
+    this.resourceCurrentPage.set(1);
+  }
+
+  createResource(form: CreateResourceFormData): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    const newResource: ResourceItem = {
+      id: `RES-2025-${Math.floor(1000 + Math.random() * 9000)}`,
+      title: form.title,
+      description: form.description,
+      category: form.resourceType,
+      fileFormat: form.fileFormat || 'PDF',
+      fileSize: form.fileSize || '2.4 MB',
+      linkedPack: form.linkedPack,
+      linkedTopic: form.linkedTopic,
+      classLevel: form.classLevel,
+      subject: form.linkedSubject,
+      termWeek: form.termWeek || 'Term 1, Week 1',
+      source: 'Learno Content Team',
+      owner: form.author || 'Super Admin',
+      status: form.approvalStatus,
+      lastUpdated: dateStr,
+      lastUpdatedTime: timeStr,
+      usageCount: 0,
+      downloadsCount: 0,
+      audience: form.audience,
+      visibility: form.visibility,
+      downloadPermission: form.downloadPermission,
+      lowDataVersion: form.lowDataVersion,
+      language: form.language,
+      estimatedStudyTime: form.estimatedStudyTime,
+      version: form.version,
+      tags: form.tags,
+      author: form.author,
+      license: form.license,
+      publishDate: form.publishDate || dateStr,
+      reviewNotes: form.reviewNotes,
+    };
+
+    this.allResources.update((res) => [newResource, ...res]);
+  }
+
+  updateResourceStatus(resourceId: string, status: ResourceStatus): void {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
+    this.allResources.update((resources) =>
+      resources.map((r) =>
+        r.id === resourceId
+          ? {
+              ...r,
+              status,
+              lastUpdated: dateStr,
+              lastUpdatedTime: timeStr,
+            }
+          : r,
+      ),
+    );
+  }
+
+  deleteResource(resourceId: string): void {
+    this.allResources.update((resources) =>
+      resources.filter((r) => r.id !== resourceId),
     );
   }
 }

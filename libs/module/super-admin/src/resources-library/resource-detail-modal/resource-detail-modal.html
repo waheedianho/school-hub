@@ -1,0 +1,158 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="resourceDetailModalTitle"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="title-wrap">
+        <div
+          class="file-icon-box"
+          [ngClass]="'fmt-' + resource().fileFormat.toLowerCase()"
+        >
+          <span class="material-symbols-outlined">
+            {{ resource().fileFormat === 'MP4' ? 'play_circle' :
+            resource().fileFormat === 'ZIP' ? 'folder_zip' :
+            resource().fileFormat === 'DOCX' ? 'article' : 'description' }}
+          </span>
+        </div>
+        <div>
+          <div class="modal-badge-row">
+            <span class="badge category-badge">{{ resource().category }}</span>
+            <span
+              class="badge status-badge"
+              [class.status-approved]="resource().status === 'Approved'"
+              [class.status-pending]="resource().status === 'Pending Review'"
+              [class.status-rejected]="resource().status === 'Rejected'"
+              [class.status-draft]="resource().status === 'Draft'"
+            >
+              {{ resource().status }}
+            </span>
+          </div>
+          <h2 id="resourceDetailModalTitle" class="modal-title">
+            {{ resource().title }}
+          </h2>
+          <span class="modal-id-text"
+            >{{ resource().id }} • {{ resource().fileFormat }} • {{
+            resource().fileSize }}</span
+          >
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Description -->
+      <div class="detail-section">
+        <h4 class="section-heading">Description</h4>
+        <p class="desc-text">{{ resource().description }}</p>
+      </div>
+
+      <!-- Curriculum & Class Metadata Grid -->
+      <div class="detail-section">
+        <h4 class="section-heading">Curriculum & Taxonomy</h4>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">Linked Pack:</span>
+            <span class="meta-val font-medium"
+              >{{ resource().linkedPack }}</span
+            >
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Linked Topic:</span>
+            <span class="meta-val font-medium"
+              >{{ resource().linkedTopic }}</span
+            >
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Class Level:</span>
+            <span class="meta-val">{{ resource().classLevel }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Subject:</span>
+            <span class="meta-val">{{ resource().subject }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Term / Week:</span>
+            <span class="meta-val"
+              >{{ resource().termWeek || 'All Terms' }}</span
+            >
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Source / School:</span>
+            <span class="meta-val">{{ resource().source }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Owner / Uploader:</span>
+            <span class="meta-val">{{ resource().owner }}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Usage Count:</span>
+            <span class="meta-val"
+              >{{ resource().usageCount.toLocaleString() }} downloads</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Tags -->
+      @if (resource().tags && resource().tags!.length > 0) {
+      <div class="detail-section">
+        <h4 class="section-heading">Tags / Keywords</h4>
+        <div class="tags-row">
+          @for (tag of resource().tags; track tag) {
+          <span class="tag-pill">#{{ tag }}</span>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Review Notes if any -->
+      @if (resource().reviewNotes) {
+      <div class="detail-section review-section">
+        <div class="review-box">
+          <span class="material-symbols-outlined review-icon">rate_review</span>
+          <div class="review-text">
+            <span class="review-label font-semibold">Reviewer Notes:</span>
+            <p>{{ resource().reviewNotes }}</p>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" (click)="onDownload()">
+        <span class="material-symbols-outlined">download</span>
+        Download File
+      </button>
+
+      <div class="footer-right-actions">
+        @if (resource().status === 'Pending Review' || resource().status ===
+        'Draft') {
+        <button type="button" class="btn btn-danger" (click)="onReject()">
+          Reject
+        </button>
+        <button type="button" class="btn btn-success" (click)="onApprove()">
+          Approve & Publish
+        </button>
+        }
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="closeModal.emit()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

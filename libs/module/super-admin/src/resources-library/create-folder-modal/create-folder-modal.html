@@ -1,0 +1,125 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="createFolderModalTitle"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="title-wrap">
+        <div class="icon-wrap">
+          <span class="material-symbols-outlined">create_new_folder</span>
+        </div>
+        <div>
+          <h2 id="createFolderModalTitle" class="modal-title">
+            Create Resource Folder
+          </h2>
+          <p class="modal-subtitle">
+            Organize and group learning assets by term, pack, or subject.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="modal-body">
+      <div class="form-group">
+        <label for="folderNameInput" class="form-label">
+          Folder Name <span class="text-danger">*</span>
+        </label>
+        <input
+          type="text"
+          id="folderNameInput"
+          name="folderName"
+          class="form-control"
+          placeholder="e.g. JSS1 Mathematics Term 1 Notes"
+          [ngModel]="folderName()"
+          (ngModelChange)="folderName.set($event)"
+          required
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-half">
+          <label for="folderCategorySelect" class="form-label"
+            >Default Category</label
+          >
+          <select
+            id="folderCategorySelect"
+            class="form-select"
+            [ngModel]="category()"
+            (ngModelChange)="category.set($event)"
+            name="category"
+          >
+            <option value="Lesson Notes">Lesson Notes</option>
+            <option value="Videos">Videos</option>
+            <option value="Worksheets">Worksheets</option>
+            <option value="Assessments">Assessments</option>
+            <option value="Question Banks">Question Banks</option>
+            <option value="Portfolio Tasks">Portfolio Tasks</option>
+            <option value="Templates">Templates</option>
+            <option value="Policy Documents">Policy Documents</option>
+          </select>
+        </div>
+
+        <div class="form-group col-half">
+          <label for="folderClassSelect" class="form-label">Class Level</label>
+          <select
+            id="folderClassSelect"
+            class="form-select"
+            [ngModel]="classLevel()"
+            (ngModelChange)="classLevel.set($event)"
+            name="classLevel"
+          >
+            <option value="All Classes">All Classes</option>
+            <option value="JSS1">JSS1</option>
+            <option value="JSS2">JSS2</option>
+            <option value="JSS3">JSS3</option>
+            <option value="SSS1">SSS1</option>
+            <option value="SSS2">SSS2</option>
+            <option value="SSS3">SSS3</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="folderDescInput" class="form-label"
+          >Description (Optional)</label
+        >
+        <textarea
+          id="folderDescInput"
+          class="form-control"
+          rows="2"
+          placeholder="Add short description or usage instructions for this folder..."
+          [ngModel]="description()"
+          (ngModelChange)="description.set($event)"
+          name="description"
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!folderName().trim()"
+        >
+          Create Folder
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

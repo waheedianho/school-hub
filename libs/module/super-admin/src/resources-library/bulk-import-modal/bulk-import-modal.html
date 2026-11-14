@@ -1,0 +1,117 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="bulkImportModalTitle"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="title-wrap">
+        <div class="icon-wrap">
+          <span class="material-symbols-outlined">publish</span>
+        </div>
+        <div>
+          <h2 id="bulkImportModalTitle" class="modal-title">
+            Bulk Import Resources
+          </h2>
+          <p class="modal-subtitle">
+            Upload multiple academic files or syllabus bundles in a single
+            archive.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="modal-body">
+      <div class="form-row">
+        <div class="form-group col-half">
+          <label for="bulkTargetPackSelect" class="form-label"
+            >Target Curriculum Pack</label
+          >
+          <select
+            id="bulkTargetPackSelect"
+            class="form-select"
+            [ngModel]="packName()"
+            (ngModelChange)="packName.set($event)"
+            name="packName"
+          >
+            <option value="JSS1 Mathematics Pack">JSS1 Mathematics Pack</option>
+            <option value="JSS1 English Language Pack">
+              JSS1 English Language Pack
+            </option>
+            <option value="JSS2 Basic Science Pack">
+              JSS2 Basic Science Pack
+            </option>
+            <option value="JSS3 Business Studies Pack">
+              JSS3 Business Studies Pack
+            </option>
+            <option value="General Platform Resources">
+              General Platform Resources
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group col-half">
+          <label for="bulkSubjectSelect" class="form-label">Subject</label>
+          <select
+            id="bulkSubjectSelect"
+            class="form-select"
+            [ngModel]="targetSubject()"
+            (ngModelChange)="targetSubject.set($event)"
+            name="targetSubject"
+          >
+            <option value="Mathematics">Mathematics</option>
+            <option value="English">English</option>
+            <option value="Basic Science">Basic Science</option>
+            <option value="Business Studies">Business Studies</option>
+            <option value="Computer Studies">Computer Studies</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <span class="form-label">Upload Archive File</span>
+        <div class="drop-zone">
+          <span class="material-symbols-outlined drop-icon">cloud_upload</span>
+          <div class="drop-text font-medium">{{ selectedFile() }}</div>
+          <span class="drop-sub text-muted"
+            >ZIP, TAR.GZ archive (Max: 500 MB) • {{ fileCount() }} files
+            detected</span
+          >
+        </div>
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label class="checkbox-label">
+          <input
+            type="checkbox"
+            class="form-check-input"
+            [ngModel]="autoApprove()"
+            (ngModelChange)="autoApprove.set($event)"
+            name="autoApprove"
+          />
+          <span>Auto-approve verified resources and publish immediately</span>
+        </label>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">Start Bulk Import</button>
+      </div>
+    </form>
+  </div>
+</div>
