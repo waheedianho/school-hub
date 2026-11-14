@@ -1,0 +1,313 @@
+<div class="safeguarding-table-container">
+  <!-- Top Filter & Action Bar -->
+  <div class="table-toolbar">
+    <div class="toolbar-search-filters">
+      <!-- Search -->
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          type="text"
+          id="safeguarding-search-input"
+          class="search-input"
+          placeholder="Search cases by keywords, case ID, or institution..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          aria-label="Search cases"
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-row">
+        <select
+          id="school-filter-select"
+          class="filter-select"
+          [value]="selectedSchool()"
+          (change)="onSchoolSelect($event)"
+          aria-label="Filter by school"
+        >
+          <option value="All Schools">All Schools</option>
+          <option value="Greenwood High School">Greenwood High School</option>
+          <option value="Sunrise International School">
+            Sunrise International School
+          </option>
+          <option value="Lakeview Public School">Lakeview Public School</option>
+          <option value="Northfield Academy">Northfield Academy</option>
+          <option value="Bright Future School">Bright Future School</option>
+          <option value="Evergreen International">
+            Evergreen International
+          </option>
+          <option value="Harmony World School">Harmony World School</option>
+          <option value="St. Mary's Academy">St. Mary's Academy</option>
+        </select>
+
+        <select
+          id="severity-filter-select"
+          class="filter-select"
+          [value]="selectedSeverity()"
+          (change)="onSeveritySelect($event)"
+          aria-label="Filter by severity"
+        >
+          <option value="All Severities">All Severities</option>
+          <option value="Critical">Critical</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+
+        <select
+          id="status-filter-select"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="onStatusSelect($event)"
+          aria-label="Filter by status"
+        >
+          <option value="All Statuses">All Statuses</option>
+          <option value="Under Review">Under Review</option>
+          <option value="Pending Consent">Pending Consent</option>
+          <option value="Investigating">Investigating</option>
+          <option value="Pending Review">Pending Review</option>
+          <option value="Escalated">Escalated</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+
+        <button type="button" class="date-picker-btn">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>{{ dateRange() }}</span>
+          <span class="material-symbols-outlined dropdown-arrow"
+            >expand_more</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="toolbar-actions">
+      <a
+        routerLink="/super-admin/safeguarding-compliance/create"
+        class="btn btn-primary"
+      >
+        <span class="material-symbols-outlined btn-icon">add</span>
+        Create Case
+      </a>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="assignReview.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">assignment_ind</span>
+        Assign Review
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="exportData.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">download</span>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-responsive">
+    <table class="cases-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-case-id">Case ID</th>
+          <th scope="col" class="th-institution">Institution</th>
+          <th scope="col" class="th-category">Category</th>
+          <th scope="col" class="th-severity">Severity</th>
+          <th scope="col" class="th-reported-by">Reported By</th>
+          <th scope="col" class="th-assigned-to">Assigned To</th>
+          <th scope="col" class="th-status">Status</th>
+          <th scope="col" class="th-updated">Last Updated</th>
+          <th scope="col" class="th-action text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of cases(); track c.id) {
+        <tr class="table-row">
+          <!-- Case ID -->
+          <td class="td-case-id">
+            <button
+              type="button"
+              class="case-link-btn"
+              (click)="viewCase.emit(c.id)"
+            >
+              {{ c.id }}
+            </button>
+          </td>
+
+          <!-- Institution -->
+          <td class="td-institution">
+            <div class="inst-info">
+              <span class="inst-name">{{ c.institution }}</span>
+              <span class="inst-loc">{{ c.location }}</span>
+            </div>
+          </td>
+
+          <!-- Category -->
+          <td class="td-category">
+            <span class="category-text">{{ c.category }}</span>
+          </td>
+
+          <!-- Severity -->
+          <td class="td-severity">
+            <div class="severity-cell">
+              <span
+                class="severity-dot"
+                [ngClass]="getSeverityDotClass(c.severity)"
+              ></span>
+              <span class="severity-name">{{ c.severity }}</span>
+            </div>
+          </td>
+
+          <!-- Reported By -->
+          <td class="td-reported-by">
+            <div class="person-cell">
+              <span class="person-name">{{ c.reportedBy.name }}</span>
+              <span class="person-role">{{ c.reportedBy.role }}</span>
+            </div>
+          </td>
+
+          <!-- Assigned To -->
+          <td class="td-assigned-to">
+            <div class="person-cell">
+              <span class="person-name">{{ c.assignedTo.name }}</span>
+              <span class="person-role">{{ c.assignedTo.role }}</span>
+            </div>
+          </td>
+
+          <!-- Status -->
+          <td class="td-status">
+            <span class="status-pill" [ngClass]="getStatusPillClass(c.status)">
+              <span class="pill-dot"></span>
+              <span>{{ c.status }}</span>
+            </span>
+          </td>
+
+          <!-- Last Updated -->
+          <td class="td-updated">
+            <div class="time-cell">
+              <span class="time-date">{{ c.lastUpdated }}</span>
+              <span class="time-hour">{{ c.lastUpdatedTime }}</span>
+            </div>
+          </td>
+
+          <!-- Action -->
+          <td class="td-action text-right">
+            <div class="action-menu-wrapper">
+              <button
+                type="button"
+                class="action-btn"
+                (click)="toggleActionMenu(c.id, $event)"
+                aria-label="Actions"
+              >
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+
+              @if (openActionMenuId() === c.id) {
+              <div class="dropdown-menu">
+                <button
+                  type="button"
+                  class="menu-item"
+                  (click)="viewCase.emit(c.id); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">visibility</span>
+                  View Details
+                </button>
+                <button
+                  type="button"
+                  class="menu-item"
+                  (click)="reassignCase.emit(c.id); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">person_add</span>
+                  Reassign Lead
+                </button>
+                @if (c.status !== 'Resolved') {
+                <button
+                  type="button"
+                  class="menu-item item-success"
+                  (click)="updateStatus.emit({ caseId: c.id, newStatus: 'Resolved' }); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">check_circle</span>
+                  Mark Resolved
+                </button>
+                } @if (c.status !== 'Escalated') {
+                <button
+                  type="button"
+                  class="menu-item item-danger"
+                  (click)="updateStatus.emit({ caseId: c.id, newStatus: 'Escalated' }); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">campaign</span>
+                  Escalate Case
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="9" class="empty-state">
+            <div class="empty-content">
+              <span class="material-symbols-outlined empty-icon"
+                >shield_with_heart</span
+              >
+              <span class="empty-title">No safeguarding cases found</span>
+              <span class="empty-sub"
+                >Try adjusting your filters or search keywords.</span
+              >
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="table-footer">
+    <div class="footer-count">
+      Showing 1 to {{ cases().length }} of {{ totalCount() }} cases
+    </div>
+
+    <div class="pagination">
+      <button
+        type="button"
+        class="page-btn nav-btn"
+        [disabled]="currentPage() === 1"
+        (click)="pageChange.emit(currentPage() - 1)"
+        aria-label="Previous page"
+      >
+        <span class="material-symbols-outlined">chevron_left</span>
+      </button>
+
+      @for (p of getPageNumbers(); track $index) { @if (p === '...') {
+      <span class="page-ellipsis">...</span>
+      } @else {
+      <button
+        type="button"
+        class="page-btn"
+        [class.active]="p === currentPage()"
+        (click)="pageChange.emit($any(p))"
+      >
+        {{ p }}
+      </button>
+      } }
+
+      <button
+        type="button"
+        class="page-btn nav-btn"
+        [disabled]="currentPage() === totalPages()"
+        (click)="pageChange.emit(currentPage() + 1)"
+        aria-label="Next page"
+      >
+        <span class="material-symbols-outlined">chevron_right</span>
+      </button>
+    </div>
+  </div>
+</div>

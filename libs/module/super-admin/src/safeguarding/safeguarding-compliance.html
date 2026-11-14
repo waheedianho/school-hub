@@ -1,0 +1,121 @@
+<div class="safeguarding-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Safeguarding & Compliance</h1>
+      <p class="page-subtitle">
+        Monitor platform-wide child safety, user compliance, communication
+        risks, consent tracking, and escalation workflows across institutions.
+      </p>
+    </div>
+
+    <div class="header-right">
+      <div class="date-picker-badge">
+        <span class="material-symbols-outlined icon">calendar_today</span>
+        <span class="date-text"
+          >{{ store.selectedSafeguardingDateRange() }}</span
+        >
+        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+      </div>
+
+      <div class="notification-wrap" title="12 notifications">
+        <span class="material-symbols-outlined icon">notifications</span>
+        <span class="notification-badge">12</span>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">SA</div>
+        <div class="user-info">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top 6 KPI Metric Cards -->
+  <section class="metrics-section">
+    <school-hub-safeguarding-metrics [metrics]="store.safeguardingMetrics()" />
+  </section>
+
+  <!-- Navigation Tabs -->
+  <nav class="tabs-nav" aria-label="Safeguarding Views">
+    @for (tab of tabs; track tab) {
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.selectedSafeguardingTab() === tab"
+      (click)="onTabChange(tab)"
+    >
+      {{ tab }}
+    </button>
+    }
+  </nav>
+
+  <!-- Main Content Layout (Table & Bottom Metrics on left, Sidebar on right) -->
+  <div class="main-layout-grid">
+    <div class="main-content-col">
+      <!-- Incident Table -->
+      <school-hub-safeguarding-table
+        [cases]="store.paginatedSafeguardingCases()"
+        [totalCount]="store.totalSafeguardingCasesCount()"
+        [currentPage]="store.safeguardingCurrentPage()"
+        [totalPages]="store.totalSafeguardingPages()"
+        [pageSize]="store.safeguardingPageSize()"
+        [searchQuery]="store.safeguardingSearchQuery()"
+        [selectedSchool]="store.selectedSafeguardingSchoolFilter()"
+        [selectedSeverity]="store.selectedSafeguardingSeverityFilter()"
+        [selectedStatus]="store.selectedSafeguardingStatusFilter()"
+        [dateRange]="store.selectedSafeguardingDateRange()"
+        (searchChange)="store.setSafeguardingSearch($event)"
+        (schoolChange)="store.setSafeguardingSchoolFilter($event)"
+        (severityChange)="store.setSafeguardingSeverityFilter($event)"
+        (statusChange)="store.setSafeguardingStatusFilter($event)"
+        (pageChange)="store.setSafeguardingPage($event)"
+        (assignReview)="openAssignModal()"
+        (exportData)="exportData()"
+        (viewCase)="openDetailModal($event)"
+        (reassignCase)="openAssignModal($event)"
+        (updateStatus)="onStatusUpdate($event)"
+      />
+
+      <!-- Bottom 5 Metrics -->
+      <div class="bottom-metrics-wrap">
+        <school-hub-safeguarding-bottom-metrics
+          [bottomMetrics]="store.safeguardingBottomMetrics()"
+        />
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-col">
+      <school-hub-safeguarding-sidebar
+        [healthCategories]="store.complianceHealthCategories()"
+        [urgentEscalations]="store.urgentEscalations()"
+        [consentBreakdown]="store.consentQueueBreakdown()"
+        [recentActivities]="store.recentSafeguardingActivities()"
+        [policyChecklist]="store.policyChecklist()"
+        [selectedPeriod]="store.selectedCompliancePeriod()"
+        (periodChange)="store.setCompliancePeriod($event)"
+        (selectCase)="openDetailModal($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- Modals -->
+  @if (activeModal() === 'assign') {
+  <school-hub-assign-review-modal
+    [cases]="store.safeguardingCases()"
+    [preselectedCaseId]="selectedCaseIdForAction()"
+    (closeModal)="closeModal()"
+    (assigned)="onAssigned($event)"
+  />
+  } @if (activeModal() === 'detail' && selectedCase) {
+  <school-hub-case-detail-modal
+    [safeguardingCase]="selectedCase!"
+    (closeModal)="closeModal()"
+    (statusChange)="onStatusUpdate($event)"
+    (reassign)="openAssignModal($event)"
+  />
+  }
+</div>

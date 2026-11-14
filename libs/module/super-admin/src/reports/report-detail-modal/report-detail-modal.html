@@ -1,0 +1,95 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="report-detail-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-titles">
+        <h3 id="report-detail-title" class="modal-title">
+          {{ report().name }}
+        </h3>
+        <p class="modal-subtitle">{{ report().description }}</p>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="onClose()"
+        aria-label="Close modal"
+      >
+        <i class="material-symbols-outlined">close</i>
+      </button>
+    </div>
+
+    <div class="modal-content">
+      <!-- Status & Category Banner -->
+      <div class="status-banner">
+        <div class="banner-left">
+          <span class="info-label">Category:</span>
+          <span class="category-badge">{{ report().category }}</span>
+        </div>
+        <div class="banner-right">
+          <span class="info-label">Status:</span>
+          <span
+            class="status-pill"
+            [ngClass]="{
+              'badge-ready': report().status === 'Ready',
+              'badge-scheduled': report().status === 'Scheduled',
+              'badge-pending': report().status === 'Pending Review',
+              'badge-update': report().status === 'Needs Update'
+            }"
+          >
+            {{ report().status }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Detail Grid -->
+      <div class="detail-grid">
+        <div class="detail-item">
+          <span class="detail-label">Institutional Scope</span>
+          <span class="detail-val"
+            >{{ report().scope }} ({{
+            report().scopeSchoolsCount.toLocaleString() }} schools)</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Frequency Cadence</span>
+          <span class="detail-val">{{ report().frequency }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Last Generated</span>
+          <span class="detail-val"
+            >{{ report().lastGeneratedDate }}, {{ report().lastGeneratedTime
+            }}</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">File Size & Format</span>
+          <span class="detail-val"
+            >{{ report().format }} ({{ report().fileSizeBytes }})</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Report Owner</span>
+          <span class="detail-val"
+            >{{ report().ownerName }} ({{ report().ownerRole }})</span
+          >
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">Total Downloads</span>
+          <span class="detail-val">{{ report().downloadCount }} downloads</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button type="button" class="btn-close" (click)="onClose()">Close</button>
+      <button type="button" class="btn-download" (click)="onDownload()">
+        <i class="material-symbols-outlined">download</i>
+        <span>Download {{ report().format }}</span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1059 @@
+<div class="create-case-container">
+  <!-- Top Navigation & Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <div class="back-nav">
+        <a routerLink="/super-admin/safeguarding-compliance" class="back-link">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span>Back to Incident Queue</span>
+        </a>
+      </div>
+      <h1 class="page-title">Create Safeguarding Case</h1>
+      <p class="page-subtitle">
+        Use this form to log a new incident or compliance concern across
+        institutions.
+      </p>
+    </div>
+
+    <div class="header-right">
+      <div class="date-picker-badge">
+        <span class="material-symbols-outlined icon">calendar_today</span>
+        <span class="date-text">May 1 – May 31, 2025</span>
+        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+      </div>
+
+      <div class="notification-wrap" title="12 notifications">
+        <span class="material-symbols-outlined icon">notifications</span>
+        <span class="notification-badge">12</span>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">SA</div>
+        <div class="user-info">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button type="button" class="btn btn-secondary" (click)="saveDraft()">
+          <span class="material-symbols-outlined btn-icon">save</span>
+          Save Draft
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          [disabled]="!caseTitle() || !selectedInstitution()"
+          (click)="onSubmit()"
+        >
+          <span class="material-symbols-outlined btn-icon">add_circle</span>
+          Create Case
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <div class="create-layout-grid">
+    <!-- Left Main Form Area -->
+    <div class="form-main-col">
+      <form class="case-form" (ngSubmit)="onSubmit()">
+        <!-- Step 1: Case Details -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">1</span>
+            <h2 class="section-title">Case Details</h2>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group span-1">
+              <label for="case-title-input" class="form-label"
+                >Case Title *</label
+              >
+              <input
+                id="case-title-input"
+                type="text"
+                class="form-control"
+                placeholder="Enter a clear and brief title"
+                [value]="caseTitle()"
+                (input)="caseTitle.set($any($event.target).value)"
+                required
+              />
+            </div>
+
+            <div class="form-group span-1">
+              <label for="case-institution-select" class="form-label"
+                >Institution / School *</label
+              >
+              <select
+                id="case-institution-select"
+                class="form-control"
+                [value]="selectedInstitution()"
+                (change)="selectedInstitution.set($any($event.target).value)"
+                required
+              >
+                <option value="" disabled>Select institution</option>
+                <option value="Greenwood High School">
+                  Greenwood High School
+                </option>
+                <option value="Sunrise International School">
+                  Sunrise International School
+                </option>
+                <option value="Lakeview Public School">
+                  Lakeview Public School
+                </option>
+                <option value="Northfield Academy">Northfield Academy</option>
+                <option value="Bright Future School">
+                  Bright Future School
+                </option>
+                <option value="Evergreen International">
+                  Evergreen International
+                </option>
+                <option value="Harmony World School">
+                  Harmony World School
+                </option>
+                <option value="St. Mary's Academy">St. Mary's Academy</option>
+              </select>
+            </div>
+
+            <div class="form-group span-1">
+              <label for="case-category-select" class="form-label"
+                >Case Category *</label
+              >
+              <select
+                id="case-category-select"
+                class="form-control"
+                [value]="selectedCategory()"
+                (change)="selectedCategory.set($any($event.target).value)"
+              >
+                <option value="Inappropriate Communication">
+                  Inappropriate Communication
+                </option>
+                <option value="Consent Pending">Consent Pending</option>
+                <option value="Media-Upload Review">Media-Upload Review</option>
+                <option value="Data Privacy Concern">
+                  Data Privacy Concern
+                </option>
+                <option value="Policy Breach">Policy Breach</option>
+                <option value="Escalation Review">Escalation Review</option>
+                <option value="Inappropriate Content">
+                  Inappropriate Content
+                </option>
+                <option value="Consent Withdrawal">Consent Withdrawal</option>
+                <option value="Bullying & Harassment">
+                  Bullying & Harassment
+                </option>
+                <option value="Staff Conduct">Staff Conduct</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Severity & Incident Time & Reporter -->
+          <div class="form-grid-3 mt-4">
+            <div class="form-group">
+              <span class="form-label">Severity *</span>
+              <div
+                class="severity-pills-group"
+                role="radiogroup"
+                aria-label="Severity Level"
+              >
+                <button
+                  type="button"
+                  class="sev-pill"
+                  [class.active]="selectedSeverity() === 'Low'"
+                  (click)="selectedSeverity.set('Low')"
+                >
+                  <span class="sev-dot dot-low"></span>
+                  Low
+                </button>
+                <button
+                  type="button"
+                  class="sev-pill"
+                  [class.active]="selectedSeverity() === 'Medium'"
+                  (click)="selectedSeverity.set('Medium')"
+                >
+                  <span class="sev-dot dot-medium"></span>
+                  Medium
+                </button>
+                <button
+                  type="button"
+                  class="sev-pill"
+                  [class.active]="selectedSeverity() === 'High'"
+                  (click)="selectedSeverity.set('High')"
+                >
+                  <span class="sev-dot dot-high"></span>
+                  High
+                </button>
+                <button
+                  type="button"
+                  class="sev-pill"
+                  [class.active]="selectedSeverity() === 'Critical'"
+                  (click)="selectedSeverity.set('Critical')"
+                >
+                  <span class="sev-dot dot-critical"></span>
+                  Critical
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="incident-datetime-input" class="form-label"
+                >Incident Date & Time *</label
+              >
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon"
+                  >calendar_today</span
+                >
+                <input
+                  id="incident-datetime-input"
+                  type="text"
+                  class="form-control"
+                  [value]="incidentDateTime()"
+                  (input)="incidentDateTime.set($any($event.target).value)"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reported-by-select" class="form-label"
+                >Reported By *</label
+              >
+              <select
+                id="reported-by-select"
+                class="form-control"
+                [value]="reportedBy()"
+                (change)="reportedBy.set($any($event.target).value)"
+              >
+                <option value="">Select reporter type</option>
+                <option value="Priya Sharma (Teacher)">Teacher / Staff</option>
+                <option value="Anita Desai (Parent)">Parent / Guardian</option>
+                <option value="Fatima Ali (Admin)">School Administrator</option>
+                <option value="System Auto-Flag (Platform)">
+                  Platform Automated Flag
+                </option>
+                <option value="Super Admin (Compliance)">
+                  Super Admin Officer
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid-1 mt-4">
+            <div class="form-group">
+              <label for="reference-id-input" class="form-label"
+                >Reference ID (Auto-generated)</label
+              >
+              <div class="input-with-icon disabled-wrap">
+                <span class="material-symbols-outlined input-icon">lock</span>
+                <input
+                  id="reference-id-input"
+                  type="text"
+                  class="form-control"
+                  [value]="referenceId()"
+                  disabled
+                />
+              </div>
+              <span class="form-hint"
+                >This ID will be generated after creating the case.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: People Involved -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">2</span>
+            <h2 class="section-title">People Involved</h2>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="learner-name-input" class="form-label"
+                >Learner Name / User</label
+              >
+              <input
+                id="learner-name-input"
+                type="text"
+                class="form-control"
+                placeholder="Search learner or user"
+                [value]="learnerName()"
+                (input)="learnerName.set($any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="staff-name-input" class="form-label"
+                >Staff Member / User</label
+              >
+              <input
+                id="staff-name-input"
+                type="text"
+                class="form-control"
+                placeholder="Search staff member"
+                [value]="staffName()"
+                (input)="staffName.set($any($event.target).value)"
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="additional-users-input" class="form-label"
+                >Additional Users Involved</label
+              >
+              <input
+                id="additional-users-input"
+                type="text"
+                class="form-control"
+                placeholder="Search additional users"
+                [value]="additionalUsers()"
+                (input)="additionalUsers.set($any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <div class="form-grid-2 mt-4">
+            <div class="form-group">
+              <label for="grade-select" class="form-label">Class / Grade</label>
+              <select
+                id="grade-select"
+                class="form-control"
+                [value]="selectedGrade()"
+                (change)="selectedGrade.set($any($event.target).value)"
+              >
+                <option value="">Select class or grade</option>
+                <option value="Grade 6 - Section A">Grade 6 - Section A</option>
+                <option value="Grade 8 - Section D">Grade 8 - Section D</option>
+                <option value="Grade 9 - Section B">Grade 9 - Section B</option>
+                <option value="Grade 10 - Section C">
+                  Grade 10 - Section C
+                </option>
+                <option value="Grade 11 - Section A">
+                  Grade 11 - Section A
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="parent-linked-input" class="form-label"
+                >Parent / Guardian Linked</label
+              >
+              <input
+                id="parent-linked-input"
+                type="text"
+                class="form-control"
+                placeholder="Search parent or guardian"
+                [value]="parentLinked()"
+                (input)="parentLinked.set($any($event.target).value)"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3: Incident Description -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">3</span>
+            <h2 class="section-title">Incident Description</h2>
+          </div>
+
+          <div class="form-grid-1">
+            <div class="form-group">
+              <label for="description-textarea" class="form-label"
+                >Detailed Description *</label
+              >
+              <textarea
+                id="description-textarea"
+                class="form-control"
+                rows="4"
+                placeholder="Provide a detailed description of the incident, including what happened, when, where, and who was involved."
+                [value]="description()"
+                (input)="description.set($any($event.target).value)"
+                required
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-grid-2 mt-4">
+            <div class="form-group">
+              <label for="location-context-select" class="form-label"
+                >Location / Context *</label
+              >
+              <select
+                id="location-context-select"
+                class="form-control"
+                [value]="locationContext()"
+                (change)="locationContext.set($any($event.target).value)"
+              >
+                <option value="">Select location or context</option>
+                <option value="Virtual Study Lounge">
+                  Virtual Study Lounge
+                </option>
+                <option value="Platform Direct Messages">
+                  Platform Direct Messages
+                </option>
+                <option value="Discussion Forum">Discussion Forum</option>
+                <option value="Assignment Submission">
+                  Assignment Submission
+                </option>
+                <option value="Live Classroom Session">
+                  Live Classroom Session
+                </option>
+                <option value="On-Campus / Physical Grounds">
+                  On-Campus / Physical Grounds
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="tag-input-field" class="form-label"
+                >Tags / Keywords</label
+              >
+              <div class="tag-input-container">
+                @for (tag of tags(); track tag) {
+                <span class="tag-pill">
+                  {{ tag }}
+                  <button
+                    type="button"
+                    class="tag-del-btn"
+                    (click)="removeTag(tag)"
+                  >
+                    ×
+                  </button>
+                </span>
+                }
+                <input
+                  id="tag-input-field"
+                  type="text"
+                  class="tag-input"
+                  placeholder="Add tags and press enter..."
+                  [value]="tagInput()"
+                  (input)="tagInput.set($any($event.target).value)"
+                  (keydown.enter)="$event.preventDefault(); addTag()"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 4: Evidence & Attachments -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">4</span>
+            <h2 class="section-title">Evidence & Attachments</h2>
+          </div>
+
+          <div
+            class="upload-dropzone"
+            (dragover)="$event.preventDefault()"
+            (drop)="onFileDrop($event)"
+          >
+            <div class="dropzone-content">
+              <div class="drop-icon-circle">
+                <span class="material-symbols-outlined">cloud_upload</span>
+              </div>
+              <span class="drop-title"
+                >Drag and drop files here or click to browse</span
+              >
+              <span class="drop-sub"
+                >Support images, PDFs, videos and documents (Max 50MB per
+                file)</span
+              >
+              <label for="file-upload-input" class="browse-files-btn">
+                Browse Files
+              </label>
+              <input
+                id="file-upload-input"
+                type="file"
+                class="hidden-file-input"
+                (change)="onFileInput($event)"
+              />
+            </div>
+          </div>
+
+          @if (uploadedFiles().length > 0) {
+          <div class="uploaded-files-list">
+            @for (file of uploadedFiles(); track $index) {
+            <div class="file-item">
+              <span class="material-symbols-outlined file-icon"
+                >description</span
+              >
+              <span class="file-name">{{ file }}</span>
+              <button
+                type="button"
+                class="file-remove-btn"
+                (click)="removeFile($index)"
+              >
+                <span class="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            }
+          </div>
+          }
+
+          <div class="checkbox-options-grid mt-4">
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [checked]="sensitiveEvidence()"
+                (change)="sensitiveEvidence.set($any($event.target).checked)"
+              />
+              <span class="checkbox-label">Sensitive evidence</span>
+            </label>
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [checked]="containsLearnerInfo()"
+                (change)="containsLearnerInfo.set($any($event.target).checked)"
+              />
+              <span class="checkbox-label">Contains learner information</span>
+            </label>
+            <label class="custom-checkbox">
+              <input
+                type="checkbox"
+                [checked]="requiresRestrictedAccess()"
+                (change)="requiresRestrictedAccess.set($any($event.target).checked)"
+              />
+              <span class="checkbox-label">Requires restricted access</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Step 5: Assignment & Escalation -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">5</span>
+            <h2 class="section-title">Assignment & Escalation</h2>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="reviewer-select" class="form-label"
+                >Assign to Reviewer / Safeguarding Lead *</label
+              >
+              <select
+                id="reviewer-select"
+                class="form-control"
+                [value]="assignedReviewer()"
+                (change)="assignedReviewer.set($any($event.target).value)"
+              >
+                <option value="Rahul Mehta">
+                  Rahul Mehta (Safeguarding Lead)
+                </option>
+                <option value="Neha Verma">
+                  Neha Verma (Compliance Officer)
+                </option>
+                <option value="Arjun Kapoor">
+                  Arjun Kapoor (Safeguarding Lead)
+                </option>
+                <option value="Pooja Sharma">
+                  Pooja Sharma (Compliance Officer)
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="escalation-status-select" class="form-label"
+                >Escalation Status *</label
+              >
+              <select
+                id="escalation-status-select"
+                class="form-control"
+                [value]="escalationStatus()"
+                (change)="escalationStatus.set($any($event.target).value)"
+              >
+                <option value="Standard Investigation">
+                  Standard Investigation
+                </option>
+                <option value="Urgent Welfare Review">
+                  Urgent Welfare Review
+                </option>
+                <option value="Escalated to Designated Lead">
+                  Escalated to Designated Lead
+                </option>
+                <option value="Authority Reporting">Authority Reporting</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="response-deadline-input" class="form-label"
+                >Response Deadline / SLA *</label
+              >
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon"
+                  >schedule</span
+                >
+                <input
+                  id="response-deadline-input"
+                  type="text"
+                  class="form-control"
+                  [value]="responseDeadline()"
+                  (input)="responseDeadline.set($any($event.target).value)"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="toggles-grid mt-4">
+            <div class="toggle-card">
+              <div class="toggle-info">
+                <span class="toggle-title">Notify School Admin</span>
+                <span class="toggle-desc"
+                  >Send notification to school admin</span
+                >
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="notifySchoolAdmin()"
+                  (change)="notifySchoolAdmin.set($any($event.target).checked)"
+                  aria-label="Notify school admin"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-card">
+              <div class="toggle-info">
+                <span class="toggle-title">Notify Compliance Officer</span>
+                <span class="toggle-desc"
+                  >Send notification to compliance officer</span
+                >
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="notifyComplianceOfficer()"
+                  (change)="notifyComplianceOfficer.set($any($event.target).checked)"
+                  aria-label="Notify compliance officer"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-card">
+              <div class="toggle-info">
+                <span class="toggle-title">Restrict User Access</span>
+                <span class="toggle-desc"
+                  >Restrict involved user's platform access</span
+                >
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="restrictUserAccess()"
+                  (change)="restrictUserAccess.set($any($event.target).checked)"
+                  aria-label="Restrict user access"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Consent & Compliance Checks -->
+        <div class="form-section-card">
+          <div class="section-header">
+            <span class="step-num">6</span>
+            <h2 class="section-title">Consent & Compliance Checks</h2>
+          </div>
+
+          <div class="form-grid-3">
+            <div class="form-group">
+              <label for="consent-status-select" class="form-label"
+                >Parent Consent Status *</label
+              >
+              <select
+                id="consent-status-select"
+                class="form-control"
+                [value]="parentConsentStatus()"
+                (change)="parentConsentStatus.set($any($event.target).value)"
+              >
+                <option value="Consent Verified">Consent Verified</option>
+                <option value="Pending Parental Consent">
+                  Pending Parental Consent
+                </option>
+                <option value="Consent Withdrawn">Consent Withdrawn</option>
+                <option value="Exempt">Exempt</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="policy-select" class="form-label"
+                >Policy Acknowledged *</label
+              >
+              <select
+                id="policy-select"
+                class="form-control"
+                [value]="policyAcknowledged()"
+                (change)="policyAcknowledged.set($any($event.target).value)"
+              >
+                <option value="Child Protection Policy">
+                  Child Protection Policy
+                </option>
+                <option value="Data Privacy Policy">Data Privacy Policy</option>
+                <option value="Acceptable Use Policy">
+                  Acceptable Use Policy
+                </option>
+                <option value="Staff Code of Conduct">
+                  Staff Code of Conduct
+                </option>
+                <option value="Incident Response Protocol">
+                  Incident Response Protocol
+                </option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="privacy-review-select" class="form-label"
+                >Data Privacy Review Required *</label
+              >
+              <select
+                id="privacy-review-select"
+                class="form-control"
+                [value]="dataPrivacyReviewRequired()"
+                (change)="dataPrivacyReviewRequired.set($any($event.target).value)"
+              >
+                <option value="Standard Review">Standard Review</option>
+                <option value="Formal DPO Review Required">
+                  Formal DPO Review Required
+                </option>
+                <option value="No Privacy Risk">No Privacy Risk</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="toggles-grid mt-4">
+            <div class="toggle-card">
+              <div class="toggle-info">
+                <span class="toggle-title">External Reporting Required</span>
+                <span class="toggle-desc"
+                  >Report to external authority or regulatory agency</span
+                >
+              </div>
+              <label class="switch">
+                <input
+                  type="checkbox"
+                  [checked]="externalReportingRequired()"
+                  (change)="externalReportingRequired.set($any($event.target).checked)"
+                  aria-label="External reporting required"
+                />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Internal Notes & Additional Info -->
+          <div class="notes-block mt-4">
+            <div class="form-group">
+              <label for="internal-notes-textarea" class="form-label"
+                >Internal Notes</label
+              >
+              <textarea
+                id="internal-notes-textarea"
+                class="form-control"
+                rows="2"
+                placeholder="Private internal notes or follow-up logs in reviewing or resolving this case."
+                [value]="internalNotes()"
+                (input)="internalNotes.set($any($event.target).value)"
+              ></textarea>
+            </div>
+
+            <div class="form-grid-2 mt-4">
+              <div class="form-group">
+                <label for="related-case-input" class="form-label"
+                  >Related Case (if any)</label
+                >
+                <input
+                  id="related-case-input"
+                  type="text"
+                  class="form-control"
+                  placeholder="Search existing case"
+                  [value]="relatedCase()"
+                  (input)="relatedCase.set($any($event.target).value)"
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="additional-notes-input" class="form-label"
+                  >Additional Notes</label
+                >
+                <input
+                  id="additional-notes-input"
+                  type="text"
+                  class="form-control"
+                  placeholder="Add any additional information relevant to this case."
+                  [value]="additionalNotes()"
+                  (input)="additionalNotes.set($any($event.target).value)"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Form Submit Footer -->
+        <div class="form-actions-footer">
+          <button type="button" class="btn btn-secondary" (click)="saveDraft()">
+            Cancel & Back
+          </button>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="!caseTitle() || !selectedInstitution()"
+          >
+            <span class="material-symbols-outlined btn-icon">check</span>
+            Create Safeguarding Case
+          </button>
+        </div>
+      </form>
+
+      <!-- Bottom 4 KPI Cards in Create View -->
+      <div class="create-bottom-metrics">
+        <div class="bottom-kpi-card">
+          <div class="kpi-icon-wrap icon-blue">
+            <span class="material-symbols-outlined">folder</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Open Cases This Week</span>
+            <span class="kpi-val">87</span>
+            <span class="kpi-trend trend-up">↑ 12.2% vs Last Week</span>
+          </div>
+        </div>
+
+        <div class="bottom-kpi-card">
+          <div class="kpi-icon-wrap icon-green">
+            <span class="material-symbols-outlined">schedule</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Avg Resolution SLA</span>
+            <span class="kpi-val">3.6 days</span>
+            <span class="kpi-trend trend-down">↓ 8.4% vs Last Week</span>
+          </div>
+        </div>
+
+        <div class="bottom-kpi-card">
+          <div class="kpi-icon-wrap icon-purple">
+            <span class="material-symbols-outlined">group</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">Assigned Reviewer Status</span>
+            <span class="kpi-val">68%</span>
+            <span class="kpi-trend trend-up">↑ 7.3% of cases assigned</span>
+          </div>
+        </div>
+
+        <div class="bottom-kpi-card">
+          <div class="kpi-icon-wrap icon-amber">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <div class="kpi-info">
+            <span class="kpi-label">System Status</span>
+            <span class="kpi-val text-sm font-semibold"
+              >All Systems Operational</span
+            >
+            <span class="status-indicator-pill">
+              <span class="ind-dot"></span>
+              Healthy
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar Area -->
+    <aside class="create-sidebar-col">
+      <!-- 1. Case Readiness Checklist -->
+      <div class="sidebar-card">
+        <h3 class="card-title">Case Readiness Checklist</h3>
+        <div class="readiness-list">
+          <div class="check-item" [class.is-done]="isTitleDone()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isTitleDone() ? 'check_circle' : 'radio_button_unchecked' }}
+            </span>
+            <span class="check-label">Title completed</span>
+          </div>
+          <div class="check-item" [class.is-done]="isInstitutionDone()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isInstitutionDone() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="check-label">Institution selected</span>
+          </div>
+          <div class="check-item" [class.is-done]="isSeverityDone()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isSeverityDone() ? 'check_circle' : 'radio_button_unchecked' }}
+            </span>
+            <span class="check-label">Severity set</span>
+          </div>
+          <div class="check-item" [class.is-done]="isDescriptionDone()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isDescriptionDone() ? 'check_circle' : 'radio_button_unchecked'
+              }}
+            </span>
+            <span class="check-label">Incident description detailed</span>
+          </div>
+          <div class="check-item" [class.is-done]="isReviewerDone()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isReviewerDone() ? 'check_circle' : 'radio_button_unchecked' }}
+            </span>
+            <span class="check-label">Reviewer assigned</span>
+          </div>
+          <div class="check-item" [class.is-done]="isEvidenceAttached()">
+            <span class="material-symbols-outlined check-icon">
+              {{ isEvidenceAttached() ? 'check_circle' :
+              'radio_button_unchecked' }}
+            </span>
+            <span class="check-label">Evidence attached</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Severity Guide -->
+      <div class="sidebar-card">
+        <h3 class="card-title">Severity Guide</h3>
+        <div class="severity-guide-list">
+          <div class="guide-item">
+            <span class="sev-dot dot-low"></span>
+            <div class="guide-text">
+              <span class="guide-sev-name">Low</span>
+              <span class="guide-sev-desc">Minor concern, low impact</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="sev-dot dot-medium"></span>
+            <div class="guide-text">
+              <span class="guide-sev-name">Medium</span>
+              <span class="guide-sev-desc">Moderate concern, some impact</span>
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="sev-dot dot-high"></span>
+            <div class="guide-text">
+              <span class="guide-sev-name">High</span>
+              <span class="guide-sev-desc"
+                >High concern, significant impact</span
+              >
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="sev-dot dot-critical"></span>
+            <div class="guide-text">
+              <span class="guide-sev-name">Critical</span>
+              <span class="guide-sev-desc"
+                >Critical concern, severe impact</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Policy References -->
+      <div class="sidebar-card">
+        <h3 class="card-title">Policy References</h3>
+        <div class="policy-links-list">
+          <a href="javascript:void(0)" class="policy-link-item">
+            <span class="material-symbols-outlined link-icon">article</span>
+            <span class="link-label">Child Protection Policy</span>
+          </a>
+          <a href="javascript:void(0)" class="policy-link-item">
+            <span class="material-symbols-outlined link-icon">privacy_tip</span>
+            <span class="link-label">Data Privacy Policy</span>
+          </a>
+          <a href="javascript:void(0)" class="policy-link-item">
+            <span class="material-symbols-outlined link-icon">badge</span>
+            <span class="link-label">Staff Code of Conduct</span>
+          </a>
+          <a href="javascript:void(0)" class="policy-link-item">
+            <span class="material-symbols-outlined link-icon"
+              >quick_reference</span
+            >
+            <span class="link-label">Incident Response Protocol</span>
+          </a>
+          <div class="sidebar-footer-link">
+            <a href="javascript:void(0)" class="footer-action-link">
+              <span>View all policies</span>
+              <span class="material-symbols-outlined icon-inline"
+                >open_in_new</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Access Visibility -->
+      <div class="sidebar-card">
+        <h3 class="card-title">Access Visibility</h3>
+        <div class="access-matrix-list">
+          <div class="access-item">
+            <div class="access-role-col">
+              <span class="material-symbols-outlined role-icon"
+                >admin_panel_settings</span
+              >
+              <span class="role-title">Super Admin</span>
+            </div>
+            <span class="access-status status-full">
+              <span class="access-dot dot-green"></span>
+              Full Access
+            </span>
+          </div>
+
+          <div class="access-item">
+            <div class="access-role-col">
+              <span class="material-symbols-outlined role-icon"
+                >shield_person</span
+              >
+              <span class="role-title">Safeguarding Lead</span>
+            </div>
+            <span class="access-status status-full">
+              <span class="access-dot dot-green"></span>
+              Full Access
+            </span>
+          </div>
+
+          <div class="access-item">
+            <div class="access-role-col">
+              <span class="material-symbols-outlined role-icon"
+                >assignment_ind</span
+              >
+              <span class="role-title">Assigned Reviewer</span>
+            </div>
+            <span class="access-status status-full">
+              <span class="access-dot dot-green"></span>
+              Full Access
+            </span>
+          </div>
+
+          <div class="access-item">
+            <div class="access-role-col">
+              <span class="material-symbols-outlined role-icon">domain</span>
+              <span class="role-title">School Admin</span>
+            </div>
+            <span class="access-status status-restricted">
+              <span class="access-dot dot-orange"></span>
+              Restricted
+            </span>
+          </div>
+
+          <div class="access-item">
+            <div class="access-role-col">
+              <span class="material-symbols-outlined role-icon">group</span>
+              <span class="role-title">Involved Users</span>
+            </div>
+            <span class="access-status status-none">
+              <span class="access-dot dot-red"></span>
+              No Access
+            </span>
+          </div>
+
+          <div class="sidebar-footer-link">
+            <a href="javascript:void(0)" class="footer-action-link">
+              <span>View access matrix</span>
+              <span class="material-symbols-outlined icon-inline"
+                >open_in_new</span
+              >
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>

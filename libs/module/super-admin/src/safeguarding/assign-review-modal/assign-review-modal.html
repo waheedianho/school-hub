@@ -1,0 +1,112 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="assign-modal-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="header-icon-wrap">
+          <span class="material-symbols-outlined">assignment_ind</span>
+        </div>
+        <div>
+          <h2 id="assign-modal-title" class="modal-title">Assign Reviewer</h2>
+          <p class="modal-subtitle">
+            Delegate case investigation or compliance review to a specialist.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form class="modal-body" (ngSubmit)="onSubmit()">
+      <!-- Select Case -->
+      <div class="form-group">
+        <label for="assign-case-select" class="form-label"
+          >Select Incident / Case *</label
+        >
+        <select
+          id="assign-case-select"
+          class="form-control"
+          [value]="selectedCaseId()"
+          (change)="selectedCaseId.set($any($event.target).value)"
+        >
+          @for (c of cases(); track c.id) {
+          <option [value]="c.id">
+            {{ c.id }} – {{ c.institution }} ({{ c.category }} • {{ c.severity
+            }})
+          </option>
+          }
+        </select>
+      </div>
+
+      <!-- Select Reviewer -->
+      <div class="form-group">
+        <label for="assign-reviewer-select" class="form-label"
+          >Assigned Lead / Officer *</label
+        >
+        <select
+          id="assign-reviewer-select"
+          class="form-control"
+          [value]="selectedReviewer()"
+          (change)="onReviewerChange($event)"
+        >
+          <option value="Rahul Mehta">Rahul Mehta (Safeguarding Lead)</option>
+          <option value="Neha Verma">Neha Verma (Compliance Officer)</option>
+          <option value="Arjun Kapoor">Arjun Kapoor (Safeguarding Lead)</option>
+          <option value="Pooja Sharma">
+            Pooja Sharma (Compliance Officer)
+          </option>
+        </select>
+      </div>
+
+      <!-- Priority / SLA Info -->
+      <div class="info-alert">
+        <span class="material-symbols-outlined alert-icon">schedule</span>
+        <div class="alert-text">
+          <span
+            >Assigned reviewer will receive immediate platform alerts and
+            notification. SLA timer is active based on severity level.</span
+          >
+        </div>
+      </div>
+
+      <!-- Instructions / Notes -->
+      <div class="form-group">
+        <label for="assignment-notes-input" class="form-label"
+          >Review Instructions & Follow-up Notes</label
+        >
+        <textarea
+          id="assignment-notes-input"
+          class="form-control textarea"
+          rows="3"
+          placeholder="Enter specific guidance, urgency level, or action points for the assigned reviewer..."
+          [value]="assignmentNotes()"
+          (input)="assignmentNotes.set($any($event.target).value)"
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Cancel
+        </button>
+        <button type="submit" class="btn btn-primary">
+          <span class="material-symbols-outlined btn-icon">check</span>
+          Confirm Assignment
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

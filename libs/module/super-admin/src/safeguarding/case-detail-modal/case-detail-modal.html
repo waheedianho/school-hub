@@ -1,0 +1,170 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="case-modal-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-left">
+        <div
+          class="badge-tag"
+          [ngClass]="'sev-' + safeguardingCase().severity.toLowerCase()"
+        >
+          {{ safeguardingCase().severity }} Severity
+        </div>
+        <div>
+          <div class="title-row">
+            <h2 id="case-modal-title" class="modal-title">
+              {{ safeguardingCase().id }}
+            </h2>
+            <span
+              class="status-pill"
+              [ngClass]="'status-' + safeguardingCase().status.toLowerCase().replace(' ', '-')"
+            >
+              {{ safeguardingCase().status }}
+            </span>
+          </div>
+          <p class="modal-subtitle">
+            {{ safeguardingCase().institution }} • {{
+            safeguardingCase().location }}
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Section 1: Overview Banner -->
+      <div class="overview-box">
+        <div class="meta-item">
+          <span class="meta-label">Category</span>
+          <span class="meta-value">{{ safeguardingCase().category }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Reported By</span>
+          <span class="meta-value"
+            >{{ safeguardingCase().reportedBy.name }} ({{
+            safeguardingCase().reportedBy.role }})</span
+          >
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Assigned Lead</span>
+          <span class="meta-value"
+            >{{ safeguardingCase().assignedTo.name }}</span
+          >
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Last Updated</span>
+          <span class="meta-value"
+            >{{ safeguardingCase().lastUpdated }} at {{
+            safeguardingCase().lastUpdatedTime }}</span
+          >
+        </div>
+      </div>
+
+      <!-- Section 2: Detailed Description -->
+      <div class="detail-section">
+        <h3 class="section-title">Incident Description</h3>
+        <p class="description-text">{{ safeguardingCase().details }}</p>
+      </div>
+
+      <!-- Section 3: Parties Involved -->
+      <div class="detail-section">
+        <h3 class="section-title">People Involved</h3>
+        <div class="parties-grid">
+          @if (safeguardingCase().learnerName) {
+          <div class="party-card">
+            <span class="party-role">Learner</span>
+            <span class="party-name">{{ safeguardingCase().learnerName }}</span>
+            <span class="party-sub">{{ safeguardingCase().gradeClass }}</span>
+          </div>
+          } @if (safeguardingCase().staffName) {
+          <div class="party-card">
+            <span class="party-role">Staff Member</span>
+            <span class="party-name">{{ safeguardingCase().staffName }}</span>
+            <span class="party-sub">Teacher / Faculty</span>
+          </div>
+          } @if (safeguardingCase().parentLinked) {
+          <div class="party-card">
+            <span class="party-role">Parent / Guardian</span>
+            <span class="party-name"
+              >{{ safeguardingCase().parentLinked }}</span
+            >
+            <span class="party-sub">Primary Contact</span>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Section 4: Evidence & SLA -->
+      <div class="meta-grid">
+        <div class="meta-block">
+          <span class="meta-block-title">Evidence & Attachments</span>
+          <div class="evidence-pill">
+            <span class="material-symbols-outlined">attachment</span>
+            <span
+              >{{ safeguardingCase().evidenceFilesCount ?? 1 }} files
+              uploaded</span
+            >
+          </div>
+        </div>
+        <div class="meta-block">
+          <span class="meta-block-title">Response Deadline / SLA</span>
+          <div class="sla-pill">
+            <span class="material-symbols-outlined">timer</span>
+            <span>{{ safeguardingCase().slaDeadline ?? '24 Hours' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <div class="footer-left">
+        <button
+          type="button"
+          class="btn btn-outline"
+          (click)="reassign.emit(safeguardingCase().id)"
+        >
+          <span class="material-symbols-outlined btn-icon">person_add</span>
+          Reassign Reviewer
+        </button>
+      </div>
+      <div class="footer-right">
+        @if (safeguardingCase().status !== 'Resolved') {
+        <button
+          type="button"
+          class="btn btn-success"
+          (click)="onUpdateStatus('Resolved')"
+        >
+          <span class="material-symbols-outlined btn-icon">check_circle</span>
+          Mark as Resolved
+        </button>
+        } @if (safeguardingCase().status !== 'Escalated') {
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="onUpdateStatus('Escalated')"
+        >
+          <span class="material-symbols-outlined btn-icon">campaign</span>
+          Escalate Case
+        </button>
+        }
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

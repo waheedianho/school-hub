@@ -427,4 +427,208 @@ describe('SuperAdminStore', () => {
     });
     expect(store.subscriptionPlans().length).toBe(initialPlans + 1);
   });
+
+  it('should initialize with reports data', () => {
+    expect(store.reportMetrics().length).toBe(6);
+    expect(store.platformReports().length).toBe(7);
+    expect(store.reportBottomMetrics().length).toBe(4);
+    expect(store.reportHealthCategories().length).toBe(4);
+    expect(store.scheduledReportQueue().length).toBe(4);
+    expect(store.recentReportActivities().length).toBe(3);
+    expect(store.quickReportTemplates().length).toBe(4);
+    expect(store.totalPlatformReportsCount()).toBe(7);
+  });
+
+  it('should filter reports by search query, tab, and filters', () => {
+    // Search filter
+    store.setReportsSearch('Curriculum');
+    expect(store.filteredPlatformReports().length).toBe(1);
+    expect(store.filteredPlatformReports()[0].name).toContain('Curriculum');
+
+    // Reset search
+    store.setReportsSearch('');
+    expect(store.filteredPlatformReports().length).toBe(7);
+
+    // Tab filter
+    store.setReportTab('School Performance');
+    expect(
+      store
+        .filteredPlatformReports()
+        .every((r) => r.category === 'School Performance'),
+    ).toBe(true);
+
+    // Status filter
+    store.setReportTab('Academic Reports');
+    store.setReportsStatusFilter('Ready');
+    expect(
+      store.filteredPlatformReports().every((r) => r.status === 'Ready'),
+    ).toBe(true);
+  });
+
+  it('should create custom report and schedule reports', () => {
+    store.setReportsStatusFilter('All Statuses');
+    const initialReports = store.platformReports().length;
+    const initialActivities = store.recentReportActivities().length;
+
+    const rep = store.createCustomReport({
+      reportName: 'New Test Custom Report',
+      description: 'Test description',
+      category: 'Custom Reports',
+      scope: 'All Schools',
+      frequency: 'Monthly',
+      format: 'PDF',
+      includeCharts: true,
+      notifyRecipients: true,
+    });
+
+    expect(store.platformReports().length).toBe(initialReports + 1);
+    expect(store.recentReportActivities().length).toBe(initialActivities + 1);
+    expect(rep.name).toBe('New Test Custom Report');
+
+    const initialQueue = store.scheduledReportQueue().length;
+    store.scheduleReport({
+      reportId: rep.id,
+      scheduleTime: 'Jun 10, 2025 • 09:00 AM',
+      frequency: 'Weekly',
+      deliveryEmail: 'admin@school.edu',
+      format: 'PDF',
+    });
+
+    expect(store.scheduledReportQueue().length).toBe(initialQueue + 1);
+    const updatedRep = store.platformReports().find((r) => r.id === rep.id);
+    expect(updatedRep?.status).toBe('Scheduled');
+  });
+
+  it('should trigger report generation and update periods', () => {
+    const firstRep = store.platformReports()[0];
+    const initialDownloads = firstRep.downloadCount ?? 0;
+
+    store.triggerReportGeneration(firstRep.id);
+    const updated = store.platformReports().find((r) => r.id === firstRep.id);
+    expect(updated?.downloadCount).toBe(initialDownloads + 1);
+
+    store.setReportsDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedReportsDateRange()).toBe('Jun 1 – Jun 30, 2025');
+
+    store.setReportHealthPeriod('This Quarter');
+    expect(store.selectedReportHealthPeriod()).toBe('This Quarter');
+  });
+
+  it('should initialize safeguarding & compliance state properly', () => {
+    expect(store.safeguardingMetrics().length).toBe(6);
+    expect(store.safeguardingCases().length).toBeGreaterThanOrEqual(8);
+    expect(store.safeguardingBottomMetrics().length).toBe(5);
+    expect(store.complianceHealthCategories().length).toBe(3);
+    expect(store.urgentEscalations().length).toBe(3);
+    expect(store.consentQueueBreakdown().total).toBe(64);
+    expect(store.recentSafeguardingActivities().length).toBe(3);
+    expect(store.policyChecklist().length).toBe(5);
+    expect(store.selectedSafeguardingTab()).toBe('Incident Queue');
+  });
+
+  it('should filter safeguarding cases by tab, school, severity, and search', () => {
+    store.setSafeguardingTab('Flagged Communications');
+    expect(store.selectedSafeguardingTab()).toBe('Flagged Communications');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.category === 'Inappropriate Communication'),
+    ).toBe(true);
+
+    store.setSafeguardingTab('Incident Queue');
+    store.setSafeguardingSeverityFilter('Critical');
+    expect(
+      store.filteredSafeguardingCases().every((c) => c.severity === 'Critical'),
+    ).toBe(true);
+
+    store.setSafeguardingSeverityFilter('All Severities');
+    store.setSafeguardingSchoolFilter('Greenwood High School');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.institution === 'Greenwood High School'),
+    ).toBe(true);
+
+    store.setSafeguardingSchoolFilter('All Schools');
+    store.setSafeguardingSearch('CASE-2025-0871');
+    expect(store.filteredSafeguardingCases().length).toBe(1);
+    expect(store.filteredSafeguardingCases()[0].id).toBe('CASE-2025-0871');
+
+    store.setSafeguardingSearch('');
+    store.setSafeguardingStatusFilter('Under Review');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.status === 'Under Review'),
+    ).toBe(true);
+    store.setSafeguardingStatusFilter('All Statuses');
+  });
+
+  it('should handle safeguarding pagination', () => {
+    store.setSafeguardingPage(1);
+    expect(store.safeguardingCurrentPage()).toBe(1);
+    expect(store.paginatedSafeguardingCases().length).toBeLessThanOrEqual(8);
+  });
+
+  it('should create new safeguarding case and update activity', () => {
+    const initialCases = store.safeguardingCases().length;
+    const initialActivities = store.recentSafeguardingActivities().length;
+
+    const newCase = store.createSafeguardingCase({
+      title: 'Suspicious Messaging Activity in Study Group',
+      institution: 'Greenwood High School',
+      category: 'Inappropriate Communication',
+      severity: 'High',
+      incidentDateTime: 'May 30, 2025 02:15 PM',
+      reportedBy: 'Staff Member',
+      description: 'Reported unsolicited messages sent to grade 8 learner.',
+      locationContext: 'Study Group Discussion',
+      sensitiveEvidence: true,
+      containsLearnerInfo: true,
+      requiresRestrictedAccess: true,
+      assignedReviewer: 'Rahul Mehta',
+      escalationStatus: 'Escalated',
+      responseDeadline: 'May 31, 2025 05:00 PM',
+      notifySchoolAdmin: true,
+      notifyComplianceOfficer: true,
+      restrictUserAccess: false,
+      parentConsentStatus: 'Pending',
+      policyAcknowledged: 'Child Protection',
+      dataPrivacyReviewRequired: 'Yes',
+      externalReportingRequired: false,
+    });
+
+    expect(store.safeguardingCases().length).toBe(initialCases + 1);
+    expect(store.recentSafeguardingActivities().length).toBe(
+      Math.min(5, initialActivities + 1),
+    );
+    expect(newCase.institution).toBe('Greenwood High School');
+    expect(newCase.severity).toBe('High');
+  });
+
+  it('should assign reviewer and update case status', () => {
+    const targetCase = store.safeguardingCases()[0];
+    store.assignSafeguardingReviewer(
+      targetCase.id,
+      'Anita Roy',
+      'Compliance Officer',
+    );
+    const updated = store
+      .safeguardingCases()
+      .find((c) => c.id === targetCase.id);
+    expect(updated?.assignedTo.name).toBe('Anita Roy');
+    expect(updated?.assignedTo.role).toBe('Compliance Officer');
+
+    store.updateSafeguardingCaseStatus(targetCase.id, 'Resolved');
+    const resolved = store
+      .safeguardingCases()
+      .find((c) => c.id === targetCase.id);
+    expect(resolved?.status).toBe('Resolved');
+
+    store.setSafeguardingDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedSafeguardingDateRange()).toBe('Jun 1 – Jun 30, 2025');
+
+    store.setCompliancePeriod('This Quarter');
+    expect(store.selectedCompliancePeriod()).toBe('This Quarter');
+  });
 });

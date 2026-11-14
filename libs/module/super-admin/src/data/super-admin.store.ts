@@ -166,6 +166,49 @@ import {
   INITIAL_SUBSCRIPTION_METRICS,
   INITIAL_SUBSCRIPTION_PLANS,
 } from './super-admin-subscriptions.data';
+import {
+  CreateReportFormData,
+  PlatformReport,
+  QuickReportTemplate,
+  RecentReportActivity,
+  ReportBottomMetric,
+  ReportHealthCategory,
+  ReportMetric,
+  ScheduleReportFormData,
+  ScheduledReportQueueItem,
+} from './super-admin-reports.models';
+import {
+  INITIAL_PLATFORM_REPORTS,
+  INITIAL_QUICK_REPORT_TEMPLATES,
+  INITIAL_RECENT_REPORT_ACTIVITIES,
+  INITIAL_REPORT_BOTTOM_METRICS,
+  INITIAL_REPORT_HEALTH_CATEGORIES,
+  INITIAL_REPORT_METRICS,
+  INITIAL_SCHEDULED_REPORT_QUEUE,
+} from './super-admin-reports.data';
+import {
+  ComplianceHealthCategory,
+  ConsentQueueBreakdown,
+  CreateSafeguardingCaseFormData,
+  PolicyChecklistItem,
+  RecentSafeguardingActivity,
+  SafeguardingBottomMetric,
+  SafeguardingCase,
+  SafeguardingCaseStatus,
+  SafeguardingMetric,
+  SafeguardingTab,
+  UrgentEscalation,
+} from './super-admin-safeguarding.models';
+import {
+  INITIAL_COMPLIANCE_HEALTH_CATEGORIES,
+  INITIAL_CONSENT_BREAKDOWN,
+  INITIAL_POLICY_CHECKLIST,
+  INITIAL_RECENT_SAFEGUARDING_ACTIVITIES,
+  INITIAL_SAFEGUARDING_BOTTOM_METRICS,
+  INITIAL_SAFEGUARDING_CASES,
+  INITIAL_SAFEGUARDING_METRICS,
+  INITIAL_URGENT_ESCALATIONS,
+} from './super-admin-safeguarding.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -381,6 +424,74 @@ export class SuperAdminStore {
   readonly selectedSubscriptionsDateRange = signal<string>(
     'May 12 – May 18, 2025',
   );
+
+  // Reports Signals
+  readonly reportMetrics = signal<ReportMetric[]>(INITIAL_REPORT_METRICS);
+  readonly platformReports = signal<PlatformReport[]>(INITIAL_PLATFORM_REPORTS);
+  readonly reportBottomMetrics = signal<ReportBottomMetric[]>(
+    INITIAL_REPORT_BOTTOM_METRICS,
+  );
+  readonly reportHealthCategories = signal<ReportHealthCategory[]>(
+    INITIAL_REPORT_HEALTH_CATEGORIES,
+  );
+  readonly scheduledReportQueue = signal<ScheduledReportQueueItem[]>(
+    INITIAL_SCHEDULED_REPORT_QUEUE,
+  );
+  readonly recentReportActivities = signal<RecentReportActivity[]>(
+    INITIAL_RECENT_REPORT_ACTIVITIES,
+  );
+  readonly quickReportTemplates = signal<QuickReportTemplate[]>(
+    INITIAL_QUICK_REPORT_TEMPLATES,
+  );
+
+  readonly selectedReportTab = signal<string>('Academic Reports');
+  readonly reportsSearchQuery = signal<string>('');
+  readonly selectedReportsSchoolFilter = signal<string>('All Schools');
+  readonly selectedReportsTypeFilter = signal<string>('All Report Types');
+  readonly selectedReportsDateRange = signal<string>('May 1 – May 31, 2025');
+  readonly selectedReportsStatusFilter = signal<string>('All Statuses');
+  readonly selectedReportHealthPeriod = signal<string>('This Month');
+  readonly reportsCurrentPage = signal<number>(1);
+  readonly reportsPageSize = signal<number>(7);
+
+  // Safeguarding & Compliance Signals
+  readonly safeguardingMetrics = signal<SafeguardingMetric[]>(
+    INITIAL_SAFEGUARDING_METRICS,
+  );
+  readonly safeguardingCases = signal<SafeguardingCase[]>(
+    INITIAL_SAFEGUARDING_CASES,
+  );
+  readonly safeguardingBottomMetrics = signal<SafeguardingBottomMetric[]>(
+    INITIAL_SAFEGUARDING_BOTTOM_METRICS,
+  );
+  readonly complianceHealthCategories = signal<ComplianceHealthCategory[]>(
+    INITIAL_COMPLIANCE_HEALTH_CATEGORIES,
+  );
+  readonly urgentEscalations = signal<UrgentEscalation[]>(
+    INITIAL_URGENT_ESCALATIONS,
+  );
+  readonly consentQueueBreakdown = signal<ConsentQueueBreakdown>(
+    INITIAL_CONSENT_BREAKDOWN,
+  );
+  readonly recentSafeguardingActivities = signal<RecentSafeguardingActivity[]>(
+    INITIAL_RECENT_SAFEGUARDING_ACTIVITIES,
+  );
+  readonly policyChecklist = signal<PolicyChecklistItem[]>(
+    INITIAL_POLICY_CHECKLIST,
+  );
+
+  readonly selectedSafeguardingTab = signal<SafeguardingTab>('Incident Queue');
+  readonly safeguardingSearchQuery = signal<string>('');
+  readonly selectedSafeguardingSchoolFilter = signal<string>('All Schools');
+  readonly selectedSafeguardingSeverityFilter =
+    signal<string>('All Severities');
+  readonly selectedSafeguardingStatusFilter = signal<string>('All Statuses');
+  readonly selectedSafeguardingDateRange = signal<string>(
+    'May 1 – May 31, 2025',
+  );
+  readonly selectedCompliancePeriod = signal<string>('This Month');
+  readonly safeguardingCurrentPage = signal<number>(1);
+  readonly safeguardingPageSize = signal<number>(8);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -815,6 +926,208 @@ export class SuperAdminStore {
       1,
       Math.ceil(
         this.filteredSubscriptions().length / this.subscriptionsPageSize(),
+      ),
+    );
+  });
+
+  // Reports Computeds
+  readonly filteredPlatformReports = computed(() => {
+    const list = this.platformReports();
+    const tab = this.selectedReportTab();
+    const search = this.reportsSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedReportsSchoolFilter();
+    const typeFilter = this.selectedReportsTypeFilter();
+    const statusFilter = this.selectedReportsStatusFilter();
+
+    return list.filter((rep) => {
+      // Tab category filter
+      if (
+        tab === 'School Performance' &&
+        rep.category !== 'School Performance'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Subscription Reports' &&
+        rep.category !== 'Subscription Reports'
+      ) {
+        return false;
+      }
+      if (tab === 'Usage Reports' && rep.category !== 'Usage Reports') {
+        return false;
+      }
+      if (
+        tab === 'Safeguarding Reports' &&
+        rep.category !== 'Safeguarding Reports'
+      ) {
+        return false;
+      }
+      if (tab === 'Custom Reports' && rep.category !== 'Custom Reports') {
+        return false;
+      }
+
+      // School filter
+      if (schoolFilter !== 'All Schools' && rep.scope !== schoolFilter) {
+        return false;
+      }
+
+      // Type filter
+      if (typeFilter !== 'All Report Types') {
+        const matchesCategory = rep.category === typeFilter;
+        const matchesFormat = rep.format.includes(typeFilter);
+        if (!matchesCategory && !matchesFormat) {
+          return false;
+        }
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && rep.status !== statusFilter) {
+        return false;
+      }
+
+      // Search
+      if (search) {
+        const matchesName = rep.name.toLowerCase().includes(search);
+        const matchesDesc = rep.description.toLowerCase().includes(search);
+        const matchesOwner = rep.ownerName.toLowerCase().includes(search);
+        if (!matchesName && !matchesDesc && !matchesOwner) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalPlatformReportsCount = computed(
+    () => this.filteredPlatformReports().length,
+  );
+
+  readonly paginatedPlatformReports = computed(() => {
+    const list = this.filteredPlatformReports();
+    const page = this.reportsCurrentPage();
+    const size = this.reportsPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalPlatformReportsPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(this.filteredPlatformReports().length / this.reportsPageSize()),
+    );
+  });
+
+  // Safeguarding & Compliance Computeds
+  readonly filteredSafeguardingCases = computed(() => {
+    const list = this.safeguardingCases();
+    const tab = this.selectedSafeguardingTab();
+    const search = this.safeguardingSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedSafeguardingSchoolFilter();
+    const severityFilter = this.selectedSafeguardingSeverityFilter();
+    const statusFilter = this.selectedSafeguardingStatusFilter();
+
+    return list.filter((item) => {
+      // Tab filter
+      if (
+        tab === 'Flagged Communications' &&
+        item.category !== 'Inappropriate Communication'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Consent & Permissions' &&
+        item.category !== 'Consent Pending' &&
+        item.category !== 'Consent Withdrawal'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Policy Compliance' &&
+        item.category !== 'Policy Breach' &&
+        item.category !== 'Data Privacy Concern'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Escalations' &&
+        item.status !== 'Escalated' &&
+        item.severity !== 'Critical'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Audit Reviews' &&
+        item.status !== 'Resolved' &&
+        item.status !== 'Under Review'
+      ) {
+        return false;
+      }
+
+      // School filter
+      if (schoolFilter !== 'All Schools' && item.institution !== schoolFilter) {
+        return false;
+      }
+
+      // Severity filter
+      if (
+        severityFilter !== 'All Severities' &&
+        item.severity !== severityFilter
+      ) {
+        return false;
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && item.status !== statusFilter) {
+        return false;
+      }
+
+      // Search keyword
+      if (search) {
+        const matchesId = item.id.toLowerCase().includes(search);
+        const matchesInst = item.institution.toLowerCase().includes(search);
+        const matchesCat = item.category.toLowerCase().includes(search);
+        const matchesReporter = item.reportedBy.name
+          .toLowerCase()
+          .includes(search);
+        const matchesAssignee = item.assignedTo.name
+          .toLowerCase()
+          .includes(search);
+        const matchesDetails =
+          item.details?.toLowerCase().includes(search) ?? false;
+        if (
+          !matchesId &&
+          !matchesInst &&
+          !matchesCat &&
+          !matchesReporter &&
+          !matchesAssignee &&
+          !matchesDetails
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalSafeguardingCasesCount = computed(
+    () => this.filteredSafeguardingCases().length,
+  );
+
+  readonly paginatedSafeguardingCases = computed(() => {
+    const list = this.filteredSafeguardingCases();
+    const page = this.safeguardingCurrentPage();
+    const size = this.safeguardingPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalSafeguardingPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(
+        this.filteredSafeguardingCases().length / this.safeguardingPageSize(),
       ),
     );
   });
@@ -1403,5 +1716,288 @@ export class SuperAdminStore {
     };
     this.subscriptionInvoices.update((list) => [newInvoice, ...list]);
     return newInvoice;
+  }
+
+  // Reports Actions
+  setReportTab(tab: string): void {
+    this.selectedReportTab.set(tab);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsSearch(query: string): void {
+    this.reportsSearchQuery.set(query);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsSchoolFilter(school: string): void {
+    this.selectedReportsSchoolFilter.set(school);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsTypeFilter(type: string): void {
+    this.selectedReportsTypeFilter.set(type);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportsDateRange(range: string): void {
+    this.selectedReportsDateRange.set(range);
+  }
+
+  setReportsStatusFilter(status: string): void {
+    this.selectedReportsStatusFilter.set(status);
+    this.reportsCurrentPage.set(1);
+  }
+
+  setReportHealthPeriod(period: string): void {
+    this.selectedReportHealthPeriod.set(period);
+  }
+
+  setReportsPage(page: number): void {
+    this.reportsCurrentPage.set(page);
+  }
+
+  createCustomReport(formData: CreateReportFormData): PlatformReport {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const newReport: PlatformReport = {
+      id: `rep-${Date.now().toString(36)}`,
+      name: formData.reportName,
+      description: formData.description,
+      category: formData.category,
+      icon: 'description',
+      iconTone: 'primary',
+      scope: formData.scope,
+      scopeSchoolsCount: 1186,
+      frequency: formData.frequency,
+      lastGeneratedDate: dateStr,
+      lastGeneratedTime: timeStr,
+      status: 'Ready',
+      format: formData.format,
+      ownerName: 'Super Admin',
+      ownerInitials: 'SA',
+      ownerRole: 'Super Admin',
+      fileSizeBytes: '1.5 MB',
+      downloadCount: 0,
+    };
+
+    this.platformReports.update((list) => [newReport, ...list]);
+
+    // Add to recent activity
+    const activity: RecentReportActivity = {
+      id: `act-${Date.now().toString(36)}`,
+      title: `${newReport.name} generated`,
+      actorAndTimestamp: `${dateStr}, ${timeStr} by Super Admin`,
+      icon: 'check_circle',
+      iconTone: 'success',
+    };
+    this.recentReportActivities.update((list) => [activity, ...list]);
+
+    return newReport;
+  }
+
+  scheduleReport(scheduleData: ScheduleReportFormData): void {
+    const report = this.platformReports().find(
+      (r) => r.id === scheduleData.reportId,
+    );
+    if (!report) return;
+
+    const queueItem: ScheduledReportQueueItem = {
+      id: `sq-${Date.now().toString(36)}`,
+      title: report.name,
+      scheduledTime: `${scheduleData.scheduleTime} • ${scheduleData.frequency}`,
+      icon: 'calendar_month',
+      iconTone: 'purple',
+      badge: 'Upcoming',
+    };
+
+    this.scheduledReportQueue.update((list) => [queueItem, ...list]);
+
+    this.platformReports.update((list) =>
+      list.map((r) =>
+        r.id === scheduleData.reportId
+          ? {
+              ...r,
+              status: 'Scheduled' as const,
+              scheduledDate: scheduleData.scheduleTime,
+            }
+          : r,
+      ),
+    );
+  }
+
+  triggerReportGeneration(id: string): void {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    this.platformReports.update((list) =>
+      list.map((r) =>
+        r.id === id
+          ? {
+              ...r,
+              status: 'Ready' as const,
+              lastGeneratedDate: dateStr,
+              lastGeneratedTime: timeStr,
+              downloadCount: (r.downloadCount ?? 0) + 1,
+            }
+          : r,
+      ),
+    );
+  }
+
+  // Safeguarding Actions
+  setSafeguardingTab(tab: SafeguardingTab): void {
+    this.selectedSafeguardingTab.set(tab);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSearch(query: string): void {
+    this.safeguardingSearchQuery.set(query);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSchoolFilter(school: string): void {
+    this.selectedSafeguardingSchoolFilter.set(school);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSeverityFilter(severity: string): void {
+    this.selectedSafeguardingSeverityFilter.set(severity);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingStatusFilter(status: string): void {
+    this.selectedSafeguardingStatusFilter.set(status);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingDateRange(range: string): void {
+    this.selectedSafeguardingDateRange.set(range);
+  }
+
+  setCompliancePeriod(period: string): void {
+    this.selectedCompliancePeriod.set(period);
+  }
+
+  setSafeguardingPage(page: number): void {
+    if (page >= 1 && page <= this.totalSafeguardingPages()) {
+      this.safeguardingCurrentPage.set(page);
+    }
+  }
+
+  createSafeguardingCase(
+    formData: CreateSafeguardingCaseFormData,
+  ): SafeguardingCase {
+    const caseNum = Math.floor(1000 + Math.random() * 9000);
+    const newId = `CASE-2025-${caseNum}`;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const newCase: SafeguardingCase = {
+      id: newId,
+      institution: formData.institution,
+      location: 'Regional Campus',
+      category: formData.category,
+      severity: formData.severity,
+      reportedBy: {
+        name: formData.reportedBy || 'Super Admin',
+        role: 'Admin',
+        type: 'Platform Staff',
+      },
+      assignedTo: {
+        name: formData.assignedReviewer || 'Rahul Mehta',
+        role: 'Safeguarding Lead',
+      },
+      status: 'Under Review',
+      lastUpdated: dateStr,
+      lastUpdatedTime: timeStr,
+      details: formData.description,
+      learnerName: formData.learnerName,
+      staffName: formData.staffName,
+      additionalUsers: formData.additionalUsers,
+      gradeClass: formData.gradeClass,
+      parentLinked: formData.parentLinked,
+      evidenceFilesCount: formData.sensitiveEvidence ? 1 : 0,
+      slaDeadline: formData.responseDeadline,
+      dateCreated: dateStr,
+    };
+
+    this.safeguardingCases.update((cases) => [newCase, ...cases]);
+
+    // Add activity log
+    const newActivity: RecentSafeguardingActivity = {
+      id: `act-${Date.now()}`,
+      action: `New Case ${newId} logged`,
+      meta: 'by Super Admin',
+      timestamp: 'Just now',
+      icon: 'shield',
+      iconClass: 'act-info',
+    };
+    this.recentSafeguardingActivities.update((list) => [
+      newActivity,
+      ...list.slice(0, 4),
+    ]);
+
+    return newCase;
+  }
+
+  assignSafeguardingReviewer(
+    caseId: string,
+    reviewerName: string,
+    reviewerRole: string,
+  ): void {
+    this.safeguardingCases.update((cases) =>
+      cases.map((c) =>
+        c.id === caseId
+          ? {
+              ...c,
+              assignedTo: { name: reviewerName, role: reviewerRole },
+              status: c.status === 'Pending Review' ? 'Under Review' : c.status,
+              lastUpdated: 'Just now',
+            }
+          : c,
+      ),
+    );
+  }
+
+  updateSafeguardingCaseStatus(
+    caseId: string,
+    status: SafeguardingCaseStatus,
+  ): void {
+    this.safeguardingCases.update((cases) =>
+      cases.map((c) =>
+        c.id === caseId
+          ? {
+              ...c,
+              status,
+              lastUpdated: 'Just now',
+            }
+          : c,
+      ),
+    );
   }
 }
