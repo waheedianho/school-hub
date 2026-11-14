@@ -99,6 +99,22 @@ export const superAdminRoutes: Routes = [
         loadComponent: () =>
           import('./reports/reports').then((m) => m.ReportsComponent),
       },
+      {
+        path: 'safeguarding-compliance',
+        title: 'Safeguarding & Compliance | Learno Super Admin',
+        loadComponent: () =>
+          import('./safeguarding/safeguarding-compliance').then(
+            (m) => m.SafeguardingComplianceComponent,
+          ),
+      },
+      {
+        path: 'safeguarding-compliance/create',
+        title: 'Create Safeguarding Case | Learno Super Admin',
+        loadComponent: () =>
+          import('./safeguarding/create-case/create-case').then(
+            (m) => m.CreateCaseComponent,
+          ),
+      },
       ...SUPER_ADMIN_PAGES.filter(
         (page) =>
           page.path !== 'dashboard' &&
@@ -108,7 +124,8 @@ export const superAdminRoutes: Routes = [
           page.path !== 'assessments-qb' &&
           page.path !== 'analytics' &&
           page.path !== 'subscriptions-billing' &&
-          page.path !== 'reports',
+          page.path !== 'reports' &&
+          page.path !== 'safeguarding-compliance',
       ).map((page) => ({
         path: page.path,
         component: SuperAdmin,
@@ -133,17 +150,13 @@ export const superAdminRoutes: Routes = [
       },
       {
         path: 'safeguarding/create-case',
-        component: SuperAdmin,
-        title: 'Create Safeguarding Case | Learno Super Admin',
-        data: {
-          page: {
-            path: 'safeguarding/create-case',
-            label: 'Create Safeguarding Case',
-            icon: 'shield',
-            description:
-              'Log a new incident or compliance concern across institutions.',
-          },
-        },
+        redirectTo: 'safeguarding-compliance/create',
+        pathMatch: 'full',
+      },
+      {
+        path: 'safeguarding/create',
+        redirectTo: 'safeguarding-compliance/create',
+        pathMatch: 'full',
       },
       {
         path: 'resources/upload',

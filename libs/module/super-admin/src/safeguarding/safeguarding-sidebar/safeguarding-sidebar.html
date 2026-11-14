@@ -1,0 +1,234 @@
+<div class="sidebar-widgets">
+  <!-- Widget 1: Compliance Health Overview -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <div class="title-with-info">
+        <h3 class="card-title">Compliance Health Overview</h3>
+        <span
+          class="material-symbols-outlined info-icon"
+          title="Compliance status overview"
+          >info</span
+        >
+      </div>
+      <select
+        id="compliance-health-period-select"
+        class="period-select"
+        aria-label="Compliance health period"
+        [value]="selectedPeriod()"
+        (change)="onPeriodSelect($event)"
+      >
+        <option value="This Month">This Month</option>
+        <option value="Last Month">Last Month</option>
+        <option value="This Quarter">This Quarter</option>
+        <option value="This Year">This Year</option>
+      </select>
+    </div>
+
+    <div class="donut-chart-container">
+      <div class="donut-wrapper">
+        <svg class="donut-svg" viewBox="0 0 120 120">
+          <!-- Background circle -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f1f5f9"
+            stroke-width="14"
+            fill="transparent"
+          />
+          <!-- Compliant segment (82%) -> circumference ~ 282.74, 82% = 231.8 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#10b981"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="50.89"
+            stroke-linecap="round"
+            transform="rotate(-90 60 60)"
+          />
+          <!-- Needs Attention segment (13%) -> 36.75 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f59e0b"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="245.99"
+            stroke-linecap="round"
+            transform="rotate(205 60 60)"
+          />
+          <!-- Non-Compliant segment (5%) -> 14.13 -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#ef4444"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="268.61"
+            stroke-linecap="round"
+            transform="rotate(252 60 60)"
+          />
+        </svg>
+        <div class="donut-center">
+          <span class="donut-value">82%</span>
+          <span class="donut-label">Healthy</span>
+        </div>
+      </div>
+
+      <div class="donut-legend">
+        @for (cat of healthCategories(); track cat.label) {
+        <div class="legend-row">
+          <div class="legend-label-col">
+            <span
+              class="legend-dot"
+              [style.background-color]="cat.color"
+            ></span>
+            <span class="legend-name">{{ cat.label }}</span>
+          </div>
+          <span class="legend-count"
+            >{{ cat.count }} ({{ cat.percentage }}%)</span
+          >
+        </div>
+        }
+        <div class="total-schools-note">Total Schools: 190</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 2: Urgent Escalations -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Urgent Escalations</h3>
+      <button
+        type="button"
+        class="view-all-btn"
+        (click)="viewEscalations.emit()"
+      >
+        View All
+      </button>
+    </div>
+    <div class="escalations-list">
+      @for (esc of urgentEscalations(); track esc.id) {
+      <div
+        class="escalation-item"
+        (click)="selectCase.emit(esc.caseId)"
+        (keyup.enter)="selectCase.emit(esc.caseId)"
+        tabindex="0"
+      >
+        <div class="esc-icon-wrap" [ngClass]="esc.iconClass">
+          <span class="material-symbols-outlined">{{ esc.icon }}</span>
+        </div>
+        <div class="esc-info">
+          <span class="esc-title">{{ esc.title }}</span>
+          <span class="esc-meta">{{ esc.caseId }} • {{ esc.school }}</span>
+        </div>
+        <span class="esc-time">{{ esc.timestamp }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 3: Consent Review Queue -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Consent Review Queue</h3>
+      <button
+        type="button"
+        class="view-all-btn"
+        (click)="viewConsentQueue.emit()"
+      >
+        View All
+      </button>
+    </div>
+    <div class="consent-queue-content">
+      <div class="queue-big-stat">
+        <span class="queue-num">{{ consentBreakdown().total }}</span>
+        <span class="queue-sub">Pending Reviews</span>
+      </div>
+      <div class="queue-breakdown">
+        <div class="queue-row">
+          <div class="queue-label">
+            <span class="queue-dot dot-danger"></span>
+            <span>Overdue</span>
+          </div>
+          <span class="queue-count">{{ consentBreakdown().overdue }}</span>
+        </div>
+        <div class="queue-row">
+          <div class="queue-label">
+            <span class="queue-dot dot-warning"></span>
+            <span>Due Today</span>
+          </div>
+          <span class="queue-count">{{ consentBreakdown().dueToday }}</span>
+        </div>
+        <div class="queue-row">
+          <div class="queue-label">
+            <span class="queue-dot dot-info"></span>
+            <span>Due This Week</span>
+          </div>
+          <span class="queue-count">{{ consentBreakdown().dueThisWeek }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 4: Recent Safeguarding Activity -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Safeguarding Activity</h3>
+      <button
+        type="button"
+        class="view-all-btn"
+        (click)="viewActivities.emit()"
+      >
+        View All
+      </button>
+    </div>
+    <div class="activity-feed">
+      @for (act of recentActivities(); track act.id) {
+      <div class="activity-item">
+        <div class="act-icon-wrap" [ngClass]="act.iconClass">
+          <span class="material-symbols-outlined">{{ act.icon }}</span>
+        </div>
+        <div class="act-details">
+          <span class="act-title">{{ act.action }}</span>
+          <span class="act-meta">{{ act.meta }} • {{ act.timestamp }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 5: Quick Policy Checklist -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Quick Policy Checklist</h3>
+      <button type="button" class="view-all-btn" (click)="viewPolicies.emit()">
+        View All
+      </button>
+    </div>
+    <div class="policy-checklist">
+      @for (item of policyChecklist(); track item.id) {
+      <div class="policy-row">
+        <span class="policy-name">{{ item.title }}</span>
+        <div
+          class="policy-badge"
+          [class.badge-success]="item.statusType === 'success'"
+          [class.badge-warning]="item.statusType === 'warning'"
+        >
+          <span class="material-symbols-outlined badge-icon">
+            {{ item.statusType === 'success' ? 'check_circle' : 'warning' }}
+          </span>
+          <span>{{ item.status }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

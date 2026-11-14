@@ -1,0 +1,104 @@
+<div class="bottom-metrics-grid">
+  @for (metric of bottomMetrics(); track metric.id) {
+  <div class="bottom-card" [class.status-card]="metric.type === 'status'">
+    <div class="card-header">
+      <div class="title-row">
+        <span class="card-title">{{ metric.label }}</span>
+        @if (metric.label.includes('Status') ||
+        metric.label.includes('Average')) {
+        <span class="material-symbols-outlined info-icon" title="Information"
+          >info</span
+        >
+        }
+      </div>
+    </div>
+
+    <div class="card-body">
+      @if (metric.type === 'sparkline') {
+      <div class="metric-row">
+        <div class="metric-left">
+          <span class="big-value">{{ metric.value }}</span>
+          @if (metric.trend) {
+          <div class="trend-sub">
+            <span
+              class="trend"
+              [class.positive]="metric.trendDirection === 'down' || metric.id !== 'avg-res-time'"
+              [class.negative]="metric.trendDirection === 'up' && metric.id === 'avg-res-time'"
+            >
+              {{ metric.trendDirection === 'up' ? '↑' : '↓' }} {{ metric.trend
+              }}
+            </span>
+            <span class="subtext">{{ metric.subtext }}</span>
+          </div>
+          }
+        </div>
+        <div class="sparkline-wrapper">
+          <svg
+            class="sparkline"
+            viewBox="0 0 110 45"
+            preserveAspectRatio="none"
+          >
+            <polyline
+              fill="none"
+              [attr.stroke]="metric.sparklineColor || '#3b82f6'"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              [attr.points]="metric.sparklinePoints"
+            />
+          </svg>
+        </div>
+      </div>
+      } @else if (metric.type === 'gauge') {
+      <div class="metric-row">
+        <div class="metric-left">
+          <span class="big-value">{{ metric.value }}</span>
+          <div class="trend-sub">
+            <span class="trend positive">↑ {{ metric.trend }}</span>
+            <span class="subtext">{{ metric.subtext }}</span>
+          </div>
+        </div>
+        <div class="gauge-wrapper">
+          <svg class="progress-ring" viewBox="0 0 44 44">
+            <circle
+              class="progress-ring-bg"
+              stroke="#e2e8f0"
+              stroke-width="4"
+              fill="transparent"
+              r="18"
+              cx="22"
+              cy="22"
+            />
+            <circle
+              class="progress-ring-circle"
+              stroke="#10b981"
+              stroke-width="4"
+              stroke-dasharray="113"
+              stroke-dashoffset="20.34"
+              stroke-linecap="round"
+              fill="transparent"
+              r="18"
+              cx="22"
+              cy="22"
+            />
+          </svg>
+          <span class="gauge-center-text">{{ metric.percentage }}%</span>
+        </div>
+      </div>
+      } @else if (metric.type === 'status') {
+      <div class="status-content">
+        <div class="status-left">
+          <div class="status-icon-wrap">
+            <span class="material-symbols-outlined status-icon"
+              >check_circle</span
+            >
+          </div>
+          <span class="status-text">{{ metric.value }}</span>
+        </div>
+        <span class="status-badge">{{ metric.statusBadge }}</span>
+      </div>
+      }
+    </div>
+  </div>
+  }
+</div>

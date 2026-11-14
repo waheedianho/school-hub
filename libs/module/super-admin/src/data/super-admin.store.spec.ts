@@ -513,4 +513,122 @@ describe('SuperAdminStore', () => {
     store.setReportHealthPeriod('This Quarter');
     expect(store.selectedReportHealthPeriod()).toBe('This Quarter');
   });
+
+  it('should initialize safeguarding & compliance state properly', () => {
+    expect(store.safeguardingMetrics().length).toBe(6);
+    expect(store.safeguardingCases().length).toBeGreaterThanOrEqual(8);
+    expect(store.safeguardingBottomMetrics().length).toBe(5);
+    expect(store.complianceHealthCategories().length).toBe(3);
+    expect(store.urgentEscalations().length).toBe(3);
+    expect(store.consentQueueBreakdown().total).toBe(64);
+    expect(store.recentSafeguardingActivities().length).toBe(3);
+    expect(store.policyChecklist().length).toBe(5);
+    expect(store.selectedSafeguardingTab()).toBe('Incident Queue');
+  });
+
+  it('should filter safeguarding cases by tab, school, severity, and search', () => {
+    store.setSafeguardingTab('Flagged Communications');
+    expect(store.selectedSafeguardingTab()).toBe('Flagged Communications');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.category === 'Inappropriate Communication'),
+    ).toBe(true);
+
+    store.setSafeguardingTab('Incident Queue');
+    store.setSafeguardingSeverityFilter('Critical');
+    expect(
+      store.filteredSafeguardingCases().every((c) => c.severity === 'Critical'),
+    ).toBe(true);
+
+    store.setSafeguardingSeverityFilter('All Severities');
+    store.setSafeguardingSchoolFilter('Greenwood High School');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.institution === 'Greenwood High School'),
+    ).toBe(true);
+
+    store.setSafeguardingSchoolFilter('All Schools');
+    store.setSafeguardingSearch('CASE-2025-0871');
+    expect(store.filteredSafeguardingCases().length).toBe(1);
+    expect(store.filteredSafeguardingCases()[0].id).toBe('CASE-2025-0871');
+
+    store.setSafeguardingSearch('');
+    store.setSafeguardingStatusFilter('Under Review');
+    expect(
+      store
+        .filteredSafeguardingCases()
+        .every((c) => c.status === 'Under Review'),
+    ).toBe(true);
+    store.setSafeguardingStatusFilter('All Statuses');
+  });
+
+  it('should handle safeguarding pagination', () => {
+    store.setSafeguardingPage(1);
+    expect(store.safeguardingCurrentPage()).toBe(1);
+    expect(store.paginatedSafeguardingCases().length).toBeLessThanOrEqual(8);
+  });
+
+  it('should create new safeguarding case and update activity', () => {
+    const initialCases = store.safeguardingCases().length;
+    const initialActivities = store.recentSafeguardingActivities().length;
+
+    const newCase = store.createSafeguardingCase({
+      title: 'Suspicious Messaging Activity in Study Group',
+      institution: 'Greenwood High School',
+      category: 'Inappropriate Communication',
+      severity: 'High',
+      incidentDateTime: 'May 30, 2025 02:15 PM',
+      reportedBy: 'Staff Member',
+      description: 'Reported unsolicited messages sent to grade 8 learner.',
+      locationContext: 'Study Group Discussion',
+      sensitiveEvidence: true,
+      containsLearnerInfo: true,
+      requiresRestrictedAccess: true,
+      assignedReviewer: 'Rahul Mehta',
+      escalationStatus: 'Escalated',
+      responseDeadline: 'May 31, 2025 05:00 PM',
+      notifySchoolAdmin: true,
+      notifyComplianceOfficer: true,
+      restrictUserAccess: false,
+      parentConsentStatus: 'Pending',
+      policyAcknowledged: 'Child Protection',
+      dataPrivacyReviewRequired: 'Yes',
+      externalReportingRequired: false,
+    });
+
+    expect(store.safeguardingCases().length).toBe(initialCases + 1);
+    expect(store.recentSafeguardingActivities().length).toBe(
+      Math.min(5, initialActivities + 1),
+    );
+    expect(newCase.institution).toBe('Greenwood High School');
+    expect(newCase.severity).toBe('High');
+  });
+
+  it('should assign reviewer and update case status', () => {
+    const targetCase = store.safeguardingCases()[0];
+    store.assignSafeguardingReviewer(
+      targetCase.id,
+      'Anita Roy',
+      'Compliance Officer',
+    );
+    const updated = store
+      .safeguardingCases()
+      .find((c) => c.id === targetCase.id);
+    expect(updated?.assignedTo.name).toBe('Anita Roy');
+    expect(updated?.assignedTo.role).toBe('Compliance Officer');
+
+    store.updateSafeguardingCaseStatus(targetCase.id, 'Resolved');
+    const resolved = store
+      .safeguardingCases()
+      .find((c) => c.id === targetCase.id);
+    expect(resolved?.status).toBe('Resolved');
+
+    store.setSafeguardingDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedSafeguardingDateRange()).toBe('Jun 1 – Jun 30, 2025');
+
+    store.setCompliancePeriod('This Quarter');
+    expect(store.selectedCompliancePeriod()).toBe('This Quarter');
+  });
 });

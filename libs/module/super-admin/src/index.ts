@@ -31,3 +31,7 @@ export * from './subscriptions/subscriptions-billing';
 export * from './data/super-admin-reports.models';
 export * from './data/super-admin-reports.data';
 export * from './reports/reports';
+export * from './data/super-admin-safeguarding.models';
+export * from './data/super-admin-safeguarding.data';
+export * from './safeguarding/safeguarding-compliance';
+export * from './safeguarding/create-case/create-case';

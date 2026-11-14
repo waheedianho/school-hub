@@ -186,6 +186,29 @@ import {
   INITIAL_REPORT_METRICS,
   INITIAL_SCHEDULED_REPORT_QUEUE,
 } from './super-admin-reports.data';
+import {
+  ComplianceHealthCategory,
+  ConsentQueueBreakdown,
+  CreateSafeguardingCaseFormData,
+  PolicyChecklistItem,
+  RecentSafeguardingActivity,
+  SafeguardingBottomMetric,
+  SafeguardingCase,
+  SafeguardingCaseStatus,
+  SafeguardingMetric,
+  SafeguardingTab,
+  UrgentEscalation,
+} from './super-admin-safeguarding.models';
+import {
+  INITIAL_COMPLIANCE_HEALTH_CATEGORIES,
+  INITIAL_CONSENT_BREAKDOWN,
+  INITIAL_POLICY_CHECKLIST,
+  INITIAL_RECENT_SAFEGUARDING_ACTIVITIES,
+  INITIAL_SAFEGUARDING_BOTTOM_METRICS,
+  INITIAL_SAFEGUARDING_CASES,
+  INITIAL_SAFEGUARDING_METRICS,
+  INITIAL_URGENT_ESCALATIONS,
+} from './super-admin-safeguarding.data';
 
 export type SchoolTab = 'all' | 'onboarding' | 'pending' | 'archived';
 
@@ -430,6 +453,45 @@ export class SuperAdminStore {
   readonly selectedReportHealthPeriod = signal<string>('This Month');
   readonly reportsCurrentPage = signal<number>(1);
   readonly reportsPageSize = signal<number>(7);
+
+  // Safeguarding & Compliance Signals
+  readonly safeguardingMetrics = signal<SafeguardingMetric[]>(
+    INITIAL_SAFEGUARDING_METRICS,
+  );
+  readonly safeguardingCases = signal<SafeguardingCase[]>(
+    INITIAL_SAFEGUARDING_CASES,
+  );
+  readonly safeguardingBottomMetrics = signal<SafeguardingBottomMetric[]>(
+    INITIAL_SAFEGUARDING_BOTTOM_METRICS,
+  );
+  readonly complianceHealthCategories = signal<ComplianceHealthCategory[]>(
+    INITIAL_COMPLIANCE_HEALTH_CATEGORIES,
+  );
+  readonly urgentEscalations = signal<UrgentEscalation[]>(
+    INITIAL_URGENT_ESCALATIONS,
+  );
+  readonly consentQueueBreakdown = signal<ConsentQueueBreakdown>(
+    INITIAL_CONSENT_BREAKDOWN,
+  );
+  readonly recentSafeguardingActivities = signal<RecentSafeguardingActivity[]>(
+    INITIAL_RECENT_SAFEGUARDING_ACTIVITIES,
+  );
+  readonly policyChecklist = signal<PolicyChecklistItem[]>(
+    INITIAL_POLICY_CHECKLIST,
+  );
+
+  readonly selectedSafeguardingTab = signal<SafeguardingTab>('Incident Queue');
+  readonly safeguardingSearchQuery = signal<string>('');
+  readonly selectedSafeguardingSchoolFilter = signal<string>('All Schools');
+  readonly selectedSafeguardingSeverityFilter =
+    signal<string>('All Severities');
+  readonly selectedSafeguardingStatusFilter = signal<string>('All Statuses');
+  readonly selectedSafeguardingDateRange = signal<string>(
+    'May 1 – May 31, 2025',
+  );
+  readonly selectedCompliancePeriod = signal<string>('This Month');
+  readonly safeguardingCurrentPage = signal<number>(1);
+  readonly safeguardingPageSize = signal<number>(8);
 
   // Computeds
   readonly attentionSchoolsCount = computed(
@@ -953,6 +1015,120 @@ export class SuperAdminStore {
     return Math.max(
       1,
       Math.ceil(this.filteredPlatformReports().length / this.reportsPageSize()),
+    );
+  });
+
+  // Safeguarding & Compliance Computeds
+  readonly filteredSafeguardingCases = computed(() => {
+    const list = this.safeguardingCases();
+    const tab = this.selectedSafeguardingTab();
+    const search = this.safeguardingSearchQuery().trim().toLowerCase();
+    const schoolFilter = this.selectedSafeguardingSchoolFilter();
+    const severityFilter = this.selectedSafeguardingSeverityFilter();
+    const statusFilter = this.selectedSafeguardingStatusFilter();
+
+    return list.filter((item) => {
+      // Tab filter
+      if (
+        tab === 'Flagged Communications' &&
+        item.category !== 'Inappropriate Communication'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Consent & Permissions' &&
+        item.category !== 'Consent Pending' &&
+        item.category !== 'Consent Withdrawal'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Policy Compliance' &&
+        item.category !== 'Policy Breach' &&
+        item.category !== 'Data Privacy Concern'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Escalations' &&
+        item.status !== 'Escalated' &&
+        item.severity !== 'Critical'
+      ) {
+        return false;
+      }
+      if (
+        tab === 'Audit Reviews' &&
+        item.status !== 'Resolved' &&
+        item.status !== 'Under Review'
+      ) {
+        return false;
+      }
+
+      // School filter
+      if (schoolFilter !== 'All Schools' && item.institution !== schoolFilter) {
+        return false;
+      }
+
+      // Severity filter
+      if (
+        severityFilter !== 'All Severities' &&
+        item.severity !== severityFilter
+      ) {
+        return false;
+      }
+
+      // Status filter
+      if (statusFilter !== 'All Statuses' && item.status !== statusFilter) {
+        return false;
+      }
+
+      // Search keyword
+      if (search) {
+        const matchesId = item.id.toLowerCase().includes(search);
+        const matchesInst = item.institution.toLowerCase().includes(search);
+        const matchesCat = item.category.toLowerCase().includes(search);
+        const matchesReporter = item.reportedBy.name
+          .toLowerCase()
+          .includes(search);
+        const matchesAssignee = item.assignedTo.name
+          .toLowerCase()
+          .includes(search);
+        const matchesDetails =
+          item.details?.toLowerCase().includes(search) ?? false;
+        if (
+          !matchesId &&
+          !matchesInst &&
+          !matchesCat &&
+          !matchesReporter &&
+          !matchesAssignee &&
+          !matchesDetails
+        ) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  });
+
+  readonly totalSafeguardingCasesCount = computed(
+    () => this.filteredSafeguardingCases().length,
+  );
+
+  readonly paginatedSafeguardingCases = computed(() => {
+    const list = this.filteredSafeguardingCases();
+    const page = this.safeguardingCurrentPage();
+    const size = this.safeguardingPageSize();
+    const start = (page - 1) * size;
+    return list.slice(start, start + size);
+  });
+
+  readonly totalSafeguardingPages = computed(() => {
+    return Math.max(
+      1,
+      Math.ceil(
+        this.filteredSafeguardingCases().length / this.safeguardingPageSize(),
+      ),
     );
   });
 
@@ -1681,6 +1857,146 @@ export class SuperAdminStore {
               downloadCount: (r.downloadCount ?? 0) + 1,
             }
           : r,
+      ),
+    );
+  }
+
+  // Safeguarding Actions
+  setSafeguardingTab(tab: SafeguardingTab): void {
+    this.selectedSafeguardingTab.set(tab);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSearch(query: string): void {
+    this.safeguardingSearchQuery.set(query);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSchoolFilter(school: string): void {
+    this.selectedSafeguardingSchoolFilter.set(school);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingSeverityFilter(severity: string): void {
+    this.selectedSafeguardingSeverityFilter.set(severity);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingStatusFilter(status: string): void {
+    this.selectedSafeguardingStatusFilter.set(status);
+    this.safeguardingCurrentPage.set(1);
+  }
+
+  setSafeguardingDateRange(range: string): void {
+    this.selectedSafeguardingDateRange.set(range);
+  }
+
+  setCompliancePeriod(period: string): void {
+    this.selectedCompliancePeriod.set(period);
+  }
+
+  setSafeguardingPage(page: number): void {
+    if (page >= 1 && page <= this.totalSafeguardingPages()) {
+      this.safeguardingCurrentPage.set(page);
+    }
+  }
+
+  createSafeguardingCase(
+    formData: CreateSafeguardingCaseFormData,
+  ): SafeguardingCase {
+    const caseNum = Math.floor(1000 + Math.random() * 9000);
+    const newId = `CASE-2025-${caseNum}`;
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const dateStr = now.toLocaleDateString([], {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    });
+
+    const newCase: SafeguardingCase = {
+      id: newId,
+      institution: formData.institution,
+      location: 'Regional Campus',
+      category: formData.category,
+      severity: formData.severity,
+      reportedBy: {
+        name: formData.reportedBy || 'Super Admin',
+        role: 'Admin',
+        type: 'Platform Staff',
+      },
+      assignedTo: {
+        name: formData.assignedReviewer || 'Rahul Mehta',
+        role: 'Safeguarding Lead',
+      },
+      status: 'Under Review',
+      lastUpdated: dateStr,
+      lastUpdatedTime: timeStr,
+      details: formData.description,
+      learnerName: formData.learnerName,
+      staffName: formData.staffName,
+      additionalUsers: formData.additionalUsers,
+      gradeClass: formData.gradeClass,
+      parentLinked: formData.parentLinked,
+      evidenceFilesCount: formData.sensitiveEvidence ? 1 : 0,
+      slaDeadline: formData.responseDeadline,
+      dateCreated: dateStr,
+    };
+
+    this.safeguardingCases.update((cases) => [newCase, ...cases]);
+
+    // Add activity log
+    const newActivity: RecentSafeguardingActivity = {
+      id: `act-${Date.now()}`,
+      action: `New Case ${newId} logged`,
+      meta: 'by Super Admin',
+      timestamp: 'Just now',
+      icon: 'shield',
+      iconClass: 'act-info',
+    };
+    this.recentSafeguardingActivities.update((list) => [
+      newActivity,
+      ...list.slice(0, 4),
+    ]);
+
+    return newCase;
+  }
+
+  assignSafeguardingReviewer(
+    caseId: string,
+    reviewerName: string,
+    reviewerRole: string,
+  ): void {
+    this.safeguardingCases.update((cases) =>
+      cases.map((c) =>
+        c.id === caseId
+          ? {
+              ...c,
+              assignedTo: { name: reviewerName, role: reviewerRole },
+              status: c.status === 'Pending Review' ? 'Under Review' : c.status,
+              lastUpdated: 'Just now',
+            }
+          : c,
+      ),
+    );
+  }
+
+  updateSafeguardingCaseStatus(
+    caseId: string,
+    status: SafeguardingCaseStatus,
+  ): void {
+    this.safeguardingCases.update((cases) =>
+      cases.map((c) =>
+        c.id === caseId
+          ? {
+              ...c,
+              status,
+              lastUpdated: 'Just now',
+            }
+          : c,
       ),
     );
   }
