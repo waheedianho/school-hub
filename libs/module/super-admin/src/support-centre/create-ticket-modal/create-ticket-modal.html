@@ -1,0 +1,194 @@
+<div
+  class="modal-backdrop"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="create-ticket-title"
+>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="header-left">
+        <div class="header-icon-wrap">
+          <span class="material-symbols-outlined">confirmation_number</span>
+        </div>
+        <div>
+          <h2 id="create-ticket-title" class="modal-title">
+            Create Support Ticket
+          </h2>
+          <p class="modal-subtitle">
+            Log a new support issue, technical incident, or onboarding request.
+          </p>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="close-btn"
+        (click)="closeModal.emit()"
+        aria-label="Close modal"
+      >
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+
+    <form class="modal-body" (ngSubmit)="onSubmit()">
+      <!-- Issue Title -->
+      <div class="form-group">
+        <label for="ticket-title-input" class="form-label">Issue Title *</label>
+        <input
+          id="ticket-title-input"
+          type="text"
+          class="form-control"
+          placeholder="Brief summary of the issue (e.g. Accounts unable to log in)"
+          [value]="title()"
+          (input)="title.set($any($event.target).value)"
+          required
+        />
+      </div>
+
+      <!-- School & Issue Type -->
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="ticket-school-select" class="form-label"
+            >School / Institution *</label
+          >
+          <select
+            id="ticket-school-select"
+            class="form-control"
+            [value]="school()"
+            (change)="school.set($any($event.target).value)"
+            required
+          >
+            <option value="Sunrise International School">
+              Sunrise International School
+            </option>
+            <option value="Greenfield Academy">Greenfield Academy</option>
+            <option value="Bright Future School">Bright Future School</option>
+            <option value="Oxford Global School">Oxford Global School</option>
+            <option value="Maple Leaf School">Maple Leaf School</option>
+            <option value="Silverline High School">
+              Silverline High School
+            </option>
+            <option value="St. Mary's Academy">St. Mary's Academy</option>
+            <option value="DPS North">DPS North</option>
+            <option value="Global Vision School">Global Vision School</option>
+            <option value="St. Jude Academy">St. Jude Academy</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ticket-type-select" class="form-label"
+            >Issue Type *</label
+          >
+          <select
+            id="ticket-type-select"
+            class="form-control"
+            [value]="issueType()"
+            (change)="issueType.set($any($event.target).value)"
+            required
+          >
+            <option value="Login Problem">Login Problem</option>
+            <option value="Onboarding Support">Onboarding Support</option>
+            <option value="Billing Issue">Billing Issue</option>
+            <option value="Content Upload Error">Content Upload Error</option>
+            <option value="Report Generation Bug">Report Generation Bug</option>
+            <option value="Role Permission Issue">Role Permission Issue</option>
+            <option value="Live Class Failure">Live Class Failure</option>
+            <option value="Billing Invoice Error">Billing Invoice Error</option>
+            <option value="Feature Request">Feature Request</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Priority & Assigned Agent -->
+      <div class="form-grid-2">
+        <div class="form-group">
+          <label for="ticket-priority-select" class="form-label"
+            >Priority *</label
+          >
+          <select
+            id="ticket-priority-select"
+            class="form-control"
+            [value]="priority()"
+            (change)="priority.set($any($event.target).value)"
+            required
+          >
+            <option value="Critical">Critical (Immediate SLA)</option>
+            <option value="High">High (4h SLA)</option>
+            <option value="Medium">Medium (12h SLA)</option>
+            <option value="Low">Low (24h SLA)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="ticket-agent-select" class="form-label"
+            >Assign To Agent</label
+          >
+          <select
+            id="ticket-agent-select"
+            class="form-control"
+            [value]="assignedAgent()"
+            (change)="assignedAgent.set($any($event.target).value)"
+          >
+            <option value="Neha Verma">Neha Verma (Support Agent)</option>
+            <option value="Rohit Singh">
+              Rohit Singh (Support Specialist)
+            </option>
+            <option value="Ankit Patel">
+              Ankit Patel (Billing / Tech Lead)
+            </option>
+            <option value="Amit Patel">Amit Patel (Support Lead)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Affected Users -->
+      <div class="form-group">
+        <label for="ticket-affected-input" class="form-label"
+          >Affected Users / Scope</label
+        >
+        <input
+          id="ticket-affected-input"
+          type="text"
+          class="form-control"
+          placeholder="e.g. ~ 420 learners, 38 teachers"
+          [value]="affectedUsers()"
+          (input)="affectedUsers.set($any($event.target).value)"
+        />
+      </div>
+
+      <!-- Detailed Description -->
+      <div class="form-group">
+        <label for="ticket-desc-textarea" class="form-label"
+          >Detailed Description *</label
+        >
+        <textarea
+          id="ticket-desc-textarea"
+          class="form-control textarea"
+          rows="3"
+          placeholder="Provide detailed description of the incident, steps to reproduce, or error messages..."
+          [value]="description()"
+          (input)="description.set($any($event.target).value)"
+          required
+        ></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeModal.emit()"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="!title() || !description()"
+        >
+          <span class="material-symbols-outlined btn-icon">add</span>
+          Create Ticket
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

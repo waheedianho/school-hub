@@ -1,0 +1,124 @@
+<div class="support-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">Support Centre</h1>
+      <p class="page-subtitle">
+        Manage platform-wide support tickets, school onboarding issues, bugs,
+        billing concerns, and escalations across institutions.
+      </p>
+    </div>
+
+    <div class="header-right">
+      <div class="date-picker-badge">
+        <span class="material-symbols-outlined icon">calendar_today</span>
+        <span class="date-text">{{ store.selectedSupportDateRange() }}</span>
+        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+      </div>
+
+      <div class="notification-wrap" title="12 notifications">
+        <span class="material-symbols-outlined icon">notifications</span>
+        <span class="notification-badge">12</span>
+      </div>
+
+      <div class="user-pill">
+        <div class="user-avatar">SA</div>
+        <div class="user-info">
+          <span class="user-name">Super Admin</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Top 6 KPI Metric Cards -->
+  <section class="metrics-section">
+    <school-hub-support-metrics [metrics]="store.supportMetrics()" />
+  </section>
+
+  <!-- Navigation Tabs with Badges -->
+  <nav class="tabs-nav" aria-label="Support Views">
+    @for (tab of tabs; track tab.id) {
+    <button
+      type="button"
+      class="tab-btn"
+      [class.active]="store.selectedSupportTab() === tab.id"
+      (click)="onTabChange(tab.id)"
+    >
+      <span class="tab-label">{{ tab.label }}</span>
+      @if (tab.badge) {
+      <span class="tab-badge" [ngClass]="tab.badgeClass">{{ tab.badge }}</span>
+      }
+    </button>
+    }
+  </nav>
+
+  <!-- Main Content Layout Grid (Table + Bottom Metrics on left, Sidebar on right) -->
+  <div class="main-layout-grid">
+    <div class="main-content-col">
+      <!-- Tickets Table -->
+      <school-hub-support-table
+        [tickets]="store.paginatedSupportTickets()"
+        [totalCount]="store.totalSupportTicketsCount()"
+        [currentPage]="store.supportCurrentPage()"
+        [totalPages]="store.totalSupportPages()"
+        [pageSize]="store.supportPageSize()"
+        [searchQuery]="store.supportSearchQuery()"
+        [selectedSchool]="store.selectedSupportSchoolFilter()"
+        [selectedCategory]="store.selectedSupportCategoryFilter()"
+        [selectedPriority]="store.selectedSupportPriorityFilter()"
+        [selectedStatus]="store.selectedSupportStatusFilter()"
+        [dateRange]="store.selectedSupportDateRange()"
+        (searchChange)="store.setSupportSearch($event)"
+        (schoolChange)="store.setSupportSchoolFilter($event)"
+        (categoryChange)="store.setSupportCategoryFilter($event)"
+        (priorityChange)="store.setSupportPriorityFilter($event)"
+        (statusChange)="store.setSupportStatusFilter($event)"
+        (pageChange)="store.setSupportPage($event)"
+        (pageSizeChange)="store.setSupportPageSize($event)"
+        (createTicket)="openCreateModal()"
+        (assignAgent)="openAssignModal()"
+        (exportData)="exportData()"
+        (viewTicket)="navigateToTicket($event)"
+        (reassignTicket)="openAssignModal($event)"
+        (updateStatus)="onStatusUpdate($event)"
+      />
+
+      <!-- Bottom 5 Metrics -->
+      <div class="bottom-metrics-wrap">
+        <school-hub-support-bottom-metrics
+          [bottomMetrics]="store.supportBottomMetrics()"
+        />
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <aside class="sidebar-col">
+      <school-hub-support-sidebar
+        [healthCategories]="store.supportHealthCategories()"
+        [urgentEscalations]="store.supportUrgentEscalations()"
+        [slaQueue]="store.slaQueueBreakdown()"
+        [recentActivities]="store.recentSupportActivities()"
+        (createTicketAction)="openCreateModal()"
+        (assignReviewerAction)="openAssignModal()"
+        (downloadLogsAction)="exportData()"
+        (selectTicket)="navigateToTicket($event)"
+      />
+    </aside>
+  </div>
+
+  <!-- Modals -->
+  @if (activeModal() === 'create') {
+  <school-hub-create-ticket-modal
+    (closeModal)="closeModal()"
+    (created)="onTicketCreated($event)"
+  />
+  } @if (activeModal() === 'assign') {
+  <school-hub-assign-agent-modal
+    [tickets]="store.allSupportTickets()"
+    [preselectedTicketId]="selectedTicketIdForAssign()"
+    (closeModal)="closeModal()"
+    (assigned)="onAgentAssigned($event)"
+  />
+  }
+</div>

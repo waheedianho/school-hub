@@ -1,0 +1,624 @@
+@if (ticket(); as t) {
+<div class="ticket-detail-container">
+  <!-- Top Breadcrumb & Navigation -->
+  <header class="detail-header-nav">
+    <div class="nav-breadcrumbs">
+      <a routerLink="/super-admin/support-centre" class="back-link">
+        <span class="material-symbols-outlined icon-back">arrow_back</span>
+        Back to Support Centre
+      </a>
+      <span class="breadcrumb-separator">/</span>
+      <span class="breadcrumb-curr">Ticket Details</span>
+      <span class="breadcrumb-separator">/</span>
+      <button
+        type="button"
+        class="ticket-id-pill"
+        (click)="copyTicketId()"
+        title="Click to copy ticket ID"
+      >
+        {{ t.id }}
+        <span class="material-symbols-outlined icon-copy">content_copy</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Ticket Master Banner Card -->
+  <section class="ticket-banner-card">
+    <div class="banner-top-row">
+      <div class="title-and-badges">
+        <div class="badges-row">
+          <span
+            class="badge priority-badge"
+            [ngClass]="'priority-' + t.priority.toLowerCase()"
+          >
+            {{ t.priority }} Priority
+          </span>
+          <span
+            class="badge status-badge"
+            [ngClass]="'status-' + t.status.toLowerCase().replace(' ', '-')"
+          >
+            {{ t.status }}
+          </span>
+          <span class="badge issue-badge"> {{ t.issueType }} </span>
+        </div>
+        <h1 class="ticket-title">{{ t.title }}</h1>
+        <div class="ticket-school-meta">
+          <span class="school-name">
+            <span class="material-symbols-outlined">domain</span>
+            {{ t.school }}
+          </span>
+          <span class="meta-separator">•</span>
+          <span class="meta-item">
+            <span class="material-symbols-outlined">schedule</span>
+            Opened {{ t.createdAt }}
+          </span>
+          <span class="meta-separator">•</span>
+          <span class="meta-item">
+            Last updated {{ t.lastUpdated }} at {{ t.lastUpdatedTime }}
+          </span>
+          <span class="meta-separator">•</span>
+          <span class="sla-pill" [ngClass]="'sla-' + t.slaLevel">
+            <span class="material-symbols-outlined">timer</span>
+            SLA: {{ t.slaStatus }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions Toolbar -->
+    <div class="banner-actions-toolbar">
+      <div class="status-dropdown-wrapper">
+        <label for="ticketStatusSelect" class="sr-only"
+          >Change Ticket Status</label
+        >
+        <select
+          id="ticketStatusSelect"
+          class="form-select status-select"
+          [value]="t.status"
+          (change)="updateStatus($any($event.target).value)"
+        >
+          <option value="Open">Status: Open</option>
+          <option value="In Progress">Status: In Progress</option>
+          <option value="Awaiting School">Status: Awaiting School</option>
+          <option value="Escalated">Status: Escalated</option>
+          <option value="Resolved">Status: Resolved</option>
+          <option value="Closed">Status: Closed</option>
+        </select>
+      </div>
+
+      <div class="action-buttons-group">
+        <button
+          type="button"
+          class="btn btn-secondary action-btn"
+          (click)="openNoteModal()"
+        >
+          <span class="material-symbols-outlined">edit_note</span>
+          Add Internal Note
+        </button>
+        <button
+          type="button"
+          class="btn btn-secondary action-btn"
+          (click)="openAssignModal()"
+        >
+          <span class="material-symbols-outlined">person_add</span>
+          Reassign Agent
+        </button>
+        @if (t.status !== 'Escalated') {
+        <button
+          type="button"
+          class="btn btn-warning action-btn"
+          (click)="escalateTicket()"
+        >
+          <span class="material-symbols-outlined">arrow_upward</span>
+          Escalate
+        </button>
+        } @if (t.status !== 'Resolved' && t.status !== 'Closed') {
+        <button
+          type="button"
+          class="btn btn-success action-btn resolve-btn"
+          (click)="resolveTicket()"
+        >
+          <span class="material-symbols-outlined">check_circle</span>
+          Resolve Ticket
+        </button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content Layout (Two Columns) -->
+  <div class="ticket-body-layout">
+    <!-- Left Column: Details, Diagnostics, Attachments, Timeline, Contact -->
+    <main class="left-main-column">
+      <!-- 1. Issue Summary Card -->
+      <section class="detail-card issue-summary-card">
+        <h2 class="card-section-title">
+          <span class="material-symbols-outlined">article</span>
+          Issue Summary
+        </h2>
+        <p class="summary-text">{{ t.summary || t.title }}</p>
+
+        <div class="summary-details-grid">
+          <div class="detail-grid-item">
+            <span class="detail-label">Affected Users</span>
+            <span class="detail-val font-medium"
+              >{{ t.affectedUsers || 'Staff and Learners' }}</span
+            >
+          </div>
+          <div class="detail-grid-item">
+            <span class="detail-label">Business Impact</span>
+            <span class="detail-val font-medium text-danger"
+              >{{ t.impact || 'High Impact' }}</span
+            >
+          </div>
+          <div class="detail-grid-item">
+            <span class="detail-label">Occurrence</span>
+            <span class="detail-val"
+              >{{ t.occurrence || 'Continuous since reported' }}</span
+            >
+          </div>
+          <div class="detail-grid-item">
+            <span class="detail-label">Probable Cause</span>
+            <span class="detail-val"
+              >{{ t.probableCause || 'Under investigation' }}</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Technical Diagnostics Card -->
+      <section class="detail-card diagnostics-card">
+        <div class="card-header-flex">
+          <h2 class="card-section-title">
+            <span class="material-symbols-outlined">build</span>
+            Technical Diagnostics
+          </h2>
+          <span class="badge severity-badge"
+            >{{ t.severityTechnical || 'Sev 1 – Critical' }}</span
+          >
+        </div>
+
+        <div class="diagnostics-grid">
+          <div class="diag-item">
+            <span class="diag-label">Affected Module:</span>
+            <span class="diag-value highlight"
+              >{{ t.affectedModule || 'Authentication Gateway' }}</span
+            >
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">Environment:</span>
+            <span class="diag-value"
+              >{{ t.environment || 'Production (Web)' }}</span
+            >
+          </div>
+          <div class="diag-item">
+            <span class="diag-label">Affected Roles:</span>
+            <div class="roles-chips">
+              @for (role of t.affectedRoles || ['Learners', 'Teachers']; track
+              role) {
+              <span class="role-chip"> {{ role }} </span>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Attachments Card -->
+      @if (t.attachments && t.attachments.length > 0) {
+      <section class="detail-card attachments-card">
+        <h2 class="card-section-title">
+          <span class="material-symbols-outlined">attach_file</span>
+          Attachments ({{ t.attachments.length }})
+        </h2>
+
+        <div class="attachments-list">
+          @for (att of t.attachments; track att.id) {
+          <div class="attachment-item">
+            <div class="att-icon-box">
+              <span class="material-symbols-outlined">
+                {{ att.fileType.includes('Image') ||
+                att.fileName.endsWith('.png') ? 'image' : 'description' }}
+              </span>
+            </div>
+            <div class="att-info">
+              <div class="att-name font-medium">{{ att.fileName }}</div>
+              <div class="att-meta text-muted">
+                {{ att.fileSize }} • Uploaded by {{ att.uploadedBy }} on {{
+                att.uploadedAt }}
+              </div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm att-download-btn"
+              title="Download file"
+            >
+              <span class="material-symbols-outlined">download</span>
+              Download
+            </button>
+          </div>
+          }
+        </div>
+      </section>
+      }
+
+      <!-- 4. Conversation & Activity Timeline -->
+      <section class="detail-card timeline-card">
+        <div class="card-header-flex">
+          <h2 class="card-section-title">
+            <span class="material-symbols-outlined">forum</span>
+            Conversation & Activity Timeline
+          </h2>
+          <span class="entry-count text-muted"
+            >{{ t.timeline?.length || 0 }} entries</span
+          >
+        </div>
+
+        <div class="timeline-thread">
+          @for (entry of t.timeline; track entry.id) {
+          <!-- Normal Message -->
+          @if (entry.type === 'message') {
+          <div class="timeline-entry message-entry">
+            <div class="entry-avatar">
+              <span>{{ entry.authorAvatar }}</span>
+            </div>
+            <div class="entry-bubble">
+              <div class="bubble-header">
+                <span class="author-name font-semibold"
+                  >{{ entry.authorName }}</span
+                >
+                <span class="author-role badge role-pill"
+                  >{{ entry.authorRole }}</span
+                >
+                <span class="entry-time text-muted">{{ entry.timestamp }}</span>
+              </div>
+              <div class="bubble-body">
+                <p>{{ entry.content }}</p>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Internal Note -->
+          @if (entry.type === 'internal_note') {
+          <div class="timeline-entry note-entry">
+            <div class="entry-avatar note-avatar">
+              <span class="material-symbols-outlined">lock</span>
+            </div>
+            <div class="entry-bubble note-bubble">
+              <div class="bubble-header">
+                <div class="note-badge-tag">
+                  <span class="material-symbols-outlined">visibility_off</span>
+                  INTERNAL NOTE
+                </div>
+                <span class="author-name font-semibold"
+                  >{{ entry.authorName }} ({{ entry.authorRole }})</span
+                >
+                <span class="entry-time text-muted">{{ entry.timestamp }}</span>
+              </div>
+              <div class="bubble-body">
+                <p>{{ entry.content }}</p>
+              </div>
+            </div>
+          </div>
+          }
+
+          <!-- Status Change -->
+          @if (entry.type === 'status_change') {
+          <div class="timeline-entry status-change-entry">
+            <div class="status-change-pill">
+              <span class="material-symbols-outlined">swap_horiz</span>
+              {{ entry.content }} • {{ entry.timestamp }}
+            </div>
+          </div>
+          } }
+        </div>
+
+        <!-- Reply Composer -->
+        <div class="timeline-reply-composer">
+          <label for="ticketReplyInput" class="composer-label">
+            <span class="material-symbols-outlined">reply</span>
+            Add Response to Ticket
+          </label>
+          <textarea
+            id="ticketReplyInput"
+            class="composer-textarea"
+            rows="3"
+            placeholder="Type your response or update here..."
+            [ngModel]="newReplyText()"
+            (ngModelChange)="newReplyText.set($event)"
+          ></textarea>
+          <div class="composer-actions">
+            <button
+              type="button"
+              class="btn btn-secondary btn-sm"
+              (click)="openNoteModal()"
+            >
+              <span class="material-symbols-outlined">lock</span>
+              Add Note Instead
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary btn-sm send-btn"
+              [disabled]="!newReplyText().trim()"
+              (click)="sendReply()"
+            >
+              <span class="material-symbols-outlined">send</span>
+              Send Response
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. School Contact Card -->
+      @if (t.schoolContact) {
+      <section class="detail-card school-contact-card">
+        <h2 class="card-section-title">
+          <span class="material-symbols-outlined">contact_phone</span>
+          School Contact Information
+        </h2>
+        <div class="contact-details-grid">
+          <div class="contact-row">
+            <span class="material-symbols-outlined contact-icon">person</span>
+            <div class="contact-info">
+              <span class="contact-name font-semibold"
+                >{{ t.schoolContact.name }}</span
+              >
+              <span class="contact-sub text-muted"
+                >{{ t.schoolContact.role }}</span
+              >
+            </div>
+          </div>
+          <div class="contact-row">
+            <span class="material-symbols-outlined contact-icon">email</span>
+            <div class="contact-info">
+              <span class="contact-val">{{ t.schoolContact.email }}</span>
+            </div>
+          </div>
+          <div class="contact-row">
+            <span class="material-symbols-outlined contact-icon">phone</span>
+            <div class="contact-info">
+              <span class="contact-val">{{ t.schoolContact.phone }}</span>
+            </div>
+          </div>
+          <div class="contact-row">
+            <span class="material-symbols-outlined contact-icon"
+              >location_on</span
+            >
+            <div class="contact-info">
+              <span class="contact-val">{{ t.schoolContact.location }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      }
+    </main>
+
+    <!-- Right Sidebar Column -->
+    <aside class="right-sidebar-column">
+      <!-- 1. Ticket Assignment & Details Card -->
+      <section class="detail-card meta-card">
+        <h3 class="sidebar-card-title">Ticket Information</h3>
+
+        <div class="meta-section">
+          <span class="meta-section-label">Assigned Agent</span>
+          <div class="agent-profile-row">
+            <div class="agent-avatar">{{ t.assignedTo.avatar || 'AG' }}</div>
+            <div class="agent-info">
+              <div class="agent-name font-semibold">
+                {{ t.assignedTo.name }}
+              </div>
+              <div class="agent-role text-muted">{{ t.assignedTo.role }}</div>
+            </div>
+            <button
+              type="button"
+              class="btn btn-link btn-sm change-agent-btn"
+              (click)="openAssignModal()"
+            >
+              Change
+            </button>
+          </div>
+        </div>
+
+        <div class="meta-section">
+          <span class="meta-section-label">Reported By</span>
+          <div class="reporter-profile-row">
+            <div class="reporter-avatar">{{ t.raisedBy.avatar || 'RB' }}</div>
+            <div class="reporter-info">
+              <div class="reporter-name font-semibold">
+                {{ t.raisedBy.name }}
+              </div>
+              <div class="reporter-role text-muted">{{ t.raisedBy.role }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="meta-kv-list">
+          <div class="kv-item">
+            <span class="kv-label">Priority:</span>
+            <span
+              class="badge priority-badge"
+              [ngClass]="'priority-' + t.priority.toLowerCase()"
+            >
+              {{ t.priority }}
+            </span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">SLA Status:</span>
+            <span class="sla-text font-medium">{{ t.slaStatus }}</span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">Created:</span>
+            <span class="kv-value">{{ t.createdAt }}</span>
+          </div>
+          <div class="kv-item">
+            <span class="kv-label">Target Resolution:</span>
+            <span class="kv-value">Within 4 Hours</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Escalation Path Card -->
+      <section class="detail-card escalation-card">
+        <h3 class="sidebar-card-title">Escalation Path</h3>
+        <div class="escalation-steps">
+          <div class="step-item completed">
+            <div class="step-indicator">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+            <div class="step-content">
+              <div class="step-title">L1 Frontline Support</div>
+              <div class="step-sub text-muted">
+                Initial triage & verification
+              </div>
+            </div>
+          </div>
+          <div class="step-item active">
+            <div class="step-indicator">2</div>
+            <div class="step-content">
+              <div class="step-title font-semibold">
+                L2 Technical Specialist
+              </div>
+              <div class="step-sub text-muted">Investigating auth logs</div>
+            </div>
+          </div>
+          <div class="step-item pending">
+            <div class="step-indicator">3</div>
+            <div class="step-content">
+              <div class="step-title">L3 Senior DevOps</div>
+              <div class="step-sub text-muted">Platform infrastructure</div>
+            </div>
+          </div>
+          <div class="step-item pending">
+            <div class="step-indicator">4</div>
+            <div class="step-content">
+              <div class="step-title">Platform Engineering</div>
+              <div class="step-sub text-muted">Core architecture & DB</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Related Tickets Card -->
+      <section class="detail-card related-card">
+        <h3 class="sidebar-card-title">Related Tickets</h3>
+        <div class="related-tickets-list">
+          <div class="related-ticket-item">
+            <div class="rel-top">
+              <span class="rel-id">TKT-2025-5091</span>
+              <span class="badge status-badge status-resolved">Resolved</span>
+            </div>
+            <div class="rel-title">
+              Google SSO timeout during peak morning login
+            </div>
+            <div class="rel-meta text-muted">
+              Sunrise International • May 14, 2025
+            </div>
+          </div>
+          <div class="related-ticket-item">
+            <div class="rel-top">
+              <span class="rel-id">TKT-2025-5110</span>
+              <span class="badge status-badge status-resolved">Resolved</span>
+            </div>
+            <div class="rel-title">
+              Password reset link failure for batch teachers
+            </div>
+            <div class="rel-meta text-muted">
+              Sunrise International • May 22, 2025
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Resolution Checklist Card -->
+      @if (t.resolutionChecklist) {
+      <section class="detail-card checklist-card">
+        <div class="card-header-flex">
+          <h3 class="sidebar-card-title">Resolution Checklist</h3>
+          <span class="checklist-count text-muted">
+            {{ completedChecklistCount() }} / {{ t.resolutionChecklist.length }}
+          </span>
+        </div>
+
+        <div class="checklist-items">
+          @for (item of t.resolutionChecklist; track item.label; let i = $index)
+          {
+          <label class="checklist-label" [class.completed]="item.completed">
+            <input
+              type="checkbox"
+              class="form-check-input"
+              [checked]="item.completed"
+              (change)="toggleChecklist(i)"
+            />
+            <span class="checklist-text">{{ item.label }}</span>
+          </label>
+          }
+        </div>
+      </section>
+      }
+    </aside>
+  </div>
+
+  <!-- Bottom 4 KPI Cards -->
+  <section class="ticket-bottom-kpis">
+    <div class="bottom-kpi-card">
+      <div class="kpi-icon-box kpi-blue">
+        <span class="material-symbols-outlined">timer</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">First Response Time</span>
+        <span class="kpi-value">15m</span>
+        <span class="kpi-subtext text-success">Target: &lt; 30m</span>
+      </div>
+    </div>
+
+    <div class="bottom-kpi-card">
+      <div class="kpi-icon-box kpi-purple">
+        <span class="material-symbols-outlined">hourglass_top</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Total Time Open</span>
+        <span class="kpi-value">1h 30m</span>
+        <span class="kpi-subtext text-muted">Expected SLA: &lt; 4h</span>
+      </div>
+    </div>
+
+    <div class="bottom-kpi-card">
+      <div class="kpi-icon-box kpi-amber">
+        <span class="material-symbols-outlined">history</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Similar Incidents</span>
+        <span class="kpi-value">3</span>
+        <span class="kpi-subtext text-muted">In past 30 days</span>
+      </div>
+    </div>
+
+    <div class="bottom-kpi-card">
+      <div class="kpi-icon-box kpi-green">
+        <span class="material-symbols-outlined">check_circle</span>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">Platform Status</span>
+        <span class="kpi-value">Operational</span>
+        <span class="kpi-subtext text-success">Auth service healthy</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modals -->
+  @if (activeModal() === 'assign') {
+  <school-hub-assign-agent-modal
+    [tickets]="[t]"
+    [preselectedTicketId]="t.id"
+    (closeModal)="closeModal()"
+    (assigned)="onAgentAssigned($event)"
+  ></school-hub-assign-agent-modal>
+  } @if (activeModal() === 'note') {
+  <school-hub-internal-note-modal
+    [ticketId]="t.id"
+    (closeModal)="closeModal()"
+    (noteAdded)="onNoteAdded($event)"
+  ></school-hub-internal-note-modal>
+  }
+</div>
+}

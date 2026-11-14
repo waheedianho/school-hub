@@ -1,0 +1,363 @@
+<div class="support-table-container">
+  <!-- Top Filter & Action Bar -->
+  <div class="table-toolbar">
+    <div class="toolbar-search-filters">
+      <!-- Search -->
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input
+          id="support-search-input"
+          type="text"
+          class="search-input"
+          placeholder="Search tickets by ID, school, issue, or keyword..."
+          [value]="searchQuery()"
+          (input)="onSearch($event)"
+          aria-label="Search tickets"
+        />
+      </div>
+
+      <!-- Filters -->
+      <div class="filters-row">
+        <select
+          id="support-school-select"
+          class="filter-select"
+          [value]="selectedSchool()"
+          (change)="onSchoolSelect($event)"
+          aria-label="Filter by school"
+        >
+          <option value="All Schools">All Schools</option>
+          <option value="Sunrise International School">
+            Sunrise International School
+          </option>
+          <option value="Greenfield Academy">Greenfield Academy</option>
+          <option value="Bright Future School">Bright Future School</option>
+          <option value="Oxford Global School">Oxford Global School</option>
+          <option value="Maple Leaf School">Maple Leaf School</option>
+          <option value="Silverline High School">Silverline High School</option>
+          <option value="St. Mary's Academy">St. Mary's Academy</option>
+          <option value="DPS North">DPS North</option>
+          <option value="Global Vision School">Global Vision School</option>
+          <option value="St. Jude Academy">St. Jude Academy</option>
+        </select>
+
+        <select
+          id="support-category-select"
+          class="filter-select"
+          [value]="selectedCategory()"
+          (change)="onCategorySelect($event)"
+          aria-label="Filter by category"
+        >
+          <option value="All Categories">All Categories</option>
+          <option value="Login Problem">Login Problem</option>
+          <option value="Onboarding Support">Onboarding Support</option>
+          <option value="Billing Issue">Billing Issue</option>
+          <option value="Content Upload Error">Content Upload Error</option>
+          <option value="Report Generation Bug">Report Generation Bug</option>
+          <option value="Role Permission Issue">Role Permission Issue</option>
+          <option value="Live Class Failure">Live Class Failure</option>
+          <option value="Billing Invoice Error">Billing Invoice Error</option>
+        </select>
+
+        <select
+          id="support-priority-select"
+          class="filter-select"
+          [value]="selectedPriority()"
+          (change)="onPrioritySelect($event)"
+          aria-label="Filter by priority"
+        >
+          <option value="All Priorities">All Priorities</option>
+          <option value="Critical">Critical</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+          <option value="Low">Low</option>
+        </select>
+
+        <select
+          id="support-status-select"
+          class="filter-select"
+          [value]="selectedStatus()"
+          (change)="onStatusSelect($event)"
+          aria-label="Filter by status"
+        >
+          <option value="All Statuses">All Statuses</option>
+          <option value="Open">Open</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Awaiting School">Awaiting School</option>
+          <option value="Escalated">Escalated</option>
+          <option value="Resolved">Resolved</option>
+        </select>
+
+        <button type="button" class="date-picker-btn">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span>{{ dateRange() }}</span>
+          <span class="material-symbols-outlined dropdown-arrow"
+            >expand_more</span
+          >
+        </button>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="toolbar-actions">
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="createTicket.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">add</span>
+        Create Ticket
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="assignAgent.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">person_add</span>
+        Assign Agent
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="exportData.emit()"
+      >
+        <span class="material-symbols-outlined btn-icon">download</span>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="table-responsive">
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th scope="col" class="th-checkbox">
+            <input
+              type="checkbox"
+              [checked]="isAllSelected()"
+              (change)="toggleSelectAll($event)"
+              aria-label="Select all tickets"
+            />
+          </th>
+          <th scope="col" class="th-ticket-id">Ticket ID</th>
+          <th scope="col" class="th-school">School / Institution</th>
+          <th scope="col" class="th-issue">Issue Type</th>
+          <th scope="col" class="th-priority">Priority</th>
+          <th scope="col" class="th-raised">Raised By</th>
+          <th scope="col" class="th-assigned">Assigned To</th>
+          <th scope="col" class="th-status">Status</th>
+          <th scope="col" class="th-updated">Last Updated</th>
+          <th scope="col" class="th-sla">SLA</th>
+          <th scope="col" class="th-action text-right">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (t of tickets(); track t.id) {
+        <tr class="table-row">
+          <!-- Checkbox -->
+          <td class="td-checkbox">
+            <input
+              type="checkbox"
+              [checked]="isTicketSelected(t.id)"
+              (change)="toggleTicketSelect(t.id, $event)"
+              [attr.aria-label]="'Select ticket ' + t.id"
+            />
+          </td>
+
+          <!-- Ticket ID Link -->
+          <td class="td-ticket-id">
+            <a
+              [routerLink]="['/super-admin/support-centre', t.id]"
+              class="ticket-link"
+            >
+              {{ t.id }}
+            </a>
+          </td>
+
+          <!-- School -->
+          <td class="td-school">
+            <span class="school-name">{{ t.school }}</span>
+          </td>
+
+          <!-- Issue Type -->
+          <td class="td-issue">
+            <span class="issue-name">{{ t.issueType }}</span>
+          </td>
+
+          <!-- Priority -->
+          <td class="td-priority">
+            <span
+              class="priority-badge"
+              [ngClass]="getPriorityClass(t.priority)"
+            >
+              {{ t.priority }}
+            </span>
+          </td>
+
+          <!-- Raised By -->
+          <td class="td-raised">
+            <div class="person-cell">
+              <span class="person-name">{{ t.raisedBy.name }}</span>
+              <span class="person-sub">{{ t.raisedBy.role }}</span>
+            </div>
+          </td>
+
+          <!-- Assigned To -->
+          <td class="td-assigned">
+            <span class="assigned-name">{{ t.assignedTo.name }}</span>
+          </td>
+
+          <!-- Status -->
+          <td class="td-status">
+            <span class="status-pill" [ngClass]="getStatusClass(t.status)">
+              {{ t.status }}
+            </span>
+          </td>
+
+          <!-- Last Updated -->
+          <td class="td-updated">
+            <div class="time-cell">
+              <span class="time-date">{{ t.lastUpdated }}</span>
+              <span class="time-hour">{{ t.lastUpdatedTime }}</span>
+            </div>
+          </td>
+
+          <!-- SLA -->
+          <td class="td-sla">
+            <span class="sla-text" [ngClass]="getSlaClass(t.slaLevel)">
+              {{ t.slaStatus }}
+            </span>
+          </td>
+
+          <!-- Action -->
+          <td class="td-action text-right">
+            <div class="action-menu-wrapper">
+              <button
+                type="button"
+                class="action-btn"
+                (click)="toggleActionMenu(t.id, $event)"
+                aria-label="Actions"
+              >
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+
+              @if (openActionMenuId() === t.id) {
+              <div class="dropdown-menu">
+                <a
+                  [routerLink]="['/super-admin/support-centre', t.id]"
+                  class="menu-item"
+                >
+                  <span class="material-symbols-outlined">visibility</span>
+                  View Details
+                </a>
+                <button
+                  type="button"
+                  class="menu-item"
+                  (click)="reassignTicket.emit(t.id); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">person_add</span>
+                  Reassign Agent
+                </button>
+                @if (t.status !== 'Resolved') {
+                <button
+                  type="button"
+                  class="menu-item item-success"
+                  (click)="updateStatus.emit({ ticketId: t.id, newStatus: 'Resolved' }); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">check_circle</span>
+                  Resolve Ticket
+                </button>
+                } @if (t.status !== 'Escalated') {
+                <button
+                  type="button"
+                  class="menu-item item-danger"
+                  (click)="updateStatus.emit({ ticketId: t.id, newStatus: 'Escalated' }); closeActionMenu()"
+                >
+                  <span class="material-symbols-outlined">campaign</span>
+                  Escalate
+                </button>
+                }
+              </div>
+              }
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="11" class="empty-state">
+            <div class="empty-content">
+              <span class="material-symbols-outlined empty-icon"
+                >support_agent</span
+              >
+              <span class="empty-title">No support tickets found</span>
+              <span class="empty-sub"
+                >Try adjusting your filters or search keywords.</span
+              >
+            </div>
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination Footer -->
+  <div class="table-footer">
+    <div class="footer-count">
+      Showing 1 to {{ tickets().length }} of {{ totalCount() }} tickets
+    </div>
+
+    <div class="pagination-right">
+      <div class="pagination">
+        <button
+          type="button"
+          class="page-btn nav-btn"
+          [disabled]="currentPage() === 1"
+          (click)="pageChange.emit(currentPage() - 1)"
+          aria-label="Previous page"
+        >
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+
+        @for (p of getPageNumbers(); track $index) { @if (p === '...') {
+        <span class="page-ellipsis">...</span>
+        } @else {
+        <button
+          type="button"
+          class="page-btn"
+          [class.active]="p === currentPage()"
+          (click)="pageChange.emit($any(p))"
+        >
+          {{ p }}
+        </button>
+        } }
+
+        <button
+          type="button"
+          class="page-btn nav-btn"
+          [disabled]="currentPage() === totalPages()"
+          (click)="pageChange.emit(currentPage() + 1)"
+          aria-label="Next page"
+        >
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </div>
+
+      <div class="page-size-selector">
+        <select
+          id="page-size-select"
+          class="page-size-dropdown"
+          [value]="pageSize()"
+          (change)="onPageSizeSelect($event)"
+          aria-label="Tickets per page"
+        >
+          <option [value]="10">10 / page</option>
+          <option [value]="20">20 / page</option>
+          <option [value]="50">50 / page</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>

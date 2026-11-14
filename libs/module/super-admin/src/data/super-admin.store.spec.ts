@@ -631,4 +631,132 @@ describe('SuperAdminStore', () => {
     store.setCompliancePeriod('This Quarter');
     expect(store.selectedCompliancePeriod()).toBe('This Quarter');
   });
+
+  it('should initialize support centre state properly', () => {
+    expect(store.supportMetrics().length).toBe(6);
+    expect(store.allSupportTickets().length).toBeGreaterThanOrEqual(10);
+    expect(store.supportBottomMetrics().length).toBe(5);
+    expect(store.supportHealthCategories().length).toBe(5);
+    expect(store.supportUrgentEscalations().length).toBe(3);
+    expect(store.slaQueueBreakdown().overdue).toBe(12);
+    expect(store.recentSupportActivities().length).toBe(3);
+    expect(store.selectedSupportTab()).toBe('All Tickets');
+  });
+
+  it('should filter support tickets by tab, school, category, priority, and search', () => {
+    store.setSupportTab('Billing Issues');
+    expect(store.selectedSupportTab()).toBe('Billing Issues');
+    expect(
+      store
+        .filteredSupportTickets()
+        .every(
+          (t) =>
+            t.issueType === 'Billing Issue' ||
+            t.issueType === 'Billing Invoice Error',
+        ),
+    ).toBe(true);
+
+    store.setSupportTab('All Tickets');
+    store.setSupportPriorityFilter('High');
+    expect(
+      store.filteredSupportTickets().every((t) => t.priority === 'High'),
+    ).toBe(true);
+
+    store.setSupportPriorityFilter('All Priorities');
+    store.setSupportSchoolFilter('Sunrise International School');
+    expect(
+      store
+        .filteredSupportTickets()
+        .every((t) => t.school === 'Sunrise International School'),
+    ).toBe(true);
+
+    store.setSupportSchoolFilter('All Schools');
+    store.setSupportSearch('TKT-2025-5128');
+    expect(store.filteredSupportTickets().length).toBe(1);
+    expect(store.filteredSupportTickets()[0].id).toBe('TKT-2025-5128');
+
+    store.setSupportSearch('');
+    store.setSupportStatusFilter('Open');
+    expect(
+      store.filteredSupportTickets().every((t) => t.status === 'Open'),
+    ).toBe(true);
+    store.setSupportStatusFilter('All Statuses');
+  });
+
+  it('should handle support pagination and page size', () => {
+    store.setSupportPage(1);
+    store.setSupportPageSize(5);
+    expect(store.supportCurrentPage()).toBe(1);
+    expect(store.supportPageSize()).toBe(5);
+    expect(store.paginatedSupportTickets().length).toBeLessThanOrEqual(5);
+  });
+
+  it('should create new support ticket and update activity', () => {
+    const initialTickets = store.allSupportTickets().length;
+    const initialActivities = store.recentSupportActivities().length;
+
+    const newTicket = store.createSupportTicket({
+      title: 'Math quiz questions not rendering equations',
+      school: 'Sunrise International School',
+      issueType: 'Content Upload Error',
+      priority: 'High',
+      description: 'LaTeX math formulas failing to compile in student player.',
+      affectedUsers: '80 Grade 10 learners',
+      assignedAgent: 'Neha Verma',
+      raisedBy: 'Rohan Sen',
+    });
+
+    expect(store.allSupportTickets().length).toBe(initialTickets + 1);
+    expect(store.recentSupportActivities().length).toBe(
+      Math.min(5, initialActivities + 1),
+    );
+    expect(newTicket.school).toBe('Sunrise International School');
+    expect(newTicket.priority).toBe('High');
+  });
+
+  it('should update ticket status, assign agent, and add timeline entries', () => {
+    const targetTicket = store.allSupportTickets()[0];
+    store.assignTicketAgent(targetTicket.id, 'Amit Patel', 'Support Lead');
+    const updated = store
+      .allSupportTickets()
+      .find((t) => t.id === targetTicket.id);
+    expect(updated?.assignedTo.name).toBe('Amit Patel');
+    expect(updated?.assignedTo.role).toBe('Support Lead');
+
+    store.updateTicketStatus(targetTicket.id, 'Resolved');
+    const resolved = store
+      .allSupportTickets()
+      .find((t) => t.id === targetTicket.id);
+    expect(resolved?.status).toBe('Resolved');
+
+    store.addTicketTimelineEntry(targetTicket.id, {
+      type: 'internal_note',
+      authorName: 'Super Admin',
+      authorRole: 'Super Admin',
+      authorAvatar: 'SA',
+      content: 'Investigation concluded and root cause confirmed.',
+      timestamp: 'Today 11:00 AM',
+      isInternal: true,
+    });
+    const withNote = store
+      .allSupportTickets()
+      .find((t) => t.id === targetTicket.id);
+    expect(
+      withNote?.timeline?.some((tl) =>
+        tl.content.includes('Investigation concluded'),
+      ),
+    ).toBe(true);
+
+    if (withNote?.resolutionChecklist?.length) {
+      const initialChecked = withNote.resolutionChecklist[0].completed;
+      store.toggleResolutionChecklistItem(targetTicket.id, 0);
+      const toggled = store
+        .allSupportTickets()
+        .find((t) => t.id === targetTicket.id);
+      expect(toggled?.resolutionChecklist?.[0].completed).toBe(!initialChecked);
+    }
+
+    store.setSupportDateRange('Jun 1 – Jun 30, 2025');
+    expect(store.selectedSupportDateRange()).toBe('Jun 1 – Jun 30, 2025');
+  });
 });

@@ -1,0 +1,243 @@
+<div class="sidebar-widgets">
+  <!-- Widget 1: Support Health Overview -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Support Health Overview</h3>
+    </div>
+
+    <div class="donut-chart-container">
+      <div class="donut-wrapper">
+        <svg class="donut-svg" viewBox="0 0 120 120">
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f1f5f9"
+            stroke-width="14"
+            fill="transparent"
+          />
+          <!-- Segment 1: Open 28% (stroke-dashoffset ~ 282.74 * (1 - 0.28) = 203.57) -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#3b82f6"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="203.57"
+            stroke-linecap="round"
+            transform="rotate(-90 60 60)"
+          />
+          <!-- Segment 2: In Progress 12% -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#06b6d4"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="248.81"
+            stroke-linecap="round"
+            transform="rotate(11 60 60)"
+          />
+          <!-- Segment 3: Awaiting School 8% -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#f59e0b"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="260.12"
+            stroke-linecap="round"
+            transform="rotate(54 60 60)"
+          />
+          <!-- Segment 4: Escalated 4% -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#8b5cf6"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="271.43"
+            stroke-linecap="round"
+            transform="rotate(83 60 60)"
+          />
+          <!-- Segment 5: Resolved 48% -->
+          <circle
+            cx="60"
+            cy="60"
+            r="45"
+            stroke="#10b981"
+            stroke-width="14"
+            fill="transparent"
+            stroke-dasharray="282.74"
+            stroke-dashoffset="147.02"
+            stroke-linecap="round"
+            transform="rotate(97 60 60)"
+          />
+        </svg>
+        <div class="donut-center">
+          <span class="donut-value">128</span>
+          <span class="donut-label">Total Tickets</span>
+        </div>
+      </div>
+
+      <div class="donut-legend">
+        @for (cat of healthCategories(); track cat.label) {
+        <div class="legend-row">
+          <div class="legend-label-col">
+            <span
+              class="legend-dot"
+              [style.background-color]="cat.color"
+            ></span>
+            <span class="legend-name">{{ cat.label }}</span>
+          </div>
+          <span class="legend-count"
+            >{{ cat.count }} ({{ cat.percentage }}%)</span
+          >
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 2: Urgent Escalations -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Urgent Escalations</h3>
+      <button
+        type="button"
+        class="view-all-btn"
+        (click)="viewEscalations.emit()"
+      >
+        View all
+      </button>
+    </div>
+    <div class="escalations-list">
+      @for (esc of urgentEscalations(); track esc.id) {
+      <div
+        class="escalation-item"
+        (click)="selectTicket.emit(esc.ticketId)"
+        (keyup.enter)="selectTicket.emit(esc.ticketId)"
+        tabindex="0"
+      >
+        <div class="esc-left">
+          <span class="esc-id">{{ esc.ticketId }}</span>
+          <span class="esc-title">{{ esc.title }}</span>
+          <span class="esc-time">{{ esc.timestamp }}</span>
+        </div>
+        <span class="esc-badge badge-high">{{ esc.priority }}</span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 3: SLA Queue -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">SLA Queue</h3>
+      <button type="button" class="view-all-btn" (click)="viewSlaQueue.emit()">
+        View all
+      </button>
+    </div>
+    <div class="sla-queue-list">
+      <div class="sla-queue-row">
+        <span class="sla-label">Overdue</span>
+        <span class="sla-count count-danger">{{ slaQueue().overdue }}</span>
+      </div>
+      <div class="sla-queue-row">
+        <span class="sla-label">Due in 1–4 hrs</span>
+        <span class="sla-count count-warning">{{ slaQueue().due1to4 }}</span>
+      </div>
+      <div class="sla-queue-row">
+        <span class="sla-label">Due in 4–12 hrs</span>
+        <span class="sla-count count-info">{{ slaQueue().due4to12 }}</span>
+      </div>
+      <div class="sla-queue-row">
+        <span class="sla-label">On Track</span>
+        <span class="sla-count count-success">{{ slaQueue().onTrack }}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Widget 4: Recent Support Activity -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Recent Support Activity</h3>
+    </div>
+    <div class="activity-feed">
+      @for (act of recentActivities(); track act.id) {
+      <div class="activity-item">
+        <div class="act-icon-wrap" [ngClass]="act.iconClass">
+          <span class="material-symbols-outlined">{{ act.icon }}</span>
+        </div>
+        <div class="act-details">
+          <span class="act-title">{{ act.title }}</span>
+          <span class="act-time">{{ act.timestamp }}</span>
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Widget 5: Quick Support Actions -->
+  <div class="sidebar-card">
+    <div class="card-header">
+      <h3 class="card-title">Quick Support Actions</h3>
+    </div>
+    <div class="quick-actions-list">
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="createTicketAction.emit()"
+      >
+        <span class="material-symbols-outlined action-icon">add_circle</span>
+        <span>Create Ticket</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="assignReviewerAction.emit()"
+      >
+        <span class="material-symbols-outlined action-icon"
+          >assignment_ind</span
+        >
+        <span>Assign Reviewer</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="downloadLogsAction.emit()"
+      >
+        <span class="material-symbols-outlined action-icon">description</span>
+        <span>Download Logs</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="contactSchoolAction.emit()"
+      >
+        <span class="material-symbols-outlined action-icon">call</span>
+        <span>Contact School Admin</span>
+      </button>
+
+      <button
+        type="button"
+        class="action-item-btn"
+        (click)="viewKnowledgeBaseAction.emit()"
+      >
+        <span class="material-symbols-outlined action-icon">menu_book</span>
+        <span>View Knowledge Base</span>
+      </button>
+    </div>
+  </div>
+</div>
